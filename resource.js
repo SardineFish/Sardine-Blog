@@ -1,5 +1,5 @@
 ﻿var resourceDictionary = new Array();
-var domain = "http://7xkxy8.com1.z0.glb.clouddn.com/";
+var domain = "http://static.sardinefish.com/";
 resourceDictionary["img/logo/logo_01.jpg"] = domain + "Img/Logo/Logo_01.JPG";
 resourceDictionary["img/logo/logo_00.jpg"] = domain + "Img/Logo/Logo_00.JPG";
 resourceDictionary["img/logo/logo_01.bmp"] = domain + "Img/Logo/Logo_01.bmp";
@@ -142,7 +142,7 @@ resource.img.works.default.PNG = resource.img.works.url + "Works_Default.png";
 resource.img.works.default.min.PNG = resource.img.works.url + "Works_Default.min.png";
 
 resource.sardineImg = function () { };
-resource.sardineImg.domain = "http://7xljv0.com1.z0.glb.clouddn.com/";
+resource.sardineImg.domain = "http://image.sardinefish.com/";
 resource.sardineImg.get=function(id)
 {
     return resource.sardineImg.domain + id.toString();
