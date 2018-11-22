@@ -1,0 +1,58 @@
+﻿body
+{
+    font-family: "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0px;
+    background-color: rgba(240,240,240,1.00);
+}
+hr
+{
+    border-style: solid;
+    border-color: rgba(0,0,0,0.1);
+    border-width: 0.5px;
+    margin: 0px;
+    /*margin-bottom: 5px;*/
+}
+ul
+{
+    position:relative;
+    height:100%;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
+li
+{
+    display: block;
+    float: left;
+}
+a
+{
+    text-decoration: none;
+    cursor: pointer;
+    word-wrap: normal;
+}
+p {
+    word-wrap: normal;
+    margin: 0px;
+}
+nav
+{
+    position: relative;
+    height: 100%;
+}
+i
+{
+    font-style: normal;
+    text-wrap: normal;
+}
+input {
+    border: none 0px;
+    padding: 0px;
+}
+textarea {
+    font-family: "Microsoft YaHei", Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}

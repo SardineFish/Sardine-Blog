@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+</head>
+<body>
+    <script>
+        function pickImg(callback)
+        {
+            var picker = document.createElement("input");
+            picker.type = "file";
+            picker.accept = "image/*";
+            picker.hidden = "hidden";
+            picker.onchange = function (e)
+            {
+                if (picker.files[0] instanceof File)
+                {
+                    var x = 0;
+                }
+                if (callback)
+                    callback(picker.files[0]);
+            }
+            picker.click();
+        }
+        function upload(img, params)
+        {
+            if (!(img instanceof File))
+            {
+                pickImg(function (file)
+                {
+                    upload(file, img);
+                });
+                return;
+            }
+            SardineFish.API.Img.Upload.Upload(img, {
+                progress: function (progress)
+                {
+                    if (params && params["onProgress"])
+                        params.onProgress(progress);
+                },
+                error: function (error)
+                {
+                    if (params && params["onError"])
+                        params.onError(error);
+                },
+                complete: function (data)
+                {
+                    if (params && params["onComplete"])
+                        params.onComplete({
+                            url: "http://img.sardinefish.com/" + data.key,
+                            key: data.key
+                        });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

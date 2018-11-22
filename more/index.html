@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&__&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~&&&&&&&&&&&&~~~~&&~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~tttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~tttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~tttttttttttttttttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~ttttttt&&tttttttttttttttttttttttttttt@@@@@@@tttttttt
+~~~~~~~~~~ttttttttttttttttt&&tttttttttttttttttttttttt@@@@@@@@@@@tttttttt
+ttttttttttttttttttttttttttt&&@@@ttttttttttttttttttt@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttt@@@@@@tttttttttttt@@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttttttttt@@@@@ttttttt@@@@@@@@@@@@@ttttttttt
+ttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@@@@@@tttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@tttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@tttttttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="http://static.sardinefish.com/icon/LOGO.ico" media="screen" />
+    <title>SardineFish</title>
+    <script src="../resource.js"></script>
+    <script src="../lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script>
+        function loadScripts()
+        {
+            document.write("<style>@font-face{font-family:fontIcon;src:url('" + resource.font.fontIcons + "');}</style>");
+            //----------------------------------jQuery----------------------------------
+            document.write(toScriptHTMLTag(lib.jQueryMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryShadowAnimation));
+            document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+            //--------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toScriptHTMLTag(lib.codeMirror.lib.script));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.showHintJS));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.javaScriptHintJs));
+            document.write(toScriptHTMLTag(lib.codeMirror.mode.javascript));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        function loadCSS()
+        {
+            //----------------------------------codeMirror----------------------------------
+            document.write(toCSSHTMLTag(lib.codeMirror.lib.css));
+            document.write(toCSSHTMLTag(lib.codeMirror.addon.hint.showHintCSS));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        loadScripts();
+        loadCSS();
+    </script>
+    <link type="text/css" rel="stylesheet" href="styleTag.css"/>
+    <link type="text/css" rel="stylesheet" href="styleClass.css"/>
+    <link type="text/css" rel="stylesheet" href="styleId.css"/>
+    <style>
+    </style>
+</head>
+<body>
+    <div id="pageCodeContainer" class="divFloat transparentBackgroundOjbect" style="width:42px; height:42px; box-shadow:0 0 0px rgba(200,200,200,0.00);">
+        <div id="pageCodeTitleDiv" onselectstart="return false">
+            <div id="pageCodeIcon" onclick="pageCodeIconClick();">
+                <div class="transparentBackgroundOjbect" style="width:100%; height:100%;">
+                    <h6 id="pageCodeIconText">&lt;/&gt;</h6>
+                </div>
+            </div>
+            <div style="left:48px; padding-left:10px; display:inline-block;">
+                <h6 style="cursor:default; color:gray;">JavaScript代码编辑器</h6>
+            </div>
+        </div>
+        <div id="pageCodeInputArea">
+            <div id="pageCodeInputBorder" class="borderObject">
+                <textarea id="pageCodeInput"></textarea>
+            </div>
+        </div>
+        <div id="pageCodeBottom">
+            <div id="pageCodeButton">
+                <a id="pageCodeButtonRun" class="button" onclick="pageCodeRun();">执行</a>
+            </div>
+        </div>
+    </div>
+    <div id="rootDiv">
+        <div id="topBar" class="divFloat">
+            <div style="height:50px; width:50px; margin:0px; padding:0px; position:fixed">
+                <script>
+                    document.write('<img src="' + resource.img.logo.logo[50].min.PNG + '" draggable="false"/>');
+                </script>
+            </div>
+            <div id="topMenu" style="height:50px;">
+                <a class="menuButton" id="buttonHome" href="../index.html">首页</a>
+                <a class="menuButton" id="buttonWho" href="index.html" style="border-color:rgba(63, 150, 207, 1.00);">更多</a>
+                <a class="menuButton" id="buttonApp" href="../works/index.html">作品</a>
+                <a class="menuButton" id="buttonAlticle" href="../article/index.html">文章</a>
+                <div id="menuFocus"></div>
+            </div>
+        </div>
+        <div id="centerRootDiv">
+            <div id="centerDiv">
+                <div id="leftFloat" class="divFloat">
+                    <div id="leftMenu">
+                        <a id="leftMenuButtonNote" class="leftMenuButton" onclick="leftMenuButtonNoteClick(this)" style="background-color:rgba(63, 150, 207, 1.00);color:white;">笔记</a>
+                        <a id="leftMenuButtonDetail" class="leftMenuButton">&lt;占位&gt;</a>
+                        <a id="leftMenuButtonContact" class="leftMenuButton">&lt;占位&gt;</a>
+                        <a id="leftMenuButtonNone1" class="leftMenuButton">[未开发]</a>
+                        <a id="leftMenuButtonNone2" class="leftMenuButton">[未开发]</a>
+                        <div id="leftMenuFocus"></div>
+                    </div>
+                </div>
+                <div id="content">
+                    <div id="notePostArea" style="display:none;">
+                        <div id="notePostContainer">
+                            <div id="notePostTitle" class="textBox" contenteditable="true" spellcheck="false"></div>
+                            <div id="notePostTags" class="textBox" contenteditable="true" spellcheck="false"></div>
+                            <div id="notePostText" class="textBox" contenteditable="true" spellcheck="false"></div>
+                            <p id="notePostWarningText"></p>
+                            <div style="text-align:right; margin-top:20px;">
+                                <a id="notePostButton" class="button" onclick="notePostButtonClick(this)">发布</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="noteArea">
+
+                    </div>
+                    <div id="noteOneArea" style="display:none;">
+                        <div class="noteItem" id="noteItem">
+                            <div id="45" style="margin-left: 20px;">
+                                <h5 class="noteTitle" id="noteTitle"></h5>
+                                <h6 class="noteTime" id="noteTime"></h6>
+                                <h6 class="noteTags" id="noteTags"></h6>
+                                <br>
+                                <h6 class="noteText" id="noteText"></h6>
+                            </div>
+                            <div class="noteBottom">
+                                <a class="textWithIcon noteTextWithIcon" id="noteBrowse" onselectstart="return false"><i class="iconBrowse"></i>浏览(<i id="noteBrowseNumber">0</i>)</a>
+                                <a class="textWithIcon noteTextWithIcon" id="noteComment" onselectstart="return false" onclick="noteCommentClick(this)"><i class="iconComment"></i>评论(<i id="noteCommentNumber">0</i>)</a>
+                                <a class="textWithIcon noteTextWithIcon" id="noteLike" onclick="addLike(0,'note','noteLikeNumber')" onselectstart="return false"><i class="iconLike"></i>赞(<i id="noteLikeNumber">0</i>)</a>
+                            </div>
+                        </div>
+                        <div id="noteCommentArea">
+                            <div id="noteCommentContainer">
+                                <!--<div class="noteCommentItem">
+                                    <img class="noteCommentLogo"/>
+                                    <div class="noteCommentContent">
+                                        <h6 class="noteCommentUid">SardineTest</h6>
+                                        <h6 class="noteCommentText">评论测试，由HTML创建</h6>
+                                        <br/>
+                                        <h6 class="noteCommentTime">2015-8-26 18:51:00</h6>
+                                        <a class="noteCommentReplyButton" href="javascript:void(0)"></a>
+                                    </div>
+                                    <div class="noteCommentReplyAera">
+                                        <div class="noteCommentReplyItem">
+                                            <img class="noteCommentReplyLogo"/>
+                                            <div class="noteCommentReplyContent">
+                                                <h6 class="noteCommentReplyUid">SardineTest</h6>
+                                                <h6 class="noteCommentReplyText">回复测试，由HTML创建</h6>
+                                                <br/>
+                                                <h6 class="noteCommentTime">2015-8-26 18:51:00</h6>
+                                                <a class="noteCommentReplyButton" href="javascript:void(0)"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+                            </div>
+                            <div id="noteCommentPageArea" style="text-align: center;">
+                                <div class="button" id="noteCommentPageDownButton" onselectstart="return false" onclick="noteCommentPageDownButtonClick(this)">
+                                    <div style="height: 14px; font-family: fontIcon; font-weight: 100;">︾</div>
+                                    加载更多
+                                </div>
+                            </div>
+                            <div id="noteCommentPostArea">
+                                <div id="noteCommentPostText" class="textBox" contenteditable="true" onfocus="noteCommentPostTextGotFocus(this)" onblur="noteCommentPostTextLostFocus(this)" spellcheck="false" style="color:rgba(180,180,180,1.00);">说点啥吧 o(￣ヘ￣o)</div>
+                                <div id="noteCommentPostBottom">
+                                    <div id="noteCommentPostBottomLeft">
+                                        <div id="noteCommentPostWarning"></div>
+                                    </div>
+                                    <div id="noteCommentPostBottomRight">
+                                        <div id="noteCommentPostUidText" class="textBox" spellcheck="false" contenteditable="true" onfocus="noteCommentPostUidTextGotFocus(this)" onblur="noteCommentPostUidTextLostFocus(this)" style="color:rgba(180,180,180,1.00);">起个名吧...</div>
+                                        <a id="noteCommentPostButton" class="button" onclick="noteCommentPostButtonClick(this)">回复</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pageBottom">
+            <h1 style="color:white; font-weight:100; text-align: center">Nothing here.</h1>
+        </div>
+    </div>
+    <!--EventHandle-->
+    <script src="event.js"></script>
+</body>
+</html>

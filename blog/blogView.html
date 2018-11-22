@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#4DD0E1">
+    <title>Blog</title>
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="http://static.sardinefish.com/icon/LOGO.ico" media="screen">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="http://libs.cdnjs.net/jquery/3.2.1/jquery.min.js"></script>
+    <link href="/font/Open_Sans/OpenSans.css" rel="stylesheet" type="text/css">
+    <link href="/font/Raleway/Raleway.css" rel="stylesheet" type="text/css">
+    <link href="/font/material-design-icons-3.0.1/material-icons.css" rel="stylesheet" type="text/css">
+    <script src="/lib/Script/HTMLTemplate/v0.3.1/HTMLTemplate.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.3.1/ObserveList.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <link href="/lib/css/github-markdown-css/github-markdown.css" rel="stylesheet" type="text/css">
+    <link href="//libs.cdnjs.net/highlight.js/9.9.0/styles/github.min.css" rel="stylesheet" type="text/css">
+    <script src="//libs.cdnjs.net/marked/0.3.6/marked.min.js"></script>
+    <script src="//libs.cdnjs.net/highlight.js/9.9.0/highlight.min.js"></script>
+    <script src="/lib/Script/tools.js"></script>
+    <script src="/lib/Script/require.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div id="root" class="">
+        <div id="top" class="font-UI">
+            <div id="top-center">
+                <div id="button-menu" class="icon-button">menu</div>
+                <header id="page-title" class="font-UI">Title</header>
+                <div id="nav-wrapper">
+                    <nav id="top-nav">
+                        <a class="item" href="/">HOME</a>
+                        <a class="item" href="/blog/">BLOG</a>
+                        <a class="item" href="/note/">NOTES</a>
+                        <a class="item current" href="/works/">WORKS</a>
+                        <a class="item" href="/about/">ABOUT</a>
+                        <a class="item" href="/more/">MORE</a>
+
+                    </nav>
+                </div>
+                <div class="top-right">
+                    <div id="search" class="top-icon">
+
+                    </div>
+                    <div id="account-area" class="flex-center">
+                        <a id="login" class="top-icon" href="/account/login">person</a>
+                        <div id="user-login-wrapper" class="flex-center">
+                            <a id="write" class="top-icon" href="/blog/write/">edit</a>
+                            <div id="user">
+                                <img id="user-avatar" src="http://static.sardinefish.com/img/logo/Logo_256.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main id="main">
+            <aside id="side-area" class="hide-loading">
+                <nav id="content-nav">
+                    <header id="header-content" class="divider font-UI">
+                        <span class="divide-name">Content</span>
+                        <hr class="divide-line">
+                    </header>
+                    <ul>
+                        <template id="content-template">
+                            <li>
+                                <a href="{{url}}">{{header}}</a>
+                                <ul>
+                                    <template template="content-template" datasource="{{children}}"></template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </nav>
+            </aside>
+            <aside id="side-float" class="hide hide-loading">
+               <div id="button-content" class="material-icons">list</div>
+                <nav id="content-nav">
+                    <header id="header-content" class="divider font-UI">
+                        <span class="divide-name">Content</span>
+                        <hr class="divide-line">
+                    </header>
+                    <ul>
+                        <template id="content-template">
+                            <li>
+                                <a href="{{url}}">{{header}}</a>
+                                <ul>
+                                    <template template="content-template" datasource="{{children}}"></template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </nav>
+            </aside>
+            <aside id="float-buttons" onselectstart="return false;">
+                <div id="button-to-top" class="float-button"><span class="material-icons">arrow_upward</span></div>
+            </aside>
+            <div id="button-nouse"></div>
+            <div id="center" class="hide-loading">
+                <div id="loading">
+                   <div id="load-error">
+                       <p id="error-code">404</p>
+                       <p id="error-msg">大概被主人扔到宇宙中去了吧〇_〇</p>
+                   </div>
+                    <div id="space">
+                        <div id="solar-system">
+                            <div id="sun"></div>
+                            <div id="mercury" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                            <div id="venus" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                            <div id="earth" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                            <div id="mars" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <template id="article-template">
+                    <article class="article">
+                        <hgroup>
+                            <header id="title" class="title">{{title}}</header>
+                            <div class="article-info">
+                                <time class="time with-icon">{{time}}</time>
+                                <div class="author with-icon">{{author}}</div>
+                                <ul class="tags-wrapper with-icon">
+                                    <template class="tag-template" datasource="{{tags}}">
+                                        <li class="tag">{{$element$}}</li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </hgroup>
+                        <main class="content markdown-body">{{"bind":"document","render":"html"}}</main>
+                    </article>
+                </template>
+                <div class="comment-area">
+                    <header class="divider font-UI">
+                        <span class="divide-name">COMMENT</span>
+                        <hr class="divide-line">
+                    </header>
+                    <div class="comment comment-publish">
+                        <div class="decoration" onselectstart="return false;">
+                            <div class="circle-wrapper">
+                                <div id="button-add-comment" class="circle ">
+                                    <div class="icon-button">add</div>
+                                </div>
+                            </div>
+                            <div class="line-wrapper">
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                        <div class="ver-wrapper">
+                            <main class="hor-wrapper">
+                                <div id="avatar-wrapper">
+                                    <img id="sender-avatar" class="avatar" src="/img/decoration/unknown-user.png">
+                                    <div class="line"></div>
+                                </div>
+                                <div class="comment-wrapper">
+                                    <header class="sender-info">
+                                        <div class="input-wrapper">
+                                            <input type="text" id="input-name" class="textbox" placeholder="Your Name">
+                                            <input type="email" id="input-email" class="textbox" placeholder="Your Email">
+                                        </div>
+                                        <div id="button-comment-send" class="icon-button">send</div>
+                                    </header>
+                                    <div id="input-comment" data-text="Tell me what you think" contenteditable="true"></div>
+                                </div>
+                            </main>
+                            <ul class="sub-comment">
+
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="comment-render">
+                        <template id="comment-template">
+                            <li class="comment" data-pid="{{pid}}" data-name="{{name}}" data-uid="{{uid}}">
+                                <div class="decoration">
+                                    <div class="circle-wrapper">
+                                        <div class="circle button-reply">
+                                            <div class="comment-reply icon-button">comment</div>
+                                        </div>
+                                    </div>
+                                    <div class="line-wrapper">
+                                        <div class="line"></div>
+                                    </div>
+                                </div>
+                                <div class="ver-wrapper">
+                                    <main class="hor-wrapper">
+                                        <div class="avatar-wrapper">
+                                            <img class="avatar" src='{{"bind":"avatar", "default":"/img/decoration/unknown-user.png"}}'>
+                                            <div class="line"></div>
+                                        </div>
+                                        <div class="comment-wrapper">
+                                            <header class="sender-info">
+                                                <span class="name">{{name}}</span>
+                                                <a class="email"></a>
+                                                <div class="time with-icon">{{time}}</div>
+                                            </header>
+                                            <main class="comment-text">
+                                                {{text}}
+                                            </main>
+                                        </div>
+                                    </main>
+                                    <ul class="sub-comment">
+                                        <template template="comment-template" datasource="{{comments}}"></template>
+                                    </ul>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </main>
+        <footer id="footer" class="font-UI">
+            <p>Copyright © 2015-2018 SardineFish, All Rights Reserved</p>
+            <div id="powered-by">Powered by SardineFish</div>
+        </footer>
+    </div>
+</body>
+
+</html>

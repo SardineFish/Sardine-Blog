@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&__&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~&&&&&&&&&&&&~~~~&&~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~tttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~tttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~tttttttttttttttttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~ttttttt&&tttttttttttttttttttttttttttt@@@@@@@tttttttt
+~~~~~~~~~~ttttttttttttttttt&&tttttttttttttttttttttttt@@@@@@@@@@@tttttttt
+ttttttttttttttttttttttttttt&&@@@ttttttttttttttttttt@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttt@@@@@@tttttttttttt@@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttttttttt@@@@@ttttttt@@@@@@@@@@@@@ttttttttt
+ttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@@@@@@tttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@tttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@tttttttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#6ED8D8">
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="http://static.sardinefish.com/icon/LOGO.ico" media="screen"
+    />
+    <title>SardineFish</title>
+    <script src="resource.js"></script>
+    <link rel="stylesheet" href="/font/material-design-icons-3.0.1/material-icons.css" type="text/css">
+    <link rel="stylesheet" href="font/Titillium_Web/TitilliumWeb.css" type="text/css">
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.Engine2D.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.Engine2D.GUI.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.1.0/HTMLTemplate.js"></script>
+    <script src="/lib/Script/jQuery/jquery-3.2.1.min.js"></script>
+    <script>
+        function loadScripts() {
+            document.write("<style>@font-face{font-family:fontIcon;src:url('" + resource.font.segmdl2 + "');}</style>");
+            document.write(toCSSHTMLTag(style.tag));
+            document.write(toCSSHTMLTag(style.class));
+            document.write(toCSSHTMLTag(style.id));
+            //----------------------------------jQuery----------------------------------
+            document.write(toScriptHTMLTag(lib.jQueryMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryShadowAnimation));
+            document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+            //--------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toScriptHTMLTag(lib.codeMirror.lib.script));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.showHintJS));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.javaScriptHintJs));
+            document.write(toScriptHTMLTag(lib.codeMirror.mode.javascript));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+
+        function loadCSS() {
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toCSSHTMLTag(lib.codeMirror.lib.css));
+            document.write(toCSSHTMLTag(lib.codeMirror.addon.hint.showHintCSS));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        loadScripts();
+        loadCSS();
+    </script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="pageCodeContainer" class="divFloat transparentBackgroundOjbect" style="width:42px; height:42px; box-shadow:0 0 0px rgba(200,200,200,0.00);">
+        <div id="pageCodeTitleDiv" onselectstart="return false">
+            <div id="pageCodeIcon" onclick="pageCodeIconClick();">
+                <div class="transparentBackgroundOjbect" style="width:100%; height:100%;">
+                    <h6 id="pageCodeIconText">&lt;/&gt;</h6>
+                </div>
+            </div>
+            <div style="left:48px; padding-left:10px; display:inline-block;">
+                <h6 style="cursor:default; color:gray;">JavaScript代码编辑器</h6>
+            </div>
+        </div>
+        <div id="pageCodeInputArea">
+            <div id="pageCodeInputBorder" class="borderObject">
+                <textarea id="pageCodeInput"></textarea>
+            </div>
+        </div>
+        <div id="pageCodeBottom">
+            <div id="pageCodeButton">
+                <a id="pageCodeButtonRun" class="button" onclick="pageCodeRun();">执行</a>
+            </div>
+        </div>
+    </div>
+    <div id="rootDiv">
+        <div id="topImgArea" onselectstart="return false;">
+            <div id="welcomeTextContiner" class="transparentBackgroundOjbect">
+                <div id="textWelcome" class="transparentBackgroundOjbect">
+                    <h1 class="pIntroduction" style="">I'm SardineFish</h1>
+                    <h2 class="pIntroduction" style="">Welcome to my website!</h2>
+                    <h3 id="welcomeVisitor" class="pIntroduction" style="">You are the ?th visitor.</h3>
+                </div>
+            </div>
+            <canvas id="canvas">
+                <p>君之浏览器不可Canvas</p>
+            </canvas>
+            <iframe id="game-snake" src=""></iframe>
+        </div>
+        <header id="top-bar-wrapper">
+            <div id="topBar">
+                <div style="margin: 0px; padding: 0px; width: 50px; height:50px; float: left; display: none;">
+                    <script>
+                        //document.write('<img src="' + resource.img.logo.logo[50].min.PNG + '" draggable="false"/>');
+                    </script>
+                </div>
+                <div id="button-menu" class="icon-button">menu</div>
+                <header id="page-title" class="font-UI">SardineFish</header>
+                <div id="topMenu">
+                    <nav id="top-nav">
+                        <div id="menuFocus"></div>
+                        <a class="menuButton" id="buttonHome" href="/" style="border-color:white;">Home</a>
+                        <a class="menuButton" id="buttonAlticle" href="/blog/">Blogs</a>
+                        <a class="menuButton" id="buttonNote" href="/note/">Notes</a>
+                        <a class="menuButton" id="buttonWorks" href="/works/">Works</a>
+                        <a class="menuButton" id="buttonLab" href="//lab.sardinefish.com/">Lab</a>
+                        <a class="menuButton" id="buttonAbout" href="/about/">About</a>
+                        <a class="menuButton" id="buttonMore" href="/more/">More</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <div id="centerRootDiv">
+            <div id="centerDiv">
+                <div class="transparentBackgroundOjbect" id="helloWorldDiv">
+                    <div style="padding:20px; height:auto; text-align:center;">
+                        <h1 class="oneLineText" id="textHelloWorld">Hello world!</h1>
+                    </div>
+                </div>
+
+                <div id="mainArea">
+                    <div id="loading">
+                        <div id="stretch">loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...loading...</div>
+                        <div id="space">
+                            <div id="solar-system">
+                                <div id="sun"></div>
+                                <div id="mercury" class="orbit">
+                                    <div class="antiRotate">
+                                        <div class="planet"></div>
+                                    </div>
+                                </div>
+                                <div id="venus" class="orbit">
+                                    <div class="antiRotate">
+                                        <div class="planet"></div>
+                                    </div>
+                                </div>
+                                <div id="earth" class="orbit">
+                                    <div class="antiRotate">
+                                        <div class="planet"></div>
+                                    </div>
+                                </div>
+                                <div id="mars" class="orbit">
+                                    <div class="antiRotate">
+                                        <div class="planet"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="latest" class="">
+                        <div class="areaNameContainer">
+                            <p class="areaNameText">最新动态</p>
+                        </div>
+                        <div>
+                            <div id="latestArea">
+                                <template class="latestItem" id="latestItemTemplate" style="display:none; background-color: rgb(255, 255, 255);" onselectstart="return false">
+                                    <div>
+                                        <a class="latestTitle font-UI" id="newsPieceTest" href="{url}">{title}</a>
+                                        <h6 class="latestTime font-UI" id="newsPieceTest">{time}</h6>
+                                        <h6 class="latestText" id="newsPieceTest">{text}</h6>
+                                    </div>
+                                    <div class="latestBottom">
+                                        <a class="textWithIcon">
+                                            <i class="iconBrowse"></i>浏览(0)</a>
+                                        <a class="textWithIcon">
+                                            <i class="iconComment"></i>评论(0)</a>
+                                        <a class="textWithIcon">
+                                            <i class="iconLike"></i>赞(0)</a>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="rightArea">
+                    <div id="searchArea" class="textbox">
+                        <input id="textboxSearch" placeholder="Search [施工中...]" type="text" />
+                        <a id="buttonSearch" class="iconButton" style="font-family:fontIcon;">&#xE1A3</a>
+                    </div>
+                    <div id="infoContainer" class="">
+                        <div id="avatar-wrapper" style="">
+                            <img id="avatar" src="/account/user/face/getFace.php?uid=SardineFish">
+                        </div>
+                        <a id="my-name">SardineFish</a>
+                        <a id="email" href="mailto://me@sardinefish.com">me@sardinefish.com</a>
+                        <div id="tagsDiv" onselectstart="return false;">
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">苦逼的学生</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">学渣</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">独立开发者</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">♂</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">Game Developer</p>
+                            </div>
+                            <div class="miniTag" style="background-color:#FF8282; border-color: #FF8282;">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">中二狂魔</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">二次元</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">Unity</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">.NET</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">UWP</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">C/C++</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">Web前端</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">PHP+MySQL</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">尝试绘画</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">OSU!</p>
+                            </div>
+                            <div class="miniTag">
+                                <div class="tag-decoration">
+                                    <div class="tag-hole"></div>
+                                </div>
+                                <p class="miniTagText text12px">不女装</p>
+                            </div>
+
+                        </div>
+                        <div id="contactDiv">
+                            <a id="contactGitHub" class="contact-link" target=”_blank” href="https://github.com/sardineFish">
+                                <img src="//static.sardinefish.com/img/decoration/GitHub_32.min.png" />
+                            </a>
+                            <a id="link-pixiv" class="contact-link" target=”_blank” href="https://www.pixiv.net/member.php?id=9771523">
+                                <img src="//static.sardinefish.com/img/decoration/pixiv.min.png" />
+                            </a>
+                            <a id="link-steam" class="contact-link" target=”_blank” href="http://steamcommunity.com/id/sardineeefish/">
+                                <img src="//static.sardinefish.com/img/decoration/steam_32.min.png" />
+                            </a>
+                            <a id="contactWeibo" class="contact-link" target=”_blank” href="http://weibo.com/u/1896632540">
+                                <img src="//static.sardinefish.com/img/decoration/Weibo_32.min.png" />
+                            </a>
+                        </div>
+                    </div>
+                    <section id="friend-links" class="block font-UI">
+                        <header class="title" onselectstart="return false;">Links of dalao</header>
+                        <div id="friend-link-wrapper">
+                            <div class="friend-link">
+                                <img class="avatar" src="https://dwscdv3.com/images/avatars/current">
+                                <div class="info">
+                                    <a class="link" href="https://dwscdv3.com">Dwscdv3</a>
+                                    <p class="intro">Dw就是Dw，找不到第二只Dw。</p>
+                                </div>
+                            </div>
+                            <div class="friend-link">
+                                <img class="avatar" src="http://img.sardinefish.com/NTI2OA==">
+                                <div class="info">
+                                    <a class="link" href="https://hdmmy.github.io/">东明</a>
+                                    <p class="intro">游戏物理和数学的dalao</p>
+                                </div>
+                            </div>
+                            <div class="friend-link">
+                                <img class="avatar" src="https://avatars0.githubusercontent.com/u/3516419?s=64&v=4">
+                                <div class="info">
+                                    <a class="link" href="https://weathfold.github.io/">WeAthFolD</a>
+                                    <p class="intro">超厉害的独立游戏 & MC Mod开发者</p>
+                                </div>
+                            </div>
+                            <div class="friend-link">
+                                <img class="avatar" src="https://avatars1.githubusercontent.com/u/22448703?s=64&v=4">
+                                <div class="info">
+                                    <a class="link" href="http://www.viseator.com/">viseator</a>
+                                    <p class="intro">Dalao of Android development</p>
+                                </div>
+                            </div>
+                            <div class="friend-link">
+                                <img class="avatar" src="http://blog.codedragon.tech/assets/images/avatar.jpg">
+                                <div class="info">
+                                    <a class="link" href="http://blog.codedragon.tech/">CoSidian</a>
+                                    <p class="intro">联创Dalao</p>
+                                </div>
+                            </div>
+                            <div class="friend-link">
+                                <img class="avatar" src="https://avatars3.githubusercontent.com/u/30469819?s=64&v=4">
+                                <div class="info">
+                                    <a class="link" href="https://alisahhh.github.io/">Alisa</a>
+                                    <p class="intro">OIer/ACMer dalao 程序媛?</p>
+                                </div>
+                            </div>
+                            <div class="friend-link">
+                                <img class="avatar" src="https://avatars1.githubusercontent.com/u/22546295?s=400&v=4">
+                                <div class="info">
+                                    <a class="link" href="//moe.petnakanojo.com">PetnaKanojo</a>
+                                    <p class="intro">红总</p>
+                                </div>
+                            </div>
+                            <a id="add-link" href="mailto://me@sardinefish.com">
+                                <div id="no-you">这里没有你? </div>
+                                <div id="come-on">快来勾搭我认识你哇！(*ﾟ∀ﾟ)</div>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <footer id="page-footer">
+            <div id="copyright">
+                Copyright © 2015-
+                <span class="time-year"></span> SardineFish, All Rights Reserved
+            </div>
+            <div>
+                Powered by SardineFish
+            </div>
+        </footer>
+    </div>
+    <!--EventHandle-->
+    <script>
+        $("#canvas").click(function (e) {
+            $("#canvas").css("display", "none");
+            var gameSname = $("#game-snake").get(0);
+            gameSname.onload = function () {
+                //gameSname.contentWindow.resize(24);
+            }
+            gameSname.src = "/games/snake.html";
+            $("#textWelcome").css("display", "none");
+        });
+        document.querySelectorAll(".time-year").forEach(function (item) {
+            item.innerText = new Date().getFullYear();
+        });
+    </script>
+    <script src="event.js"></script>
+</body>
+
+</html>

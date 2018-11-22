@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root xmlns="http://tempuri.org/Error Code XSD.xsd" version ="1.0.0.0" code ="1125" name ="SardineFish Custom Error Code">
+  <class name ="Web" from ="1000000000" to ="1999999999">
+    <class name ="php" from ="1010000000" to="1019999999">
+      <class name ="执行错误" from ="1010100000" to ="1010199999">
+        <error code ="1010100001" description ="代码执行错误"/>
+        <error code ="1010100002" description ="参数错误"/>
+      </class>
+      <class name ="功能性错误" from="1010200000" to ="1010299999">
+        <class name ="用户账户" from ="1010201000" to ="1010201999">
+          <error code ="1010201001" description ="非法的用户名"/>
+          <error code ="1010201002" description ="用户权限错误"/>
+          <error code ="1010201003" description ="用户被封禁"/>
+          <error code ="1010201004" description ="用户已存在"/>
+          <error code ="1010201005" description ="密码错误"/>
+          <error code ="1010201006" description ="用户不存在"/>
+          <error code ="1010201007" description ="用户无操作权限"/>
+          <error code ="1010201008" description ="用户未登陆"/>
+          <error code ="1010201009" description ="用户不存在或被封禁"/>
+          <error code ="1010201010" description ="无登陆信息"/>
+        </class>
+        <class name ="数据" from ="1010202000" to ="1010202999">
+          <error code ="1010202001" description ="数据项不存在"/>
+          <error code ="1010202002" description ="数据项已存在"/>
+        </class>
+        <class name ="凭证" from ="1010203000" to ="1010203999">
+          <error code ="1010203001" description ="凭据无效"/>
+          <error code ="1010203002" description ="身份不符"/>
+          <error code ="1010203003" description ="凭证已过期"/>
+        </class>
+        <class name ="内容" from="1010204000" to ="1010204999">
+          <error code ="1010204001" description ="内容不存在"/>
+          <error code ="1010204101" description ="内容发布失败"/>
+          <error code ="1010204102" description ="参数与枚举类型不符"/>
+        </class>
+      </class>
+    </class>
+    <class name ="js" from ="1020000000" to ="1029999999">
+      <class name ="执行错误" from ="1020100000" to ="1020199999">
+        <error code ="1020100001" description="代码执行错误"/>
+        <error code ="1020100002" description ="参数错误"/>
+      </class>
+      <class name ="网络" from ="1020200000" to ="1020299999">
+        <class name="http" from ="1020201000" to ="1020201999">
+          <error code ="1020201001" description ="HTTP请求失败"/>
+          <error code ="1020201002" description ="服务器返回数据错误">
+        </class>
+      </class>
+    </class>
+  </class>
+  <class name="Game" from ="2000000000" to ="2999999999">
+    <class name ="数据库" from ="2010000000" to="2019999999">
+      <class name ="查询" from ="2010100000" to ="2010199999">
+        <error code ="2010100001" description ="游戏不存在"/>
+      </class>
+    </class>
+    <class name ="score" from ="2020000000" to ="2029999999">
+      <class name ="上传" from ="2020100000" to ="2020199999">
+        <error code ="2020100001" description ="非法的分数值"/>
+      </class>
+    </class>
+    <class name ="player" from="2030000000" to="2039999999">
+      <error code="2030000001" description ="玩家已登陆"/>
+      <error code="2030000002" description="玩家未登陆"/>
+    </class>
+    <class name ="S/C" from="2040000000" to="2049999999">
+      <error code="2040000001" description="服务器拒绝连接"/>
+      <error code="2040000002" description="客户端与服务器版本不一致"/>
+    </class>
+  </class>
+  <class name ="SQL" from ="3000000000" to="3999999999">
+    <class name ="INSERT" from ="3010000000" to ="3019999999">
+      <class name ="VALUE" from ="3010100000" to ="3010199999">
+        <error code ="3010100001" description ="数据值过长"/>
+      </class>
+    </class>
+    <class name ="SELECT" from ="3020000000" to ="3029999999">
+      <class name ="结果集" from ="3020100000" to ="3020199999">
+        <error code ="3020100001" description ="结果集为空"/>
+      </class>
+    </class>
+  </class>
+</root> 

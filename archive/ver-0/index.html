@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&__&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~&&&&&&&&&&&&~~~~&&~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~tttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~tttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~tttttttttttttttttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~ttttttt&&tttttttttttttttttttttttttttt@@@@@@@tttttttt
+~~~~~~~~~~ttttttttttttttttt&&tttttttttttttttttttttttt@@@@@@@@@@@tttttttt
+ttttttttttttttttttttttttttt&&@@@ttttttttttttttttttt@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttt@@@@@@tttttttttttt@@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttttttttt@@@@@ttttttt@@@@@@@@@@@@@ttttttttt
+ttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@@@@@@tttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@tttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@tttttttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="/icon/LOGO.ico" media="screen" />
+    <title>SardineFish</title>
+    <script src="resource.js"></script>
+    <script src="/lib/Script/SardineFish.js"></script>
+    <script>
+        function loadScripts()
+        {
+            document.write("<style>@font-face{font-family:fontIcon;src:url('" + resource.font.fontIcons + "');}</style>");
+            document.write(toCSSHTMLTag(style.tag));
+            document.write(toCSSHTMLTag(style.class));
+            document.write(toCSSHTMLTag(style.id));
+            //----------------------------------jQuery----------------------------------
+            document.write(toScriptHTMLTag(lib.jQueryMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryShadowAnimation));
+            document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+            //--------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------syntaxHighlighter----------------------------------
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shCore));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shAutoloader));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushAppleScript));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushAS3));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushBash));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushColdFusion));
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushCpp));
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushCSharp));
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushCss));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushDelphi));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushDiff));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushErlang));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushGroovy));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushJava));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushJavaFX));
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushJScript));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushPerl));
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushPhp));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushPlain));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushPowerShell));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushPython));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushRuby));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushSass));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushScala));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushSql));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushVb));
+            document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shBrushXml));
+            //document.write(toScriptHTMLTag(lib.syntaxHighlighter.scripts.shLegacy));
+            //-----------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toScriptHTMLTag(lib.codeMirror.lib.script));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.showHintJS));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.javaScriptHintJs));
+            document.write(toScriptHTMLTag(lib.codeMirror.mode.javascript));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        function loadCSS()
+        {
+            //----------------------------------syntaxHighlighter----------------------------------
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCore));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreDefault));
+            /*document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreDjango));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreEclipse));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreEmacs));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreFadeToGrey));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreMDUltra));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreMidnight));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shCoreRDark));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeDefault));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeDjango));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeEclipse));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeEmacs));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeFadeToGrey));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeMDUltra));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeMidnight));
+            document.write(toCSSHTMLTag(lib.syntaxHighlighter.styles.shThemeRDark));*/
+            //-----------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toCSSHTMLTag(lib.codeMirror.lib.css));
+            document.write(toCSSHTMLTag(lib.codeMirror.addon.hint.showHintCSS));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        loadScripts();
+        loadCSS();
+    </script>
+    <style >
+    </style>
+</head>
+<body>
+    <div id="debugDiv" class="divFloat">
+        <p id="debugText" class="text12px"></p>
+    </div>
+    <div class="divFloat" id="mainFloat">
+        <div id="mainDiv" class="transparentBackgroundOjbect">
+            <script>
+                var width = $("#mainFloat").width();
+                var w = 1024
+                for (var i = 0; w > width / 2 && w >= 128; i++)
+                {
+                    w *= i % 2 == 0 ? 0.78125 : 0.64;
+                }
+                if (w < 128)
+                    w = 128;
+                var h = w * 1.414;
+                var src = resource.img.logo.logoMain[w].min.PNG;
+                document.write('<div id="logoImg" class="transparentBackgroundOjbect" style="width:' + w.toString() + 'px;height:' + h + 'px; background-image:url(\'' + src + '\')"></div>');
+            </script>
+            <div id="skipDiv">
+                <a href="javascript:void(0)" id="skip" onmouseup="skip();">跳过></a>
+            </div>
+            <div id="mainTextContainerDiv" class="transparentBackgroundOjbect">
+                <div id="mianTextFirstDiv" class="transparentBackgroundOjbect">
+                    <p id="textHey" class="pIntroduction text1" style="color:rgba(128, 128, 128, 0.00);">Hey!</p>
+                    <p id="textI" class="pIntroduction text1" style="width:0px; color:rgba(128, 128, 128, 0.00);">I'm SardineFish.</p>
+                </div>
+                <div id="mainTextSecondDiv" class="transparentBackgroundOjbect">
+                    <p class="pIntroduction text2">Welcome to my website!</p>
+                    <p class="pIntroduction text4">This website was developed by myself.</p>
+                    <p id="mainTextVisitor" class="pIntroduction text4">You are the ?th visitor.</p>
+                </div>
+            </div>
+        </div>
+        <div>
+
+        </div>
+        <canvas id="mainCanvas">
+            <p>君之浏览器不可Canvas</p>
+        </canvas>
+    </div>
+    <div id="pageCodeContainer" class="divFloat transparentBackgroundOjbect" style="width:42px; height:42px; box-shadow:0 0 0px rgba(200,200,200,0.00);">
+        <div id="pageCodeTitleDiv" onselectstart="return false">
+            <div id="pageCodeIcon" onclick="pageCodeIconClick();">
+                <div class="transparentBackgroundOjbect" style="width:100%; height:100%;">
+                    <h6 id="pageCodeIconText">&lt;/&gt;</h6>
+                </div>
+            </div>
+            <div style="left:48px; padding-left:10px; display:inline-block;">
+                <h6 style="cursor:default; color:gray;">JavaScript代码编辑器</h6>
+            </div>
+        </div>
+        <div id="pageCodeInputArea">
+            <div id="pageCodeInputBorder" class="borderObject">
+                <textarea id="pageCodeInput"></textarea>
+            </div>
+        </div>
+        <div id="pageCodeBottom">
+            <div id="pageCodeButton">
+                <a id="pageCodeButtonRun" class="button" onclick="pageCodeRun();">执行</a>
+            </div>
+        </div>
+    </div>
+    <div id="rootDiv">
+        <div id="topBar" class="divFloat">
+            <div style="height:50px; width:50px; margin:0px; padding:0px; position:fixed">
+                <script >
+                    document.write('<img src="' + resource.img.logo.logo[50].min.PNG + '" draggable="false"/>');
+                </script>
+            </div>
+            <div id="topMenu" style="height:50px;">
+                <a class="menuButton" id="buttonHome" href="/index.html" style="border-color:rgba(63, 150, 207, 1.00);">首页</a>
+                <a class="menuButton" id="buttonWho" href="/more/index.html">更多</a>
+                <a class="menuButton" id="buttonApp" href="/works/index.html">作品</a>
+                <a class="menuButton" id="buttonAlticle" href="/blog/index.html">文章</a>
+                <div id="menuFocus"></div>
+            </div>
+        </div>
+        <div id="centerRootDiv">
+            <div id="centerDiv">
+                <div class="transparentBackgroundOjbect" id="helloWorldDiv">
+                    <div style="padding:20px; height:auto; text-align:center;">
+                        <h1 class="oneLineText" id="textHelloWorld">Hello world!</h1>
+                    </div>
+                </div>
+                <div style="height:auto;">
+                    <div id="infoContainer">
+                        <div id="LogoDiv">
+                            <script>
+                                document.write('<img src="' + resource.img.logo.logo[256].JPG + '" draggable="false"/>');
+                            </script>
+                        </div>
+                        <div id="tagsDiv">
+                            <h5 style="margin:0px; text-align:center; font-family:'Microsoft YaHei UI'; margin:5px;">SardineFish</h5>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">学生</p>
+                            </div>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">独立开发者</p>
+                            </div>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">二次元</p>
+                            </div>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">.NET</p>
+                            </div>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">C/C++</p>
+                            </div>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">Web前端</p>
+                            </div>
+                            <div class="miniTag">
+                                <script>
+                                    document.write(toImgHTMLTag(resource.img.decoration.tag[20].min.PNG));
+                                </script>
+                                <p class="miniTagText text12px">PHP+MySQL</p>
+                            </div>
+                        </div>
+                        <div id="contactDiv">
+                            <a id="contactQQ" target=”_blank” href="http://sighttp.qq.com/authd?IDKEY=e5ebf234f619dfa986f5b9527f00cffac4a8156918fbe861">
+                                <img src="http://static.sardinefish.com/img/decoration/QQ_32.min.png" />
+                            </a>
+                            <a id="contactWeibo" target=”_blank” href="http://weibo.com/u/1896632540">
+                                <img src="http://static.sardinefish.com/img/decoration/Weibo_32.min.png" />
+                            </a>
+                        </div>
+                    </div>
+                    <div id="newsContainer" class="">
+                        <div class="areaNameContainer">
+                            <p class="areaNameText">最新动态</p>
+                        </div>
+                        <hr/>
+                        <div>
+                            <div id="latestArea">
+                                <div class="latestItem" id="latestItem12" style="background-color: rgb(255, 255, 255);" onselectstart="return false">
+                                    <div style="margin-left:10px;">
+                                        <h5 class="latestTitle" id="newsPiece12"><i class="latestTag">测试</i>PostTimeTest</h5>
+                                        <h6 class="latestTime" id="newsPiece12">2015-08-12 16:51:10</h6>
+                                        <h6 class="latestText" id="newsPiece12">23333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333</h6>
+                                    </div>
+                                    <div class="latestBottom">
+                                        <a class="textWithIcon"><i class="iconBrowse"></i>浏览(0)</a>
+                                        <a class="textWithIcon"><i class="iconComment"></i>评论(0)</a>
+                                        <a class="textWithIcon"><i class="iconLike"></i>赞(0)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="documentContainer" class="">
+                    <div class="areaNameContainer">
+                        <p class="areaNameText">最近作品</p>
+                    </div>
+                    <hr />
+                    <div style="height:auto; overflow:auto;">
+                        <div id="worksArea">
+                            <div class="worksItem">
+                                <a class="worksName worksTypeOther">测试作品</a>
+                                <br/>
+                                <h6 class="worksTime">2015-8-23 21:07:00</h6>
+                                <h6 class="worksTags">test,作品,测试</h6>
+                                <h6 class="worksText">这是用来HTML测试的作品</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="programContainer" class="">
+                    <div class="areaNameContainer">
+                        <p class="areaNameText">最近文章</p>
+                    </div>
+                    <hr />
+                    <div style="height:auto; overflow:auto;">
+                        <div id="articleArea">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pageBottom">
+            <h1 style="color:white; font-weight:100; text-align: center">Nothing here.</h1>
+        </div>
+    </div>
+    <!--EventHandle-->
+    <script src="event.js"></script>
+    <script >
+        SyntaxHighlighter.all();
+    </script>
+</body>
+</html>

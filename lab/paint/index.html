@@ -1,0 +1,621 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="http://static.sardinefish.com/icon/LOGO.ico" media="screen" />
+    <title>Paint</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi" />
+    <script src="/resource.js"></script>
+    <script>
+        function loadScripts()
+        {
+            document.write("<style>@font-face{font-family:fontIcon;src:url('" + resource.font.segmdl2 + "');}</style>");
+            document.write(toCSSHTMLTag(style.tag));
+            document.write(toCSSHTMLTag(style.class));
+            document.write(toCSSHTMLTag(style.id));
+            //----------------------------------jQuery----------------------------------
+            document.write(toScriptHTMLTag(lib.jQueryMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryShadowAnimation));
+            document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+            //--------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toScriptHTMLTag(lib.codeMirror.lib.script));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.showHintJS));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.javaScriptHintJs));
+            document.write(toScriptHTMLTag(lib.codeMirror.mode.javascript));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        function loadCSS()
+        {
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toCSSHTMLTag(lib.codeMirror.lib.css));
+            document.write(toCSSHTMLTag(lib.codeMirror.addon.hint.showHintCSS));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        loadScripts();
+        loadCSS();
+    </script>
+    <script src="/lib/Script/SardineFish/0.1.0/SardineFish.js"></script>
+    <script src="/lib/Script/SardineFish/0.1.0/SardineFish.Web.js"></script>
+    <script src="/lib/Script/SardineFish/0.1.0/SardineFish.Web.UI.js"></script>
+    <script src="/lib/Script/SardineFish/0.3.0/SardineFish.Web.Engine2D.js"></script>
+</head>
+<body oncontextmenu="return false;">
+    <div id="root">
+        <div id="top">
+            <div id="topBar" class="topBar">
+                <a id="buttonNew" class="tools">&#xE8A5;</a>
+                <a id="buttonSave" class="tools">&#xE105;</a>
+                <i style="display: inline-block;height: 100%;margin-left: 10px;position: relative;top: 5px;border-right: solid 2px rgba(255, 255, 255, 0.3);"></i>
+                <a id="buttonLine" class="tools">&#xE199;</a>
+                <a id="buttonRect" class="tools">&#xE15B;</a>
+                <a id="buttonCircle" class="tools">&#xECCA;</a>
+                <a id="buttonPen" class="tools">&#xEDFB;</a>
+                <a id="buttonBrush" class="tools">&#xED63;</a>
+                <a id="buttonEraser" class="tools">&#xE75C;</a>
+            </div>
+        </div>
+        <div id="content">
+            <div id="left">
+                <div id="codeArea" class="block" onselectstart="return false;">
+                    <div id="codeTop">
+                        <p>Code</p>
+                    </div>
+                </div>
+            </div>
+            <div id="center">
+                <canvas id="canvas">
+                    <p>浏览器不支持canvas</p>
+                </canvas>
+            </div>
+            <div id="right">
+                <div id="propertyArea" class="block" onselectstart="return false;">
+                    <div id="propertyTop">
+                        <p>Properties</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="bottomBar" class="bottomBar" >
+
+            </div>
+        </div>
+    </div>
+    <script>
+        var canvas = $("#canvas").get(0);
+        Object.defineProperty(window, "width", {
+            get: function ()
+            {
+                return canvas.width;
+            },
+            set: function (value)
+            {
+                canvas.width = value;
+            }
+        });
+        Object.defineProperty(window, "height", {
+            get: function ()
+            {
+                return canvas.height;
+            },
+            set: function (value)
+            {
+                canvas.height = value;
+            }
+        });
+        var game;
+        var scene;
+        var camera;
+        var moveCanvas = { enable: false, cameraX: 0, cameraY: 0, startX: 0, startY: 0 };
+        var tools = { line: 0, rect: 1, circle: 2, pen: 3, brush: 4, eraser: 5 };
+        var drawing = null;
+        var drawLine = { drawing: false, p1: null, p2: null, line: null, lineObject: null };
+        var drawCircle = { drawing: false, o: null, r: null, circle: null, circleObject: null };
+        var drawRect = { drawing: false, p1: null, p2: null, rect: null, rectObject: null };
+        var drawPath = {
+            drawing: false,
+            drawingCP: false,
+            lineList: (function ()
+            {
+                var list = [];
+                list.add = function (p)
+                {
+                    list[list.length] = p;
+                }
+                list.remove = function (index)
+                {
+                    for (var i = index + 1; i < list.length; i++)
+                    {
+                        list[i - 1] = list[i];
+                    }
+                    list.pop();
+                }
+                list.clear = function ()
+                {
+                    while (list.length)
+                    {
+                        list.pop();
+                    }
+                }
+                list.last = function ()
+                {
+                    return list[list.length - 1];
+                }
+                return list;
+            })(),
+            clearLine:function (){
+                while (this.lineList.length)
+                {
+                    scene.removeGameObject(this.lineList.pop().id);
+                }
+            },
+            pList: null,
+            path: null,
+            pathObjcet: null
+        };
+        var painted = (function ()
+        {
+            var list = [];
+            list.add = function (p)
+            {
+                list[list.length] = p;
+            }
+            list.remove = function (index)
+            {
+                for (var i = index + 1; i < list.length; i++)
+                {
+                    list[i - 1] = list[i];
+                }
+                list.pop();
+            }
+            list.clear = function ()
+            {
+                while (list.length)
+                {
+                    list.pop();
+                }
+            }
+            return list;
+        })();
+        var axisX, axisY;
+        var pList = (function ()
+        {
+            var list = [];
+            list.add = function (p)
+            {
+                list[list.length] = p;
+            }
+            list.remove = function (index)
+            {
+                for (var i = index + 1; i < list.length; i++)
+                {
+                    list[i - 1] = list[i];
+                }
+                list.pop();
+            }
+            list.clear = function ()
+            {
+                while (list.length)
+                {
+                    list.pop();
+                }
+            }
+            return list;
+        })();
+        init();
+        function sceneMouseDown(e)
+        {
+            if (moveCanvas.enable)
+                return;
+            if (e.button == Mouse.Buttons.Left)
+            {
+                //Line
+                if (drawing == tools.line)
+                {
+                    if (!drawLine.drawing)
+                    {
+                        drawLine.p1 = new Point(e.x, e.y);
+                        drawLine.p2 = new Point(e.x, e.y);
+                        drawLine.line = new Line(drawLine.p1, drawLine.p2);
+                        drawLine.line.strokeStyle = new Color(255, 255, 255, 1);
+                        drawLine.lineObject = new GameObject();
+                        drawLine.lineObject.graphic = drawLine.line;
+                        scene.addGameObject(drawLine.lineObject);
+                        drawLine.drawing = true;
+                    }
+                    else 
+                    {
+                        painted.add(drawLine.lineObject);
+                        drawLine.drawing = false;
+                    }
+                }
+                //Circle
+                else if (drawing == tools.circle)
+                {
+                    if(!drawCircle.drawing)
+                    {
+                        drawCircle.o = new Point(e.x, e.y);
+                        drawCircle.r = 0;
+                        drawCircle.circle = new Circle(drawCircle.r);
+                        drawCircle.circle.setPosition(e.x, e.y);
+                        drawCircle.circle.strokeStyle = new Color(255, 255, 255, 1);
+                        drawCircle.circle.fillStyle = new Color(0, 0, 0, 0);
+                        drawCircle.circleObject = new GameObject();
+                        drawCircle.circleObject.graphic = drawCircle.circle;
+                        scene.addGameObject(drawCircle.circleObject);
+                        drawCircle.drawing = true;
+                    }
+                    else
+                    {
+                        painted.add(drawCircle.circleObject);
+                        drawCircle.drawing = false;
+                    }
+                }
+                //Rect
+                else if (drawing == tools.rect)
+                {
+                    if (!drawRect.drawing)
+                    {
+                        drawRect.p1 = new Point(e.x, e.y);
+                        drawRect.p2 = new Point(e.x, e.y);
+                        drawRect.rect = new Rectangle(0, 0);
+                        drawRect.rect.strokeStyle = new Color(255, 255, 255, 1);
+                        drawRect.rect.fillStyle = new Color(0, 0, 0, 0);
+                        drawRect.rect.setPosition(e.x, e.y);
+                        drawRect.rectObject = new GameObject();
+                        drawRect.rectObject.graphic = drawRect.rect;
+                        scene.addGameObject(drawRect.rectObject);
+                        drawRect.drawing = true;
+                    }
+                    else
+                    {
+                        painted.add(drawRect.rectObject);
+                        drawRect.drawing = false;
+                    }
+                }
+                //Path
+                else if (drawing == tools.pen)
+                {
+                    if (!drawPath.drawing)
+                    {
+                        drawPath.path = new Path();
+                        drawPath.path.strokeStyle = new Color(255, 255, 255, 1);
+                        drawPath.path.fillStyle = new Color(0, 0, 0, 0);
+                        drawPath.pList = drawPath.path.pList;
+                        drawPath.pList.add(new Path.Point(e.x, e.y));
+                        drawPath.pathObjcet = new GameObject();
+                        drawPath.pathObjcet.graphic = drawPath.path;
+                        scene.addGameObject(drawPath.pathObjcet);
+                        drawPath.drawing = true;
+                        drawPath.drawingCP = true;
+
+                        var p = drawPath.pList.last();
+                        var p1 = (new Line(p, p.cp1)).toGameObject();
+                        var p2 = (new Line(p, p.cp2)).toGameObject();
+                        p1.graphic.strokeStyle = new Color(255, 255, 255, 0.5);
+                        p2.graphic.strokeStyle = new Color(255, 255, 255, 0.5);
+                        scene.addGameObject(p1);
+                        scene.addGameObject(p2);
+                        drawPath.lineList.add(p1);
+                        drawPath.lineList.add(p2);
+                    }
+                    else 
+                    {
+                        drawPath.drawingCP = true;
+
+                        var p = drawPath.pList.last();
+                        var p1 = (new Line(p, p.cp1)).toGameObject();
+                        var p2 = (new Line(p, p.cp2)).toGameObject();
+                        p1.graphic.strokeStyle = new Color(255, 255, 255, 0.5);
+                        p2.graphic.strokeStyle = new Color(255, 255, 255, 0.5);
+                        scene.addGameObject(p1);
+                        scene.addGameObject(p2);
+                        drawPath.lineList.add(p1);
+                        drawPath.lineList.add(p2);
+                    }
+                }
+            }
+            else if (e.button == Mouse.Buttons.Right)
+            {
+                //Line
+                if (drawing == tools.line)
+                {
+                    if (drawLine.drawing)
+                    {
+                        drawLine.drawing = false;
+                        scene.removeGameObject(drawLine.lineObject.id);
+                    }
+                }
+                //Circle
+                else if (drawing == tools.circle)
+                {
+                    if (drawCircle.drawing)
+                    {
+                        drawCircle.drawing = false;
+                        scene.removeGameObject(drawCircle.circleObject.id);
+                    }
+                }
+                //Rect
+                else if (drawing == tools.rect)
+                {
+                    if (drawRect.drawing)
+                    {
+                        drawRect.drawing = true;
+                        scene.removeGameObject(drawRect.rectObject.id);
+                    }
+                }
+                //Path
+                else if (drawing == tools.pen)
+                {
+                    if (drawPath.drawing)
+                    {
+                        drawPath.pList.pop();
+                        drawPath.clearLine();
+                        drawPath.drawing = false;
+                    }
+                }
+            }
+        }
+        function sceneMouseUp(e)
+        {
+            if(drawing == tools.pen)
+            {
+                if(drawPath.drawing)
+                {
+                    if (drawPath.drawingCP)
+                    {
+                        drawPath.drawingCP = false;
+                        drawPath.pList.add(new Path.Point(e.x, e.y));
+                    }
+                }
+            }
+        }
+        function sceneClick(e)
+        {
+
+        }
+        function sceneDoubleClick(e)
+        {
+            if (drawing == tools.pen)
+            {
+                if (drawPath.drawing)
+                {
+                    drawPath.pList.pop();
+                    drawPath.pList.pop();
+                    drawPath.pList.pop();
+                    drawPath.path.close();
+                    painted.add(drawPath.pathObjcet);
+                    drawPath.clearLine();
+                    drawPath.drawing = false;
+                }
+            }
+        }
+        function sceneMouseMove(e)
+        {
+            if(scene.device.mouse.wheel== Mouse.ButtonState.Pressed)
+            {
+                //camera.moveTo(camera.position.x - scene.device.mouse.dx, camera.position.y - scene.device.mouse.dy);
+            }
+            //Line
+            if (drawing == tools.line)
+            {
+                if (drawLine.drawing)
+                {
+                    drawLine.p2.x = e.x;
+                    drawLine.p2.y = e.y;
+                }
+            }
+            //Circle
+            else if(drawing == tools.circle)
+            {
+                if (drawCircle.drawing)
+                {
+                    var dx = e.x - drawCircle.o.x;
+                    var dy = e.y - drawCircle.o.y;
+                    drawCircle.r = Math.sqrt(dx * dx + dy * dy);
+                    drawCircle.circle.r = drawCircle.r;
+                }
+            }
+            //Rect
+            else if (drawing == tools.rect)
+            {
+                if (drawRect.drawing)
+                {
+                    var dx = e.x - drawRect.p1.x;
+                    var dy = e.y - drawRect.p1.y;
+                    drawRect.rect.width = dx;
+                    drawRect.rect.height = dy;
+                }
+            }
+            //Pen
+            else if (drawing == tools.pen)
+            {
+                if (drawPath.drawing)
+                {
+                    //Control point
+                    if(drawPath.drawingCP)
+                    {
+                        var p = drawPath.pList.last();
+                        var n = new Vector2(e.x - p.x, e.y - p.y);
+                        p.cp1.x = p.x - n.x;
+                        p.cp1.y = p.y - n.y;
+                        p.cp2.x = p.x + n.x;
+                        p.cp2.y = p.y + n.y;
+                    }
+                    //Point
+                    else 
+                    {
+                        var p = drawPath.pList.last();
+                        p.x = e.x;
+                        p.y = e.y;
+                    }
+                }
+            }
+        }
+        function sceneKeyDown(e)
+        {
+
+        }
+        function sceneKeyUp(e)
+        {
+
+        }
+        function windowMouseDown(e)
+        {
+            if (e.button == Mouse.Buttons.Wheel)
+            {
+                moveCanvas.enable = true;
+                moveCanvas.startX = e.screenX / camera.zoom;
+                moveCanvas.startY = e.screenY / camera.zoom;
+                moveCanvas.cameraX = camera.position.x;
+                moveCanvas.cameraY = camera.position.y;
+            }
+        }
+        function windowMouseUp(e)
+        {
+            if (e.button == Mouse.Buttons.Wheel)
+            {
+                moveCanvas.enable = false;
+            }
+        }
+        function windowMouseMove(e)
+        {
+            if(moveCanvas.enable)
+            {
+                var x = e.screenX / camera.zoom;
+                var y = e.screenY / camera.zoom;
+                camera.moveTo(moveCanvas.cameraX - (x - moveCanvas.startX), moveCanvas.cameraY + (y - moveCanvas.startY));
+            }
+        }
+        function windowMoueWheel(e)
+        {
+            var wheel = e.wheelDelta;
+            if(wheel>0)
+            {
+                camera.zoomTo(camera.zoom * 1.2);
+            }
+            else
+            {
+                camera.zoomTo(camera.zoom * 0.8);
+            }
+        }
+        function init()
+        {
+            resize();
+
+            if (game)
+                game.end();
+            game = Game.createByCanvas(canvas);
+            scene = game.scene;
+            scene.onMouseDown = sceneMouseDown;
+            scene.onMouseUp = sceneMouseUp;
+            scene.onClick = scene.onClick;
+            scene.onDoubleClick = sceneDoubleClick;
+            scene.onMouseMove = sceneMouseMove;
+            scene.onKeyDown = sceneKeyDown;
+            scene.onKeyUp = sceneKeyUp;
+            camera = scene.camera;
+            camera.moveTo(0, 0);
+            game.start();
+
+            //--------Init axis
+            var lineX = new Line(new Point(-width, 0), new Point(width, 0));
+            lineX.strokeStyle = new Color(255, 0, 0, 1);
+            axisX = new GameObject();
+            axisX.graphic = lineX;
+            scene.addGameObject(axisX);
+
+            var lineY = new Line(new Point(0, -height), new Point(0, height));
+            lineY.strokeStyle = new Color(0, 255, 0, 1);
+            axisY = new GameObject();
+            axisY.graphic = lineY;
+            scene.addGameObject(axisY);
+            //----------------
+
+            window.addEventListener("mousedown", windowMouseDown);
+            window.addEventListener("mouseup", windowMouseUp);
+            window.addEventListener("mousemove", windowMouseMove);
+            window.addEventListener("mousewheel", windowMoueWheel);
+
+            //-------TopBar
+            $("#buttonNew").click(function (e)
+            {
+                clear();
+            });
+            //Line
+            $("#buttonLine").click(function (e)
+            {
+                $(".tools").removeClass("activeColor");
+                var buttonLine = $("#buttonLine");
+                buttonLine.addClass("activeColor");
+                pList.clear();
+                drawing = tools.line;
+            });
+            //Rect
+            $("#buttonRect").click(function (e)
+            {
+                $(".tools").removeClass("activeColor");
+                var buttonRect = $("#buttonRect");
+                buttonRect.addClass("activeColor");
+                drawing = tools.rect;
+            });
+            //Circle
+            $("#buttonCircle").click(function (e)
+            {
+                $(".tools").removeClass("activeColor");
+                var buttonCircle = $("#buttonCircle");
+                buttonCircle.addClass("activeColor");
+                drawing = tools.circle;
+            });
+            //Pen
+            $("#buttonPen").click(function (e)
+            {
+                $(".tools").removeClass("activeColor");
+                var buttonPen = $("#buttonPen");
+                buttonPen.addClass("activeColor");
+                drawing = tools.pen;
+            });
+            //Brush
+            $("#buttonBrush").click(function (e)
+            {
+                $(".tools").removeClass("activeColor");
+                var buttonBrush = $("#buttonBrush");
+                buttonBrush.addClass("activeColor");
+                drawing = tools.brush;
+            });
+            //Eraser
+            $("#buttonEraser").click(function (e)
+            {
+                $(".tools").removeClass("activeColor");
+                var buttonEraser = $("#buttonEraser");
+                buttonEraser.addClass("activeColor");
+                drawing = tools.eraser;
+            });
+            //-------------
+        }
+        function clear()
+        {
+            camera.moveTo(0, 0);
+            camera.zoomTo(1);
+            while (painted.length)
+            {
+                var obj = painted.pop();
+                scene.removeGameObject(obj.id);
+            }
+            $(".tools").removeClass("activeColor");
+            moveCanvas = { enable: false, cameraX: 0, cameraY: 0, startX: 0, startY: 0 };
+            tools = { line: 0, rect: 1, circle: 2, pen: 3, brush: 4, eraser: 5 };
+            drawing = null;
+            drawLine = { drawing: false, p1: null, p2: null, line: null, lineObject: null };
+        }
+        function resize()
+        {
+            width = $("#canvas").width();
+            height = $("#canvas").height();
+        }
+    </script>
+</body>
+</html>

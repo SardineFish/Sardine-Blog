@@ -1,0 +1,63 @@
+﻿.menuButton
+{
+    background-color: transparent;
+    display: block;
+    height: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: auto;
+    color: black;
+    font-size: 26px;
+    font-weight: 100;
+    text-align: center;
+    line-height: 50px;
+    border-bottom: solid 5px;
+    border-bottom-width: 5px;
+    border-color: rgba(255, 255, 255, 0.00);
+    position: relative;
+    float: left;
+}
+.button
+{
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    font-size: 14px;
+    color: white;
+    background-color: rgba(63, 150, 207, 1.00);
+}
+.borderObject
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(200,200,200,1.00);
+}
+.divFloat
+{
+    position: fixed;
+    padding: 0px;
+    margin: 0px;
+    z-index: 10000;
+}
+.oneLineText
+{
+    white-space: nowrap;
+    overflow :hidden;
+}
+.transparentBackgroundOjbect
+{
+    background-color: transparent;
+}
+.textWithIcon
+{
+    font-weight:100;
+    font-size: 12px;
+    float: left;
+    margin-left: 10px;
+    color: gray;
+}

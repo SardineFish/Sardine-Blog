@@ -1,0 +1,81 @@
+﻿
+body {
+    font-family: "Microsoft YaHei",Tahoma,Arial;
+    margin: 0px;
+    background-color: #212121;
+    color: rgba(255, 255, 255, 0.6);
+}
+h1
+{
+    font-size: 72px;
+    font-weight: normal;
+    margin: 0px;
+}
+h2
+{
+    font-size: 60px;
+    font-weight: normal;
+    margin: 0px;
+}
+h3
+{
+    font-size: 48px;
+    font-weight: normal;
+    margin: 0px;
+}
+h4
+{
+    font-size: 36px;
+    font-weight: normal;
+    margin: 0px;
+}
+h5
+{
+    font-size: 24px;
+    font-weight: normal;
+    margin: 0px;
+}
+h6
+{
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0px;
+}
+hr
+{
+    border-style: solid;
+    border-color: rgba(63, 150, 207, 1.00);
+    border-width: 1px;
+    margin: 0px;
+    /*margin-bottom: 5px;*/
+}
+ul
+{
+    position:relative;
+    height:100%;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
+li
+{
+    display: block;
+    float: left;
+}
+a
+{
+    text-decoration: none;
+    cursor: pointer;
+}
+nav
+{
+    position: relative;
+    height: 100%;
+}
+i
+{
+    font-style: normal;
+}
+p {
+    margin: 0px;
+}

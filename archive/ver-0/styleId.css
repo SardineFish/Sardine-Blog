@@ -1,0 +1,286 @@
+﻿
+#rootDiv
+{
+    width:100%;
+}
+#topBar
+{
+    height: 50px;
+    background-color: white;
+    border-style: solid;
+    border-top-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-color: rgba(200,200,200,1.00);
+    z-index: 10000;
+}
+#topMenu
+{
+    min-width: 974px;
+    margin-left: 50px;
+    height: 100%;
+    position: relative;
+}
+#menuFocus
+{
+    width: 92px;
+    height: 50px;
+    background-color: rgba(102,204,255,0.00);
+    position: relative;
+    z-index: -1;
+}
+#centerRootDiv
+{
+    width: 1024px;
+}
+#pageBottom
+{
+    width: 100%;
+    height: 300px;
+    display: block;
+    position: page;
+    bottom: 0px;
+    background-color: rgba(63, 150, 207, 1.00);
+    vertical-align: middle;
+}
+#centerDiv
+{
+    padding-top: 60px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    height: auto;
+    /*box-shadow: 0px 0px 10px #DDDDDD;*/
+}
+#infoContainer
+{
+    width: 256px;
+    display: block;
+    padding: 10px;
+    border:1px solid rgb(200,200,200);
+    float: left;
+    background-color: white;
+}
+#LogoDiv
+{
+    width: 256px;
+    height: 256px;
+    display: block;
+}
+#tagsDiv 
+{
+}
+#mainFloat
+{
+    z-index: 1000000;
+    width: 100%;
+    height: 200%;
+    background-color: #FFEFB5;
+    display: none; 
+}
+#mainCanvas
+{
+    background-color: #BEEFFF;
+}
+#mainDiv
+{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 0px;
+}
+#logoImg
+{
+    position: fixed;
+    top: -1024px;
+    left:-2048px;
+}
+#skipDiv 
+{
+    position: fixed;
+    float: right;
+    bottom: 10px;
+    right: 10px;
+}
+#mainTextContainerDiv 
+{
+    position: relative;
+    float: right;
+    width: 100%;
+    height: 0px;
+}
+#mianTextFirstDiv 
+{
+    float: right;
+    width: 50%;
+    position: relative;
+}
+#mainTextSecondDiv
+{
+    top: 328px;
+    left: -850px;
+    float: left;
+    width: 50%;
+    position: relative;
+    opacity: 0;
+}
+#helloWorldDiv 
+{
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+    border-width: 0px;
+    border-style: solid;
+    border-color: rgb(200,200,200);
+}
+#textHelloWorld 
+{
+    width: 964px;
+    color: rgba(0,0,0,0.00);
+    cursor: pointer;
+}
+#pageCodeContainer
+{
+    float: right;
+    margin-right: 50px;
+    right: 0px;
+    top: 200px;
+    height: 42px;
+    width: 42px;
+    background-color: white;
+    border-width: 0px;
+    overflow: hidden;
+}
+#pageCodeIcon
+{
+    padding: 5px;
+    top: 0px;
+    left:0px;
+    height: 32px;
+    width: 32px;
+    background-color: #66CCFF;
+    cursor: pointer;
+    display: inline-block;
+}
+#pageCodeIconText
+{
+    color: white; 
+    font-weight: 500; 
+    width: 100%; 
+    text-align: center; 
+    padding-top: 5px; 
+    cursor: pointer;
+    display: inline-block;
+}
+#pageCodeTitleDiv
+{
+    height: 42px;
+    width: 100%;
+    white-space: nowrap;
+
+}
+#pageCodeInputArea
+{
+    width: 480px;
+    height: 280px;
+    padding: 10px;
+}
+#pageCodeInputBorder
+{
+    width: 478px;
+    height: 278px;
+    padding: 0px;
+}
+#pageCodeInput
+{
+    width: 100%;
+    height: 100%;
+}
+#pageCodeBottom
+{
+    height: 32px;
+    width: 480px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+#pageCodeButton
+{
+    float: right;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: right;
+}
+#pageCodeButtonRun
+{
+    background-color: rgba(114, 197, 124, 1);
+    color: white;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+#contactDiv
+{
+    width: 100%;
+    height: 32px;
+    margin-top: 10px;
+    text-align: center;
+}
+#contactQQ
+{
+    display: inline-block;
+    width: 32px;
+    margin-right: 5px;
+    height: 32px;
+}
+#contactWeibo
+{
+    display: inline-block;
+    margin-left: 5px;
+    width: 32px;
+    height: 32px;
+}
+#newsContainer
+{
+    margin-left: 50px;
+    width: 664px;
+    height: auto;
+    float: left;
+    min-height: 500px;
+}
+#latestArea
+{
+    height: auto;
+}
+#worksArea
+{
+    background-color: white;
+}
+#articleArea
+{
+    background-color: white;
+}
+#documentContainer
+{
+    margin-top: 60px;
+    width: 100%;
+    height: auto;
+}
+#programContainer
+{
+    margin-top: 60px;
+    width: 100%;
+    height: auto;
+}
+#debugDiv
+{
+    background-color: transparent;
+    width: 300px;
+    height: 200px;
+    bottom: 0px;
+}

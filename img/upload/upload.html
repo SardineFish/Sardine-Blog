@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/3.1.0/jquery-3.1.0.min.js"></script>
+    <script src="http://static.sardinefish.com/lib/Script/jQuery/jquery.shadow-animation.min.js"></script>
+    <script src="http://lib.sinaapp.com/js/jquery.cookie/jquery.cookie.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <style>
+        body {
+            margin: 0px;
+            font-family: "Segoe UI",Microsoft YaHei, Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .border {
+        }
+        #root {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+        }
+        #imgUpload {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            position: absolute;
+            left: 0px;
+        }
+        #imgArea {
+            height: calc(100% - 90px);
+            width: 100%;
+            text-align: center;
+        }
+        #imgPreview{
+            position: relative;
+        }
+        #uploadArea {
+            position: relative;
+        }
+        #buttonUpload {
+            display: block;
+            margin: auto;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            margin-top: 10px;
+            max-width: 160px;
+            border: none;
+            box-shadow: 0px 2px 7px rgba(0,0,0,0.2);
+            font-size: 20px;
+            color: white;
+            background-color: #03a9f4;
+            cursor: pointer;
+        }
+
+        #progressBar {
+            display: block;
+            opacity: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(240,240,240,1.0);
+        }
+        #progress {
+            height: 100%;
+            width: 0%;
+            background-color: rgba(20, 210, 118, 1);
+        }
+        #link{
+            text-align: center;
+            display: block;
+        }
+        #textDone {
+            display: none;
+            opacity: 0;
+            position: relative;
+            top: 100px;
+            text-align: center;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div id="imgUpload" onselectstart="return false;" ondragstart="return false;">
+            <div id="imgArea">
+                <img id="imgPreview" src="default.jpg" />
+            </div>
+            <div id="uploadArea">
+                <input id="filePicker" type="file" accept="image/*" hidden="hidden" />
+                <div id="progressBar">
+                    <div id="progress"></div>
+                </div>
+                <a id="link" href="http://img.sardinefish.com/233"></a>
+                <a id="buttonUpload">Upload</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        function upload(img)
+        {
+            $("#buttonUpload").stop();
+            $("#buttonUpload").animate({ opacity: 0 }, 700, function ()
+            {
+                $("#buttonUpload").css("opacity", "0");
+                $("#progressBar").css("opacity", "0");
+                $("#progressBar").animate({ "opacity": 1 }, 1000);
+            });
+            SardineFish.API.Img.Upload.Upload(img, {
+                progress: function (progress)
+                {
+                    $("#progress").stop();
+                    $("#progress").animate({ width: progress * 100 + "%" }, 200);
+                },
+                error: function (e)
+                {
+
+                },
+                complete: function (data)
+                {
+                    $("#progress").stop();
+                    $("#progress").animate({ width: "100%" }, 200);
+                    $("#link").attr("href", "http://img.sardinefish.com/" + data.key);
+                    $("#link").text("http://img.sardinefish.com/" + data.key);
+                    uploadComplete({
+                        url: "http://img.sardinefish.com/" + data.key,
+                        key: data.key
+                    });
+                }
+            });
+        }
+        function resizeImg()
+        {
+            if (imgArea.width() / imgArea.height() > imgPreview.width() / imgPreview.height())
+            {
+                imgPreview.css("width", "auto");
+                imgPreview.css("height", "100%");
+            }
+            else
+            {
+                imgPreview.css("width", "100%");
+                imgPreview.css("height", "auto");
+            }
+            imgPreview.css("top", ((imgArea.height() - imgPreview.height()) / 2) + "px");
+            imgPreview.css("max-width", imgPreview.get(0).naturalWidth);
+            imgPreview.css("max-height", imgPreview.get(0).naturalHeight);
+
+        }
+        function uploadComplete(data)
+        {
+            imgPreview.get(0).onload = function ()
+            {
+                resizeImg();
+                $("#progressBar").animate({ "opacity": 0 }, 700);
+                $("#buttonUpload").animate({ opacity: 1 }, 200);
+            }
+            imgPreview.get(0).src = "http://img.sardinefish.com/" + data.key;
+            if (onUploaded)
+            {
+                onUploaded({
+                    url: "http://img.sardinefish.com/" + data.key,
+                    key: data.key
+                });
+            }
+
+
+        }
+        //public Events
+        window.onUploaded = null;
+        $("#buttonUpload").mouseenter(function (e)
+        {
+            $("#buttonUpload").stop();
+            $("#buttonUpload").animate({ boxShadow: "0px 4px 10px rgba(0,0,0,0.2)" }, 200);
+        });
+        $("#buttonUpload").mouseout(function (e)
+        {
+            $("#buttonUpload").stop();
+            $("#buttonUpload").animate({ boxShadow: "0px 2px 6px rgba(0,0,0,0.2)" }, 200);
+        });
+        $("#buttonUpload").click(function (e)
+        {
+            $("#filePicker").get(0).click();
+        });
+        $("#filePicker").change(function (e)
+        {
+            upload($("#filePicker").get(0).files[0]);
+        });
+        var imgArea = $("#imgArea");
+        var imgPreview = $("#imgPreview");
+        window.onresize = function (e)
+        {
+            resizeImg();
+        }
+        window.onload = function (e)
+        {
+            resizeImg();
+        }
+    </script>
+</body>
+</html>

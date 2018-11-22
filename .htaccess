@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteBase /
+CheckSpelling Off
+RewriteRule (.+/)([^/.]+)$ $0.html 

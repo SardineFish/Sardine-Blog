@@ -1,0 +1,238 @@
+﻿/* Width < 1024 */
+@media (max-width: 1024px)
+{
+    #topMenu {
+        left: 0px;
+    }
+}
+
+/* Width > 1024 */
+@media (min-width: 1024px)
+{
+    #topMenu {
+        left: calc((100% - 974px)/2);
+    }
+}
+
+}
+#rootDiv
+{
+    width:100%;
+}
+#userArea {
+    float: right;
+    display: inline-block;
+    vertical-align: middle;
+    position: absolute;
+    bottom: -20px;
+    right: 40px;
+}
+
+#searchArea
+{
+    background-color: white;
+}
+#textboxSearch
+{
+    padding: 10px;
+    width: calc(100% - 50px);
+    display: inline-block;
+    vertical-align: middle;
+    border: none 0px;
+}
+#buttonSearch
+{
+    display: inline-block;
+    vertical-align: middle;
+}
+#topLogo 
+{
+    vertical-align: middle;
+    display: inline-block;
+    width: 150px;
+    height: 82.5px;
+}
+
+#topLogoText {
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 40px;
+    margin: 0px;
+    margin-left: 10px;
+    font-weight: 100;
+    color: white;
+}
+
+#buttonSignUp {
+    display: none;
+    background-color: transparent;
+    width: 60px;
+    color: rgb(63, 150, 207);
+    border: 1px solid rgb(63, 150, 207);
+}
+#userFace {
+    height: 64px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+    display: block;
+    background-size: cover;
+    background-position: center;
+    background-color: white;
+    color: #2980b9;
+    width: 64px;
+    font-size: 56px;
+    border-radius: 64px;
+    padding: 10px;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    -webkit-perspective: 100px;
+    
+}
+#noticeMark {
+    width: 16px;
+    height: 16px;
+    background: rgba(255, 66, 66, 0);
+    display: block;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    border-radius: 100%;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+}
+
+#topBar {
+    position: relative;
+    height: 75px;
+    background-color: #3498DB;
+    background-color: rgba(63, 149, 206, 1);
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+    border-top-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    z-index: 1000;
+}
+#topMenu {
+    min-width: 974px;
+    margin-left: 50px;
+    height: 100%;
+    bottom: 0px;
+    position: absolute;
+}
+#menuFocus
+{
+    width: 100px;
+    height: 5px;
+    background-color: white;
+    position: absolute;
+    bottom: 0px;
+}
+#pageBottom {
+    padding: 30px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+    height: 300px;
+    display: block;
+    position: relative;
+    bottom: 0px;
+    background-color: rgba(63, 150, 207, 1.00);
+    vertical-align: middle;
+}
+
+#centerDiv
+ {
+    position: relative;
+    width: 1024px;
+    margin: auto;
+    height: auto;
+}
+
+#infoContainer 
+{
+    margin-top: 20px;
+    display: block;
+    padding: 20px;
+    float: right;
+    background-color: white;
+}
+#pageCodeContainer
+{
+    float: right;
+    margin-right: 50px;
+    right: 0px;
+    top: 200px;
+    height: 42px;
+    width: 42px;
+    background-color: white;
+    border-width: 0px;
+    overflow: hidden;
+}
+#pageCodeIcon
+{
+    padding: 5px;
+    top: 0px;
+    left:0px;
+    height: 32px;
+    width: 32px;
+    background-color: #66CCFF;
+    cursor: pointer;
+    display: inline-block;
+}
+#pageCodeIconText
+{
+    color: white; 
+    font-weight: 500; 
+    width: 100%; 
+    text-align: center; 
+    padding-top: 5px; 
+    cursor: pointer;
+    display: inline-block;
+}
+#pageCodeTitleDiv
+{
+    height: 42px;
+    width: 100%;
+    white-space: nowrap;
+
+}
+#pageCodeInputArea
+{
+    width: 480px;
+    height: 280px;
+    padding: 10px;
+}
+#pageCodeInputBorder
+{
+    width: 478px;
+    height: 278px;
+    padding: 0px;
+}
+#pageCodeInput
+{
+    width: 100%;
+    height: 100%;
+}
+#pageCodeBottom
+{
+    height: 32px;
+    width: 480px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+#pageCodeButton
+{
+    float: right;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: right;
+}
+#pageCodeButtonRun
+{
+    background-color: rgba(114, 197, 124, 1);
+    color: white;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}

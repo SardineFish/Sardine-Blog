@@ -1,0 +1,154 @@
+﻿.menuButton 
+{
+    background-color: transparent;
+    display: block;
+    height: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: auto;
+    color: white;
+    font-size: 16px;
+    min-width: 60px;
+    text-align: center;
+    line-height: 50px;
+    border-color: rgba(255, 255, 255, 0.00);
+    position: relative;
+    float: left;
+}
+.button {
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    font-size: 14px;
+    color: white;
+    border: none 0px;
+    background-color: #2196f3;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+}
+.shadow
+{
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+
+.textbox
+{
+
+}
+
+.dialog {
+    box-shadow: 0px 6px 16px rgba(0,0,0,0.2);
+    border-radius: 2px;
+    background-color: white;
+}
+.borderObject
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(200,200,200,1.00);
+}
+.divFloat
+{
+    position: fixed;
+    padding: 0px;
+    margin: 0px;
+    z-index: 10000;
+}
+.transparentBackgroundOjbect {
+    background-color: transparent;
+}
+.iconButton {
+    font-family: fontIcon;
+    vertical-align: middle;
+}
+
+.noteItem {
+    padding: 30px;
+    background-color: white;
+    margin-top: 20px;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+}
+.noteTitle {
+    font-size: 24px;
+    margin: 0px;
+}
+.noteTime {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    margin: 0px;
+}
+.noteTime::before {
+    font-family: "fontIcon";
+    content: "\E121";
+    margin-right: 5px;
+}
+.noteTags {
+    display: inline-block;
+    margin: 0px;
+    margin-left: 20px;
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+}
+.noteTags::before {
+    font-family: "fontIcon";
+    content: "\E1CB";
+    margin-right: 5px;
+}
+.noteText {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    color: #424242;
+}
+.noteBottom {
+    margin-right: 20px;
+}
+
+.iconBrowse::before {
+    font-family: "fontIcon";
+    content: "\E052";
+    font-size: 20px;
+    vertical-align: middle;
+    color: #2196f3;
+}
+.noteBrowseNumber {
+    font-size: 12px;
+    vertical-align: middle;
+    color: rgba(0, 0, 0, 0.3);
+    color: #90caf9;
+}
+.noteComment {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+.iconComment::before {
+    font-family: fontIcon;
+    content: "\E25C";
+    color: #2196f3;
+    vertical-align: middle;
+    font-size: 20px;
+}
+.noteCommentNumber {
+    font-size: 12px;
+    color: #64b5f6;
+    vertical-align: middle;
+}
+.noteLike {
+    color: #2196f3;
+}
+.noteLike::before {
+    font-family: "fontIcon";
+    content: "\E19F";
+    font-size: 20px;
+    vertical-align: middle;
+}
+.noteLikeNumber {
+    font-size: 12px;
+    color: #90caf9;
+    vertical-align: middle;
+}

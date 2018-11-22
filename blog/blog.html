@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&__&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~&&&&&&&&&&&&~~~~&&~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~tttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~tttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~tttttttttttttttttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~ttttttt&&tttttttttttttttttttttttttttt@@@@@@@tttttttt
+~~~~~~~~~~ttttttttttttttttt&&tttttttttttttttttttttttt@@@@@@@@@@@tttttttt
+ttttttttttttttttttttttttttt&&@@@ttttttttttttttttttt@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttt@@@@@@tttttttttttt@@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttttttttt@@@@@ttttttt@@@@@@@@@@@@@ttttttttt
+ttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@@@@@@tttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@tttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@tttttttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#4DD0E1">
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="http://static.sardinefish.com/icon/LOGO.ico" media="screen">
+    <link href="/font/material-design-icons-3.0.1/material-icons.css" rel="stylesheet" type="text/css">
+    <title>SardineFish</title>
+    <script src="/resource.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.2.1/HTMLTemplate.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.2.1/ObserveList.js"></script>
+
+    <script>
+        function loadScripts() {
+            document.write("<style>@font-face{font-family:fontIcon;src:url('" + resource.font.segmdl2 + "');}</style>");
+            document.write(toCSSHTMLTag(style.tag));
+            document.write(toCSSHTMLTag(style.class));
+            document.write(toCSSHTMLTag(style.id));
+            //----------------------------------jQuery----------------------------------
+            document.write(toScriptHTMLTag(lib.jQueryMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryShadowAnimation));
+            document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+            //--------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toScriptHTMLTag(lib.codeMirror.lib.script));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.showHintJS));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.javaScriptHintJs));
+            document.write(toScriptHTMLTag(lib.codeMirror.mode.javascript));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+
+        function loadCSS() {
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toCSSHTMLTag(lib.codeMirror.lib.css));
+            document.write(toCSSHTMLTag(lib.codeMirror.addon.hint.showHintCSS));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        loadScripts();
+        loadCSS();
+    </script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="pageCodeContainer" class="divFloat transparentBackgroundOjbect" style="width:42px; height:42px; box-shadow:0 0 0px rgba(200,200,200,0.00);">
+        <div id="pageCodeTitleDiv" onselectstart="return false">
+            <div id="pageCodeIcon">
+                <div class="transparentBackgroundOjbect" style="width:100%; height:100%;">
+                    <div id="pageCodeIconText">&lt;/&gt;</div>
+                </div>
+            </div>
+            <div style="left:48px; padding-left:10px; display:inline-block;">
+                <div style="cursor:default; color:gray;">JavaScript代码编辑器</div>
+            </div>
+        </div>
+        <div id="pageCodeInputArea">
+            <div id="pageCodeInputBorder" class="borderObject">
+                <textarea id="pageCodeInput"></textarea>
+            </div>
+        </div>
+        <div id="pageCodeBottom">
+            <div id="pageCodeButton">
+                <a id="pageCodeButtonRun" class="button">执行</a>
+            </div>
+        </div>
+    </div>
+    <div id="dialogBackground" style="display:none;">
+        <div id="dialog" class="dialog" style="display:none;">
+            <p id="dialogTitle"></p>
+            <p id="dialogContent"></p>
+            <div id="dialogButtons">
+                <a id="buttonOk" class="button">Ok</a>
+            </div>
+        </div>
+        <div id="noticeBox" class="dialog" style="display:none;">
+            <p id="noticeText">Notice</p>
+        </div>
+    </div>
+    <div id="rootDiv">
+        <div id="topArea" onselectstart="return false;">
+            <div id="topBar" class="extend">
+                   <div id="button-menu" class="icon-button">menu</div>
+                   <header id="page-title" class="font-UI">SardineFish - Blog</header>
+                <div id="topMenu" class="">
+                    <nav id="topMenuButtons">
+                        <div id="menuFocus"></div>
+                        <a class="menuButton" href="/" style="border-color:white;">HOME</a>
+                        <a class="menuButton" id="buttonHere" href="/blog/">BLOG</a>
+                        <a class="menuButton" href="/note/">NOTES</a>
+                        <a class="menuButton" href="/works/">WORKS</a>
+                        <a class="menuButton" href="/about/">ABOUT</a>
+                        <a class="menuButton" href="/more/">MORE</a>
+                    </nav>
+                </div>
+                    <div class="top-right">
+                        <div id="search" class="top-icon">
+
+                        </div>
+                        <div id="account-area" class="flex-center">
+                            <a id="login" class="top-icon" href="/account/login">person</a>
+                            <div id="user-login-wrapper" class="flex-center">
+                                <a id="write" class="top-icon" href="/blog/write/">edit</a>
+                                <div id="user">
+                                    <img id="user-avatar" src="http://static.sardinefish.com/img/logo/Logo_256.jpg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+        <div id="center">
+            <div id="content">
+                <div id="list">
+                    <template id="articleItemTemplate" class="articleItem shadow-block">
+                       <div class="articleItem shadow-block">
+                        <a class="articleTitle" href="/blog/?pid={{pid}}" click="preventDefault();">{{title}}</a>
+                        <div class="articleTimeTags" onselectstart="return false;">
+                            <div class="articleTime">{{time}}</div>
+                            <div class="articleTags">
+                               <template class="tag-template" dataSource="{{tags}}">
+                                <a class="tag">{{$element$}}</a>
+                               </template>
+                            </div>
+                        </div>
+                        <div class="articleText">{{document}}</div>
+                       </div>
+                    </template>
+                </div>
+            </div>
+            <div id="rightArea">
+                
+            </div>
+        </div>
+        
+        <footer id="page-footer">
+            <div id="copyright">
+                Copyright © 2015-
+                <span class="time-year"></span> SardineFish, All Rights Reserved
+            </div>
+            <div>
+                Powered by SardineFish
+            </div>
+        </footer>
+    </div>
+    <script src="event.js"></script>
+    <script>
+        document.querySelectorAll(".time-year").forEach(function (item) {
+            item.innerText = new Date().getFullYear();
+        });
+    </script>
+</body>
+
+</html>

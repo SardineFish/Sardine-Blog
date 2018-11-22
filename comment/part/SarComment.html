@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.1.0/HTMLTemplate.js"></script>
+    <style>
+        body{
+            margin: 0px;
+            padding: 0px;
+            background-color: transparent;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Material Icons'), local('MaterialIcons-Regular'), url(/font/MaterialIcons-Regular.woff2) format('woff2'), url(/font/MaterialIcons-Regular.woff) format('woff'), url(/font/MaterialIcons-Regular.ttf) format('truetype');
+        }
+        .icon {
+            font-family: 'Material Icons';
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+            /* Support for all WebKit browsers. */
+            -webkit-font-smoothing: antialiased;
+            /* Support for Safari and Chrome. */
+            text-rendering: optimizeLegibility;
+            /* Support for Firefox. */
+            -moz-osx-font-smoothing: grayscale;
+            /* Support for IE. */
+            font-feature-settings: 'liga';
+        }
+        .iconButton{
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        .textbox {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+            padding-top: 1em;
+            padding-bottom: 0.2em;
+            border: none;
+            border-bottom: solid 2px rgba(0,0,0,0.2);
+        }
+            .textbox::-webkit-input-placeholder { /* WebKit browsers */
+                color:rgba(0, 0, 0, 0.2);
+            }
+            .textbox:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+                color:rgba(0, 0, 0, 0.2);
+            }
+            .textbox::-moz-placeholder { /* Mozilla Firefox 19+ */
+                color:rgba(0, 0, 0, 0.2);
+            }
+            .textbox:-ms-input-placeholder { /* Internet Explorer 10+ */
+                color:rgba(0, 0, 0, 0.2);
+            }
+        .commentItem{
+            margin-top: 1em;
+        }
+        .commentItem .user {
+            display: inline-block;
+            width: 60px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .commentItem .user .face {
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+        }
+        .commentItem .name {
+            color: rgba(51, 153, 255, 1);
+            display: inline-block;
+            max-width: 8em;
+            margin-right: 2em;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .commentItem .content {
+            display: inline-block;
+            width: calc(100% - 70px);
+            vertical-align: top;
+        }
+        .commentItem .content .time {
+            font-size: 0.75em;
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .commentItem .subCommentCount {
+            color: rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        .commentItem .like {
+            color: rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        .commentItem .like::before {
+            font-family: "Material Icons";
+            font-feature-settings: "liga" 1;
+            content: "thumb_up";
+            vertical-align: sub;
+            margin-right: 0.2em;
+        }
+        .commentItem .subCommentCount::before {
+            font-feature-settings: "liga" 1;
+            font-family: "Material Icons";
+            vertical-align: sub;
+            content: "comment";
+            margin-right: 0.2em;
+        }
+        .commentItem .text {
+            margin-top: 0.5em;
+            color: rgba(0,0,0,0.8);
+        }
+        .subComment .subFace {
+            width: 40px;
+            height: 40px;
+            border-radius: 100%;
+        }
+        .subComment .item{
+            margin-top: 1em;
+        }
+        .textboxFocus{
+            border-color: #2196f3;
+        }
+        .buttonSendFocus{
+            color: #2196f3;
+        }
+        .liked{
+            color: rgb(255, 152, 0);
+        }
+        #root {
+            width: 100%;
+            height: 100%;
+        }
+        #name {
+            display: block;
+            width: 16em;
+            text-decoration: none;
+        }
+        #text {
+            display: inline-block;
+            width: calc(100% - 4em);
+            font-size: 1em;
+        }
+        #buttonSend {
+            font-size: 2em;
+            display: inline-block;
+            color: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div id="postArea">
+            <input type="text" id="name" class="textbox" placeholder="取个名吧"/>
+            <input type="text" id="text" class="textbox" placeholder="不说点啥？"/>
+            <div id="buttonSend" class="iconButton icon">send</div>
+        </div>
+        <div id="commentArea">
+            <!--
+            <div class="commentItem">
+                <div class="user">
+                    <img class="face" src="/account/user/face/getFace.php?uid=SardineFish"/>
+                </div>
+                <div class="content">
+                    <div onselectstart="return false;">
+                        <a class="name" href="/account/user/face/getFace.php?uid=SardineFish">SardineTest</a>
+                        <div class="subCommentCount iconButton">0</div>
+                        <div class="like iconButton">3</div>
+                        <div class="time">2016-12-23 8:37</div>
+                    </div>
+                    <div class="text">这应该是一条评论</div>
+                    <div class="subComment">
+                        <div class="item">
+                            <div class="user">
+                                <img class="subFace" src="/account/user/face/getFace.php?uid=SardineFish" />
+                            </div>
+                            <div class="content">
+                                <div onselectstart="return false;">
+                                    <a class="name" href="/account/user/face/getFace.php?uid=SardineFish">SardineTest</a>
+                                    <div class="subCommentCount">0</div>
+                                    <div class="like">3</div>
+                                    <div class="time">2016-12-23 8:37</div>
+                                </div>
+                                <div class="text">这应该是一条子评论</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                -->
+            <template id="commentItemTemplate" class="commentItem">
+                <div class="user">
+                    <img class="face" src="/account/user/face/getFace.php?uid={uid}" />
+                </div>
+                <div class="content">
+                    <div onselectstart="return false;">
+                        <a class="name" href="/account/user/face/getFace.php?uid={uid}">{uid}</a>
+                        <div id="comment{pid}" class="subCommentCount iconButton">{comment}</div>
+                        <div id="like{pid}" class="like iconButton">{like}</div>
+                        <div class="time">{time}</div>
+                    </div>
+                    <div class="text">{text}</div>
+                    <div class="subComment">
+                        <template id="subComment{pid}" class="item">
+                            <div class="user">
+                                <img class="subFace" src="/account/user/face/getFace.php?uid={+uid+}" />
+                            </div>
+                            <div class="content">
+                                <div onselectstart="return false;">
+                                    <a class="name" href="/account/user/face/getFace.php?uid={+uid+}">{+uid+}</a>
+                                    <div class="like">{+like+}</div>
+                                    <div class="time">{+time+}</div>
+                                </div>
+                                <div class="text">{+text+}</div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    <script>
+        HTMLTemplate.Init();
+        window.cid = 0;
+        window.uid = "";
+        window.commentInput = "";
+        window.loadTime = Math.round(new Date().getTime() / 1000);
+        commentList = [];
+        pidList = {};
+        var replyComment = false;
+        var replyCommentId = 0;
+        var commentItemTemplate = $("#commentItemTemplate").get(0);
+        function loadComment(cid, from, count)
+        {
+            commentList=[];
+            commentItemTemplate.dataSource = commentList;
+            SardineFish.API.Comment.GetList(cid, from, count, loadTime, function (succeed, data)
+            {
+                if (!succeed)
+                {
+                    alert(data);
+                    return;
+                }
+                for (var i = 0; i < data.length; i++)
+                {
+                    commentList.add(data[i]);
+                }
+                commentItemTemplate.dataSource = commentList;
+                HTMLTemplate.Init();
+                var domList=$("#commentItemTemplate .commentItem");
+                for (var i = 0; i < commentList.length; i++)
+                {
+                    function iniEvent(pid, comment)
+                    {
+                        $("#comment" + pid).click(function (e)
+                        {
+                            //Load replies
+                            SardineFish.API.Comment.GetList(pid, 0, 100, 0, function (succeed, data)
+                            {
+                                if(!succeed)
+                                {
+                                    alert(data);
+                                    return;
+                                }
+                                comment.replyList = data;
+                                $("#subComment" + pid).get(0).dataSource = comment.replyList;
+                            });
+
+                            if (replyComment && replyCommentId == pid)
+                            {
+                                $("#text").attr("placeholder", "来说点啥呗~");
+                                $(e.target).css("color", comment.commenButtonColor);
+                                return;
+                            }
+                            $("#text").attr("placeholder", "回复" + comment.uid + ":");
+                            replyComment = true;
+                            replyCommentId = pid;
+                            $("#text").get(0).focus();
+                            var color = $(e.target).css("color");
+                            comment.commenButtonColor = color;
+                            $(e.target).css("color", "#2196f3");
+                        }); 
+                        $("#like" + pid).click(function (e)
+                        {
+                            if (comment.liked)
+                                return;
+                            $(e.target).css("color", "rgb(255, 152, 0)");
+                            SardineFish.API.PostData.DoLike(pid, function (succeed, data)
+                            {
+                                if (!succeed)
+                                {
+                                    alert(data);
+                                    return;
+                                }
+                                $(e.target).text(data);
+                                comment.liked = true;
+                            });
+                        });
+                    }
+                    commentList[i].dom = domList.get(i);
+                    var pid = commentList[i].pid;
+                    pidList[pid] = commentList[i];
+                    commentList[i].liked = false;
+                    iniEvent(pid, commentList[i]);
+                }
+                
+            });
+            
+        }
+        function init()
+        {
+            var matches = /#([0-9]+)/.exec(window.location.hash);
+            if (!matches || matches.length < 2)
+                return;
+            cid = parseInt(matches[1]);
+            loadComment(cid, commentList.length, 10);
+        }
+        window.onload = function (e)
+        {
+            init();
+        }
+        $("#buttonSend").click(function (e)
+        {
+            var cid = window.cid;
+            if (replyComment)
+                cid = replyCommentId;
+            if (!cid)
+                alert("参数错误");
+
+            SardineFish.API.Comment.Post(cid, uid, commentInput, function (succeed, data)
+            {
+                if(!succeed)
+                {
+                    alert(data);
+                    return;
+                }
+                $("#text").val("");
+                commentList=[];
+                loadTime = Math.round(new Date().getTime() / 1000);
+                loadComment(cid,0,10);
+            });
+        });
+        $("#text").get(0).addEventListener("input", function (e)
+        {
+            commentInput = $("#text").val();
+        });
+        $("#name").get(0).addEventListener("input", function (e)
+        {
+            uid = $("#name").val();
+        });
+        $(".textbox").focus(function (e)
+        {
+            $(e.target).addClass("textboxFocus");
+            $("#buttonSend").addClass("buttonSendFocus");
+        });
+        $(".textbox").blur(function (e)
+        {
+            $(e.target).removeClass("textboxFocus");
+            $("#buttonSend").removeClass("buttonSendFocus");
+        });
+        SardineFish.Web.UI.setButton($(".button"), ButtonStyle.ColorTransit);
+        SardineFish.Web.UI.setButton($(".iconButton"), ButtonStyle.TextIcon);
+        
+    </script>
+</body>
+</html>

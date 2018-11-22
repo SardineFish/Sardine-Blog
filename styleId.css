@@ -1,0 +1,856 @@
+﻿#rootDiv {
+    width: 100%;
+}
+
+#topArea {
+    display: none;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #2980B9;
+    background-color: rgba(63, 149, 206, 1);
+    padding-top: 10px;
+    position: relative;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#topCenterArea {
+    max-width: calc(100% - 00px);
+    min-width: 1000px;
+    margin: auto;
+    display: block;
+    width: auto;
+}
+
+#topRightArea {
+    float: right;
+    display: inline-block;
+    vertical-align: middle;
+    position: absolute;
+    bottom: -20px;
+    right: 40px;
+}
+
+#game-snake {
+    border: none 0px;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+#searchArea {
+    background-color: white;
+}
+
+#textboxSearch {
+    padding: 16px 30px;
+    width: calc(100% - 50px);
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: middle;
+    border: none 0px;
+    font-size: 1em;
+}
+
+#textboxSearch::placeholder {
+    color: #AAA;
+    font-family: "Titillium Web";
+}
+
+#buttonSearch {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+#topLogo {
+    vertical-align: middle;
+    display: inline-block;
+    width: 150px;
+    height: 82.5px;
+}
+
+#topLogoText {
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 40px;
+    margin: 0px;
+    margin-left: 10px;
+    font-weight: 100;
+    color: white;
+}
+
+#buttonSignUp {
+    display: none;
+    background-color: transparent;
+    width: 60px;
+    color: rgb(63, 150, 207);
+    border: 1px solid rgb(63, 150, 207);
+}
+
+#userFace {
+    height: 64px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    display: block;
+    background-size: cover;
+    background-position: center;
+    background-color: white;
+    color: #2980b9;
+    width: 64px;
+    font-size: 56px;
+    border-radius: 64px;
+    padding: 10px;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    -webkit-perspective: 100px;
+}
+
+#noticeMark {
+    width: 16px;
+    height: 16px;
+    background: rgba(255, 66, 66, 0);
+    display: block;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    border-radius: 100%;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+}
+
+#topBar {
+    position: relative;
+    height: 50px;
+    background-color: #6ED8D8;
+    border-top-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    z-index: 1000;
+    width: 100%;
+    color: white;
+}
+
+#topMenu {
+    max-width: 1280px;
+    margin: auto;
+    padding: 0px 50px;
+    height: 50px;
+    position: relative;
+}
+
+#menuFocus {
+    width: 100px;
+    height: 5px;
+    background-color: #FFD582;
+    position: absolute;
+    bottom: 0px;
+}
+
+#centerRootDiv {
+    width: 100%;
+    padding-top: 50px;
+    background-color: rgb(240, 240, 240);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+}
+
+#mainArea {
+    flex: 1 1;
+    max-width: 900px;
+    width: 100%;
+}
+
+#rightArea {
+    flex: auto 0;
+    width: 400px;
+    margin-left: 40px;
+}
+
+#pageBottom {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 300px;
+    display: block;
+    position: page;
+    bottom: 0px;
+    background-color: rgba(63, 150, 207, 1.00);
+    vertical-align: middle;
+}
+
+#centerDiv {
+    position: relative;
+    padding: 0 50px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+#infoContainer {
+    margin-top: 40px;
+    display: block;
+    padding: 30px;
+    background-color: white;
+}
+
+#tagsDiv {
+    margin-top: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+#topImgArea {
+    z-index: 1000000;
+    width: 100%;
+    height: 500px;
+    background-color: #beefff;
+    overflow: hidden;
+    position: relative;
+
+    font-family: "Titillium Web";
+}
+
+#canvas {
+    background-color: #BEEFFF;
+}
+
+#mainDiv {}
+
+#logoImg {
+    position: relative;
+    top: -1024px;
+    left: -2048px;
+}
+
+#skipDiv {
+    position: fixed;
+    float: right;
+    bottom: 10px;
+    right: 10px;
+}
+
+#welcomeTextContiner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    opacity: 0;
+}
+
+#mianTextFirstDiv {
+    float: right;
+    width: 50%;
+    position: relative;
+}
+
+#textWelcome {
+    left: 30%;
+    width: 50%;
+    position: relative;
+    cursor: default;
+    color: white;
+    opacity: 0;
+}
+
+#helloWorldDiv {
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+    border-width: 0px;
+    border-style: solid;
+    border-color: rgb(200, 200, 200);
+}
+
+#textHelloWorld {
+    width: 964px;
+    color: rgba(0, 0, 0, 0.00);
+    cursor: pointer;
+}
+
+#pageCodeContainer {
+    float: right;
+    margin-right: 50px;
+    right: 0px;
+    top: 80%;
+    height: 42px;
+    width: 42px;
+    background-color: white;
+    border-width: 0px;
+    overflow: hidden;
+    z-index: 100000000000000000000;
+}
+
+#pageCodeIcon {
+    padding: 5px;
+    top: 0px;
+    left: 0px;
+    height: 32px;
+    width: 32px;
+    background-color: #66CCFF;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#pageCodeIconText {
+    color: white;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    padding-top: 5px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#pageCodeTitleDiv {
+    height: 42px;
+    width: 100%;
+    white-space: nowrap;
+}
+
+#pageCodeInputArea {
+    width: 480px;
+    height: 280px;
+    padding: 10px;
+}
+
+#pageCodeInputBorder {
+    width: 478px;
+    height: 278px;
+    padding: 0px;
+}
+
+#pageCodeInput {
+    width: 100%;
+    height: 100%;
+}
+
+#pageCodeBottom {
+    height: 32px;
+    width: 480px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+#pageCodeButton {
+    float: right;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: right;
+}
+
+#pageCodeButtonRun {
+    background-color: rgba(114, 197, 124, 1);
+    color: white;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#contactDiv {
+    width: 100%;
+    height: 32px;
+    margin-top: 20px;
+    text-align: center;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+
+
+
+
+
+#latest {
+    height: auto;
+    min-height: 200px;
+}
+
+#latestArea {
+    height: auto;
+}
+
+#worksArea {
+    background-color: white;
+}
+
+#articleArea {
+    background-color: white;
+}
+
+#documentContainer {
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+    height: auto;
+}
+
+#programContainer {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    height: auto;
+}
+
+#debugDiv {
+    background-color: transparent;
+    width: 300px;
+    height: 200px;
+    bottom: 0px;
+}
+
+#buttonHome {
+    font-weight: bold;
+}
+
+#avatar {
+    width: 160px;
+    border-radius: 500px;
+    border: solid 3px #D5FAFA;
+}
+
+#avatar-wrapper {
+    text-align: center;
+}
+
+#email {
+    display: block;
+    text-align: center;
+    font-size: .8em;
+    color: #BBB;
+    transition: color .2s;
+}
+
+#email:hover {
+    color: #FFD582;
+}
+
+#my-name {
+    font-size: 24px;
+    text-align: center;
+    display: block;
+    margin-top: 20px;
+    color: #333;
+    transition: color .2s;
+}
+
+#my-name:hover {
+    color: #FFD582;
+}
+
+#page-footer {
+    font-family: "Titillium Web";
+    padding: 30px 0 80px 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #AAA;
+    text-align: center;
+}
+
+#friend-links {
+    margin-top: 40px;
+    min-height: 200px;
+    position: relative;
+}
+
+#friend-link-wrapper {
+    margin-top: 80px;
+
+}
+
+#add-link {
+    margin-top: 30px;
+    padding: 10px;
+    text-align: center;
+    color: #BBB;
+    cursor: pointer;
+}
+
+#top-nav {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+
+#come-on {
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+#add-link:hover #come-on {
+    opacity: 1;
+
+}
+
+#no-you {
+    opacity: 0;
+    transition: opacity .5s;
+
+}
+
+#friend-links:hover #no-you {
+    opacity: 1;
+}
+
+
+#button-menu {
+    padding: 10px;
+    font-size: 30px;
+    width: 50px;
+    height: 50px;
+    box-sizing: border-box;
+    color: white;
+    position: relative;
+    z-index: 1000000;
+    cursor: pointer;
+    display: none;
+}
+
+#button-menu.extend {
+    color: #666;
+}
+
+#loading {
+    width: 100%;
+}
+
+#loading #stretch {
+    white-space: pre-wrap;
+    word-break: break-all;
+    opacity: 0;
+}
+
+#space {
+    background-color: transparent;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    perspective: 600px;
+    perspective-origin: center;
+}
+
+#solar-system {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(80deg);*/
+}
+
+#sun {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff06b;
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(-80deg);*/
+    z-index: 100;
+}
+
+#solar-system svg {
+    perspective: 300px;
+}
+
+#mercury {
+    height: 100px;
+    width: 100px;
+    top: calc(50% - 51px);
+    left: calc(50% - 51px);
+    animation-duration: 1.06s;
+}
+
+#mercury .antiRotate {
+    width: 10px;
+    height: 10px;
+    top: calc(50% - 5px);
+    left: -5px;
+    animation-duration: 1.06s;
+}
+
+#mercury .planet {
+    background-color: #a0a0a0;
+}
+
+#venus {
+    width: 140px;
+    height: 140px;
+    top: calc(50% - 71px);
+    left: calc(50% - 71px);
+    animation-duration: 1.757s;
+}
+
+#venus .antiRotate {
+    width: 14px;
+    height: 14px;
+    top: calc(50% - 7px);
+    left: -7px;
+    animation-duration: 1.757s;
+}
+
+#venus .planet {
+    background-color: #eae5cf;
+}
+
+#earth {
+    width: 200px;
+    height: 200px;
+    top: calc(50% - 101px);
+    left: calc(50% - 101px);
+    animation-duration: 3s;
+}
+
+#earth .antiRotate {
+    width: 20px;
+    height: 20px;
+    top: calc(50% - 10px);
+    left: -10px;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    z-index: -1;
+}
+
+#earth .planet {
+    background-color: #6DB5FF;
+}
+
+#mars {
+    animation-duration: 4.96s;
+    width: 280px;
+    height: 280px;
+    top: calc(50% - 141px);
+    left: calc(50% - 141px);
+}
+
+#mars .planet {
+    background-color: #ffbe6d;
+}
+
+#mars .antiRotate {
+    height: 14px;
+    width: 14px;
+    top: calc(50% - 7px);
+    left: -7px;
+    animation-duration: 4.96s;
+}
+
+.planet {
+    border-radius: 50%;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(-80deg);*/
+    width: 100%;
+    height: 100%;
+}
+
+.orbit {
+    border: solid 1px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    position: absolute;
+    top: 0px;
+    left: auto;
+    animation-name: planetRotate;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transform-style: preserve-3d;
+    transform-origin: center;
+}
+
+.antiRotate {
+    animation-name: planetAntiRotate;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: absolute;
+    transform-origin: center;
+    transform-style: preserve-3d;
+}
+
+#solar-system g {
+    transform-origin: 500px 500px;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    perspective-origin: center;
+    transform-style: preserve-3d;
+    transform: rotateY(45deg);
+}
+
+@keyframes planetRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes planetAntiRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+h1.pIntroduction {
+    font-size: 4.5em;
+}
+
+h2.pIntroduction {
+    font-size: 2.4em;
+}
+
+h3.pIntroduction {
+    font-size: 1.5em;
+}
+
+
+#top-bar-wrapper {
+    height: 50px;
+}
+
+#page-title {
+    flex: 1 0;
+    font-size: 1.4em;
+    margin-left: .5em;
+    display: none;
+}
+@media screen and (max-width:1280px) {
+    #rightArea {
+        width: 360px;
+    }
+}
+
+@media screen and (max-width:1024px) {
+    #rightArea {
+        display: none;
+    }
+    #textWelcome {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width:800px) {
+    #pageCodeContainer {
+        display: none;
+    }
+    #topImgArea {
+        display: none;
+    }
+    #topBar {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+    }
+    #topMenu {
+        display: none;
+        background-color: transparent;
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        color: #888;
+        padding: 0;
+        z-index: 100000;
+        transition: all .3s;
+    }
+    #topMenu.extend {
+        display: block;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    #top-nav {
+        display: flex;
+        flex-flow: column nowrap;
+        background-color: white;
+        width: 60%;
+        padding-top: 50px;
+        box-sizing: border-box;
+        position: relative;
+        left: -60%;
+        transition: all .3s;
+    }
+
+    #page-title {
+        display: block;
+    }
+    #topMenu.extend #top-nav {
+        left: 0;
+    }
+    #menuFocus {
+        display: none;
+    }
+    .menuButton {
+        display: block;
+        position: relative;
+        width: auto;
+        color: inherit;
+        text-align: left;
+        padding: 0 40px;
+    }
+    .menuButton:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    #buttonHome {
+        color: #333;
+    }
+    #button-menu {
+        display: block;
+    }
+    #centerDiv {
+        padding: 0 10px;
+        width: 100%;
+
+    }
+    .latestItem {
+        padding: 20px;
+        box-sizing: border-box;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .latestTitle {
+        font-size: 24px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: left;
+        margin: 0;
+    }
+    .latestTime {
+        text-align: left;
+        margin-top: 0;
+        color: #AAA;
+    }
+    .latestText {
+        margin: 0;
+        margin-top: 1em;
+    }
+}

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    targetNamespace="http://tempuri.org/Error Code XSD.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/Error Code XSD.xsd"
+    xmlns:mstns="http://tempuri.org/ErrorCodeXSD.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:complexType name ="errorType">
+    <xs:sequence >
+    </xs:sequence>
+    <xs:attribute name ="code" type ="xs:long" use ="required"/>
+    <xs:attribute name ="description" type ="xs:string" use ="required"/>
+  </xs:complexType>
+  <xs:complexType name ="classType">
+    <xs:sequence>
+      <xs:element name ="class" type ="classType" minOccurs ="0" maxOccurs ="unbounded"></xs:element>
+      <xs:element name ="error" type ="errorType" minOccurs ="0" maxOccurs ="unbounded"></xs:element>
+    </xs:sequence>
+    <xs:attribute name ="name" type ="xs:string" use ="required"/>
+    <xs:attribute name ="from" type ="xs:long" use="required"></xs:attribute>
+    <xs:attribute name ="to" type ="xs:long" use ="required"></xs:attribute>
+  </xs:complexType>
+  <xs:complexType name ="rootType">
+    <xs:sequence>
+      <xs:element name ="class" type ="classType"  minOccurs ="0" maxOccurs ="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name ="version" type ="xs:string" use ="required"/>
+    <xs:attribute name ="name" type ="xs:string" use ="required"/>
+    <xs:attribute name ="code" type="xs:int" use ="required"/>
+  </xs:complexType>
+  <xs:element name ="root" type ="rootType">
+    
+  </xs:element>
+</xs:schema>

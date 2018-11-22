@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&__&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~
+~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~&&&&&&&&&&&&~~~~&&~~&&&&&&&&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~&&&&&&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~tttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~~~~~~~~~~~~~~tttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~&&~~~~~~~~~~tttttttttttttttttttttttttttttttt
+~~~~~~~~~~~~~~~~~~~~ttttttt&&tttttttttttttttttttttttttttt@@@@@@@tttttttt
+~~~~~~~~~~ttttttttttttttttt&&tttttttttttttttttttttttt@@@@@@@@@@@tttttttt
+ttttttttttttttttttttttttttt&&@@@ttttttttttttttttttt@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttt@@@@@@tttttttttttt@@@@@@@@@@@@@@tttttttt
+tttttttttttttttttttttttttttttttttttttt@@@@@ttttttt@@@@@@@@@@@@@ttttttttt
+ttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@@@@@@tttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@tttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@tttttttttttttttt
+tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="http://static.sardinefish.com/icon/LOGO.ico" media="screen" />
+    <title>SardineFish</title>
+    <script src="/resource.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.Engine2D.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.Engine2D.GUI.js"></script>
+    <script>
+        function loadScripts()
+        {
+            document.write("<style>@font-face{font-family:fontIcon;src:url('" + resource.font.segmdl2 + "');}</style>");
+            document.write(toCSSHTMLTag(style.tag));
+            document.write(toCSSHTMLTag(style.class));
+            document.write(toCSSHTMLTag(style.id));
+            //----------------------------------jQuery----------------------------------
+            document.write(toScriptHTMLTag(lib.jQueryMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+            document.write(toScriptHTMLTag(lib.jQueryShadowAnimation));
+            document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+            //--------------------------------------------------------------------------------------------------------------
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toScriptHTMLTag(lib.codeMirror.lib.script));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.showHintJS));
+            document.write(toScriptHTMLTag(lib.codeMirror.addon.hint.javaScriptHintJs));
+            document.write(toScriptHTMLTag(lib.codeMirror.mode.javascript));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        function loadCSS()
+        {
+
+            //----------------------------------codeMirror----------------------------------
+            document.write(toCSSHTMLTag(lib.codeMirror.lib.css));
+            document.write(toCSSHTMLTag(lib.codeMirror.addon.hint.showHintCSS));
+            //-----------------------------------------------------------------------------------------------------------------
+        }
+        loadScripts();
+        loadCSS();
+    </script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <style >
+    </style>
+</head>
+<body>
+    <div id="pageCodeContainer" class="divFloat transparentBackgroundOjbect" style="width:42px; height:42px; box-shadow:0 0 0px rgba(200,200,200,0.00);">
+        <div id="pageCodeTitleDiv" onselectstart="return false">
+            <div id="pageCodeIcon" onclick="pageCodeIconClick();">
+                <div class="transparentBackgroundOjbect" style="width:100%; height:100%;">
+                    <h6 id="pageCodeIconText">&lt;/&gt;</h6>
+                </div>
+            </div>
+            <div style="left:48px; padding-left:10px; display:inline-block;">
+                <h6 style="cursor:default; color:gray;">JavaScript代码编辑器</h6>
+            </div>
+        </div>
+        <div id="pageCodeInputArea">
+            <div id="pageCodeInputBorder" class="borderObject">
+                <textarea id="pageCodeInput"></textarea>
+            </div>
+        </div>
+        <div id="pageCodeBottom">
+            <div id="pageCodeButton">
+                <a id="pageCodeButtonRun" class="button" onclick="pageCodeRun();">执行</a>
+            </div>
+        </div>
+    </div>
+    <div id="rootDiv">
+        <div id="topArea" onselectstart="return false;">
+            <div id="topCenterArea">
+                <script>
+                    document.write(toImgHTMLTag(resource.img.logo.sardineFish[200].min.PNG, "topLogo"));
+                </script>
+                <p id="topLogoText">SardineFish</p>
+            </div>
+            <div id="topRightArea">
+                <div style="transform-style:preserve-3d;-webkit-perspective:200px;perspective:200px;">
+                    <div id="userFace" class="button" href="/account/login" style="font-family: 'fontIcon','Segoe MDL2 Assets';">
+                        <div style="width:100%;height:100%;">
+                            <i id="loginIcon">&#xE13D;</i>
+                            <i id="noticeMark"></i>
+                        </div>
+                    </div>
+                </div>
+                <a id="buttonSignUp" class="button" href="/account/register">Sign Up</a>
+            </div>
+        </div>
+        <div id="topBar">
+            <div style="margin: 0px; padding: 0px; width: 50px; height:50px; float: left; display: none;">
+                <script>
+                    //document.write('<img src="' + resource.img.logo.logo[50].min.PNG + '" draggable="false"/>');
+                </script>
+            </div>
+            <div id="topMenu" style="height:50px;">
+                <div style="position:relative;height:100%;width:100%;">
+                    <div id="menuFocus"></div>
+                    <a class="menuButton" id="buttonHome" href="/index.html" style="border-color:white;">首页</a>
+                    <a class="menuButton" id="buttonWho" href="/more/index.html">更多</a>
+                    <a class="menuButton" id="buttonApp" href="/works/index.html">作品</a>
+                    <a class="menuButton" id="buttonAlticle" href="/article/index.html">文章</a>
+                </div>
+            </div>
+        </div>
+        <div id="centerArea">
+
+        </div>
+        <div id="pageBottom">
+            <h1 style="color:white; font-weight:100; text-align: center">Nothing here.</h1>
+        </div>
+    </div>
+    <!--EventHandle-->
+    <script >
+    </script>
+    <script src="event.js"></script>
+</body>
+</html>
