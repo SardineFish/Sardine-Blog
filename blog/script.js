@@ -176,6 +176,7 @@ function loadContentNav()
             for (; i < headers.length; i++)
             {
                 var currentLevel = parseInt(/H(\d)/.exec(headers[i].tagName)[1]);
+                headers[i].id = headers[i].innerText;
                 if (currentLevel >= level)
                 {
                     if (header.header!="" && currentLevel <= level)
@@ -238,7 +239,6 @@ function loadComment(cid) {
         });
     });
 }
-
 function initCommentPost()
 {
     $("#button-add-comment").addEventListener("click", function ()
