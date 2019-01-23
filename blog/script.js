@@ -94,6 +94,7 @@ function checkLogin()
         }
     });
 }
+
 function initTopBar()
 {
     var extend = false;
@@ -123,18 +124,74 @@ function loadBlog(pid) {
     };
     document.querySelector("#article-template").dataSource = data;
     return;*/
+
+    var hljsLib = "//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1";
+
     $("#write").href = "/blog/write/?pid=" + pid;
     SardineFish.API.Article.Get(pid, function (data) {
         if (data.docType == "markdown")
         {
+            var unknowLanguages = {};
+            if (new Date(data.time).getTime() < 1546272000000)
+            {
+                marked.setOptions({
+                    highlight: function (str, lang, callback) {
+                        if (lang && hljs.getLanguage(lang))
+                        {
+                            try
+                            {
+                                return hljs.highlight(lang, str).value;
+                            } catch (__) { }
+                        }
+                        else if (lang && !unknowLanguages[lang])
+                        {
+                            unknowLanguages[lang] = fetch(`${hljsLib}/languages/${lang}.min.js`)
+                                .then(response => response.text())
+                                .then(code =>
+                                {
+                                    eval(code);
+                                    $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
+                                });
+                        }
+                        return hljs.highlightAuto(str).value;
+                    }
+                });
+                data.document = marked(data.document);
+            }
+            else
+            {
+                var md = window.markdownit({
+                    html: true, // Enable HTML tags in source
+                    xhtmlOut: false, // Use '/' to close single tags (<br />).
+                    breaks: true, // Convert '\n' in paragraphs into <br>
+                    langPrefix: 'lang-', // CSS language prefix for fenced blocks. Can be
+                    linkify: true, // Autoconvert URL-like text to links
+                    typographer: false,
+                    highlight: function (str, lang) {
+                        if (lang && hljs.getLanguage(lang)) {
+                            try {
+                                return hljs.highlight(lang, str).value;
+                            } catch (__) {}
+                        } else if (lang) {
+                            unknowLanguages[lang] = true;
+                        }
+                        return hljs.highlightAuto(str).value;
+                    }
+                });
 
-            marked.setOptions({
-                highlight: function (code)
-                {
-                    return hljs.highlightAuto(code).value;
-                }
-            });
-            data.document = marked(data.document);
+                md.use(markdownitEmoji);
+                data.document = md.render(data.document);
+                
+                // Post highlight
+                Object.keys(unknowLanguages).forEach(lang => {
+                    fetch(`${hljsLib}/languages/${lang}.min.js`)
+                        .then(response => response.text())
+                        .then(code => {
+                            eval(code);
+                            $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
+                        });
+                });
+            }
         }
         document.querySelector("#article-template").dataSource = data;
         loadContentNav();
