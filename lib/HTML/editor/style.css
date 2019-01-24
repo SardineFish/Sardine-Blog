@@ -228,3 +228,16 @@ body {
 #render-types > .item.selected {
     border-bottom: solid 3px #4DD0E1;
 }
+
+.hover-trigger .non-hover {
+    display: initial;
+}
+.hover-trigger .hover {
+    display: none;
+}
+.hover-trigger:hover .non-hover{
+    display: none;
+}
+.hover-trigger:hover .hover{
+    display: initial;
+}

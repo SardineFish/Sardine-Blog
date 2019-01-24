@@ -47,6 +47,7 @@ function initEditor(pid)
         tags.add("");
     });
     var lastSelect = $$("#doc-types > .item")[1];
+
     $$("#doc-types > .item").forEach(function (element)
     {
         element.addEventListener("click", function (e)

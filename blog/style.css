@@ -1098,3 +1098,18 @@ textarea {
 }
 
 
+.hover-trigger .non-hover {
+    display: initial;
+}
+
+.hover-trigger .hover {
+    display: none;
+}
+
+.hover-trigger:hover .non-hover {
+    display: none;
+}
+
+.hover-trigger:hover .hover {
+    display: initial;
+}
