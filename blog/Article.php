@@ -267,7 +267,7 @@ class Article
             if(!DocType::Check($article->docType))
                 throw new Exception ("Invalid docType.",1010204102);
 
-            $account = Account::CheckLoginV2();
+            $account = Account::CheckPermissionV2(UserLevels::Admin);
             $article->author = $account->uid;
             
             if(!$mysql)
