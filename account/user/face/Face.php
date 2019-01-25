@@ -47,7 +47,7 @@ class Face
             return $r;
         }
 
-        $result=Users::Edit ($uid,"icon",$url,$mysql);
+        $result=Users::Edit($uid,"icon",$url,$mysql);
         if(!$result->succeed)
         {
             $r->error = $result->error;

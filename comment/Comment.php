@@ -161,10 +161,10 @@ class Comment
             for($i=0;$i < count($sqlResult->data); $i++)
             {
                 $data=$sqlResult->data[$i];
-                $comment=new Comment($data['cid'],$data['uid'],$data['name'],$data['text']);
+                $comment=new Comment($data['cid'],$data['uid'],urldecode($data['name']),$data['text']);
                 $comment->time=$data['time'];
                 $comment->pid=$data['pid'];
-                $comment->avatar = $data['icon'];
+                $comment->avatar = urldecode($data['icon']);
                 $comment->text=Comment::Decode($comment->text);
 
                 // Get sub Comments
