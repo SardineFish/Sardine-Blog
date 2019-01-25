@@ -9,7 +9,6 @@ body {
     font-family: "Roboto", sans-serif;
 
 
-    width: 1280px;
     margin: auto;
 }
 
@@ -26,8 +25,8 @@ body {
 #first .imgBlock img {
     width: 500px;
     position: absolute;
-    top: 160px;
-    right: 50px;
+    top: 200px;
+    right: 200px;
 }
 
 #first .textBlock {
@@ -66,9 +65,9 @@ body {
 #summary .textBlock {
     position: absolute;
     top: 180px;
-    font-size: 30px;
+    font-size: 24px;
     color: white;
-    left: 20%;
+    left: 10%;
 }
 
 
