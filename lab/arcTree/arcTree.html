@@ -163,7 +163,7 @@ try
     var ang=1*PI/6;
     var length=200;
     var depth = 5;//Math.log(1/length)/Math.log(k);
-    //alert(depth);
+    //console.warn(depth);
     var w=PI/1.5;// angle v
     var bgColor=new Color(0,0,0,0);
     var color=new Color(0, 0, 0, 1);
@@ -287,9 +287,9 @@ try
             var v=Vector2.fromPoint(line.p1,line.p2);
             var vl=Vector2.multi(v,k);
             var vr=Vector2.multi(v,k);
-            //alert(vl);
+            //console.warn(vl);
             vl.rotate(ang);
-            //alert(vl);
+            //console.warn(vl);
             vr.rotate(-ang);
             var lineL=new Line(line.p2,new Point(line.p2.x+vl.x,line.p2.y+vl.y));
             var lineR=new Line(line.p2,new Point(line.p2.x+vr.x,line.p2.y+vr.y));
@@ -333,7 +333,7 @@ try
         //setTimeout(next,1000);
 
 
-        }catch(ex){alert("next:"+i+ex.message);}
+        }catch(ex){console.warn("next:"+i+ex.message);}
     }
 
     function EventInit()
@@ -465,7 +465,7 @@ try
 }
 catch(ex)
 {
-    alert("global:"+ex.message);
+    console.warn("global:"+ex.message);
 }
         </script>
     </body>

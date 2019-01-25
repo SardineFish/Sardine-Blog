@@ -261,7 +261,7 @@ function over()
     show("overMenu");
     show("menu");
     show("scorePostArea");
-    //alert("Σ(?ω??)?! Game Over！"+snake.length.toString()+"cm");
+    //console.warn("Σ(?ω??)?! Game Over！"+snake.length.toString()+"cm");
     //start();
 }
 function setFood()
@@ -401,7 +401,7 @@ function move()
             setTimeout(draw, int(1000 / fps));
         }
         draw();
-   /* } catch (ex) { alert(ex.message); }*/
+   /* } catch (ex) { console.warn(ex.message); }*/
 }
 function controlSpeedUp(t)
 {
@@ -533,7 +533,7 @@ function mouseMove(e)
             return;
         }
     }
-    catch (ex) { alert(ex.message);}
+    catch (ex) { console.warn(ex.message);}
 }
 canvas.onclick = function (e)
 {
@@ -639,20 +639,20 @@ function setButton(obj)
 function buttonMouseDown(obj)
 {
     if (!obj)
-        alert("!obj");
+        console.warn("!obj");
     var id = obj.id;
     if (!id)
-        alert("!id");
+        console.warn("!id");
     $("#" + id).css("background-color", themeColor);
     var fc = $("#" + id).css("color", themeBackgroundColor);
 }
 function buttonMouseUp(obj)
 {
     if (!obj)
-        alert("!obj");
+        console.warn("!obj");
     var id = obj.id;
     if (!id)
-        alert("!id");
+        console.warn("!id");
     $("#" + id).css("background-color", themeBackgroundColor);
     var fc = $("#" + id).css("color", themeColor);
 }
@@ -703,7 +703,7 @@ function getRank(clear, page, count)
     if (clear)
         container.html("");
     if (!SardineFish || !SardineFish.Games)
-        alert("组件缺失.");
+        console.warn("组件缺失.");
     SardineFish.Games.Score.GetAsync("snakeWeb", page, count, function (data)
     {
         if (!data)
@@ -727,13 +727,13 @@ function getRank(clear, page, count)
 function postScore(name)
 {
     if (!SardineFish || !SardineFish.Games)
-        alert("组件缺失.");
+        console.warn("组件缺失.");
     SardineFish.Games.Score.PostAsync("snakeWeb", name, snake.length, function (succeed, data)
     {
         if (!succeed)
         {
             if (data)
-                alert(data);
+                console.warn(data);
             return;
         }
         $("#selfRank").text("你排在No." + data.toString());
@@ -790,13 +790,13 @@ function showSettings()
     }
 try{
     var x=arcSensitivity(sen);
-}catch(ex){alert(ex.message);}
+}catch(ex){console.warn(ex.message);}
     if(isNaN(x))
         x=1;
     if(x<0)
         x=0;
     var max = int($("#sensitivityB").width());
-//alert(max.toString());
+//console.warn(max.toString());
     $("#sensitivityBlock").css("left",(max*x).toString()+"px");
     $("#sensitivityF").css("width",(max*x).toString()+"px");
 }
@@ -871,7 +871,7 @@ function moveSenBar(x)
     var margin=int($("#settingsMenu").css("margin-left").replace("px",""));
     var left=x-30-margin;
     var max = int($("#sensitivityB").width());
-    //alert(max.toString());
+    //console.warn(max.toString());
     if(left<0)
         left=0;
     if(left>max)
@@ -883,7 +883,7 @@ function moveSenBar(x)
 function sensitivityBlockMouseDown(e)
 {
     sensitivityBlockHold=true;
-    //alert("down");
+    //console.warn("down");
     var clientX=0;
     var clientY=0;
     if (e.touches && e.touches[0])
@@ -954,7 +954,7 @@ function resize(blockSize)
         }
         var innerHeight = window.innerHeight;
         var innerWidth = window.innerWidth;
-        //alert(innerHeight.toString()+","+innerWidth.toString());
+        //console.warn(innerHeight.toString()+","+innerWidth.toString());
         $("body").css("height", (innerHeight).toString() + "px");
         //$("body").css("width",(width*10).toString()+"px");
         /*function noScroll()
@@ -966,7 +966,7 @@ function resize(blockSize)
         noScroll();*/
         //document.body.scrollTop=document.documentElement.scrollTop=height;
         //setTimeout(function(){document.body.scrollTop=document.documentElement.scrollTop=height},1000);
-    } catch (ex) { alert(ex.message); }
+    } catch (ex) { console.warn(ex.message); }
 }
 resize();
 window.onmousedown = mouseDown;

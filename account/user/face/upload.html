@@ -113,7 +113,7 @@
             {
                 if (!succeed)
                 {
-                    alert(data.msg);
+                    console.warn(data.msg);
                     return;
                 }
                 var formData = new FormData();
@@ -190,7 +190,7 @@
                     {
                         if (!succeed)
                         {
-                            alert(dataSet.errorCode + ": " + dataSet.msg);
+                            console.warn(dataSet.errorCode + ": " + dataSet.msg);
                             return;
                         }
                         $("#faceImg").attr("src", "http://img.sardinefish.com/" + data.key);

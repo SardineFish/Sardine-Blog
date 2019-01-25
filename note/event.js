@@ -18,7 +18,7 @@
         }
         catch (ex)
         {
-            alert(ex.message);
+            console.warn(ex.message);
         }
     }
     function pageCodeRun()
@@ -132,7 +132,7 @@ function loadNotes(clear, page)
     {
         if (!succeed)
         {
-            alert(data.errorCode + ": " + data.msg);
+            console.warn(data.errorCode + ": " + data.msg);
             return;
         }
         if (clear)

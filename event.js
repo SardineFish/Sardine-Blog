@@ -131,7 +131,7 @@ function evalCode(code)
     }
     catch (ex)
     {
-        alert(ex.message);
+        console.warn(ex.message);
     }
 }
 function pageCodeRun()

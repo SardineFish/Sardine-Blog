@@ -1,11 +1,55 @@
-window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error("jQuery is required!");    }try{    if(!sar)        sar={};    sar.Web=(function(web)    {        if(!web)            web={};        return web;    })(sar.Web);    sar.Color = (function (color)
-    {        if (color && color.version && color.version > 2.0)            return;        //-------Color        function Color(r, g, b, a)
+window.SardineFish=(function(sar){
+    if(!jQuery)
+    {
+        throw new Error("jQuery is required!");
+    }
+try{
+    if(!sar)
+        sar={};
+    sar.Web=(function(web)
+    {
+        if(!web)
+            web={};
+        return web;
+    })(sar.Web);
+
+    sar.Color = (function (color)
+    {
+        if (color && color.version && color.version > 2.0)
+            return;
+        //-------Color
+        function Color(r, g, b, a)
         {
-            r = parseInt(r);            g = parseInt(g);            b = parseInt(b);            if (isNaN(r) || r >= 256)                r = 255;            else if (r < 0)                r = 0;            if (isNaN(g) || g >= 256)                g = 255;            else if (g < 0)                g = 0;            if (isNaN(b) || b >= 256)                b = 255;            else if (b < 0)                b = 0;            if (isNaN(a) || a > 1.0)                a = 1.0;            else if (a < 0)                a = 0;            this.red = r;            this.green = g;            this.blue = b;            this.alpha = a;
-        }        Color.version = 2.0;        Color.random = function ()
+            r = parseInt(r);
+            g = parseInt(g);
+            b = parseInt(b);
+            if (isNaN(r) || r >= 256)
+                r = 255;
+            else if (r < 0)
+                r = 0;
+            if (isNaN(g) || g >= 256)
+                g = 255;
+            else if (g < 0)
+                g = 0;
+            if (isNaN(b) || b >= 256)
+                b = 255;
+            else if (b < 0)
+                b = 0;
+            if (isNaN(a) || a > 1.0)
+                a = 1.0;
+            else if (a < 0)
+                a = 0;
+            this.red = r;
+            this.green = g;
+            this.blue = b;
+            this.alpha = a;
+        }
+        Color.version = 2.0;
+        Color.random = function ()
         {
             return new Color(Math.random() * 255, Math.random() * 255, Math.random() * 255, 1.0);
-        }        Color.fromString = function (str)
+        }
+        Color.fromString = function (str)
         {
             str = str.replace(new RegExp(/\s/g), "");
             
@@ -342,10 +386,12 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
                 default:
                     return new Color(0, 0, 0, 1.0);
             }
-        }        Color.prototype.copy = function ()
+        }
+        Color.prototype.copy = function ()
         {
             return new Color(this.red, this.green, this.blue, this.alpha);
-        }        Color.prototype.toString = function ()
+        }
+        Color.prototype.toString = function ()
         {
             this.red = this.red > 255 ? 255 : this.red;
             this.green = this.green > 255 ? 255 : this.green;
@@ -370,17 +416,49 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
 
         window.Color = Color;
         return Color;
-    })(sar.Color);    var UI={};    UI.themeColor="black";    UI.themeBgColor = "white";    var ButtonSyle = (function (buttonStyle)
+    })(sar.Color);
+
+    var UI={};
+    UI.themeColor="black";
+    UI.themeBgColor = "white";
+    var ButtonSyle = (function (buttonStyle)
     {
         buttonStyle = {};
-        buttonStyle.None = 0;        buttonStyle.ColorExchange = 1;        buttonStyle.ColorTransit = 2;        buttonStyle.TextIcon = 3;        window.ButtonStyle = buttonStyle;
+        buttonStyle.None = 0;
+        buttonStyle.ColorExchange = 1;
+        buttonStyle.ColorTransit = 2;
+        buttonStyle.TextIcon = 3;
+        window.ButtonStyle = buttonStyle;
         return buttonStyle;
-    })(ButtonSyle);    function setButton(obj, buttonStyle)    {        if (isNaN(buttonStyle))            buttonStyle = ButtonStyle.ColorExchange;        for(var i=0;i<obj.length;i++)        {            obj.get(i).buttonStyle = buttonStyle;            obj.get(i).addEventListener("touchstart",buttonMouseDown);            obj.get(i).addEventListener("touchend", buttonMouseUp);            obj.get(i).addEventListener("mousedown", buttonMouseDown);            obj.get(i).addEventListener("mouseup", buttonMouseUp);            obj.get(i).addEventListener("mouseover", buttonMouseEnter);            obj.get(i).addEventListener("mouseout", buttonMouseOut);        }                obj.attr("onselectstart", "return false");    }    function createTextButton(text)
+    })(ButtonSyle);
+
+    function setButton(obj, buttonStyle)
+    {
+        if (isNaN(buttonStyle))
+            buttonStyle = ButtonStyle.ColorExchange;
+        for(var i=0;i<obj.length;i++)
+        {
+            obj.get(i).buttonStyle = buttonStyle;
+            obj.get(i).addEventListener("touchstart",buttonMouseDown);
+            obj.get(i).addEventListener("touchend", buttonMouseUp);
+            obj.get(i).addEventListener("mousedown", buttonMouseDown);
+            obj.get(i).addEventListener("mouseup", buttonMouseUp);
+            obj.get(i).addEventListener("mouseover", buttonMouseEnter);
+            obj.get(i).addEventListener("mouseout", buttonMouseOut);
+        }
+        
+        obj.attr("onselectstart", "return false");
+    }
+
+    function createTextButton(text)
     {
         var button = $('<a>' + text + '</a>');
         setButton(button, ButtonSyle.TextIcon);
         return button;
-    }    UI.setButton = setButton;    function buttonMouseEnter(e)
+    }
+
+    UI.setButton = setButton;
+    function buttonMouseEnter(e)
     {
         var button = e.target;
         var color = window.Color.fromString($(button).css("color"));
@@ -445,9 +523,11 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             color.alpha += a;
             $(button).css("color", color.toString());
         }
-    }    function buttonMouseOut(e)
+    }
+    function buttonMouseOut(e)
     {
-        var button = e.target;        var color = button.color.copy();
+        var button = e.target;
+        var color = button.color.copy();
         var bgColor = button.bgColor.copy();
 
         if (button.buttonStyle == ButtonSyle.ColorTransit)
@@ -481,11 +561,17 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
         {
             $(button).css("color", button.color.toString());
         }
-    }    function buttonMouseDown(e)    {
-        var button = e.target;        if (!button.color)
-        {            button.color = Color.fromString($(button).css("color"));
+    }
+    function buttonMouseDown(e)
+    {
+        var button = e.target;
+        if (!button.color)
+        {
+            button.color = Color.fromString($(button).css("color"));
             button.bgColor = Color.fromString($(button).css("background-color"));
-        }        var color = button.color.copy();
+        }
+
+        var color = button.color.copy();
         var bgColor = button.bgColor.copy();
 
 
@@ -521,7 +607,8 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             {
                 $(button).css("border-right-color", bgColor.toString());
             }
-        }        else if (button.buttonStyle == ButtonStyle.ColorExchange)
+        }
+        else if (button.buttonStyle == ButtonStyle.ColorExchange)
         {
             $(button).css("background-color", color.toString());
             $(button).css("color", bgColor.toString());
@@ -542,11 +629,18 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             color.blue += b;
             color.alpha += a;
             $(button).css("color", color.toString());
-        }    }    function buttonMouseUp(e)    {        var button = e.target;        if (!button.color)
+        }
+    }
+    function buttonMouseUp(e)
+    {
+        var button = e.target;
+        if (!button.color)
         {
             button.color = Color.fromString($(button).css("color"));
             button.bgColor = Color.fromString($(button).css("background-color"));
-        }        var color = button.color.copy();
+        }
+
+        var color = button.color.copy();
         var bgColor = button.bgColor.copy();
 
         if (button.buttonStyle == ButtonStyle.ColorTransit)
@@ -577,7 +671,8 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             {
                 $(button).css("border-right-color", bgColor.toString());
             }
-        }        else if (button.buttonStyle == ButtonStyle.ColorExchange)
+        }
+        else if (button.buttonStyle == ButtonStyle.ColorExchange)
         {
             $(button).css("background-color", bgColor.toString());
             $(button).css("color", color.toString());
@@ -593,9 +688,13 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             color.blue += b;
             color.alpha += a;
             $(button).css("color", color.toString());
-        }    }    function valueAnimate(from,to,time,fps,callback,complete)    {
+        }
+    }
+
+    function valueAnimate(from,to,time,fps,callback,complete)
+    {
         if (isNaN(from))
-            from = 0;
+            from = 0;console.warn(
         if (isNaN(to))
             to = 0;
         if (isNaN(time))
@@ -623,7 +722,10 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             setTimeout(handle, Math.floor(dt));
         }
         setTimeout(handle, Math.floor(dt));
-    }    UI.valueAnimate = valueAnimate;    function TextBox(dom)
+    }
+    UI.valueAnimate = valueAnimate;
+
+    function TextBox(dom)
     {
         var textbox = this;
 
@@ -683,7 +785,11 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             get: function () { return edit.get(0).value },
             set: function (value) { edit.get(0).value = value; }
         });
-    }    UI.TextBox = TextBox;    function setTextBox(obj, button)
+    }
+
+    UI.TextBox = TextBox;
+
+    function setTextBox(obj, button)
     {
         if (!obj instanceof $)
         {
@@ -694,4 +800,10 @@ window.SardineFish=(function(sar){    if(!jQuery)    {        throw new Error
             new TextBox(obj, button);
             
         }
-    }    UI.setTextBox = setTextBox;        sar.Web.UI=UI;    return sar;}catch(ex){alert("SardineFish.Web.UI:"+ex.message);}})(window.SardineFish);
+    }
+    UI.setTextBox = setTextBox;
+    
+    sar.Web.UI=UI;
+    return sar;
+}catch(ex){alert("SardineFish.Web.UI:"+ex.message);}
+})(window.SardineFish);

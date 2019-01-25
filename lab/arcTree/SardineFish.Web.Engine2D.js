@@ -831,7 +831,7 @@ try{
             }
             catch(ex)
             {
-alert("animationFrame:"+ex.message);
+console.warn("animationFrame:"+ex.message);
                 if(game.onError)
                     game.onError(ex);
             }
@@ -991,7 +991,7 @@ alert("animationFrame:"+ex.message);
                     }
                 }
             }
-            //}catch(ex){ alert("collide:"+ex.message);throw ex;}
+            //}catch(ex){ console.warn("collide:"+ex.message);throw ex;}
         });
     }
     Scene.prototype.render = function (dt)
@@ -1005,7 +1005,7 @@ alert("animationFrame:"+ex.message);
         //scene.camera.graphics.clearRect(scene.camera.center.x - scene.camera.width / 2, scene.camera.center.y + scene.camera.height / 2, scene.camera.width, scene.camera.height);
         this.objectList.foreach(function (obj, node)
         {
-            //alert(obj.graphic.r);
+            //console.warn(obj.graphic.r);
             if (obj.onRender)
                 obj.onRender(obj, dt);
             obj.render(scene.camera.graphics, obj.position.x, obj.position.y, 0, dt);
@@ -1036,7 +1036,7 @@ var whileRender=true;
 whileRender=false;
         this.physicalSimulate(dt);
         //this.render(dt);
-} catch(ex){ alert(whileRender+ex.message); }
+} catch(ex){ console.warn(whileRender+ex.message); }
     }
     Scene.prototype.initEvents = function ()
     {
@@ -1472,7 +1472,7 @@ whileRender=false;
             }
             catch (ex)
             {
-                alert(ex.message);
+                console.warn(ex.message);
             }
         });
     }
@@ -1480,12 +1480,12 @@ whileRender=false;
     {
         if(obj.id>=0)
         {
-            //alert(obj.id);
+            //console.warn(obj.id);
             throw new Error("Object existed.");
         }
         var node = this.objectList.add(obj);
         obj.id = this._objList.add(node);
-        //alert(obj.id);
+        //console.warn(obj.id);
         return obj.id;
     }
     Scene.prototype.removeGameObject = function (id)
@@ -1565,7 +1565,7 @@ whileRender=false;
     }
     Camera.prototype.resetTransform=function()
     {
-        //alert(this.graphics);
+        //console.warn(this.graphics);
         this.graphics.ky=1;
         this.graphics.setTransform(1, 0, 0, 1, 0, 0);
     }
@@ -2629,5 +2629,5 @@ whileRender=false;
 
     sar.Web.Engine2D=engine;
     return sar;
-}catch(ex){alert(ex.message);}
+}catch(ex){console.warn(ex.message);}
 })(window.SardineFish);

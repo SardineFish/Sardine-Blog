@@ -1,1 +1,70 @@
-<html><head>    <title>圆形渐开线</title>    <style>        body{            width: 1000px;            height: 1000px;            margin: 0px;            padding: 0px;        }.button{      text-align: center;    cursor: pointer;    border: solid 1px #66CCFF;    color: #66CCFF;    background-color: white;    margin: 0px;    padding-left: 30px;    padding-right: 30px;    padding-top: 10px;    padding-bottom: 10px;    font-size: 20px;}        #painter{            width:2000px;            height: 2000px;        }    </style></head><body>    <div id="menu" >            </div>    <div>        <canvas id="painter" width="2000" height="2000" />    </div><script>    function int(x)    {        return parseInt(x);    }try{alert("start");    var canvas=document.getElementById("painter");    var painter=canvas.getContext("2d");    painter.moveTo(1000,1000);    var l=0.00;    var x=0.00;    var y=0.00;    var i=0.00;    function draw()    {        l=i*10;        x=l*Math.cos(i);        y=l*Math.sin(i);        painter.lineTo(int(1000+x),int(1000+y));        painter.stroke();        setTimeout(draw,30);        i+=0.1;    }    draw();}catch(ex) { alert(ex.message); }</script></body></html>
+<html>console.warn(console.warn(
+<head>
+    <title>圆形渐开线</title>
+    <style>
+        body{
+            width: 1000px;
+            height: 1000px;
+            margin: 0px;
+            padding: 0px;
+        }
+.button{
+      text-align: center;
+    cursor: pointer;
+    border: solid 1px #66CCFF;
+    color: #66CCFF;
+    background-color: white;
+    margin: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+        #painter{
+            width:2000px;
+            height: 2000px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="menu" >
+        
+    </div>
+    <div>
+        <canvas id="painter" width="2000" height="2000" />
+    </div>
+<script>
+    function int(x)
+    {
+        return parseInt(x);
+    }
+try{
+alert("start");
+    var canvas=document.getElementById("painter");
+    var painter=canvas.getContext("2d");
+    painter.moveTo(1000,1000);
+    var l=0.00;
+    var x=0.00;
+    var y=0.00;
+    var i=0.00;
+    function draw()
+    {
+        l=i*10;
+        x=l*Math.cos(i);
+        y=l*Math.sin(i);
+        painter.lineTo(int(1000+x),int(1000+y));
+        painter.stroke();
+        setTimeout(draw,30);
+        i+=0.1;
+    }
+    draw();
+}catch(ex) { alert(ex.message); }
+</script>
+</body>
+</html>
+
+
+
+
