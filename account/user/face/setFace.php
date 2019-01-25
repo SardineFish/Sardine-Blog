@@ -3,7 +3,7 @@
 define("ROOT",$_SERVER['DOCUMENT_ROOT']);
 require "Face.php";
 require ROOT."/account/Account.php";
-require_once "../lib/Utility.php";
+require_once ROOT."/lib/Utility.php";
 $response = new Response();
 $uid=$_POST["uid"];
 $url=$_POST["url"];
