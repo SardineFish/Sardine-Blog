@@ -134,8 +134,10 @@ function loadBlog(pid) {
             var unknowLanguages = {};
             if (new Date(data.time).getTime() < 1546272000000)
             {
+                var renderer = markedImagePostProcess(marked);
                 marked.setOptions({
-                    highlight: function (str, lang, callback) {
+                    highlight: function (str, lang, callback)
+                    {
                         if (lang && hljs.getLanguage(lang))
                         {
                             try
@@ -154,7 +156,8 @@ function loadBlog(pid) {
                                 });
                         }
                         return hljs.highlightAuto(str).value;
-                    }
+                    },
+                    renderer: renderer
                 });
                 data.document = marked(data.document);
             }
@@ -178,7 +181,7 @@ function loadBlog(pid) {
                         return hljs.highlightAuto(str).value;
                     }
                 });
-
+                markdownItImagePostProcess(md);
                 md.use(markdownitEmoji);
                 data.document = md.render(data.document);
                 
@@ -372,4 +375,59 @@ function loadPuzzle()
 
         }));
     });
+}
+
+function markdownItImagePostProcess(md)
+{
+    var imgProcess = md.renderer.rules.image;
+
+    var httpsImageHost = "https://cdn-img.sardinefish.com/";
+    var defaultImageHost = "http://img.sardinefish.com/";
+    var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
+    var webArchivePrefixReplacer = /http:\/\/img.sardinefish.com\//;
+
+    md.renderer.rules.image = function (tokens, idx, options, env, slf) {
+        var token = tokens[idx];
+        var imgUrl = token.attrs[token.attrIndex('src')][1];
+        if (reg.test(imgUrl))
+        {
+            var img = reg.exec(imgUrl)[2];
+            if (window.location.protocol === "https:")
+                imgUrl = httpsImageHost + img;
+            else
+                imgUrl = defaultImageHost + img;
+        }
+        imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
+        console.log(`${token.attrs[token.attrIndex('src')][1]} -> ${imgUrl}`);
+        token.attrs[token.attrIndex('src')][1] = imgUrl;
+        return imgProcess(tokens, idx, options, env, slf);
+    };
+}
+
+function markedImagePostProcess(marked)
+{
+    var renderer = new marked.Renderer();
+    var imgRenderer = renderer.image;
+
+    var httpsImageHost = "https://cdn-img.sardinefish.com/";
+    var defaultImageHost = "http://img.sardinefish.com/";
+    var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
+    var webArchivePrefixReplacer = /http:\/\/img.sardinefish.com\//;
+
+    renderer.image = function (src, title, text)
+    {
+        var imgUrl = src;
+        if (reg.test(imgUrl)) {
+            var img = reg.exec(imgUrl)[2];
+            if (window.location.protocol === "https:")
+                imgUrl = httpsImageHost + img;
+            else
+                imgUrl = defaultImageHost + img;
+        }
+        imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
+        console.log(`${src} -> ${imgUrl}`);
+        src = imgUrl;
+        return imgRenderer.bind(renderer)(src, title, text);
+    }
+    return renderer;
 }
