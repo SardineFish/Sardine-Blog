@@ -18,7 +18,7 @@
         }
         catch (ex)
         {
-            console.warn(ex.message);
+            alert(ex.message);
         }
     }
     function pageCodeRun()
@@ -140,7 +140,7 @@ function LoadArticle(count)
     {
         if(!succeed)
         {
-            console.warn(data);
+            alert(data);
         }
         for (var i = 0; i < data.length; i++)
         {

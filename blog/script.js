@@ -278,7 +278,7 @@ function loadContentNav()
 function loadComment(cid) {
     SardineFish.API.Comment.GetList(cid, 0, 500, Math.round(new Date().getTime() / 1000), function (succeed, data) {
         if (!succeed) {
-            console.warn(data);
+            alert(data);
             return;
         }
         var templateElement = document.querySelector("#comment-template");

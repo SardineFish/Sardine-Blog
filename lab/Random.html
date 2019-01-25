@@ -1,651 +1,1 @@
-<!DOCTYPE HTML>console.warn(console.warn(console.warn(console.warn(console.warn(console.warn(
-<html>
-    <head>
-        <title>Random</title>
-        <script src="jquery.min.js"></script>
-        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <style>
-        @font-face
-        {
-            font-family: "fontIcon";
-            src: url("segmdl2.woff");
-        }
-        html{
-            -ms-touch-action: none;  /*Direct all pointer events to JavaScript code. */
-            overflow: hidden;
-            height: 100%;
-        }
-        body{
-            font-family: "Segoe UI";
-            background-color: #F0F0F0;
-            padding: 0px;
-            margin: 0px;
-            height: 100%;
-        }
-        p{
-            padding: 0px;
-            margin: 0px;
-        }
-        hr{
-            margin: 0px;
-            padding: 0px;
-            border: solid 0.5px rgba(0,0,0,0.05);
-        }
-        textarea{
-            font-family: "Segoe UI";
-        }
-        .block{
-            background-color: white;
-            box-shadow: 0px 3px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin: 10px;
-        }
-        .title{
-            font-size: 1.6em;
-            
-            margin-bottom: 10px;
-        }
-        .header{
-            color: rgba(0,0,0,0.6);
-            padding-top: 10px;
-            padding-bottom: 10px;
-            
-        }
-        .textbox{
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            border: none 0px;
-            background-color: rgba(255,255,255,0);
-            display: block;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            font-size: 16px;
-        }
-        .tBGColor{
-            background-color: #2196F3;
-            color: white;
-        }
-        .tColor{
-            
-        }
-        .color0{
-            color: black;
-        }
-        .color1{
-            color: rgba(0,0,0,0.6);
-        }
-        .color2{
-            color: rgba(0,0,0,0.2);
-        }
-        .button{
-            display: inline-flex;
-            justify-content: center;
-            align-content: center;
-            align-items: center;
-            padding: 10px;
-            width: 100px;
-            text-align: center;
-            border-radius: 3px;
-            box-shadow: 0px 4px 6px rgba(0,0,0,0.15);
-        }
-        .iconButton{
-            display: flex;
-            justify-content: center;
-            align-content: center;
-            align-items: center;
-            font-family: "fontIcon";
-        }
-        .sideMenu{
-            display: flex;
-            flex-flow: column;
-            justify-content: start;
-            align-content: center;
-            align-items: center;
-            background-color: white;
-            position: absolute;
-            height: 100%;
-            width: 200px;
-            top: 0px;
-            z-index:100;
-        }
-        .sideMenuItem{
-            align-self: stretch;
-            display: flex;
-            justify-content: flex-start;
-            align-content: center;
-            align-items: center;
-            height: 1.2cm;
-            color: rgba(0,0,0,0.4);
-            font-size: 0.6cm;
-            font-weight: 600;
-            padding-left: 30px;
-        }
-        .coin{
-            background-color: #FADA7F;
-            color: #FFC675;
-            font-family: "fontIcon";
-            font-size: 160px;
-            display: flex;
-            justify-content: center;
-            align-content: center;
-            align-items: center;
-            border-radius: 100%;
-            width: 200px;
-            height: 200px;
-            
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-        }
-        .coinBox{
-            display: flex;
-            flex-flow: row;
-            justify-content: center;
-            align-content: center;
-            align-items: center;
-            
-            /*perspective-origin: 150% 150%;*/
-              transform-style: preserve-3d;
-            perspective: 400px;
-
-        }
-        .selected{
-            border-right: solid 5px #2196F3;
-            color: black;
-        }
-        .cards{
-            display: flex;
-            flex-flow: row;
-            justify-content: center;
-            align-content: center;
-            align-items: center;
-            background-color: white;
-            box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-            font-size: 1cm;
-            color: #5F5F5F;
-            border-radius: 0.03cm;
-            height: 1.6cm;
-            width: 1cm;
-            margin: 0.1cm;
-        }
-        #topBar{
-            display: flex;
-            flex-flow: row;
-            justify-content: flex-start;
-            align-content: center;
-            align-items: center;
-            height: 1.2cm;
-            box-shadow: 0px 3px 6px rgba(0,0,0,0.15);
-        }
-        #buttonMenu{
-            
-            height: 1.2cm;
-            width: 1.2cm;
-            font-size: 0.6cm;
-            z-index: 1000;
-        }
-        #mainTitle{
-            font-size: 0.6cm;
-        }
-        #menu{
-            left: -100%;
-            padding-top: 1.2cm;
-            box-shadow: 6px 0px 10px rgba(0,0,0,0.1);
-        }
-        #pages{
-            height: 100%;
-        }
-        #pageCoins{
-            display: flex;
-            flex-flow: column;
-            justify-content: flex-start;
-            align-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 50px;
-            
-        }
-        #pageProb{
-            display: flex;
-            flex-flow: column;
-            justify-content: flex-start;
-            align-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 50px;
-        }
-        #probText{
-            font-size: 3cm;
-            font-weight: 100;
-            color: #5F5F5F;
-        }
-        #probText:after{
-            content: "%";
-        }
-        #buttonProb{
-            font-size: 0.6cm;
-            margin-top: 3cm;
-            width: 4cm;
-        }
-        #pageOne{
-            display: flex;
-            flex-flow: column;
-            justify-content: flex-start;
-            align-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 30px;
-            
-        }
-        #cardsOne{
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: center;
-            align-content: center;
-            align-items: center;
-            margin-top: 4cm;
-        }
-        #buttonAddCardOne{
-            border: dashed 0.06cm rgba(0,0,0,0.2);
-            color: rgba(0,0,0,0.3);
-            font-size: 1cm;
-            border-radius: 0.03cm;
-            height: 1.6cm;
-            width: 1cm;
-            margin: 0.1cm;
-        }
-        #cardOneSelected{
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            margin: 0px;
-            box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
-            opacity: 0;
-            z-index: 10;
-        }
-        #buttonOne{
-            font-size: 0.6cm;
-            margin-top: 3cm;
-            width: 4cm;
-        }
-        #pageMulti{
-            display: flex;
-            flex-flow: column;
-            justify-content: start;
-            align-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 30px;
-            color: rgba(0,0,0,0.3);
-            
-        }
-        </style>
-    </head>
-    <body>
-        <div id="topBar" class="tBGColor" onselectstart="return false;">
-            <div id="buttonMenu" class="iconButton">
-                <p>&#xE700;</p>
-                
-            </div>
-            <p id="mainTitle">Random</p>
-            <div id="menu" class="sideMenu">
-                <div id="Coins" class="sideMenuItem selected">Coins</div>
-                <div id="Prob" class="sideMenuItem">Probability</div>
-                <div id="One" class="sideMenuItem">One choice</div>
-                <div id="Multi" class="sideMenuItem">Multi choice</div>
-            </div>
-            
-        </div>
-        <div id="pages">
-            <div id="pageCoins" class="pages" >
-                <div class="coinBox">
-                    <div class="coin">&#xE170;</div>
-                </div>
-            </div>
-            <div id="pageProb" class="pages" >
-                <p id="probText">99.9</p>
-                <div id="buttonProb" class="button tBGColor">Random</div>
-            </div>
-            <div id="pageOne" class="pages">
-                <div id="cardOneSelected" class="cards">A</div>
-                <div id="cardsOne">
-                   <div id="buttonAddCardOne" class="iconButton">+</div>
-                </div>
-                <div id="buttonOne" class="button tBGColor">Random</div>
-            </div>
-            <div id="pageMulti" class="pages">
-                <p style="margin-top:4cm; font-family:'fontIcon'; font-size:2cm;">&#xE99A;</p>
-                <p style="font-size:0.6cm;">Coming soon...</p>
-            </div>
-        </div>
-    </body>
-<script>
-var coin=$(".coin").get(0);
-var doFlip=flipCoin;
-var flipV=0;
-var endFlipA=1;
-var prob=1;
-var probT=1600;
-var width=$("body").width();
-var height=$("body").height();
-function flipCoin()
-{
-try{
-   
-    if(coin.ang==undefined)
-        coin.ang=0;
-    
-    coin.ang+=flipV;
-    
-    if(parseInt((coin.ang+90)/180)%2==1)
-    {
-        coin.innerHTML="&#xEA39;";
-    }
-    else
-        coin.innerHTML="&#xE170;";
-    coin.style.transform="rotateX("+coin.ang+"deg)";
-    requestAnimationFrame(doFlip);
-} catch(ex) {alert("flip:"+ex.message);}
-}
-function endFlip()
-{
-    
-    
-    flipV-=endFlipA;
-    
-    /*if(coin.ang>ang)
-    {
-        flipV=0;
-        doFlip=flipCoin;
-        coin.ang=ang;
-    }*/
-    if(flipV<=0)
-    {
-        var ang=parseInt((coin.ang+90)/180)*180;
-        var inc=0;
-        var t=0;
-        var T=0;
-        function adjust(x)
-        {
-            if(t==0)
-            {
-                T=t=x;
-            }
-            else 
-            {
-                if(x-T>200)
-                {
-                    coin.ang=ang;
-                   coin.style.transform="rotateX("+coin.ang+"deg)";
-                    doFlip=flipCoin;
-                    requestAnimationFrame(doFlip);
-                    return;
-                }
-                coin.ang+=inc*(x-t);
-                coin.style.transform="rotateX("+coin.ang+"deg)";
-            }
-            t=x;
-            
-            requestAnimationFrame(adjust);
-           
-        }
-        flipV=0;
-        inc=(ang-coin.ang) / 200;
-        requestAnimationFrame(adjust);
-        return;
-        
-    }
-    else
-        coin.ang+=flipV;
-    if(parseInt((coin.ang+90)/180)%2==1)
-    {
-        coin.innerHTML="&#xEA39;";
-    }
-    else
-        coin.innerHTML="&#xE170;";
-    coin.style.transform="rotateX("+coin.ang+"deg)";
-
-    requestAnimationFrame(doFlip);
-}
-requestAnimationFrame(doFlip);
-function initFlip()
-{
-try {
-     var page=$("#pageCoins");
-     var touchP={x:0,y:0};
-     var touchT=0;
-     page.get(0).addEventListener("touchstart", function (e)
-     {
-         touchP= {x:e.changedTouches[0].screenX, y:e.changedTouches[0].screenY};
-         touchT=(new Date()).getTime();
-     });
-     page.get(0).addEventListener("touchend", function (e)
-     {
-         var p= {x:e.changedTouches[0].screenX, y:e.changedTouches[0].screenY};
-         var d=touchP.y-p.y;
-         var t=(new Date()).getTime()-touchT;
-         if(d*10/t>=10)
-         flipV=d*10/t;
-         
-     });
-     $("#pageCoins").click(function(e)
-     {
-         if(flipV==0)
-             return;
-         var t=parseInt(flipV);
-         var ang=coin.ang+(flipV/2*t);
-         ang=(parseInt((ang+90)/180)*180);
-         ang=ang-coin.ang;
-         endFlipA=Math.abs((ang)/(t*(t-1)));
-//alert(endFlipA);
-         doFlip=function () {endFlip(ang)};
-     });
-} catch(ex) {alert("flip:"+ex.message);}
-}
-initFlip();
-function probability()
-{
-    var p=0;
-    var inc=0;
-    var t=0;
-    function increase(x)
-    {
-        if(t==0)
-            t=x;
-        else
-        {
-            p+=((x-t)*inc);
-            
-            t=x;
-            if(p>=prob)
-            {
-                $("#probText").text(prob);
-                return;
-            }
-            
-            $("#probText").text(parseInt(p*100)/100);
-        }
-        requestAnimationFrame(increase);
-    }
-    prob=parseInt(10001*Math.random())/100;
-//alert(prob);
-    inc=prob/probT;
-    requestAnimationFrame(increase);
-}
-$("#buttonProb").click(function(e)
-{
-    probability();
-});
-function initOneChoice()
-{
-try {
-    var cards=[];
-    var lastCard;
-    var initCount=3;
-    var buttonAdd=$("#buttonAddCardOne");
-    var selCard=$("#cardOneSelected");
-    var selected=false
-    cards.add=function(v)
-    {
-        this[this.length]=v;
-    }
-    cards.removeAt=function(x)
-    {
-        for(var i=x;i<this.length-1;i++)
-            this[i]=this[i+1];
-        this.length--;
-    }
-    function cardClick(e)
-    {
-        $(cards[cards.length-1].dom).remove();
-        cards.removeAt(cards.length-1);
-        
-    }
-    buttonAdd.click(function(e)
-    {
-        //$("#cardsOne").remove("#buttonAddCardOne");
-        var i=cards.length;
-        var text=String.fromCharCode(65+i);
-        var card=$("<div id='cardOne"+text+"' class='cards'>"+text+"</div>");
-        card.click(cardClick);
-        $("#cardsOne").append(card);
-        cards[i]= {n:i, text:text, dom:card.get(0)};
-        $("#cardsOne").append(buttonAdd);
-        card.get(0).card=cards[i];
-    });
-    selCard.click(function(e)
-    {
-        if(selected)
-        {
-            selCard.stop();
-            selCard.animate({top:lastCard.offset().top, left:lastCard.offset().left, width:lastCard.css("width"), height: lastCard.css("height"), fontSize:lastCard.css("font-size")}, 200,function(){
-                lastCard.css("opacity",1);
-                selCard.animate({opacity: 0},50);
-                selected=false; 
-            });
-            
-        }
-    });
-    function chooseOne()
-    {
-    try{
-        
-        var card=cards[parseInt(Math.random()*cards.length)];
-        
-        var x=$(card.dom).offset().left;
-        var y=$(card.dom).offset().top;
-        function show()
-        {
-            
-            $(card.dom).stop();
-            selCard.stop();
-            selCard.text(card.text);
-            selCard.css("left",x+"px");
-            selCard.css("top",y+"px");
-            var xs=width/2-$(card.dom).width()
-            selCard.animate({opacity: 1},100,function(){
-                $(card.dom).css("opacity",0);
-                selCard.animate({top:"2cm", left:xs+"px", width:"2cm", height: "3cm", fontSize: "2cm"}, 300);
-            });
-            selected=true;
-            lastCard=$(card.dom);
-        }
-        if(selected)
-        {
-           
-            selCard.stop();
-            
-            
-            selCard.animate({top:lastCard.offset().top, left:lastCard.offset().left, width:lastCard.css("width"), height: lastCard.css("height"), fontSize:lastCard.css("font-size")}, 200,function(){
-                lastCard.css("opacity",1);
-                selCard.animate({opacity: 0},50,function(){
-                    show();
-                });
-            });
-            
-        }
-        else
-        {
-            
-            show();
-        }
-        } catch(ex) {alert("flip:"+ex.message);}
-    }
-    $("#buttonOne").click(function (e)
-    {
-        chooseOne();
-    });
-
-    $("#cardsOne").remove("#buttonAddCardOne");
-    for(var i=0;i<initCount;i++)
-    {
-        var text=String.fromCharCode(65+i);
-        var card=$("<div id='cardOne"+text+"' class='cards'>"+text+"</div>");
-        card.click(cardClick);
-        $("#cardsOne").append(card);
-        cards[i]= {n:i, text:text, dom:card.get(0)};
-        card.get(0).card=cards[i];
-    }
-    $("#cardsOne").append(buttonAdd);
-} catch(ex) {alert("init:"+ex.message);}
-}
-initOneChoice();
-var menuShowed=false;
-$("#buttonMenu").click(function(e)
-{
-    if(!menuShowed)
-    {
-        $("#buttonMenu").css("color","black");
-        $("#menu").stop();
-        $("#menu").animate({left:"0%"},100);
-        menuShowed=true;
-    }
-    else
-    {
-        $("#buttonMenu").css("color","white");
-        $("#menu").stop();
-        $("#menu").animate({left:"-100%"},300);
-        menuShowed=false;
-    }
-});
-$("#pages").click(function(e)
-{
-    if(menuShowed)
-    {
-        $("#buttonMenu").css("color","white");
-        $("#menu").stop();
-        $("#menu").animate({left:"-100%"},300);
-        menuShowed=false;
-    }
-});
-$(".sideMenuItem").click(function(e)
-{
-    var id=e.target.id;
-    $(".sideMenuItem").removeClass("selected");
-    $("#"+id).addClass("selected");
-    $(".pages").css("display","none");
-    $("#page"+id).css("display","flex");
-});
-$(".pages").attr("onselectstart","return false");
-$(".button").attr("onselectstart","return false");
-$(".iconButton").attr("onselectstart","return false");
-$(".coin").attr("onselectstart","return false");
-function buttonDown(e)
-{
-    var button=$(e.target);
-    button.css("background-color","rgba(0,0,0,0)");
-}
-function buttonUp(e)
-{
-    var button=$(e.target);
-    button.css("background-color","rgba(0,0,0,0.3)");
-}
-</script>
-</html>
-
-
-
-
-
-
-
+<!DOCTYPE HTML><html>    <head>        <title>Random</title>        <script src="jquery.min.js"></script>        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi" />        <meta name="apple-mobile-web-app-capable" content="yes" />        <style>        @font-face        {            font-family: "fontIcon";            src: url("segmdl2.woff");        }        html{            -ms-touch-action: none;  /*Direct all pointer events to JavaScript code. */            overflow: hidden;            height: 100%;        }        body{            font-family: "Segoe UI";            background-color: #F0F0F0;            padding: 0px;            margin: 0px;            height: 100%;        }        p{            padding: 0px;            margin: 0px;        }        hr{            margin: 0px;            padding: 0px;            border: solid 0.5px rgba(0,0,0,0.05);        }        textarea{            font-family: "Segoe UI";        }        .block{            background-color: white;            box-shadow: 0px 3px 4px rgba(0,0,0,0.1);            padding: 20px;            margin: 10px;        }        .title{            font-size: 1.6em;                        margin-bottom: 10px;        }        .header{            color: rgba(0,0,0,0.6);            padding-top: 10px;            padding-bottom: 10px;                    }        .textbox{            position: absolute;            top: 0px;            left: 0px;            border: none 0px;            background-color: rgba(255,255,255,0);            display: block;            padding-top: 10px;            padding-bottom: 10px;            font-size: 16px;        }        .tBGColor{            background-color: #2196F3;            color: white;        }        .tColor{                    }        .color0{            color: black;        }        .color1{            color: rgba(0,0,0,0.6);        }        .color2{            color: rgba(0,0,0,0.2);        }        .button{            display: inline-flex;            justify-content: center;            align-content: center;            align-items: center;            padding: 10px;            width: 100px;            text-align: center;            border-radius: 3px;            box-shadow: 0px 4px 6px rgba(0,0,0,0.15);        }        .iconButton{            display: flex;            justify-content: center;            align-content: center;            align-items: center;            font-family: "fontIcon";        }        .sideMenu{            display: flex;            flex-flow: column;            justify-content: start;            align-content: center;            align-items: center;            background-color: white;            position: absolute;            height: 100%;            width: 200px;            top: 0px;            z-index:100;        }        .sideMenuItem{            align-self: stretch;            display: flex;            justify-content: flex-start;            align-content: center;            align-items: center;            height: 1.2cm;            color: rgba(0,0,0,0.4);            font-size: 0.6cm;            font-weight: 600;            padding-left: 30px;        }        .coin{            background-color: #FADA7F;            color: #FFC675;            font-family: "fontIcon";            font-size: 160px;            display: flex;            justify-content: center;            align-content: center;            align-items: center;            border-radius: 100%;            width: 200px;            height: 200px;                        box-shadow: 0px 4px 8px rgba(0,0,0,0.1);        }        .coinBox{            display: flex;            flex-flow: row;            justify-content: center;            align-content: center;            align-items: center;                        /*perspective-origin: 150% 150%;*/              transform-style: preserve-3d;            perspective: 400px;        }        .selected{            border-right: solid 5px #2196F3;            color: black;        }        .cards{            display: flex;            flex-flow: row;            justify-content: center;            align-content: center;            align-items: center;            background-color: white;            box-shadow: 0px 2px 4px rgba(0,0,0,0.1);            font-size: 1cm;            color: #5F5F5F;            border-radius: 0.03cm;            height: 1.6cm;            width: 1cm;            margin: 0.1cm;        }        #topBar{            display: flex;            flex-flow: row;            justify-content: flex-start;            align-content: center;            align-items: center;            height: 1.2cm;            box-shadow: 0px 3px 6px rgba(0,0,0,0.15);        }        #buttonMenu{                        height: 1.2cm;            width: 1.2cm;            font-size: 0.6cm;            z-index: 1000;        }        #mainTitle{            font-size: 0.6cm;        }        #menu{            left: -100%;            padding-top: 1.2cm;            box-shadow: 6px 0px 10px rgba(0,0,0,0.1);        }        #pages{            height: 100%;        }        #pageCoins{            display: flex;            flex-flow: column;            justify-content: flex-start;            align-content: center;            align-items: center;            height: 100%;            padding: 50px;                    }        #pageProb{            display: flex;            flex-flow: column;            justify-content: flex-start;            align-content: center;            align-items: center;            height: 100%;            padding: 50px;        }        #probText{            font-size: 3cm;            font-weight: 100;            color: #5F5F5F;        }        #probText:after{            content: "%";        }        #buttonProb{            font-size: 0.6cm;            margin-top: 3cm;            width: 4cm;        }        #pageOne{            display: flex;            flex-flow: column;            justify-content: flex-start;            align-content: center;            align-items: center;            height: 100%;            padding: 30px;                    }        #cardsOne{            display: flex;            flex-flow: row wrap;            justify-content: center;            align-content: center;            align-items: center;            margin-top: 4cm;        }        #buttonAddCardOne{            border: dashed 0.06cm rgba(0,0,0,0.2);            color: rgba(0,0,0,0.3);            font-size: 1cm;            border-radius: 0.03cm;            height: 1.6cm;            width: 1cm;            margin: 0.1cm;        }        #cardOneSelected{            position: absolute;            top: 0px;            left: 0px;            margin: 0px;            box-shadow: 0px 3px 8px rgba(0,0,0,0.1);            opacity: 0;            z-index: 10;        }        #buttonOne{            font-size: 0.6cm;            margin-top: 3cm;            width: 4cm;        }        #pageMulti{            display: flex;            flex-flow: column;            justify-content: start;            align-content: center;            align-items: center;            height: 100%;            padding: 30px;            color: rgba(0,0,0,0.3);                    }        </style>    </head>    <body>        <div id="topBar" class="tBGColor" onselectstart="return false;">            <div id="buttonMenu" class="iconButton">                <p>&#xE700;</p>                            </div>            <p id="mainTitle">Random</p>            <div id="menu" class="sideMenu">                <div id="Coins" class="sideMenuItem selected">Coins</div>                <div id="Prob" class="sideMenuItem">Probability</div>                <div id="One" class="sideMenuItem">One choice</div>                <div id="Multi" class="sideMenuItem">Multi choice</div>            </div>                    </div>        <div id="pages">            <div id="pageCoins" class="pages" >                <div class="coinBox">                    <div class="coin">&#xE170;</div>                </div>            </div>            <div id="pageProb" class="pages" >                <p id="probText">99.9</p>                <div id="buttonProb" class="button tBGColor">Random</div>            </div>            <div id="pageOne" class="pages">                <div id="cardOneSelected" class="cards">A</div>                <div id="cardsOne">                   <div id="buttonAddCardOne" class="iconButton">+</div>                </div>                <div id="buttonOne" class="button tBGColor">Random</div>            </div>            <div id="pageMulti" class="pages">                <p style="margin-top:4cm; font-family:'fontIcon'; font-size:2cm;">&#xE99A;</p>                <p style="font-size:0.6cm;">Coming soon...</p>            </div>        </div>    </body><script>var coin=$(".coin").get(0);var doFlip=flipCoin;var flipV=0;var endFlipA=1;var prob=1;var probT=1600;var width=$("body").width();var height=$("body").height();function flipCoin(){try{       if(coin.ang==undefined)        coin.ang=0;        coin.ang+=flipV;        if(parseInt((coin.ang+90)/180)%2==1)    {        coin.innerHTML="&#xEA39;";    }    else        coin.innerHTML="&#xE170;";    coin.style.transform="rotateX("+coin.ang+"deg)";    requestAnimationFrame(doFlip);} catch(ex) {alert("flip:"+ex.message);}}function endFlip(){            flipV-=endFlipA;        /*if(coin.ang>ang)    {        flipV=0;        doFlip=flipCoin;        coin.ang=ang;    }*/    if(flipV<=0)    {        var ang=parseInt((coin.ang+90)/180)*180;        var inc=0;        var t=0;        var T=0;        function adjust(x)        {            if(t==0)            {                T=t=x;            }            else             {                if(x-T>200)                {                    coin.ang=ang;                   coin.style.transform="rotateX("+coin.ang+"deg)";                    doFlip=flipCoin;                    requestAnimationFrame(doFlip);                    return;                }                coin.ang+=inc*(x-t);                coin.style.transform="rotateX("+coin.ang+"deg)";            }            t=x;                        requestAnimationFrame(adjust);                   }        flipV=0;        inc=(ang-coin.ang) / 200;        requestAnimationFrame(adjust);        return;            }    else        coin.ang+=flipV;    if(parseInt((coin.ang+90)/180)%2==1)    {        coin.innerHTML="&#xEA39;";    }    else        coin.innerHTML="&#xE170;";    coin.style.transform="rotateX("+coin.ang+"deg)";    requestAnimationFrame(doFlip);}requestAnimationFrame(doFlip);function initFlip(){try {     var page=$("#pageCoins");     var touchP={x:0,y:0};     var touchT=0;     page.get(0).addEventListener("touchstart", function (e)     {         touchP= {x:e.changedTouches[0].screenX, y:e.changedTouches[0].screenY};         touchT=(new Date()).getTime();     });     page.get(0).addEventListener("touchend", function (e)     {         var p= {x:e.changedTouches[0].screenX, y:e.changedTouches[0].screenY};         var d=touchP.y-p.y;         var t=(new Date()).getTime()-touchT;         if(d*10/t>=10)         flipV=d*10/t;              });     $("#pageCoins").click(function(e)     {         if(flipV==0)             return;         var t=parseInt(flipV);         var ang=coin.ang+(flipV/2*t);         ang=(parseInt((ang+90)/180)*180);         ang=ang-coin.ang;         endFlipA=Math.abs((ang)/(t*(t-1)));//alert(endFlipA);         doFlip=function () {endFlip(ang)};     });} catch(ex) {alert("flip:"+ex.message);}}initFlip();function probability(){    var p=0;    var inc=0;    var t=0;    function increase(x)    {        if(t==0)            t=x;        else        {            p+=((x-t)*inc);                        t=x;            if(p>=prob)            {                $("#probText").text(prob);                return;            }                        $("#probText").text(parseInt(p*100)/100);        }        requestAnimationFrame(increase);    }    prob=parseInt(10001*Math.random())/100;//alert(prob);    inc=prob/probT;    requestAnimationFrame(increase);}$("#buttonProb").click(function(e){    probability();});function initOneChoice(){try {    var cards=[];    var lastCard;    var initCount=3;    var buttonAdd=$("#buttonAddCardOne");    var selCard=$("#cardOneSelected");    var selected=false    cards.add=function(v)    {        this[this.length]=v;    }    cards.removeAt=function(x)    {        for(var i=x;i<this.length-1;i++)            this[i]=this[i+1];        this.length--;    }    function cardClick(e)    {        $(cards[cards.length-1].dom).remove();        cards.removeAt(cards.length-1);            }    buttonAdd.click(function(e)    {        //$("#cardsOne").remove("#buttonAddCardOne");        var i=cards.length;        var text=String.fromCharCode(65+i);        var card=$("<div id='cardOne"+text+"' class='cards'>"+text+"</div>");        card.click(cardClick);        $("#cardsOne").append(card);        cards[i]= {n:i, text:text, dom:card.get(0)};        $("#cardsOne").append(buttonAdd);        card.get(0).card=cards[i];    });    selCard.click(function(e)    {        if(selected)        {            selCard.stop();            selCard.animate({top:lastCard.offset().top, left:lastCard.offset().left, width:lastCard.css("width"), height: lastCard.css("height"), fontSize:lastCard.css("font-size")}, 200,function(){                lastCard.css("opacity",1);                selCard.animate({opacity: 0},50);                selected=false;             });                    }    });    function chooseOne()    {    try{                var card=cards[parseInt(Math.random()*cards.length)];                var x=$(card.dom).offset().left;        var y=$(card.dom).offset().top;        function show()        {                        $(card.dom).stop();            selCard.stop();            selCard.text(card.text);            selCard.css("left",x+"px");            selCard.css("top",y+"px");            var xs=width/2-$(card.dom).width()            selCard.animate({opacity: 1},100,function(){                $(card.dom).css("opacity",0);                selCard.animate({top:"2cm", left:xs+"px", width:"2cm", height: "3cm", fontSize: "2cm"}, 300);            });            selected=true;            lastCard=$(card.dom);        }        if(selected)        {                       selCard.stop();                                    selCard.animate({top:lastCard.offset().top, left:lastCard.offset().left, width:lastCard.css("width"), height: lastCard.css("height"), fontSize:lastCard.css("font-size")}, 200,function(){                lastCard.css("opacity",1);                selCard.animate({opacity: 0},50,function(){                    show();                });            });                    }        else        {                        show();        }        } catch(ex) {alert("flip:"+ex.message);}    }    $("#buttonOne").click(function (e)    {        chooseOne();    });    $("#cardsOne").remove("#buttonAddCardOne");    for(var i=0;i<initCount;i++)    {        var text=String.fromCharCode(65+i);        var card=$("<div id='cardOne"+text+"' class='cards'>"+text+"</div>");        card.click(cardClick);        $("#cardsOne").append(card);        cards[i]= {n:i, text:text, dom:card.get(0)};        card.get(0).card=cards[i];    }    $("#cardsOne").append(buttonAdd);} catch(ex) {alert("init:"+ex.message);}}initOneChoice();var menuShowed=false;$("#buttonMenu").click(function(e){    if(!menuShowed)    {        $("#buttonMenu").css("color","black");        $("#menu").stop();        $("#menu").animate({left:"0%"},100);        menuShowed=true;    }    else    {        $("#buttonMenu").css("color","white");        $("#menu").stop();        $("#menu").animate({left:"-100%"},300);        menuShowed=false;    }});$("#pages").click(function(e){    if(menuShowed)    {        $("#buttonMenu").css("color","white");        $("#menu").stop();        $("#menu").animate({left:"-100%"},300);        menuShowed=false;    }});$(".sideMenuItem").click(function(e){    var id=e.target.id;    $(".sideMenuItem").removeClass("selected");    $("#"+id).addClass("selected");    $(".pages").css("display","none");    $("#page"+id).css("display","flex");});$(".pages").attr("onselectstart","return false");$(".button").attr("onselectstart","return false");$(".iconButton").attr("onselectstart","return false");$(".coin").attr("onselectstart","return false");function buttonDown(e){    var button=$(e.target);    button.css("background-color","rgba(0,0,0,0)");}function buttonUp(e){    var button=$(e.target);    button.css("background-color","rgba(0,0,0,0.3)");}</script></html>

@@ -1,183 +1,1 @@
-﻿<!DOCTYPE HTML>console.warn(console.warn(console.warn(console.warn(
-<html>
-    <head>
-        <title>ArcTree</title>
-        <script src="jquery.min.js"></script>
-        <script src="SardineFish.Web.js"></script>
-        <script src="SardineFish.Web.UI.js"></script>
-        <script src="SardineFish.Web.Engine2D.js"></script>
-        <script src="SardineFish.Web.Engine2D.Colliders.js"></script>
-        <script src="SardineFish.Web.Engine2D.GUI.js"></script>
-<!--
-        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="browsermode" content="application" />
-        <meta name="full-screen" content="true" />
-        <meta name="x5-fullscreen" content="true" />
-        <meta name="x5-page-mode" content="app" />
-        <meta name="360-fullscreen" content="true" />
--->
-        <style>
-html{
-    /*-ms-touch-action: none; 
-    overflow: hidden;*/
-}
-body{
-    padding: 0px;
-    margin:0px;
-    background-color: white;
-}
-#canvas{
-    background-color: #FaFaFa;
-}
-
-        </style>
-    </head>
-    <body>
-        <canvas id="canvas" width="800" height="480"/>
-    </body>
-    <script>
-try
-{
-    var PI=Math.PI;
-    var tan=Math.tan;
-    var k=0.667;
-    var lk=k/(k+1);
-    var ang=1*PI/4;
-    var w=PI/4;// angle v
-    var bgColor=new Color(255,255,255,1);
-    var color=new Color(0,0,0,1);
-    var lineWidth=1;//px
-    var lineCap=Graphics.LineCap.Round;
-    var zoom=2;
-    var cameraFocus=new Point(0,0);
-    
-    
-    var canvas=$("canvas").get(0);
-    var game=Game.createByCanvas(canvas);
-    var scene=game.scene;
-    var camera=scene.camera;
-    var graphics=camera.graphics;
-    var lineList=[];
-    lineList[0]=new Line(new Point(0,-100),new Point(0,0));
-    lineList[0].ang=PI/2;
-    
-    var nextList=[];
-    var arcLList=[];
-    var arcRList=[];
-    var arcList=[];
-    
-    function init()
-    {
-        dAng=0;
-        function grow(graphics,dt)
-        {
-            dAng+=dt*w;
-            if(dAng>ang)
-                dAng=ang;
-            for(var i=0;i<arcLList.length;i++)
-            {
-                arcLList[i].end=arcLList[i].start-dAng;
-                arcRList[i].end=arcRList[i].start+dAng;
-                arcLList[i].render(graphics);
-                arcRList[i].render(graphics);
-            }
-            if(dAng==ang)
-            {
-                dAng=0;
-                next();
-            }
-            
-        }
-        camera.moveTo(cameraFocus.x,cameraFocus.y);
-        camera.zoomTo(zoom);
-        game.start();
-        scene.onRender=function(graphics,dt)
-        {
-            camera.clear(bgColor);
-            grow(graphics,dt);
-            /*
-            for(var i=0;i<lineList.length;i++)
-            {
-                lineList[i].render(graphics);
-            }*/
-            for(var i=0;i<arcList.length;i++)
-            {
-                arcList[i].render(graphics);
-            }
-        }
-        next();
-        
-    }
-    init();
-    
-    function next()
-    {
-        try{
-        arcList.addRange(arcLList);
-        arcList.addRange(arcRList);
-        
-        nextList=[];
-        arcLList=[];
-        arcRList=[];
-        for(var i=0;i<lineList.length;i++)
-        {
-            var line=lineList[i];
-            var v=Vector2.fromPoint(line.p1,line.p2);
-            var vl=Vector2.multi(v,k);
-            var vr=Vector2.multi(v,k);
-            //alert(vl);
-            vl.rotate(ang);
-            //alert(vl);
-            vr.rotate(-ang);
-            var lineL=new Line(line.p2,new Point(line.p2.x+vl.x,line.p2.y+vl.y));
-            var lineR=new Line(line.p2,new Point(line.p2.x+vr.x,line.p2.y+vr.y));
-            lineL.ang=line.ang-ang;
-            lineR.ang=line.ang+ang;
-            nextList.add(lineL);
-            nextList.add(lineR);
-            vl=Vector2.multi(v,lk*tan((PI-ang)/2));
-            vr=Vector2.multi(v,lk*tan((PI-ang)/2));
-            vl.rotate(PI/2);
-            vr.rotate(-PI/2);
-            rl=vl.toLine((line.p2.x-line.p1.x)*(1-lk)+line.p1.x,(line.p2.y-line.p1.y)*(1-lk)+line.p1.y);
-            rr=vr.toLine(rl.p1.x,rl.p1.y);
-            var ol=rl.p2;
-            var or=rr.p2;
-            var r=vl.mod();
-            var arcL=new Arc(ol,r,line.ang-(PI/2),line.ang-(PI/2)-ang,true);
-            var arcR=new Arc(or,r,line.ang+(PI/2),line.ang+(PI/2)+ang,false);
-            arcL.lineCap=lineCap;
-            arcR.lineCap=lineCap;
-            arcL.strokeWidth=lineWidth;
-            arcR.strokeWidth=lineWidth;
-            arcL.strokeStyle=color;
-            arcR.strokeStyle=color;
-            arcLList.add(arcL);
-            arcRList.add(arcR);
-            //arcL.render(graphics);
-            //arcR.render(graphics);
-            
-            /*rl.strokeStyle="blue";
-            rr.strokeStyle="red";
-            rl.render(graphics);
-            rr.render(graphics);
-            
-            lineR.strokeStyle=Color.random();
-            lineL.strokeStyle=Color.random();
-            lineL.render(graphics);
-            lineR.render(graphics);*/
-        }
-        lineList=nextList;
-        //setTimeout(next,1000);
-        
-    
-        }catch(ex){alert("next:"+i+ex.message);}
-    }
-}
-catch(ex)
-{
-    alert("global:"+ex.message);
-}
-    </script>
-</html>/html>ml>
+﻿<!DOCTYPE HTML><html>    <head>        <title>ArcTree</title>        <script src="jquery.min.js"></script>        <script src="SardineFish.Web.js"></script>        <script src="SardineFish.Web.UI.js"></script>        <script src="SardineFish.Web.Engine2D.js"></script>        <script src="SardineFish.Web.Engine2D.Colliders.js"></script>        <script src="SardineFish.Web.Engine2D.GUI.js"></script><!--        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi" />        <meta name="apple-mobile-web-app-capable" content="yes" />        <meta name="browsermode" content="application" />        <meta name="full-screen" content="true" />        <meta name="x5-fullscreen" content="true" />        <meta name="x5-page-mode" content="app" />        <meta name="360-fullscreen" content="true" />-->        <style>html{    /*-ms-touch-action: none;     overflow: hidden;*/}body{    padding: 0px;    margin:0px;    background-color: white;}#canvas{    background-color: #FaFaFa;}        </style>    </head>    <body>        <canvas id="canvas" width="800" height="480"/>    </body>    <script>try{    var PI=Math.PI;    var tan=Math.tan;    var k=0.667;    var lk=k/(k+1);    var ang=1*PI/4;    var w=PI/4;// angle v    var bgColor=new Color(255,255,255,1);    var color=new Color(0,0,0,1);    var lineWidth=1;//px    var lineCap=Graphics.LineCap.Round;    var zoom=2;    var cameraFocus=new Point(0,0);            var canvas=$("canvas").get(0);    var game=Game.createByCanvas(canvas);    var scene=game.scene;    var camera=scene.camera;    var graphics=camera.graphics;    var lineList=[];    lineList[0]=new Line(new Point(0,-100),new Point(0,0));    lineList[0].ang=PI/2;        var nextList=[];    var arcLList=[];    var arcRList=[];    var arcList=[];        function init()    {        dAng=0;        function grow(graphics,dt)        {            dAng+=dt*w;            if(dAng>ang)                dAng=ang;            for(var i=0;i<arcLList.length;i++)            {                arcLList[i].end=arcLList[i].start-dAng;                arcRList[i].end=arcRList[i].start+dAng;                arcLList[i].render(graphics);                arcRList[i].render(graphics);            }            if(dAng==ang)            {                dAng=0;                next();            }                    }        camera.moveTo(cameraFocus.x,cameraFocus.y);        camera.zoomTo(zoom);        game.start();        scene.onRender=function(graphics,dt)        {            camera.clear(bgColor);            grow(graphics,dt);            /*            for(var i=0;i<lineList.length;i++)            {                lineList[i].render(graphics);            }*/            for(var i=0;i<arcList.length;i++)            {                arcList[i].render(graphics);            }        }        next();            }    init();        function next()    {        try{        arcList.addRange(arcLList);        arcList.addRange(arcRList);                nextList=[];        arcLList=[];        arcRList=[];        for(var i=0;i<lineList.length;i++)        {            var line=lineList[i];            var v=Vector2.fromPoint(line.p1,line.p2);            var vl=Vector2.multi(v,k);            var vr=Vector2.multi(v,k);            //alert(vl);            vl.rotate(ang);            //alert(vl);            vr.rotate(-ang);            var lineL=new Line(line.p2,new Point(line.p2.x+vl.x,line.p2.y+vl.y));            var lineR=new Line(line.p2,new Point(line.p2.x+vr.x,line.p2.y+vr.y));            lineL.ang=line.ang-ang;            lineR.ang=line.ang+ang;            nextList.add(lineL);            nextList.add(lineR);            vl=Vector2.multi(v,lk*tan((PI-ang)/2));            vr=Vector2.multi(v,lk*tan((PI-ang)/2));            vl.rotate(PI/2);            vr.rotate(-PI/2);            rl=vl.toLine((line.p2.x-line.p1.x)*(1-lk)+line.p1.x,(line.p2.y-line.p1.y)*(1-lk)+line.p1.y);            rr=vr.toLine(rl.p1.x,rl.p1.y);            var ol=rl.p2;            var or=rr.p2;            var r=vl.mod();            var arcL=new Arc(ol,r,line.ang-(PI/2),line.ang-(PI/2)-ang,true);            var arcR=new Arc(or,r,line.ang+(PI/2),line.ang+(PI/2)+ang,false);            arcL.lineCap=lineCap;            arcR.lineCap=lineCap;            arcL.strokeWidth=lineWidth;            arcR.strokeWidth=lineWidth;            arcL.strokeStyle=color;            arcR.strokeStyle=color;            arcLList.add(arcL);            arcRList.add(arcR);            //arcL.render(graphics);            //arcR.render(graphics);                        /*rl.strokeStyle="blue";            rr.strokeStyle="red";            rl.render(graphics);            rr.render(graphics);                        lineR.strokeStyle=Color.random();            lineL.strokeStyle=Color.random();            lineL.render(graphics);            lineR.render(graphics);*/        }        lineList=nextList;        //setTimeout(next,1000);                    }catch(ex){alert("next:"+i+ex.message);}    }}catch(ex){    alert("global:"+ex.message);}    </script></html>/html>ml>

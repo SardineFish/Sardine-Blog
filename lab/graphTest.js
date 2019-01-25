@@ -195,20 +195,20 @@ setColorPicker();
 function buttonMouseDown(obj)
 {
     if (!obj)
-        console.warn("!obj");
+        alert("!obj");
     var id = obj.id;
     if (!id)
-        console.warn("!id");
+        alert("!id");
     $("#" + id).css("background-color", themeDeepColor);
     $("#" + id).css("color", themeLightColor);
 }
 function buttonMouseUp(obj)
 {
     if (!obj)
-        console.warn("!obj");
+        alert("!obj");
     var id = obj.id;
     if (!id)
-        console.warn("!id");
+        alert("!id");
     $("#" + id).css("background-color", themeLightColor);
     $("#" + id).css("color", themeDeepColor);
 }
@@ -286,7 +286,7 @@ function runCode(code)
     }
     catch (ex)
     {
-        console.warn(ex.message);
+        alert(ex.message);
     }
 }
 function runButtonClick(sender)
@@ -309,7 +309,7 @@ function lineChange()
         for (; lineCount > length; lineCount--)
             $($("#lineNumber p")[0]).remove();
     }
-    //console.warn(length);
+    //alert(length);
 }
 function toolChange()
 {
@@ -338,7 +338,7 @@ function resize()
     $("#codeEditor").css("height", (height - $("#topArea").height() - $("#buttonArea").height() - 20).toString() + "px");
 
     setRelativeCenterObject();
-    //console.warn($("html").height()+","+$("#root").height()+","+$("#mainArea").height()+","+$("#graphArea").height());
+    //alert($("html").height()+","+$("#root").height()+","+$("#mainArea").height()+","+$("#graphArea").height());
 }
 $("#codeText").bind('DOMNodeInserted', lineChange);
 resize();

@@ -75,7 +75,7 @@ function initEditor()
         {
             if (!succeed)
             {
-                console.warn(data);
+                alert(data);
                 return;
             }
             document.location = "/blog/?pid=" + data;

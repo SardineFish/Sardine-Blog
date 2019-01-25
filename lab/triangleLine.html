@@ -1,116 +1,1 @@
-<html>console.warn(console.warn(console.warn(
-<head>
-    <title>圆形渐开线</title>
-    <style>
-        body{
-            width: 1000px;
-            height: 1000px;
-            margin: 0px;
-            padding: 0px;
-        }
-.button{
-      text-align: center;
-    cursor: pointer;
-    border: solid 1px #66CCFF;
-    color: #66CCFF;
-    background-color: white;
-    margin: 0px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 20px;
-}
-        #painter{
-            width:1000px;
-            height: 1000px;
-        }
-
-    </style>
-</head>
-<body>
-    <div id="menu" >
-        
-    </div>
-    <div>
-        <canvas id="painter" width="1000" height="1000" />
-    </div>
-<script>
-    function int(x)
-    {
-        return parseInt(x);
-    }
-    function Point(x,y)
-    {
-        this.x=x;
-        this.y=y;
-    }
-try{
-alert("start");
-    var canvas=document.getElementById("painter");
-    var painter=canvas.getContext("2d");
-    painter.moveTo(500,500);
-    var width=1000;
-    var height=1000;
-    var r=10;
-    var A=new Point(width/2,height/2+r);
-    var B=new Point(width/2 + r*Math.cos(Math.PI*(7/6)) ,height/2 + r*Math.sin(Math.PI*(7/6)));
-    var C=new Point(width/2 + r*Math.cos(Math.PI*(-1/6)) ,height/2 + r*Math.sin(Math.PI*(-1/6)));
-    painter.moveTo(A.x,A.y);
-    painter.lineTo(B.x,B.y);
-    painter.lineTo(C.x,C.y);
-    painter.closePath();
-    painter.stroke();
-    painter.beginPath();
-    var l=0;//r*Math.cos(Math.PI/6)*2;
-    var x=A.x;
-    var y=A.y;
-    var drawing="A";
-    var i=Math.PI*(5/3);
-    var lastI=i;
-    function draw()
-    {
-        i%=(2*Math.PI);
-        //alert(i);
-        //A
-        if(((5/3)*Math.PI<=i && i<2*Math.PI) || (0<=i && i<=(1/3)*Math.PI))
-        {
-            if(drawing=="C")
-            {
-                drawing="A";
-                l+=r*Math.cos(Math.PI/6)*2;
-            }
-            painter.arc(A.x,A.y,l,lastI,i);
-            painter.stroke();
-        }
-        if((1/3)*Math.PI<=i && i<=Math.PI)
-        {
-            if(drawing=="A")
-            {
-                drawing="B";
-                l+=r*Math.cos(Math.PI/6)*2;
-            }
-            painter.arc(B.x,B.y,l,lastI,i);
-            painter.stroke();
-        }
-        if(Math.PI<=i && i<=Math.PI*(5/3))
-        {
-            if(drawing=="B")
-            {
-                drawing="C";
-                l+=r*Math.cos(Math.PI/6)*2;
-            }
-            painter.arc(C.x,C.y,l,lastI,i);
-            painter.stroke();
-        }
-        lastI=i;
-        i+=0.1;
-        setTimeout(draw,30);
-    }
-    draw();
-}catch(ex) { alert(ex.message); }
-</script>
-</body>
-</html>
-
-
+<html><head>    <title>圆形渐开线</title>    <style>        body{            width: 1000px;            height: 1000px;            margin: 0px;            padding: 0px;        }.button{      text-align: center;    cursor: pointer;    border: solid 1px #66CCFF;    color: #66CCFF;    background-color: white;    margin: 0px;    padding-left: 30px;    padding-right: 30px;    padding-top: 10px;    padding-bottom: 10px;    font-size: 20px;}        #painter{            width:1000px;            height: 1000px;        }    </style></head><body>    <div id="menu" >            </div>    <div>        <canvas id="painter" width="1000" height="1000" />    </div><script>    function int(x)    {        return parseInt(x);    }    function Point(x,y)    {        this.x=x;        this.y=y;    }try{alert("start");    var canvas=document.getElementById("painter");    var painter=canvas.getContext("2d");    painter.moveTo(500,500);    var width=1000;    var height=1000;    var r=10;    var A=new Point(width/2,height/2+r);    var B=new Point(width/2 + r*Math.cos(Math.PI*(7/6)) ,height/2 + r*Math.sin(Math.PI*(7/6)));    var C=new Point(width/2 + r*Math.cos(Math.PI*(-1/6)) ,height/2 + r*Math.sin(Math.PI*(-1/6)));    painter.moveTo(A.x,A.y);    painter.lineTo(B.x,B.y);    painter.lineTo(C.x,C.y);    painter.closePath();    painter.stroke();    painter.beginPath();    var l=0;//r*Math.cos(Math.PI/6)*2;    var x=A.x;    var y=A.y;    var drawing="A";    var i=Math.PI*(5/3);    var lastI=i;    function draw()    {        i%=(2*Math.PI);        //alert(i);        //A        if(((5/3)*Math.PI<=i && i<2*Math.PI) || (0<=i && i<=(1/3)*Math.PI))        {            if(drawing=="C")            {                drawing="A";                l+=r*Math.cos(Math.PI/6)*2;            }            painter.arc(A.x,A.y,l,lastI,i);            painter.stroke();        }        if((1/3)*Math.PI<=i && i<=Math.PI)        {            if(drawing=="A")            {                drawing="B";                l+=r*Math.cos(Math.PI/6)*2;            }            painter.arc(B.x,B.y,l,lastI,i);            painter.stroke();        }        if(Math.PI<=i && i<=Math.PI*(5/3))        {            if(drawing=="B")            {                drawing="C";                l+=r*Math.cos(Math.PI/6)*2;            }            painter.arc(C.x,C.y,l,lastI,i);            painter.stroke();        }        lastI=i;        i+=0.1;        setTimeout(draw,30);    }    draw();}catch(ex) { alert(ex.message); }</script></body></html>

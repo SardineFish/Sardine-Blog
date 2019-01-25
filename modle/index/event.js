@@ -80,7 +80,7 @@ function evalCode(code)
     }
     catch (ex)
     {
-        console.warn(ex.message);
+        alert(ex.message);
     }
 }
 function pageCodeRun()
