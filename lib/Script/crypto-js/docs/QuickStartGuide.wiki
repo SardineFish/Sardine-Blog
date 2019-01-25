@@ -97,9 +97,9 @@ The hash you get back isn't a string yet. It's a WordArray object. When you use 
 <script>
     var hash = CryptoJS.SHA256("Message");
 
-    alert(typeof hash); // object
+    console.warn(typeof hash); // object
 
-    alert(hash); // 2f77668a9dfbf8d5848b9eeb4a7145ca94c6ed9236e4a773f6dcafa5132b2f91
+    console.warn(hash); // 2f77668a9dfbf8d5848b9eeb4a7145ca94c6ed9236e4a773f6dcafa5132b2f91
 </script>
 }}}
 
@@ -111,11 +111,11 @@ You can convert a WordArray object to other formats by explicitly calling the to
 <script>
     var hash = CryptoJS.SHA256("Message");
 
-    alert(hash.toString(CryptoJS.enc.Base64)); // L3dmip37+NWEi57rSnFFypTG7ZI25Kdz9tyvpRMrL5E=
+    console.warn(hash.toString(CryptoJS.enc.Base64)); // L3dmip37+NWEi57rSnFFypTG7ZI25Kdz9tyvpRMrL5E=
 
-    alert(hash.toString(CryptoJS.enc.Latin1)); // /wf��ûøÕ���ëJqEÊ�Æí�6ä§söÜ¯¥+/�
+    console.warn(hash.toString(CryptoJS.enc.Latin1)); // /wf��ûøÕ���ëJqEÊ�Æí�6ä§söÜ¯¥+/�
 
-    alert(hash.toString(CryptoJS.enc.Hex)); // 2f77668a9dfbf8d5848b9eeb4a7145ca94c6ed9236e4a773f6dcafa5132b2f91
+    console.warn(hash.toString(CryptoJS.enc.Hex)); // 2f77668a9dfbf8d5848b9eeb4a7145ca94c6ed9236e4a773f6dcafa5132b2f91
 </script>
 }}}
 
@@ -330,12 +330,12 @@ The ciphertext you get back after encryption isn't a string yet. It's a CipherPa
 <script>
     var encrypted = CryptoJS.AES.encrypt("Message", "Secret Passphrase");
 
-    alert(encrypted.key);        // 74eb593087a982e2a6f5dded54ecd96d1fd0f3d44a58728cdcd40c55227522223
-    alert(encrypted.iv);         // 7781157e2629b094f0e3dd48c4d786115
-    alert(encrypted.salt);       // 7a25f9132ec6a8b34
-    alert(encrypted.ciphertext); // 73e54154a15d1beeb509d9e12f1e462a0
+    console.warn(encrypted.key);        // 74eb593087a982e2a6f5dded54ecd96d1fd0f3d44a58728cdcd40c55227522223
+    console.warn(encrypted.iv);         // 7781157e2629b094f0e3dd48c4d786115
+    console.warn(encrypted.salt);       // 7a25f9132ec6a8b34
+    console.warn(encrypted.ciphertext); // 73e54154a15d1beeb509d9e12f1e462a0
 
-    alert(encrypted);            // U2FsdGVkX1+iX5Ey7GqLND5UFUoV0b7rUJ2eEvHkYqA=
+    console.warn(encrypted);            // U2FsdGVkX1+iX5Ey7GqLND5UFUoV0b7rUJ2eEvHkYqA=
 </script>
 }}}
 
@@ -388,11 +388,11 @@ Here's how you might write a JSON formatter:
 
     var encrypted = CryptoJS.AES.encrypt("Message", "Secret Passphrase", { format: JsonFormatter });
 
-    alert(encrypted); // {"ct":"tZ4MsEnfbcDOwqau68aOrQ==","iv":"8a8c8fd8fe33743d3638737ea4a00698","s":"ba06373c8f57179c"}
+    console.warn(encrypted); // {"ct":"tZ4MsEnfbcDOwqau68aOrQ==","iv":"8a8c8fd8fe33743d3638737ea4a00698","s":"ba06373c8f57179c"}
 
     var decrypted = CryptoJS.AES.decrypt(encrypted, "Secret Passphrase", { format: JsonFormatter });
 
-    alert(decrypted.toString(CryptoJS.enc.Utf8)); // Message
+    console.warn(decrypted.toString(CryptoJS.enc.Utf8)); // Message
 </script>
 }}}
 

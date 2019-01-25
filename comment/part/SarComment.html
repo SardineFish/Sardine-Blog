@@ -249,7 +249,7 @@
             {
                 if (!succeed)
                 {
-                    alert(data);
+                    console.warn(data);
                     return;
                 }
                 for (var i = 0; i < data.length; i++)
@@ -270,7 +270,7 @@
                             {
                                 if(!succeed)
                                 {
-                                    alert(data);
+                                    console.warn(data);
                                     return;
                                 }
                                 comment.replyList = data;
@@ -300,7 +300,7 @@
                             {
                                 if (!succeed)
                                 {
-                                    alert(data);
+                                    console.warn(data);
                                     return;
                                 }
                                 $(e.target).text(data);
@@ -336,13 +336,13 @@
             if (replyComment)
                 cid = replyCommentId;
             if (!cid)
-                alert("参数错误");
+                console.warn("参数错误");
 
             SardineFish.API.Comment.Post(cid, uid, commentInput, function (succeed, data)
             {
                 if(!succeed)
                 {
-                    alert(data);
+                    console.warn(data);
                     return;
                 }
                 $("#text").val("");
