@@ -25,13 +25,17 @@ class Response
 class Response
 {
     public $status;
+    public $errorCode;
+    public $error;
     public $data;
     public $msg;
+    public $processTime;
     function __construct()
     {
         $this->status=">_<";
         $this->msg="";
         $this->data=0;
+        $this->processTime = round(microtime(true) * 1000);
     }
     public function send($data=null)
     {
@@ -41,6 +45,7 @@ class Response
             $this->status="^_^";
         }
         header("Content-Type: application/json");
+
         echo json_encode($this);
         exit();
     }
