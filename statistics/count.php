@@ -16,29 +16,13 @@ define("DEBUG",false);
             return Statistics::Set('count '.$x, '+', $value, true);
         }
     }
-    class CountResponse
-    {
-        public $status;
-        public $data;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->data=0;
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     if(!is_bool(FUNCTION_ONLY)||FUNCTION_ONLY==false)
     {
         require "../lib/mysql/const.php";
         require "../lib/mysql/MySQL.php";
         require "Statistics.php";
-        $response=new CountResponse();
+        $response=new Response();
         $x=$_GET['x'];
         if($x==""||!$x)
         {

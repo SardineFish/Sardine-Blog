@@ -4,23 +4,7 @@ define("DEBUG",true);
 require "Note.php";
 require $_SERVER['DOCUMENT_ROOT']."/account/Account.php";
 session_start();
-class Response
-{
-    public $status=">_<";
-    public $errorCode=0;
-    public $msg="";
-    function __construct()
-    {
-        $this->status=">_<";
-        $this->errorCode=0;
-        $this->msg="";
-    }
-    public function send()
-    {
-        echo json_encode($this);
-        exit();
-    }
-}
+require_once "../lib/Utility.php";
 $response=new Response();
 try
 {
@@ -32,7 +16,7 @@ try
     $result=Note::Post ($title,$tags,$text,$time);
     if(!$result->succeed )
     {
-        $response->msg ="»ñÈ¡Ê§°Ü";
+        $response->msg ="ï¿½ï¿½È¡Ê§ï¿½ï¿½";
         if(DEBUG)
             $response->errorCode= $result->error;
         $response->send ();

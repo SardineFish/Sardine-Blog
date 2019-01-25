@@ -2,23 +2,7 @@
     require "../lib/mysql/const.php";
     require "../lib/mysql/MySQL.php";
     require "Statistics.php";
-    class Response
-    {
-        public $status;
-        public $data;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-            $this->data=0;
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     session_start();
     $response=new Response();
     $url=$_GET['url'];

@@ -1,24 +1,6 @@
 <?php
     require "All.php";
-    class Response
-    {
-        public $status;
-        public $errorCode;
-        public $data;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->js="";
-            $this->msg="";
-            $this->errorCode =0;
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     
     $page=$_GET['page'];

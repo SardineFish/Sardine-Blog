@@ -3,24 +3,7 @@
     define("DEBUG",false);
 session_start();
     require "Article.php";
-    class Response
-    {
-        public $status;
-        public $errorCode=0;
-        public $error;
-        public $msg;
-        public $data;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $type=$_POST['type'];
     $title=$_POST['title'];

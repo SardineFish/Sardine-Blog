@@ -6,21 +6,7 @@ session_start();
     require "../all/edit.php";
     require "../account/Account.php";
     require "../token/Token.php";
-    class Response
-    {
-        public $status;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $id=$_POST['id'];
     $name=$_POST['name'];

@@ -4,25 +4,7 @@
     require $_SERVER['DOCUMENT_ROOT']."/lib/mysql/MySQL.php";
     require $_SERVER['DOCUMENT_ROOT']."/lib/mysql/const.php";
     header("Cache-Control: no-cache");
-    class Response
-    {
-        public $status=">_<";
-        public $errorCode=0;
-        public $data=null;
-        public $msg="";
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-            $this->errorCode=0;
-            $this->data=null;
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $page=$_GET['page'];
     $pid= array_key_exists('pid',$_GET)? $_GET['pid']:null;

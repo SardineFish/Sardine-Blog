@@ -13,23 +13,7 @@ define("DEBUG",false);
     }
     if(!is_bool(FUNCTION_ONLY)||FUNCTION_ONLY==false)
     {
-        class Response
-        {
-            public $status;
-            public $msg;
-            public $data;
-            function __construct()
-            {
-                $this->status=">_<";
-                $this->msg="";
-                $this->data=0;
-            }
-            public function send()
-            {
-                echo json_encode($this);
-                exit();
-            }
-        }
+        require_once "../lib/Utility.php";
         require "../lib/mysql/const.php";
         require "../lib/mysql/MySQL.php";
         require "Statistics.php";

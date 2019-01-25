@@ -1,24 +1,7 @@
 <?php
 header("Cache-Control: no-cache, must-revalidate");
 require "Article.php";
-class Response
-{
-    public $status;
-    public $error;
-    public $errorCode=0;
-    public $data;
-    public $msg;
-    function __construct()
-    {
-        $this->status=">_<";
-        $this->msg="";
-    }
-    public function send()
-    {
-        echo json_encode($this);
-        exit();
-    }
-}
+require_once "../lib/Utility.php";
 $response=new Response();
 $pid=$_GET['pid'];
 if((int)$pid == 404)

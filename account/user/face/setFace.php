@@ -3,18 +3,7 @@
 define("ROOT",$_SERVER['DOCUMENT_ROOT']);
 require "Face.php";
 require ROOT."/account/Account.php";
-class Response
-{
-    public $status=">_<";
-    public $errorCode=0;
-    public $msg=0;
-    public $data=null;
-    public function send()
-    {
-        echo(json_encode($this));
-        exit();
-    }
-}
+require_once "../lib/Utility.php";
 $response = new Response();
 $uid=$_POST["uid"];
 $url=$_POST["url"];

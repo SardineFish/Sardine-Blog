@@ -1,26 +1,7 @@
 <?php
     define("DEBUG",true );
     require "Works.php";
-    class Response
-    {
-        public $status;
-        public $errorCode;
-        public $error;
-        public $data;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->errorCode=0;
-            $this->error=null;
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $pid=$_GET['pid'];
     try 

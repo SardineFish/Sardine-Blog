@@ -4,23 +4,7 @@ header('Pragma:no-cache');
 header("Expires:0"); 
 
 require "Comment.php";
-class Response
-{
-    public $status=">_<";
-    public $errorCode=0;
-    public $msg="";
-    public $data=null;
-    function __construct()
-    {
-        $this->status=">_<";
-        $this->msg="";
-    }
-    public function send()
-    {
-        echo json_encode($this);
-        exit();
-    }
-}
+require_once "../lib/Utility.php";
 $response=new Response();
 $cid=array_key_exists('cid',$_GET)? $_GET['cid']:null;
 $time=array_key_exists('time',$_GET)? $_GET['time']:null;

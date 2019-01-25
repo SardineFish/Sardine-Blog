@@ -6,21 +6,7 @@ session_start();
     require "../account/Account.php";
     require "../all/delete.php";
     require "../token/Token.php";
-    class Response
-    {
-        public $status;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $id=$_POST['id'];
     date_default_timezone_set('PRC'); 
     $time=date("Y-m-d H:i:s");

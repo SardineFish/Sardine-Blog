@@ -1,25 +1,7 @@
 <?php
 define("DEBUG",true);
 require "Account.php";
-class Response
-{
-    public $status;
-    public $msg;
-    public $errorCode;
-    public $data;
-    public function __construct()
-    {
-        $this->status =">_<";
-        $this->msg="";
-        $this->errorCode=0;
-        $this->data="";
-    }
-    public function send()
-    {
-        echo json_encode($this);
-        exit ();
-    }
-}
+require_once "../lib/Utility.php";
 $uid = $_GET['uid'];
 $response=new Response();
 try

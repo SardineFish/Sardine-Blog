@@ -11,21 +11,7 @@ session_start();
     require "../statistics/like.php";
     require "../statistics/browse.php";
     require "../token/Token.php";
-    class Response
-    {
-        public $status;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $name=$_POST['name'];
     $tags=$_POST['tags'];

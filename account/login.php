@@ -5,24 +5,7 @@ session_start();
     require "../lib/mysql/MySQL.php";
     require "Account.php";
     require $_SERVER['DOCUMENT_ROOT']."/account/token/Token.php";
-    class Response
-    {
-        public $status="";
-        public $js="";
-        public $msg="";
-        public $data=null;
-        function __construct($status,$js,$msg)
-        {
-            $this->status=$status;
-            $this->js=$js;
-            $this->msg=$msg;
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     function urlsafe_base64_encode($string) 
     {
         $data = base64_encode($string);

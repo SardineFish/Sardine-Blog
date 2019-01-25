@@ -4,23 +4,7 @@
     require "../lib/mysql/MySQL.php";
     require "../statistics/Statistics.php";
     require "../img/Img.php";
-    class Response
-    {
-        public $status;
-        public $msg;
-        public $data;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-            $this->data=0;
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $retry=0;
     Retry:

@@ -2,22 +2,7 @@
 session_start();
     define("DEBUG",false);
     require_once "Article.php";
-    class Response
-    {
-        public $status;
-        public $errorCode;
-        public $msg;
-        function __construct()
-        {
-            $this->status=">_<";
-            $this->msg="";
-        }
-        public function send()
-        {
-            echo json_encode($this);
-            exit();
-        }
-    }
+    require_once "../lib/Utility.php";
     $response=new Response();
     $type=$_POST['type'];
     $title=$_POST['title'];
