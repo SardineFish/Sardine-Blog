@@ -384,7 +384,7 @@ function markdownItImagePostProcess(md)
     var httpsImageHost = "https://cdn-img.sardinefish.com/";
     var defaultImageHost = "http://img.sardinefish.com/";
     var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
-    var webArchivePrefixReplacer = /http:\/\/img.sardinefish.com\//;
+    var webArchivePrefixReplacer = atob("aHR0cDovL2ltZy5zYXJkaW5lZmlzaC5jb20v");
 
     md.renderer.rules.image = function (tokens, idx, options, env, slf) {
         var token = tokens[idx];
@@ -412,7 +412,7 @@ function markedImagePostProcess(marked)
     var httpsImageHost = "https://cdn-img.sardinefish.com/";
     var defaultImageHost = "http://img.sardinefish.com/";
     var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
-    var webArchivePrefixReplacer = /http:\/\/img.sardinefish.com\//;
+    var webArchivePrefixReplacer = atob("aHR0cDovL2ltZy5zYXJkaW5lZmlzaC5jb20v");
 
     renderer.image = function (src, title, text)
     {
