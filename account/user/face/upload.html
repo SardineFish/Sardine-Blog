@@ -186,7 +186,7 @@
                 {
                     $("#progress").stop();
                     $("#progress").animate({ width: "100%" }, 200);
-                    SardineFish.API.Account.User.Face.SetFace($.cookie("uid"), "http://img.sardinefish.com/" + data.key, function (succeed, dataSet)
+                    SardineFish.API.Account.User.Face.SetFace($.cookie("uid"), "https://cdn-img.sardinefish.com/" + data.key, function (succeed, dataSet)
                     {
                         if (!succeed)
                         {
