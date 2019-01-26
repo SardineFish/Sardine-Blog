@@ -41,7 +41,7 @@ function imgClass()
 //-----------------------------------------Resource-----------------------------------------
 resource.icon = function () { };
 resource.font = function () { };
-resource.domain = "http://static.sardinefish.com/";
+resource.domain = location.protocol === "https" ? "//cdn-static.sardinefish.com" : "http://static.sardinefish.com/";
 //font/
 resource.font.fontIcons = resource.domain + "font/fontIcons.woff";
 resource.font.segmdl2 = resource.domain + "font/segmdl2.woff";
@@ -142,7 +142,7 @@ resource.img.works.default.PNG = resource.img.works.url + "Works_Default.png";
 resource.img.works.default.min.PNG = resource.img.works.url + "Works_Default.min.png";
 
 resource.sardineImg = function () { };
-resource.sardineImg.domain = "http://image.sardinefish.com/";
+resource.sardineImg.domain = location.protocol === "https" ? "//cdn-img.sardinefish.com" : "http://img.sardinefish.com/";
 resource.sardineImg.get=function(id)
 {
     return resource.sardineImg.domain + id.toString();
@@ -183,7 +183,7 @@ codeMirror.addon.hint.javaScriptHintJs = codeMirror.domain + "addon/hint/javascr
 function syntaxHighlighter()
 {
 }
-syntaxHighlighter.domain = "http://apps.bdimg.com/libs/SyntaxHighlighter/3.0.83/";
+syntaxHighlighter.domain = "https://apps.bdimg.com/libs/SyntaxHighlighter/3.0.83/";
 syntaxHighlighter.styles = function () { }
 syntaxHighlighter.scripts = function () { }
 syntaxHighlighter.scripts.shCore = syntaxHighlighter.domain + "scripts/shCore.min.js";
@@ -235,14 +235,14 @@ syntaxHighlighter.styles.shThemeRDark = syntaxHighlighter.domain + "styles/shThe
 //-----------------------------------------Spectrum-----------------------------------------
 function spectrum() { }
 spectrum.scripts = function () { }
-spectrum.domain = "http://cdn.bootcss.com/spectrum/1.7.1/"
+spectrum.domain = "//cdn.bootcss.com/spectrum/1.7.1/"
 spectrum.css = spectrum.domain + "spectrum.min.css";
 spectrum.js = spectrum.domain + "spectrum.min.js";
 
 //-------------------------------------------------------------------------------------------------------------------------
 
 
-lib.jQueryMinJs = "https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
+lib.jQueryMinJs = "//cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
 lib.jQueryColorMinJs = "//cdn.bootcss.com/jquery-color/2.1.2/jquery.color.min.js";
 lib.jQueryShadowAnimation = "//static.sardinefish.com/lib/Script/jQuery/jquery.shadow-animation.min.js";
 lib.jQueryCookieMinJs = "//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js";
