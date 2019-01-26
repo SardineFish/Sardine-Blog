@@ -1,5 +1,6 @@
-﻿var resourceDictionary = new Array();
-var domain = "http://static.sardinefish.com/";
+﻿var isHttps = location.protocol === "https:";
+var resourceDictionary = new Array();
+var domain = isHttps ? "//cdn-global-static.sardinefish.com/" : '//static.sardinefish.com';
 resourceDictionary["img/logo/logo_01.jpg"] = domain + "Img/Logo/Logo_01.JPG";
 resourceDictionary["img/logo/logo_00.jpg"] = domain + "Img/Logo/Logo_00.JPG";
 resourceDictionary["img/logo/logo_01.bmp"] = domain + "Img/Logo/Logo_01.bmp";
@@ -41,7 +42,7 @@ function imgClass()
 //-----------------------------------------Resource-----------------------------------------
 resource.icon = function () { };
 resource.font = function () { };
-resource.domain = location.protocol === "https" ? "//cdn-static.sardinefish.com" : "http://static.sardinefish.com/";
+resource.domain = isHttps ? "//cdn-global-static.sardinefish.com" : "http://static.sardinefish.com/";
 //font/
 resource.font.fontIcons = resource.domain + "font/fontIcons.woff";
 resource.font.segmdl2 = resource.domain + "font/segmdl2.woff";
@@ -142,7 +143,7 @@ resource.img.works.default.PNG = resource.img.works.url + "Works_Default.png";
 resource.img.works.default.min.PNG = resource.img.works.url + "Works_Default.min.png";
 
 resource.sardineImg = function () { };
-resource.sardineImg.domain = location.protocol === "https" ? "//cdn-img.sardinefish.com" : "http://img.sardinefish.com/";
+resource.sardineImg.domain = isHttps ? "//cdn-img.sardinefish.com" : "//img.sardinefish.com/";
 resource.sardineImg.get=function(id)
 {
     return resource.sardineImg.domain + id.toString();
@@ -159,7 +160,7 @@ function codeMirror()
 codeMirror.lib = function () { };
 codeMirror.mode = function () { };
 codeMirror.addon = function () { };
-codeMirror.domain = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.2/";
+codeMirror.domain = "//cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.2/";
 codeMirror.lib.css = codeMirror.domain + "codemirror.css";
 codeMirror.lib.script = codeMirror.domain + "codemirror.min.js";
 codeMirror.mode.clike = codeMirror.domain + "mode/clike/clike.js";
@@ -183,7 +184,7 @@ codeMirror.addon.hint.javaScriptHintJs = codeMirror.domain + "addon/hint/javascr
 function syntaxHighlighter()
 {
 }
-syntaxHighlighter.domain = "https://apps.bdimg.com/libs/SyntaxHighlighter/3.0.83/";
+syntaxHighlighter.domain = "//apps.bdimg.com/libs/SyntaxHighlighter/3.0.83/";
 syntaxHighlighter.styles = function () { }
 syntaxHighlighter.scripts = function () { }
 syntaxHighlighter.scripts.shCore = syntaxHighlighter.domain + "scripts/shCore.min.js";
