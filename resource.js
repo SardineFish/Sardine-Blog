@@ -245,7 +245,7 @@ spectrum.js = spectrum.domain + "spectrum.min.js";
 
 lib.jQueryMinJs = "//cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
 lib.jQueryColorMinJs = "//cdn.bootcss.com/jquery-color/2.1.2/jquery.color.min.js";
-lib.jQueryShadowAnimation = "//static.sardinefish.com/lib/Script/jQuery/jquery.shadow-animation.min.js";
+lib.jQueryShadowAnimation = "/lib/Script/jQuery/jquery.shadow-animation.min.js";
 lib.jQueryCookieMinJs = "//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js";
 lib.pluploadMinJs = '//cdn.bootcss.com/jquery/3.1.0/jquery-3.1.0.min.js';
 lib.pluploadMoxieSwf = '//cdn.staticfile.org/Plupload/2.1.1/Moxie.swf';
