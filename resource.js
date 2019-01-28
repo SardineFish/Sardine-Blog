@@ -1,6 +1,6 @@
 ﻿var isHttps = location.protocol === "https:";
 var resourceDictionary = new Array();
-var domain = isHttps ? "//cdn-global-static.sardinefish.com/" : '//static.sardinefish.com';
+var domain = isHttps ? "//cdn-global-static.sardinefish.com/" : '//static.sardinefish.com/';
 resourceDictionary["img/logo/logo_01.jpg"] = domain + "Img/Logo/Logo_01.JPG";
 resourceDictionary["img/logo/logo_00.jpg"] = domain + "Img/Logo/Logo_00.JPG";
 resourceDictionary["img/logo/logo_01.bmp"] = domain + "Img/Logo/Logo_01.bmp";
@@ -42,7 +42,7 @@ function imgClass()
 //-----------------------------------------Resource-----------------------------------------
 resource.icon = function () { };
 resource.font = function () { };
-resource.domain = isHttps ? "//cdn-global-static.sardinefish.com" : "http://static.sardinefish.com/";
+resource.domain = isHttps ? "//cdn-global-static.sardinefish.com/" : "http://static.sardinefish.com/";
 //font/
 resource.font.fontIcons = resource.domain + "font/fontIcons.woff";
 resource.font.segmdl2 = resource.domain + "font/segmdl2.woff";
@@ -143,7 +143,7 @@ resource.img.works.default.PNG = resource.img.works.url + "Works_Default.png";
 resource.img.works.default.min.PNG = resource.img.works.url + "Works_Default.min.png";
 
 resource.sardineImg = function () { };
-resource.sardineImg.domain = isHttps ? "//cdn-img.sardinefish.com" : "//img.sardinefish.com/";
+resource.sardineImg.domain = isHttps ? "//cdn-img.sardinefish.com/" : "//img.sardinefish.com/";
 resource.sardineImg.get=function(id)
 {
     return resource.sardineImg.domain + id.toString();
