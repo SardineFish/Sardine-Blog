@@ -724,13 +724,13 @@ function processData(data: CommentResponseData):CommentProps
     return {
         avatar: data.avatar,
         name: data.name,
-        postID: data.pid,
-        commentID: data.cid,
+        postID: parseInt(data.pid),
+        commentID: parseInt(data.cid),
         uid: data.uid,
         time: data.time,
         text: data.text,
         url: data.url,
-        replies: data.commentCount > 0
+        replies: parseInt(data.commentCount) > 0
             ? data.comments.map(c => processData(c))
             : []
     };

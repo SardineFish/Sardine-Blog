@@ -12,9 +12,9 @@ export interface APIResponse<T>
 export interface CommentResponseData
 {
     avatar: string;
-    pid: number;
-    cid: number;
-    commentCount: number;
+    pid: string;
+    cid: string;
+    commentCount: string;
     comments?: CommentResponseData[];
     name: string;
     text: string;
