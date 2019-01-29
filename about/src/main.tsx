@@ -145,6 +145,8 @@ class App extends React.Component
 window.addEventListener("load", () =>
 {
     const element = (<App></App>);
+    const root = document.querySelector("#root");
+    root.innerHTML = "";
     ReactDOM.render(element, document.querySelector("#root"));
 })
 

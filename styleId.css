@@ -197,6 +197,17 @@
     background-color: white;
 }
 
+#link-about {
+    margin: auto;
+    margin-top: 3em;
+    display: block;
+    width: 6em;
+    background: #6ED8D8;
+    color: white;
+    padding: .3em 1em;
+    text-align: center;
+}
+
 #tagsDiv {
     margin-top: 20px;
     display: flex;
