@@ -1,0 +1,29 @@
+{
+  "name": "about",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "browser-sync start -s -f *.*",
+    "build": "npx webpack --mode production",
+    "build:watch": "npx webpack --mode development -w"
+  },
+  "author": "SardineFish",
+  "license": "MIT",
+  "dependencies": {
+    "@types/gravatar": "^1.4.28",
+    "@types/react": "^16.7.20",
+    "@types/react-dom": "^16.0.11",
+    "gravatar": "^1.8.0",
+    "linq": "^3.1.1",
+    "moment": "^2.24.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  },
+  "devDependencies": {
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  }
+}

@@ -1,0 +1,5 @@
+POST http://localhost:8080/comment/post.php
+Content-Type: application/x-www-form-urlencoded
+
+name=ImATestUser&email=sardine@live.cn&text=CommentAPITest&cid=323&url=https://www.sardinefish.com
+

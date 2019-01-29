@@ -178,7 +178,7 @@ class Account
         $r->account=new Account($id,$uid,$level,$encryption);
         return $r;
     }
-    public static function RegisterV2(string $uid,string $name,string $email,string $pwd,string $encryption,string $level,SarMySQL $mysql=null):Account
+    public static function RegisterV2(string $uid,string $name,string $email,string $url,string $pwd,string $encryption,string $level,SarMySQL $mysql=null):Account
     {
         if  (  !$uid
             || !$pwd 
@@ -204,7 +204,7 @@ class Account
 
             // Use Gravatar
             $size = 256;
-            $default = "https://static.sardinefish.com/img/decoration/unknown-user.png";
+            $default = "https://cdn-global-static.sardinefish.com/img/decoration/unknown-user.png";
             $avatar = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
 
             $sql = 'BEGIN;'
@@ -216,10 +216,11 @@ class Account
              . ' SET @TIME = \''.$time.'\';'
              . ' SET @EMAIL = \''.$email.'\';'
              . ' SET @AVATAR = \''.$avatar.'\';'
+             . ' SET @URL = \''.$url.'\';'
              . ' INSERT INTO `account` (`uid`,`time`,`ignore`) VALUES(@UID,@TIME,0);'
              . ' SET @ID = @@IDENTITY ;'
-             . ' INSERT INTO `user_data` (`id`,`uid`,`name`,`level`,`pwd`,`encryption`,`email`,`icon`,`operation`,`time`,`ignore`) '
-             . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,\'created\',@TIME,0);'
+             . ' INSERT INTO `user_data` (`id`,`uid`,`name`,`level`,`pwd`,`encryption`,`email`,`icon`,`url`,`operation`,`time`,`ignore`) '
+             . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,@URL,\'created\',@TIME,0);'
              . ' COMMIT;';
 
             $result = $mysql->runSQLM($sql);
@@ -230,7 +231,7 @@ class Account
             return new Account($id,$uid,$level,$encryption,false);
         }
     }
-    public static function QuickRegister(string $name,string $email,SarMySQL $mysql=null)
+    public static function QuickRegister(string $name,string $email, string $url,SarMySQL $mysql=null)
     {
         $uid = sha1($name."'".$email);
         $pwd = $uid;
@@ -242,7 +243,7 @@ class Account
             $mysql=new SarMySQL(HOST,UID,PWD,DB,PORT);
             $mysql->tryConnect();
 
-            return Account::RegisterV2($uid,$name,$email,$pwd,"none",UserLevels::Visitor,$mysql);
+            return Account::RegisterV2($uid,$name,$email,$url,$pwd,"none",UserLevels::Visitor,$mysql);
         }
         catch(Exception $ex)
         {

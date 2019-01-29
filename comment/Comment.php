@@ -141,7 +141,7 @@ class Comment
                 }
             }
             //$sql="SELECT `pid`,`cid`,`type`,`uid`,`text`,`time` FROM `comment` WHERE `time`< FROM_UNIXTIME(".$time.") AND `cid`='".$cid."' AND `ignore` = 0 ORDER BY `time` DESC LIMIT ".$from.", ".$count;
-            $sql = "SELECT comment.pid,comment.cid,comment.type,user_data.name,user_data.icon,comment.uid,comment.text,comment.time "
+            $sql = "SELECT comment.pid,comment.cid,comment.type,user_data.name,user_data.icon,user_data.url,comment.uid,comment.text,comment.time "
                 . "FROM comment "
                 . "INNER JOIN user_data "
                 . "ON user_data.uid = comment.uid "
@@ -165,6 +165,7 @@ class Comment
                 $comment->time=$data['time'];
                 $comment->pid=$data['pid'];
                 $comment->avatar = urldecode($data['icon']);
+                $comment->url = urldecode($data["url"]);
                 $comment->text=Comment::Decode($comment->text);
 
                 // Get sub Comments
@@ -195,7 +196,7 @@ class Comment
         }
     }
 
-    public static function Post($cid,$text,$name,$email,$mysql=null)
+    public static function Post($cid,$text,$name,$email,$url,$mysql=null)
     {
         require_once $_SERVER['DOCUMENT_ROOT']."/lib/mysql/const.php";
         require_once $_SERVER['DOCUMENT_ROOT']."/lib/mysql/MySQL.php";
@@ -222,7 +223,7 @@ class Comment
         {
             if($ex->getCode()==1010201006)
             {
-                $account = Account::QuickRegister($name,$email,$mysql);
+                $account = Account::QuickRegister($name,$email,$url,$mysql);
             }
             else
                 throw $ex;
