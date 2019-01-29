@@ -128,8 +128,8 @@ class Comment
             $count=(int)$count;
             if(!$cid)
                 throw new Exception ("The id cannot be empty or 0",1010100002);
-            if(!$time)
-                $time=time();
+            /*if(!$time)
+                $time=time();*/
             if(!$mysql)
                 $mysql=new SarMySQL(HOST,UID,PWD,DB,PORT);
             if(!$mysql->connected)
@@ -141,6 +141,7 @@ class Comment
                 }
             }
             //$sql="SELECT `pid`,`cid`,`type`,`uid`,`text`,`time` FROM `comment` WHERE `time`< FROM_UNIXTIME(".$time.") AND `cid`='".$cid."' AND `ignore` = 0 ORDER BY `time` DESC LIMIT ".$from.", ".$count;
+
             $sql = "SELECT comment.pid,comment.cid,comment.type,user_data.name,user_data.icon,user_data.url,comment.uid,comment.text,comment.time "
                 . "FROM comment "
                 . "INNER JOIN user_data "
@@ -148,7 +149,7 @@ class Comment
                 . "	AND user_data.ignore = 0 "
                 . "   AND comment.ignore=0 "
                 . "WHERE comment.cid='".$cid."' "
-                . " AND comment.time < FROM_UNIXTIME(".$time.") "
+                . $time?" AND comment.time < FROM_UNIXTIME(".$time.") ":""
                 . "ORDER BY comment.time "
                 . "LIMIT ".$from.", ".$count;
             $sqlResult=$mysql->runSQL($sql);
