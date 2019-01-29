@@ -44,6 +44,7 @@ class Response
             $this->data = $data;
             $this->status="^_^";
         }
+        header('Cache-Control: no-cache,must-revalidate');   
         header("Content-Type: application/json");
 
         echo json_encode($this);
