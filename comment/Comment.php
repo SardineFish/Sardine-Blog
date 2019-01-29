@@ -149,13 +149,13 @@ class Comment
                 . "	AND user_data.ignore = 0 "
                 . "   AND comment.ignore=0 "
                 . "WHERE comment.cid='".$cid."' "
-                . $time?" AND comment.time < FROM_UNIXTIME(".$time.") ":""
+                . ((int)$time ? " AND comment.time < FROM_UNIXTIME(".(int)$time.") ":"")
                 . "ORDER BY comment.time "
                 . "LIMIT ".$from.", ".$count;
             $sqlResult=$mysql->runSQL($sql);
             if(!$sqlResult->succeed)
             {
-                throw new Exception($sqlResult->error,$sqlResult->errno);
+                throw new Exception("SQL Error.",$sqlResult->errno);
             }
             $commentList=array();
             $subCommentCount =$count -  count($sqlResult->data);
