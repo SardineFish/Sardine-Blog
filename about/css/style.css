@@ -9,7 +9,7 @@
 body{
     padding: 0;
     margin: 0;
-    font-family: "Open Sans",Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Open Sans",Segoe UI,Dengxian,Microsoft YaHei, Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
 }
 canvas{
@@ -21,7 +21,7 @@ a{
     
 }
 .text-light{
-    font-family: "Open Sans Light",Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Open Sans Light",Segoe UI,Dengxian,Microsoft YaHei Light, DengXian, Tahoma, Geneva, Verdana, sans-serif;
     font-weight: lighter;
 }
 #nav-bar{
