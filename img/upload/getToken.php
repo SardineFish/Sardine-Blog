@@ -56,7 +56,7 @@
     $id=Img::NewId();
     $response->data->key=urlsafe_base64_encode($id->data.(time()%1000));
     $response->data->token=$uploadToken;
-    $response->data->url="http://upload.qiniu.com/";
+    $response->data->url="https://upload.qiniu.com/";
     $response->status="^_^";
     $response->send();
 ?>
