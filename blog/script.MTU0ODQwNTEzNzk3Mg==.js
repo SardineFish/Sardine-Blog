@@ -183,6 +183,7 @@ function loadBlog(pid) {
                 });
                 markdownItImagePostProcess(md);
                 md.use(markdownitEmoji);
+                md.use(markdownitKatex);
                 data.document = md.render(data.document);
                 
                 // Post highlight
