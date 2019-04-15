@@ -2,9 +2,6 @@ body {
     padding: 0px;
     margin: 0px;
     font-family: "Segoe UI", Sans-Serif;
-    position: fixed;
-    height: 100%;
-    width: 100%;
 }
 *:focus{
     outline: none;
@@ -179,11 +176,23 @@ body {
 }
 
 #text {
+    display: none;
     background-color: transparent;
     height: 100%;
     padding: 0.5em;
     border-radius: 5px;
     box-sizing: border-box;
+    min-height: fit-content;
+}
+#input-text {
+    background-color: transparent;
+    height: 100%;
+    padding: 0.5em;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-height: fit-content;
+    overflow: hidden;
+    white-space: pre-wrap;
 }
 
 .flex-center {

@@ -13,6 +13,8 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="/lib/css/github-markdown-css/github-markdown.css" rel="stylesheet" type="text/css">
     <link href="//libs.cdnjs.net/highlight.js/9.9.0/styles/github.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.1/katex.min.css">
+    <script src="/lib/Script/markdown-it-katex/dist/markdown-it-katex.js"></script>
 </head>
 
 <body >
@@ -52,8 +54,8 @@
             </div>
         </div>
         <div id="textArea">
-            <div id="text" class="markdown-body" contenteditable="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            </div>
+            <pre id="input-text" class="markdown-body" contenteditable="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></pre>
+            <div id="text" class="markdown-body"></div>
         </div>
     </div>
     <script src="script.js">
