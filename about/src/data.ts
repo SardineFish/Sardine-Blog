@@ -371,6 +371,12 @@ export const friendsData: FriendData[] = [
         note: "Dalao of Android development"
     },
     {
+        name: "lyt99",
+        link: "//blog.baka.pw/",
+        avatar: "//github.com/lyt99.png",
+        note: "是婷婷( •̀ ω •́ )✧",
+    },
+    {
         name: "CoSidian",
         link: "//blog.codedragon.tech/",
         avatar: "//blog.codedragon.tech/assets/images/avatar.jpg"
