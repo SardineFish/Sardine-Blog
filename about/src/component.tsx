@@ -366,6 +366,7 @@ export class BarChart extends React.Component<BarChartProps, BarChartState>
             "#81d4fa",
             "#0277bd",
             "#29b6f6",
+            "#29b6f6",
             "#039be5",
             "#0288d1",
             "#b3e5fc",

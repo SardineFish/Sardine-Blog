@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { RoseChart, ChartData, DeferSection, Banner, DeferElement, LifeTimer, Age, BarChart, TextCloud, FriendLink, CommentSystem } from "./component";
 import { languageSkillsData, summaryData, toolsData, toolsChartPalette, gameData, friendsData } from "./data";
 import { GithubLogo, SteamLogo, EmailIcon, IconAdd, IconArrowUp } from "./icon";
+import { animate } from "./lib";
 
 class App extends React.Component
 {
@@ -144,10 +145,22 @@ class App extends React.Component
 }
 window.addEventListener("load", () =>
 {
+    const nav = /#?(.*)/.exec(window.location.hash)[1];
+    
     const element = (<App></App>);
     const root = document.querySelector("#root");
     root.innerHTML = "";
     ReactDOM.render(element, document.querySelector("#root"));
+
+    setTimeout(() =>
+    {
+        let element = document.querySelector(`#${nav}`);
+        animate(2, (t) =>
+        {
+            let rest = element.getBoundingClientRect().top;
+            window.scrollBy(0, 0.15 * rest);
+        })
+    }, 500);
 })
 
 

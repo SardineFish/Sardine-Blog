@@ -37,7 +37,7 @@ export const summaryData: ChartData[] = [
 export const languageSkillsData: ChartData[] = [
     {
         name: "C/C++",
-        value: 0.5,
+        value: 0.6,
         note: "2012-9"
     },
     {
@@ -72,8 +72,13 @@ export const languageSkillsData: ChartData[] = [
     },
     {
         name: "Lua",
-        value: 0.3,
+        value: 0.45,
         note: "2018-11"
+    },
+    {
+        name: "Golang",
+        value: 0.5,
+        note: "2019-3"
     }
 ]
 export const toolsData: ChartData[] = [
@@ -375,6 +380,12 @@ export const friendsData: FriendData[] = [
         link: "//blog.baka.pw/",
         avatar: "//github.com/lyt99.png",
         note: "是婷婷( •̀ ω •́ )✧",
+    },
+    {
+        name: "Mr.Liu",
+        link: "//yzddmr6.tk",
+        avatar: "//github.com/yzddmr6.png",
+        note: "Hacked by Mr.Liu"
     },
     {
         name: "CoSidian",
