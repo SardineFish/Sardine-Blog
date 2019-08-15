@@ -454,6 +454,25 @@
     color: #FFD582;
 }
 
+#pgp-key {
+    margin-top: .5em;
+    font-family: "Consolas", Courier New, Courier, monospace;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: .8em;
+    color: #BBB;
+    transition: color .2s;
+}
+#pgp-key .icon {
+    margin-right: .5em;
+}
+#pgp-key:hover {
+    color: #FFD582;
+}
+
 #my-name {
     font-size: 24px;
     text-align: center;

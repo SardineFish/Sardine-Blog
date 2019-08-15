@@ -17,6 +17,11 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "browser-sync",
+            "type": "shell",
+            "command": "browser-sync start --proxy localhost:8080 -f ./**/*"
         }
     ]
 }
