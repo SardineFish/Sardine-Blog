@@ -472,7 +472,7 @@ class Account
         }
         
     }
-    public static function CheckPermissionV2(string $level='default',SarMySQL $mysql=null): bool
+    public static function CheckPermissionV2(string $level='default',SarMySQL $mysql=null): Account
     {
         if(!class_exists("SarMySQL"))
         {
@@ -487,7 +487,9 @@ class Account
         $mysql->tryConnect();
 
         $account = Account::CheckLoginV2(null,$mysql);
-        return UserLevels::CheckHigher($account->level,$level);
+        if(!UserLevels::CheckHigher($account->level,$level))
+            throw new Exception("Access denied.", 1010201002);
+        return $account;
     }
     public static function CheckLogin($mysql=null)
     {
