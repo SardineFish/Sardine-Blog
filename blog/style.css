@@ -322,7 +322,7 @@ a {
     margin-right: 0.3em;
 }
 
-.tag {
+.article-info .tag {
     display: inline-block;
     padding: 0 1em;
     border-radius: 100px;
@@ -336,6 +336,11 @@ a {
     min-height: 400px;
     color: #555;
     font-size: 16px;
+}
+
+.content img {
+    display: block;
+    margin: auto;
 }
 
 hr {
