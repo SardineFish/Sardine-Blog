@@ -1,0 +1,33 @@
+{
+  "name": "sardine-web-note",
+  "version": "1.0.0",
+  "description": "A note board on SardineFish's Web Site.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack --config ./build/webpack.production.config.js",
+    "build:watch": "npx webpack --config ./build/webpack.development.config.js --watch",
+    "build:dev": "npx webpack --config ./build/webpack.development.config.js",
+    "start": "browser-sync start -s -f ./dist/**/*"
+  },
+  "author": "SardineFish",
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^3.4.0",
+    "file-loader": "^5.0.2",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.1.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}
