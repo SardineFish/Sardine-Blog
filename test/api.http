@@ -1,5 +1,5 @@
-POST http://localhost:8080/comment/post.php
+POST http://localhost:8080/api/note/getList.php?startIdx=0&count=10
 Content-Type: application/x-www-form-urlencoded
 
-name=ImATestUser&email=sardine@live.cn&text=CommentAPITest&cid=323&url=https://www.sardinefish.com
+text=TestContent''!\'&author=TestUser2019-12-25-2&email=test@example.com&url=
 

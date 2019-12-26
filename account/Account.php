@@ -1,16 +1,4 @@
 <?php
-/**
- * Result short summary.
- *
- * Result description. 
- *
- * @version 1.0
- * @author Sardine
- * @var bool $succeed ��ȡһ��ֵָʾ�Ƿ���ɲ����Ҳ����ִ������
- * @var string $error ��ȡһ��ֵ��ʾ������Ϣ
- * @var int $errno ��ȡһ��ֵ��ʾ������루�Զ���������� Custom Error Code.xml��
- * @var Account $account ��ȡһ���˻�����
- */
 class AccountResult
 {
     public $succeed;
@@ -38,6 +26,25 @@ class Account
         $this->level=$level;
         $this->encryption=$enryption;
         $this->banned=$banned;
+    }
+    public static function SimpleLogin(string $name, string $email, string $url, SarMySQL $mysql = null)
+    {
+        // Check account
+        try
+        {
+            $account = Account::CheckLoginV2($name,$mysql);
+            return $account->uid;
+        }
+        catch(Exception $ex)
+        {
+            if($ex->getCode()==1010201006)
+            {
+                $account = Account::QuickRegister($name,$email,$url,$mysql);
+                return $account->uid;
+            }
+            else
+                throw $ex;
+        }
     }
     public static function Login($uid,$pwd,$mysql=null)
     {
@@ -224,8 +231,11 @@ class Account
              . ' COMMIT;';
 
             $result = $mysql->runSQLM($sql);
-            if(!$result[9]->affectedRows || !$result[11]->affectedRows)
-                throw new Exception("User already existed.",1010201004);
+            for($i = 0; $i < count($result); $i++)
+            {
+                if(!$result[$i]->succeed)
+                    throw new Exception("User already existed.",1010201004);
+            }
             $id=$result[8]->id;
 
             return new Account($id,$uid,$level,$encryption,false);

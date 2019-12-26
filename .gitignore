@@ -1,3 +1,5 @@
+*.sql
+
 *.phpproj
 config.php
 

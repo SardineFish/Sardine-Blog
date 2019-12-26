@@ -1,5 +1,12 @@
 <?php
 
+class PostDataEntity
+{
+    public $views;
+    public $likes;
+    public $comments;
+}
+
 class PostDataResult
 {
     public $succeed;

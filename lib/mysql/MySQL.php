@@ -102,6 +102,19 @@
             }
             return $result;
         }
+        public function tryRunSQLM(string $sql)
+        {
+            $result = $this->runSQLM($sql);
+            if(!$result[0])
+            {
+                throw new Exception($result->error, $result->errno);
+            }
+            return $result;
+        }
+        public function escape(string $str) : string
+        {
+            return $this->mysqli->real_escape_string($str);
+        }
         public function runSQLM($sql)
         {
             $mysqlResult=array();

@@ -1,0 +1,149 @@
+@import "../fonts/Open_Sans/OpenSans.css";
+@import "../fonts//Titillium_Web/TitilliumWeb.css";
+
+$theme-color: #3498d9;
+$theme-text-color: white;
+$theme-color-light: #68c4f0;
+$global-bg: #EEE;
+$ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
+
+body {
+    margin: 0;
+    font-family: 'Open Sans',
+        Segoe UI,
+        Microsoft YaHei UI,
+        Roboto,
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+    background-color: $global-bg;
+}
+
+.button {
+    cursor: pointer;
+}
+
+.fold-view {
+    overflow: hidden;
+    transition: max-height 1s;
+}
+
+.input-line {
+    border: solid 0 transparent;
+    border-bottom: solid .2em #CCC;
+    padding: .2em .5em;
+    outline: none;
+    font-size: inherit;
+    transition: all .3s;
+
+    &::placeholder {
+        color: #CCC;
+    }
+
+    &:focus {
+        border-bottom-color: $theme-color-light;
+    }
+}
+
+.top-bar {
+    width: 100%;
+    height: 6em;
+    background-color: $theme-color;
+    color: $theme-text-color;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-end;
+    align-items: center;
+
+    & > .wrapper {
+        width: 1200px;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+    }
+
+    .top-nav {
+        
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-flow: row nowrap;
+        }
+        .nav-item {
+            border-bottom: solid .3em transparent;
+            &.current {
+                border-bottom-color: $theme-text-color;
+            }
+            
+            a {
+                display: block;
+                padding: 1em 2em;
+                margin: 0 1em;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                word-spacing: 2;
+                color: inherit;
+            }
+        }
+    }
+
+    .user-data {
+        margin-bottom: 1.3em;
+        align-self: flex-end;
+        justify-self: flex-end;
+
+        .icon {
+            width: 2em;
+            height: 2em;
+            fill: $theme-text-color;
+        }
+        .avatar {
+
+        }
+        a {
+            display: block;
+        }
+    }
+}
+
+.page-content {
+    min-height: 100vh;
+    width: 1200px;
+    margin: auto;
+}
+
+.page-footer {
+    background-color: #CCC;
+    height: 8em;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    .powered-by, .copyright {
+        user-select: none;
+        margin: .5em 0;
+        font-family: "Titillium Web", Roboto;
+        color: #777;
+    }
+}
+
+.spin {
+    transform-origin: center;
+    animation-name: rotation;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+@keyframes rotation {
+    from {
+        transform: rotateZ(0deg);
+    }
+
+    to {
+        transform: rotateZ(360deg);
+    }
+}

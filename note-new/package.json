@@ -8,7 +8,7 @@
     "build": "npx webpack --config ./build/webpack.production.config.js",
     "build:watch": "npx webpack --config ./build/webpack.development.config.js --watch",
     "build:dev": "npx webpack --config ./build/webpack.development.config.js",
-    "start": "browser-sync start -s -f ./dist/**/*"
+    "start": "browser-sync start -p localhost:8080/note-new/ -f ./dist/**/*"
   },
   "author": "SardineFish",
   "license": "MIT",
@@ -25,8 +25,13 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/gravatar": "^1.8.0",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
+    "classnames": "^2.2.6",
+    "gravatar": "^1.8.0",
+    "linq": "^3.2.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
   }

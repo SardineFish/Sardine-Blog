@@ -1,5 +1,13 @@
 <?php
 
+class PublicUserInfo
+{
+    public $uid;
+    public $name;
+    public $avagar;
+    public $url;
+}
+
 class UsersResultClass
 {
     public $succeed=false;
