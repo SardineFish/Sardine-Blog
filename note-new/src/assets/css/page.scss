@@ -26,7 +26,7 @@ body {
 
 .fold-view {
     overflow: hidden;
-    transition: max-height 1s;
+    transition: max-height .3s;
 }
 
 .input-line {
@@ -126,7 +126,7 @@ body {
     .powered-by, .copyright {
         user-select: none;
         margin: .5em 0;
-        font-family: "Titillium Web", Roboto;
+        font-family: $ui-font;
         color: #777;
     }
 }

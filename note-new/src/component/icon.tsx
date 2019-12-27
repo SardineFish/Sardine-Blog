@@ -197,3 +197,15 @@ export const IconAsterisk = IconWrapper("icon-asterisk", (
         <path d="M10,2H14L13.21,9.91L19.66,5.27L21.66,8.73L14.42,12L21.66,15.27L19.66,18.73L13.21,14.09L14,22H10L10.79,14.09L4.34,18.73L2.34,15.27L9.58,12L2.34,8.73L4.34,5.27L10.79,9.91L10,2Z" />
     </svg>
 ));
+
+export const IconReply = IconWrapper("icon-reply", (
+    <svg viewBox="0 0 24 24">
+        <path d="M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z" />
+    </svg>
+));
+
+export const IconAdd = IconWrapper("icon-add", (
+    <svg viewBox="0 0 24 24">
+        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+    </svg>
+));

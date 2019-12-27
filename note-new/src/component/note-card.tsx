@@ -5,44 +5,50 @@ import classnames from "classnames";
 import { PostData } from "../data/postData";
 import { Comment } from "../data/comment";
 import { FoldView } from "./fold-view";
-import { Comments } from "./comments";
+import { CommentSystem } from "./comments";
 
 export function NoteCard(props: {note: Note})
 {
     const [extend, setExtend] = useState(false);
     const refCard = useRef(null as HTMLDivElement | null);
 
+    const extendComments = () =>
+    {
+        setExtend(true);
+    };
 
     return (
         <section ref={refCard} className="card note-card">
-            <header className="note-author">
-                <div className="avatar">
-                    <img src={props.note.author.avatar} alt="avatar"/>
-                </div>
-                <div className="info">
-                    <a className="name" href={props.note.author.url}>{props.note.author.name}</a>
-                    <span className="time">{props.note.time}</span>
-                </div>
-            </header>
-            <main className="note-content">
-                <p>{props.note.text}</p>
-            </main>
-            <footer>
-                <div className="post-data">
-                    <span className="item views">
-                        <IconView />
-                        <span className="value">{props.note.postData.views}</span>
-                    </span>
-                    <LikeButton className="item like" pid={props.note.pid} likes={props.note.postData.likes} />
-                    <span className="item comments">
-                        <IconComment />
-                        <span className="value">{props.note.postData.comments}</span>
-                    </span>
-                </div>
-                <FoldView extend={extend}>
-                    <Comments cid={props.note.pid} loadComments={extend} />
-                </FoldView>
-            </footer>
+            <div className="visible-area">
+                <header className="note-author">
+                    <div className="avatar">
+                        <img src={props.note.author.avatar} alt="avatar" />
+                    </div>
+                    <div className="info">
+                        <a className="name" href={props.note.author.url}>{props.note.author.name}</a>
+                        <span className="time">{props.note.time}</span>
+                    </div>
+                </header>
+                <main className="note-content">
+                    <p>{props.note.text}</p>
+                </main>
+                <footer>
+                    <div className="post-data">
+                        <span className="item views">
+                            <IconView />
+                            <span className="value">{props.note.postData.views}</span>
+                        </span>
+                        <LikeButton className="item like" pid={props.note.pid} likes={props.note.postData.likes} />
+                        <span className="item comments" onClick={extendComments}>
+                            <IconComment />
+                            <span className="value">{props.note.postData.comments}</span>
+                        </span>
+                    </div>
+                </footer>
+            </div>
+            <FoldView className="fold-area" extend={extend}>
+                <CommentSystem cid={props.note.pid} loadComments={extend} />
+            </FoldView>
         </section>
     )
 }

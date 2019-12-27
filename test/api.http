@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/note/getList.php?startIdx=0&count=10
+GET http://localhost:8080/comment/getList.php?cid=115&from=0&count=100
 Content-Type: application/x-www-form-urlencoded
 
 text=TestContent''!\'&author=TestUser2019-12-25-2&email=test@example.com&url=

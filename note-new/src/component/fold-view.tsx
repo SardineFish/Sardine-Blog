@@ -1,30 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import classnames from "classnames";
 
-export function FoldView(props: { extend: boolean, className?: string, children?: React.ReactNode, extendHeight?:number, extendTime?:number })
+
+export function FoldView(props: { extend: boolean, className?: string, children?: React.ReactNode, time?: number })
 {
-    const [height, setHeight] = useState(props.extend ? null : 0);
-    const extendHeight = props.extendHeight || window.innerHeight;
-    const extendTime = props.extendTime || 1;
+    const [height, setHeight] = useState(0 as number | "unset");
+    const [fullHeight, setFullHeight] = useState(0);
+    const time = props.time || .3;
+    const ref = useRef(null as HTMLDivElement | null);
     useEffect(() =>
     {
-        if (height !== null && props.extend)
+        if (!ref.current)
+            return;
+        const scrollHeight = ref.current.scrollHeight;
+        if (scrollHeight != fullHeight)
         {
-            setHeight(extendHeight);
-            setTimeout(() => setHeight(null), extendTime * 1000);
+            setFullHeight(scrollHeight);
         }
-        else if (height && !props.extend)
+        if (props.extend)
         {
-            setHeight(0);
-        }
-        else if (!props.extend)
-        {
-            setHeight(extendHeight);
-            setHeight(0);
+            if (height !== "unset")
+            {
+                setHeight(scrollHeight);
+                setTimeout(() =>
+                {
+                    setHeight("unset");
+                }, time * 1000);
+            }
         }
     });
+
     return (
-        <div className={classnames("fold-view", { "extend": props.extend }, props.className)} style={{ maxHeight: height === null ? "unset" : height }}>
+        <div ref={ref} className={classnames("fold-view", { "extend": props.extend }, props.className)} style={{ maxHeight: height }}>
             {props.children}
         </div>
     );

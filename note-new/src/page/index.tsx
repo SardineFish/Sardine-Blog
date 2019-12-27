@@ -14,14 +14,17 @@ import { Button } from "../component/button";
 import { scrollToTop } from "../misc/utils";
 import { FoldView } from "../component/fold-view";
 import { PostNote } from "../component/post-note";
+import { UserContext } from "../context/UserContext";
+import { User } from "../data/user";
 
 function App()
 {
     const [notes, setNotes] = useState([] as Note[]);
-    const [time] = useState(getCurrentUnixTime());
+    const [time, setTime] = useState(getCurrentUnixTime());
     const [startIdx, setStartIdx] = useState(0);
     const [focusIdx, setFocus] = useState(0);
     const [showPost, setShowPost] = useState(false);
+    const [user, setUser] = useState({ name: "", uid: "", avatar: "/static/img/unknown-user-grey.png", url: "#" } as User);
     const loadCount = 10;
     const loading = notes.length < startIdx;
     
@@ -58,9 +61,14 @@ function App()
     };
     const reload = () =>
     {
+        setTime(getCurrentUnixTime());
         setStartIdx(0);
         setNotes([]);
     };
+    const setUserContext = (user: User) =>
+    {
+        setUser(user);
+    }
     useEffect(() =>
     {
         window.addEventListener("scroll", onScroll);
@@ -73,33 +81,35 @@ function App()
 
     
     return (
-        <Page title="Note" nav={SiteNavs} currentNav="note">
-            <FixedOnScroll className="side-area">
-                <header className="header">MESSAGE BOARD</header>
-                <Button className="new-post" onClick={postNewClick}>
-                    <IconEdit />
-                    <span>Post New</span>
-                </Button>
-                <ul className="timeline">
-                    {
-                        linq.from(notes)
-                            .select(note => formatYM(new Date(note.time)))
-                            .distinct()
-                            .select((time, idx) => (<li className={classnames("time", { "current": time === focusTime() })} key={time}>{time}</li>))
-                    }
-                </ul>
-            </FixedOnScroll>
-            <div className="notes-area">
-                <FoldView className="post-note-area" extend={showPost}>
-                    <PostNote onPost={reload}/>
-                </FoldView>
-                {notes.map((note, idx) => (<NoteCard note={note} key={idx} />))}
+        <UserContext.Provider value={{ login: false, user: user, setUser: setUserContext }}>
+            <Page title="Note" nav={SiteNavs} currentNav="note">
+                <FixedOnScroll className="side-area">
+                    <header className="header">MESSAGE BOARD</header>
+                    <Button className="new-post" onClick={postNewClick}>
+                        <IconEdit />
+                        <span>Post New</span>
+                    </Button>
+                    <ul className="timeline">
+                        {
+                            linq.from(notes)
+                                .select(note => formatYM(new Date(note.time)))
+                                .distinct()
+                                .select((time, idx) => (<li className={classnames("time", { "current": time === focusTime() })} key={time}>{time}</li>))
+                        }
+                    </ul>
+                </FixedOnScroll>
+                <div className="notes-area">
+                    <FoldView className="post-note-area" extend={showPost}>
+                        <PostNote onPost={reload} />
+                    </FoldView>
+                    {notes.map((note, idx) => (<NoteCard note={note} key={idx} />))}
 
-                <div className="loading">
-                    {loading ? <IconLoading className="spin" /> : null}
+                    <div className="loading">
+                        {loading ? <IconLoading className="spin" /> : null}
+                    </div>
                 </div>
-            </div>
-        </Page>
+            </Page>
+        </UserContext.Provider>
     );
 }
 
