@@ -94,7 +94,7 @@ function App()
                             linq.from(notes)
                                 .select(note => formatYM(new Date(note.time)))
                                 .distinct()
-                                .select((time, idx) => (<li className={classnames("time", { "current": time === focusTime() })} key={time}>{time}</li>))
+                                .select((time, idx) => (<li className={classnames("time", { "current": time === focusTime() })} key={idx}>{time}</li>))
                         }
                     </ul>
                 </FixedOnScroll>

@@ -142,16 +142,26 @@ class Comment
             }
             //$sql="SELECT `pid`,`cid`,`type`,`uid`,`text`,`time` FROM `comment` WHERE `time`< FROM_UNIXTIME(".$time.") AND `cid`='".$cid."' AND `ignore` = 0 ORDER BY `time` DESC LIMIT ".$from.", ".$count;
 
-            $sql = "SELECT comment.pid,comment.cid,comment.type,user_data.name,user_data.icon,user_data.url,comment.uid,comment.text,comment.time "
-                . "FROM comment "
-                . "INNER JOIN user_data "
-                . "ON user_data.uid = comment.uid "
-                . "	AND user_data.ignore = 0 "
-                . "   AND comment.ignore=0 "
-                . "WHERE comment.cid='".$cid."' "
-                . ((int)$time ? " AND comment.time < FROM_UNIXTIME(".(int)$time.") ":"")
-                . "ORDER BY comment.time "
-                . "LIMIT ".$from.", ".$count;
+            // $sql = "SELECT comment.pid,comment.cid,comment.type,user_data.name,user_data.icon,user_data.url,comment.uid,comment.text,comment.time "
+            //     . "FROM comment "
+            //     . "INNER JOIN user_data "
+            //     . "ON user_data.uid = comment.uid "
+            //     . "	AND user_data.ignore = 0 "
+            //     . "   AND comment.ignore=0 "
+            //     . "WHERE comment.cid='".$cid."' "
+            //     . ((int)$time ? " AND comment.time < FROM_UNIXTIME(".(int)$time.") ":"")
+            //     . "ORDER BY comment.time "
+            //     . "LIMIT ".$from.", ".$count;
+            $sql = 
+            "SELECT comment.pid,comment.cid,comment.type,user_data.name,user_data.icon,user_data.url,comment.uid,comment.text,comment.time, like_data.value as `likes`, comment_data.value as `comments` "
+            ."FROM comment  "
+            ."JOIN user_data ON (user_data.uid = comment.uid AND user_data.ignore = 0 AND comment.ignore=0) "
+            ."LEFT JOIN post_data like_data ON (like_data.pid = comment.pid AND like_data.key = 'like') "
+            ."LEFT JOIN post_data comment_data ON (comment_data.pid = comment.pid AND comment_data.key = 'comment') "
+            ."WHERE comment.cid='".$cid."' "
+            . ((int)$time ? " AND comment.time < FROM_UNIXTIME(".(int)$time.") ":"")
+            ."ORDER BY comment.time  "
+            ."LIMIT ".$from.", ".$count;
             $sqlResult=$mysql->runSQL($sql);
             if(!$sqlResult->succeed)
             {
@@ -169,24 +179,15 @@ class Comment
                 $comment->url = urldecode($data["url"]);
                 $comment->text=Comment::Decode($comment->text);
 
-                // Get sub Comments
-                $result = PostDataComment::Get($comment->pid,$mysql);
-                if(!$result->succeed )
-                    throw new Exception($result->error,$result->errno);
-                $commentCount = $result->data;
-                $comment->commentCount= $result->data;
+                $commentCount = (int)$data['comments'];
                 
-                if($commentCount>0 && $subCommentCount>0)
+                if($commentCount > 0 && $subCommentCount>0)
                 {
                     $comment->comments = Comment::GetList($comment->pid,0,$subCommentCount,$time,$mysql);
                     $subCommentCount -= count($comment->comments);
                 }
 
-                // Get Like Count
-                $result = PostDataLike::Get($comment->pid,$mysql);
-                if(!$result->succeed )
-                    throw new Exception($result->error,$result->errno);
-                $comment->like=$result->data;
+                $comment->like = (int)$data['like'];
                 $commentList[$i]=$comment;
             }
             return $commentList;

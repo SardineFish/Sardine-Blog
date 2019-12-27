@@ -14,7 +14,7 @@ export function NoteCard(props: {note: Note})
 
     const extendComments = () =>
     {
-        setExtend(true);
+        setExtend(!extend);
     };
 
     return (
@@ -39,7 +39,7 @@ export function NoteCard(props: {note: Note})
                             <span className="value">{props.note.postData.views}</span>
                         </span>
                         <LikeButton className="item like" pid={props.note.pid} likes={props.note.postData.likes} />
-                        <span className="item comments" onClick={extendComments}>
+                        <span className={classnames("item", "comments", { "extend": extend})} onClick={extendComments}>
                             <IconComment />
                             <span className="value">{props.note.postData.comments}</span>
                         </span>

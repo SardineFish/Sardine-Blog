@@ -121,10 +121,7 @@ $base-text-color: #888;
     }
     .fold-area {
         background-color: #F7F7F7;
-
-        &.extend {
-            padding: 0 2em;
-        }
+        padding: 0 2em;
     }
 
 
@@ -202,6 +199,15 @@ $base-text-color: #888;
             }
             .value {
                 margin-left: .5em;
+            }
+        }
+
+        .comments {
+            cursor: pointer;
+
+            &.extend {
+                fill: $theme-color-light;
+                color: $theme-color-light;
             }
         }
 

@@ -16,6 +16,7 @@ export function FoldView(props: { extend: boolean, className?: string, children?
         if (scrollHeight != fullHeight)
         {
             setFullHeight(scrollHeight);
+            return;
         }
         if (props.extend)
         {
@@ -27,6 +28,15 @@ export function FoldView(props: { extend: boolean, className?: string, children?
                     setHeight("unset");
                 }, time * 1000);
             }
+        }
+        else if(height === "unset")
+        {
+            setHeight(scrollHeight);
+            return;
+        }
+        else
+        {
+            setHeight(0);    
         }
     });
 

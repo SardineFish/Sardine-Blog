@@ -4,6 +4,7 @@ import { IconReply, IconAdd, IconLoading, IconSend } from "./icon";
 import { UserContext } from "../context/UserContext";
 import linq from "linq";
 import gravatar from "gravatar";
+import calssNames from "classnames";
 
 const CommentContext = React.createContext({
     replyComment: null as Comment | null,
@@ -62,7 +63,7 @@ export function CommentSystem(props: {cid: number, loadComments?: boolean, level
                         {
                             linq.from(comments)
                                 .orderByDescending(c => new Date(c.time).getTime())
-                                .select((c, idx) => (<CommentRenderer comment={c} level={0} levelLimit={levelLimit}/>))
+                                .select((c, idx) => (<CommentRenderer key={idx} comment={c} level={0} levelLimit={levelLimit}/>))
                                 .toArray()
                         }
                     </ul>
@@ -77,7 +78,7 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
     const hasReplies = props.level < props.levelLimit && props.comment.replies.length > 0;
     const comment = props.comment;
     const user = props.comment.user;
-    const timeString = props.comment.time.toTimeString();
+    const timeString = props.comment.time.toDateString();
     const [avatar, setAvatar] = useState(user.avatar);
     const context = useContext(CommentContext);
     const avatarFailed = () =>
@@ -117,8 +118,8 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
                 </div>
                 <ul className="replies">
                     {
-                        comment.replies.map(reply => (
-                            <CommentRenderer comment={reply} key={comment.pid} level={props.level + 1} levelLimit={props.levelLimit}/>
+                        comment.replies.map((reply, idx) => (
+                            <CommentRenderer comment={reply} key={idx} level={props.level + 1} levelLimit={props.levelLimit}/>
                         ))
                     }
                 </ul>
@@ -133,7 +134,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
     const userCtx = useContext(UserContext);
 
     const [sending, setSending] = useState(false);
-    const [hint, setHint] = useState("none" as "name" | "email" | "url" | "public" | "secret" | "error");
+    const [hint, setHint] = useState("none" as "name" | "email" | "url" | "error");
     const [error, setError] = useState("");
     const [avatar, setAvatar] = useState(userCtx.user.avatar);
     
@@ -142,8 +143,6 @@ function PostComment(props: { cid: number, onPost?:()=>void })
         "name": "Input display name (public visible).",
         "email": "Input email (not public) used for Gravatar and notifications (not implememnt yet :)",
         "url": "URL (public) to your web site",
-        "public": "Your message is visible to all visitors.",
-        "secret": "Your message will only be visible to Me (NOT implement yet :)"
     };
 
     const refName = useRef(null as HTMLInputElement | null);
@@ -211,10 +210,29 @@ function PostComment(props: { cid: number, onPost?:()=>void })
                     <div className="info-wrapper">
                         <div className="user-info">
                             <div className="hor-wrapper">
-                                <input type="text" ref={refName} className="text-input input-name" placeholder="名称（公开）"/>
-                                <input type="email" ref={refEmail} className="text-input input-email" placeholder="邮箱（非公开）" onBlur={onEmailBlur} />
+                                <input
+                                    type="text"
+                                    ref={refName}
+                                    className="text-input input-name"
+                                    placeholder="Your Name"
+                                    onFocus={()=>setHint("name")}
+                                />
+                                <input
+                                    type="email"
+                                    ref={refEmail}
+                                    className="text-input input-email"
+                                    placeholder="Email"
+                                    onFocus={()=>setHint("email")}
+                                    onBlur={onEmailBlur}
+                                />
                             </div>
-                            <input type="url" ref={refUrl} className="text-input input-url" placeholder="Url（公开）" />
+                            <input
+                                type="url"
+                                ref={refUrl}
+                                className="text-input input-url"
+                                placeholder="URL (optional)"
+                                onFocus={()=>setHint("url")}
+                            />
                         </div>
                         <div className={["button", "button-send", sending ? "sending" : ""].join(" ")} onClick={send}>
                             {
@@ -232,7 +250,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
                             ? "Tell me what you think"
                             : `Reply to ${commentCtx.replyComment.user.name}`}>
                     </div>
-                    <p className="error-msg">
+                    <p className={calssNames("hint", {"error": hint==="error"})}>
                         {hint === "error" ? error : hintText[hint]}
                     </p>
                 </div>
