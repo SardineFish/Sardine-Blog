@@ -1,10 +1,10 @@
-import { User, UserInfoResponseData, wrapUser } from "./user";
+import { PublicUserInfo, UserInfoResponseData, wrapUser } from "./user";
 import { registerAPI, Validators, ParamDeclares } from "./api";
 
 
 export interface Comment
 {
-    user: User;
+    user: PublicUserInfo;
     pid: number;
     cid: number;
     time: Date;

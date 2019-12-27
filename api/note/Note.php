@@ -70,7 +70,7 @@ class NoteBoard
             $mysql->tryRunSQL($sql);
         }
         $sql = 
-            "SELECT note.pid, note.text, note.time, user_data.uid, user_data.name, user_data.icon as avatar, user_data.url, stat.view, stat.like, stat.comments \n"
+            "SELECT note.pid, note.text, note.time, user_data.uid, user_data.name, user_data.icon as avatar, user_data.url, user_data.level, stat.view, stat.like, stat.comments \n"
             ."FROM note \n"
             ."JOIN user_data ON (note.author = user_data.uid AND user_data.ignore = 0) \n"
             ."JOIN ( \n"
@@ -99,6 +99,7 @@ class NoteBoard
             $note->author->name = $data["name"];
             $note->author->avatar = urldecode($data["avatar"]);
             $note->author->url = urldecode($data["url"]);
+            $note->author->level = $data["level"];
             $note->postData = new PostDataEntity();
             $note->postData->views = (int)$data["view"];
             $note->postData->likes = (int)$data["like"];

@@ -1,5 +1,0 @@
-GET http://localhost:8080/comment/getList.php?cid=1&from=0&count=100
-Content-Type: application/x-www-form-urlencoded
-
-text=TestContent''!\'&author=TestUser2019-12-25-2&email=test@example.com&url=
-

@@ -79,7 +79,7 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
     const comment = props.comment;
     const user = props.comment.user;
     const timeString = props.comment.time.toDateString();
-    const [avatar, setAvatar] = useState(user.avatar);
+    const [avatar, setAvatar] = useState(user.avatar,   );
     const context = useContext(CommentContext);
     const avatarFailed = () =>
     {
@@ -89,6 +89,10 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
     {
         context.setReply(comment.pid, comment);
     }
+    useEffect(() =>
+    {
+        setAvatar(props.comment.user.avatar);
+    }, [props.comment]);
 
     return (
         <li className="comment">

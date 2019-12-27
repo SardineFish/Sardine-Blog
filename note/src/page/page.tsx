@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import classnames from "classnames";
-import { User } from "../data/user";
+import { PublicUserInfo } from "../data/user";
 import { IconUser } from "../component/icon";
 import { NavItem } from "../data/site";
 
@@ -42,7 +42,7 @@ function UserData()
             {user.login
                 ? <div className="avatar">
                     <a href="/account/user/face/upload.html">
-                        <img src={(user.user as User).avatar} alt="avatar" />
+                        <img src={(user.user as PublicUserInfo).avatar} alt="avatar" />
                     </a>
                 </div>
                 : <div className="avatar empty">

@@ -1,4 +1,5 @@
 *.sql
+*.http
 
 *.phpproj
 config.php

@@ -10,19 +10,32 @@ import { CommentSystem } from "./comments";
 export function NoteCard(props: {note: Note})
 {
     const [extend, setExtend] = useState(false);
-    const refCard = useRef(null as HTMLDivElement | null);
+    const refContent = useRef(null as HTMLParagraphElement | null);
+    const [avatar, setAvatar] = useState(props.note.author.avatar);
 
     const extendComments = () =>
     {
         setExtend(!extend);
     };
+    const onAvatarFailed = () =>
+    {
+        setAvatar("/static/img/unknown-user-grey.png");
+    };
+    useEffect(() =>
+    {
+        setAvatar(props.note.author.avatar);
+        if (!refContent.current)
+            return;
+        if (props.note.author.level ===  "developer" || props.note.author.level === "admin")
+            refContent.current.innerHTML = props.note.text;
+    }, [props.note]);
 
     return (
-        <section ref={refCard} className="card note-card">
+        <section className="card note-card">
             <div className="visible-area">
                 <header className="note-author">
                     <div className="avatar">
-                        <img src={props.note.author.avatar} alt="avatar" />
+                        <img src={avatar} alt="avatar" onError={onAvatarFailed} />
                     </div>
                     <div className="info">
                         <a className="name" href={props.note.author.url}>{props.note.author.name}</a>
@@ -30,7 +43,7 @@ export function NoteCard(props: {note: Note})
                     </div>
                 </header>
                 <main className="note-content">
-                    <p>{props.note.text}</p>
+                    <p ref={refContent}>{props.note.text}</p>
                 </main>
                 <footer>
                     <div className="post-data">

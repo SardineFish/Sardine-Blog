@@ -18,13 +18,18 @@ export const SiteNavs: NavItem[] = [
     },
     {
         name: "NOTE",
-        url: "/note-new/",
+        url: "/note/",
         key: "note",
     },
     {
         name: "GITHUB",
         url: "https://github.com/SardineFish",
         key: "github",
+    },
+    {
+        name: "LAB",
+        url: "https://lab.sardinefish.com",
+        key: "lab",
     },
     {
         name: "ABOUT",

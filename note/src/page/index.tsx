@@ -15,16 +15,15 @@ import { scrollToTop } from "../misc/utils";
 import { FoldView } from "../component/fold-view";
 import { PostNote } from "../component/post-note";
 import { UserContext } from "../context/UserContext";
-import { User } from "../data/user";
+import { PublicUserInfo } from "../data/user";
 
 function App()
 {
     const [notes, setNotes] = useState([] as Note[]);
     const [time, setTime] = useState(getCurrentUnixTime());
     const [startIdx, setStartIdx] = useState(0);
-    const [focusIdx, setFocus] = useState(0);
     const [showPost, setShowPost] = useState(false);
-    const [user, setUser] = useState({ name: "", uid: "", avatar: "/static/img/unknown-user-grey.png", url: "#" } as User);
+    const [user, setUser] = useState({ name: "", uid: "", avatar: "/static/img/unknown-user-grey.png", url: "#" } as PublicUserInfo);
     const loadCount = 10;
     const loading = notes.length < startIdx;
     
@@ -42,17 +41,10 @@ function App()
     };
     const onScroll = () =>
     {
-        const [top, idx] = linq.from(document.querySelectorAll(".note-card"))
-            .select((card, idx) => [card.getBoundingClientRect().top, idx])
-            .where(([top, idx]) => top > window.innerHeight * .1)
-            .first();
-        setFocus(idx);
         const footer = document.querySelector(".page-footer");
         if (footer && footer.getBoundingClientRect().top < window.innerHeight)
             loadComments();
     };
-    const formatYM = (time: Date) => `${time.getFullYear()}-${time.getMonth() + 1}`;
-    const focusTime = () => formatYM(new Date(notes[focusIdx].time));
     const postNewClick = () =>
     {
         scrollToTop(.3);
@@ -65,7 +57,7 @@ function App()
         setStartIdx(0);
         setNotes([]);
     };
-    const setUserContext = (user: User) =>
+    const setUserContext = (user: PublicUserInfo) =>
     {
         setUser(user);
     }
@@ -89,14 +81,7 @@ function App()
                         <IconEdit />
                         <span>Post New</span>
                     </Button>
-                    <ul className="timeline">
-                        {
-                            linq.from(notes)
-                                .select(note => formatYM(new Date(note.time)))
-                                .distinct()
-                                .select((time, idx) => (<li className={classnames("time", { "current": time === focusTime() })} key={idx}>{time}</li>))
-                        }
-                    </ul>
+                    <Timeline notes={notes}/>
                 </FixedOnScroll>
                 <div className="notes-area">
                     <FoldView className="post-note-area" extend={showPost}>
@@ -110,6 +95,38 @@ function App()
                 </div>
             </Page>
         </UserContext.Provider>
+    );
+}
+
+function Timeline(props: {notes: Note[]})
+{
+    const [focus, setFocus] = useState(0);
+
+    const formatYM = (time: Date) => `${time.getFullYear()}-${time.getMonth() + 1}`;
+    const focusTime = () => formatYM(new Date(props.notes[focus].time));
+
+    const onScroll = () =>
+    {
+        const [top, idx] = linq.from(document.querySelectorAll(".note-card"))
+            .select((card, idx) => [card.getBoundingClientRect().top, idx])
+            .where(([top, idx]) => top > window.innerHeight * .1)
+            .first();
+        setFocus(idx);
+    };
+    useEffect(() =>
+    {
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    });
+    return (
+        <ul className="timeline">
+            {
+                linq.from(props.notes)
+                    .select(note => formatYM(new Date(note.time)))
+                    .distinct()
+                    .select((time, idx) => (<li className={classnames("time", { "current": time === focusTime() })} key={idx}>{time}</li>))
+            }
+        </ul>
     );
 }
 
