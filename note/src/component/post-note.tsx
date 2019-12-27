@@ -16,7 +16,7 @@ export function PostNote(props: {onPost?:(pid:number)=>void})
     const refText = useRef(null as HTMLInputElement | null);
     const hintText = {
         "none": " ",
-        "name": "Input display name (public visible).",
+        "name": "Your display name (Publicly visible).",
         "email": "Input email (not public) used for Gravatar and notifications (not implememnt yet :)",
         "url": "URL (public) to your web site",
         "public": "Your message is visible to all visitors.",

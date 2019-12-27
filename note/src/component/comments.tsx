@@ -241,7 +241,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
                         <div className={["button", "button-send", sending ? "sending" : ""].join(" ")} onClick={send}>
                             {
                                 sending
-                                    ? <IconLoading />
+                                    ? <IconLoading className="spin" />
                                     : <IconSend />
                             }
                         </div>

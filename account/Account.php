@@ -46,6 +46,10 @@ class Account
                 throw $ex;
         }
     }
+    public static function CheckExist(string $name, string $email)
+    {
+        
+    }
     public static function Login($uid,$pwd,$mysql=null)
     {
         if(!class_exists("SarMySQL"))

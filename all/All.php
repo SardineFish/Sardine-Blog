@@ -80,9 +80,7 @@ class All
                 return $r;
             }
         }
-        $sql = 'SELECT `pid`as`pid`,\'note\'as`type`,`title`as`title`,`text`as`text`,`time`as`time` FROM `note` WHERE `pid` IN (SELECT `pid` FROM `posts` WHERE `type` = \'note\') AND `author` = \'SardineFish\' AND `ignore` = 0 UNION'
-        . ' SELECT `pid`as`pid`,\'works\'as`type`,`name`as`title`,`description`as`text`,`time`as`time` FROM `works` WHERE `pid` IN (SELECT `pid` FROM `posts` WHERE `type` = \'works\') AND `ignore` = 0 UNION '
-        . ' SELECT `pid`as`pid`,`type`as`type`,`title`as`title`,`document`as`text`,`time`as`time` FROM `article` WHERE `pid` IN (SELECT `pid` FROM `posts` WHERE `type` = \'article\') AND `ignore` = 0 '
+        $sql = ' SELECT `pid`as`pid`,`type`as`type`,`title`as`title`,`document`as`text`,`time`as`time` FROM `article` WHERE `pid` IN (SELECT `pid` FROM `posts` WHERE `type` = \'article\') AND `ignore` = 0 '
         . ' ORDER BY `time` DESC '
         . ' LIMIT '.$from.','.$count;
         $result=$mysql->runSQL($sql);
