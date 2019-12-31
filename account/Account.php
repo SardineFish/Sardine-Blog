@@ -218,8 +218,8 @@ class Account
             $default = "https://cdn-global-static.sardinefish.com/img/decoration/unknown-user.png";
             $avatar = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
 
-            $sql = 'BEGIN;'
-             . ' SET @UID = \''.$uid.'\';'
+            $sql = 
+               ' SET @UID = \''.$uid.'\';'
              . ' SET @NAME = \''.$name.'\';'
              . ' SET @PWD = \''.$pwd.'\';'
              . ' SET @ENCRYPTION =\''.$encryption.'\';'
@@ -231,16 +231,26 @@ class Account
              . ' INSERT INTO `account` (`uid`,`time`,`ignore`) VALUES(@UID,@TIME,0);'
              . ' SET @ID = @@IDENTITY ;'
              . ' INSERT INTO `user_data` (`id`,`uid`,`name`,`level`,`pwd`,`encryption`,`email`,`icon`,`url`,`operation`,`time`,`ignore`) '
-             . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,@URL,\'created\',@TIME,0);'
-             . ' COMMIT;';
+             . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,@URL,\'created\',@TIME,0);';
 
-            $result = $mysql->runSQLM($sql);
+            try
+            {
+                $mysql->beginTranscation();
+                $result = $mysql->tryRunSQLM($sql);
+                $mysql->commit();
+            }
+            catch(Exception $ex)
+            {
+                $mysql->rollback();
+                throw new Exception("User already existed.",1010201004);
+            }
+
             for($i = 0; $i < count($result); $i++)
             {
                 if(!$result[$i]->succeed)
                     throw new Exception("User already existed.",1010201004);
             }
-            $id=$result[8]->id;
+            $id=$result[9]->id;
 
             return new Account($id,$uid,$level,$encryption,false);
         }

@@ -22,3 +22,12 @@ export async function scrollToTop(time: number = .5)
         setTimeout(() => func(time), 16);
     });
 }
+
+export function urlWrapper(url: string)
+{
+    if (/^\s*$/.test(url))
+        return "#";
+    if (!/^https?:\/\//i.test(url))
+        return `//${url}`;
+    return url;
+}

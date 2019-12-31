@@ -5,6 +5,7 @@ import { UserContext } from "../context/UserContext";
 import linq from "linq";
 import gravatar from "gravatar";
 import calssNames from "classnames";
+import { urlWrapper } from "../misc/utils";
 
 const CommentContext = React.createContext({
     replyComment: null as Comment | null,
@@ -114,7 +115,7 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
                     </div>
                     <div className="comment-wrapper">
                         <header className="sender-info">
-                            <a className="name" href={user.url} target="_blank">{user.name}</a>
+                            <a className="name" href={urlWrapper(user.url)} target="_blank">{user.name}</a>
                             <span className="time">{timeString}</span>
                         </header>
                         <main className="comment-text">{comment.text}</main>

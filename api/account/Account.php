@@ -96,8 +96,10 @@ class AccountV3
 
         try
         {
-            $sql = 'BEGIN;'
-             . ' SET @UID = \''.$uid.'\';'
+            $mysql->beginTranscation();
+            
+            $sql = 
+               ' SET @UID = \''.$uid.'\';'
              . ' SET @NAME = \''.$mysql->escape($user->name).'\';'
              . ' SET @PWD = \''.$pwd.'\';'
              . ' SET @ENCRYPTION =\'none\';'
@@ -109,9 +111,11 @@ class AccountV3
              . ' INSERT INTO `account` (`uid`,`time`,`ignore`) VALUES(@UID,@TIME,0);'
              . ' SET @ID = @@IDENTITY ;'
              . ' INSERT INTO `user_data` (`id`,`uid`,`name`,`level`,`pwd`,`encryption`,`email`,`icon`,`url`,`operation`,`time`,`ignore`) '
-             . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,@URL,\'created\',@TIME,0);'
-             . ' COMMIT;';
-             $mysql->tryRunSQLM($sql);
+             . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,@URL,\'created\',@TIME,0);';
+            
+            $results = $mysql->tryRunSQLM($sql);
+
+            $mysql->commit();
 
             $user->uid = $uid;
             $user->level = UserLevels::Visitor;
@@ -120,9 +124,11 @@ class AccountV3
         }
         catch(Exception $ex)
         { // User Exists.
-            $sql = "SELECT * FROM user_data WHERE `uid` = '".$mysql->escape($uid)." AND `ignore` = 0";
+            $mysql->rollback();
+
+            $sql = "SELECT * FROM user_data WHERE `uid` = '".$mysql->escape($uid)."' AND `ignore` = 0";
             $data = $mysql->tryRunSQL($sql)->data;
-            if(count($data <= 0))
+            if(count($data) <= 0)
                 throw new Exception("Access denied.", 1010201003);
             if(UserLevels::CheckHigher($data[0]["level"], UserLevels::Def))
             {

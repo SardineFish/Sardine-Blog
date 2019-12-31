@@ -105,11 +105,24 @@
         public function tryRunSQLM(string $sql)
         {
             $result = $this->runSQLM($sql);
-            if(!$result[0])
+            $lastResult = $result[count($result) - 1];
+            if(!$lastResult.succeed)
             {
-                throw new Exception($result->error, $result->errno);
+                throw new Exception($lastResult->error, $lastResult->errno);
             }
             return $result;
+        }
+        public function beginTranscation()
+        {
+            return $this->mysqli->begin_transaction();
+        }
+        public function commit()
+        {
+            return $this->mysqli->commit();
+        }
+        public function rollback()
+        {
+            return $this->mysqli->rollback();
         }
         public function escape(string $str) : string
         {
@@ -121,27 +134,28 @@
 
             if(!$this->connected )
             {
-                $mysqlResult= new SarMySQLResult();
-                $mysqlResult->succeed=false;
-                $mysqlResult->error="not connected.";
-                $mysqlResult->errno=0;
+                $mysqlResult[0]= new SarMySQLResult();
+                $mysqlResult[0]->succeed=false;
+                $mysqlResult[0]->error="not connected.";
+                $mysqlResult[0]->errno=0;
                 return $mysqlResult;
             }
 
             $succeed=$this->mysqli->multi_query($sql);
             if(!$succeed)
             {
-                $mysqlResult= new SarMySQLResult();
-                $mysqlResult->succeed=false;
-                $mysqlResult->error=mysqli_error($this->mysqli);
-                $mysqlResult->errno=mysqli_errno($this->mysqli);
+                $mysqlResult[0] = new SarMySQLResult();
+                $mysqlResult[0]->succeed=false;
+                $mysqlResult[0]->error=mysqli_error($this->mysqli);
+                $mysqlResult[0]->errno=mysqli_errno($this->mysqli);
                 return $mysqlResult;
             }
-            $i=0;
-            do
+            $i = 0;
+            while(true)
             {
                 $result=$this->mysqli->store_result();
-                $mysqlResult[$i]=new SarMySQLResult();
+                if($i == 0)
+                    $mysqlResult[$i]=new SarMySQLResult();
                 if(!is_bool($result))
                 {
                     $data = Array();
@@ -152,14 +166,21 @@
                     }
                     $mysqlResult[$i]->data=$data;
                 }
-                $mysqlResult[$i]->succeed=true;
+                if($i == 0)
+                    $mysqlResult[$i]->succeed = true;
                 $mysqlResult[$i]->error=mysqli_error($this->mysqli);
                 $mysqlResult[$i]->errno=mysqli_errno($this->mysqli);
                 $mysqlResult[$i]->id=mysqli_insert_id($this->mysqli);
                 $mysqlResult[$i]->affectedRows=$this->mysqli->affected_rows;
+
+                if(!$this->mysqli->more_results())
+                    break;
+
                 $i++;
+                $mysqlResult[$i]=new SarMySQLResult();
+                $mysqlResult[$i]->succeed = $this->mysqli->next_result();
+
             }
-            while($this->mysqli->next_result());
             return $mysqlResult;
         }
     }

@@ -6,6 +6,7 @@ import { PostData } from "../data/postData";
 import { Comment } from "../data/comment";
 import { FoldView } from "./fold-view";
 import { CommentSystem } from "./comments";
+import { urlWrapper } from "../misc/utils";
 
 export function NoteCard(props: {note: Note})
 {
@@ -38,7 +39,7 @@ export function NoteCard(props: {note: Note})
                         <img src={avatar} alt="avatar" onError={onAvatarFailed} />
                     </div>
                     <div className="info">
-                        <a className="name" href={props.note.author.url}>{props.note.author.name}</a>
+                        <a className="name" href={urlWrapper(props.note.author.url)}>{props.note.author.name}</a>
                         <span className="time">{props.note.time}</span>
                     </div>
                 </header>
