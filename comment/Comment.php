@@ -203,7 +203,7 @@ class Comment
         require_once $_SERVER['DOCUMENT_ROOT']."/lib/mysql/const.php";
         require_once $_SERVER['DOCUMENT_ROOT']."/lib/mysql/MySQL.php";
         require_once $_SERVER['DOCUMENT_ROOT']."/posts/Posts.php";
-        require_once $_SERVER['DOCUMENT_ROOT']."/account/Account.php";
+        require_once $_SERVER['DOCUMENT_ROOT']."/api/account/Account.php";
         require_once $_SERVER['DOCUMENT_ROOT']."/postData/PostData.php";
 
         $cid=(int)$cid;
@@ -214,23 +214,12 @@ class Comment
         if(!$mysql)
             $mysql=new SarMySQL(HOST,UID,PWD,DB,PORT);
         $mysql->tryConnect();
-        $account = null;
+        $user = UserInfo::Create($name, $email, $url);
 
         // Check account
-        try
-        {
-            $account = Account::CheckLoginV2($name,$mysql);
-        }
-        catch(Exception $ex)
-        {
-            if($ex->getCode()==1010201006)
-            {
-                $account = Account::QuickRegister($name,$email,$url,$mysql);
-            }
-            else
-                throw $ex;
-        }
-        $uid = $account->uid;
+        $user = AccountV3::SimpleAuth($user, $mysql);
+
+        $uid = $user->uid;
 
         // Check cid
         $result = Posts::Get($cid,$mysql);

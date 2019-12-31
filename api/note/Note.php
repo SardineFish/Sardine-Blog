@@ -1,5 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT']."/account/user/Users.php";
+error_reporting(E_ERROR);
+require_once "../account/Account.php";
 require_once "../postData/PostData.php";
 class NoteEntity
 {
@@ -16,13 +17,15 @@ class NoteBoard
         require_once $_SERVER['DOCUMENT_ROOT']."/lib/mysql/const.php";
         require_once $_SERVER['DOCUMENT_ROOT']."/lib/mysql/MySQL.php";
         require_once $_SERVER['DOCUMENT_ROOT']."/posts/Posts.php";
-        require_once $_SERVER['DOCUMENT_ROOT']."/account/Account.php";
 
         if(!$mysql)
             $mysql=new SarMySQL(HOST,UID,PWD,DB,PORT);
         $mysql->tryConnect();
 
-        $uid = Account::SimpleLogin($name, $email, $url, $mysql);
+        // $uid = Account::SimpleLogin($name, $email, $url, $mysql);
+        $user = UserInfo::Create($name, $email, $url);
+        $user = AccountV3::SimpleAuth($user);
+
         $pid = Posts::Add("note", $mysql);
         date_default_timezone_set('PRC'); 
         $time = date("Y-m-d H:i:s");
@@ -31,7 +34,7 @@ class NoteBoard
         PostData::RegisterData($pid, $mysql);
 
         $sql = "INSERT INTO `note` (`index`, `pid`, `title`, `tags`, `text`, `author`, `time`, `operate`, `ignore`)"
-        ."VALUES (NULL, '".$pid."', '', '', '".$text."', '".$uid."', '".$time."', 'created', '0');";
+        ."VALUES (NULL, '".$pid."', '', '', '".$text."', '".$mysql->escape($user->uid)."', '".$time."', 'created', '0');";
 
         $mysql->tryRunSQL($sql);
 
