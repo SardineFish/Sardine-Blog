@@ -11,6 +11,7 @@ $base-text-color: #888;
 .page-content {
     display: flex;
     flex-flow: row nowrap;
+    padding-top: 3em;
 }
 
 .side-area {
@@ -23,7 +24,7 @@ $base-text-color: #888;
     position: relative;
 
     & > .content {
-        margin-top: 4em;
+        margin-top: 2em;
         display: flex;
         flex-flow: column nowrap;
         align-items: flex-end;
@@ -32,7 +33,7 @@ $base-text-color: #888;
     &.fixed > .content {
         position: fixed;
         margin-top: 0;
-        top: 4em;
+        top: 2em;
     }
 
     .header {
@@ -103,7 +104,6 @@ $base-text-color: #888;
 
 .notes-area {
     flex: 1 1;
-    padding-top: 2em;
     margin-left: 2em;
 }
 
@@ -177,6 +177,9 @@ $base-text-color: #888;
             &:hover {
                 text-decoration: underline;
             }
+        }
+        img {
+            max-width: 100%;
         }
     }
 
@@ -272,6 +275,10 @@ $base-text-color: #888;
 .post-note-area {
     margin: 2em;
     border-radius: .5em;
+
+    &.fold {
+        margin: 0;
+    }
 }
 .post-note {
     min-height: 240px;
@@ -455,5 +462,215 @@ $base-text-color: #888;
         fill: $theme-color-light;
         height: 2em;
         width: 2em;
+    }
+}
+
+.mobile {
+    display: none;
+}
+
+@media all and (max-width: 1200px) {
+    .post-note {
+        .author {
+            .info {
+                .input-wrapper.url {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+    .side-area {
+        width: 14em;
+    }
+}
+
+@media all and (max-width: 1000px) {
+    .side-area {
+        width: 12em;
+
+        .header {
+            font-size: 1.4em;
+        }
+    }
+
+    .notes-area {
+        margin-left: 0;
+    }
+}
+
+@media all and (max-width: 800px) {
+    .notes-area {
+        margin-left: 0;
+    }
+    .side-area {
+        display: flex;
+        position: fixed;
+        right: 1em;
+        bottom: 2em;
+
+        header {
+            display: none;
+        }
+        .timeline {
+            display: none;
+        }
+        .new-post {
+            width: 3em;
+            height: 3em;
+            padding: 0;
+            border-radius: 100%;
+            box-sizing: content-box;
+
+            span {
+                display: none;
+            }
+            .icon {
+                margin: 0;
+                width: 1.6em;
+                height: 1.6em;
+            }
+        }
+    }
+    .notes-area {
+        margin: 0;
+        margin-top: 2em;
+        padding: 0;
+    }
+
+    .post-note-area {
+        margin: 1em;
+    }
+
+    .note-card {
+        margin: 1em;
+
+        .fold-area {
+            padding: 0 1em;
+        }
+        .note-content {
+            color: black;
+        }
+    }
+}
+
+@media all and (max-width: 600px) {
+    .post-note-area {
+        margin-top: 3em;
+
+        .post-note {
+            padding: 1em;
+            
+            .decoration {
+                display: none;
+            }
+            .author {
+                .avatar {
+                    display: none;
+                }
+                .info {
+                    margin: 0;
+                    padding: 0;
+                    flex-flow: row wrap;
+
+                    .input-wrapper {
+                        margin: .5em;
+                        
+                        .input-line {
+                            border: none;
+                            background-color: #EEE;
+                            border-radius: .3em;
+                            padding: .5em 1em;
+                        }
+                    }
+                    .input-wrapper.url {
+                        flex-basis: 100%;
+                    }
+                }
+            }
+            .content {
+                margin: .5em;
+                border-radius: .3em;
+                background-color: #EEE;
+
+                .content-input {
+                    border: none;
+                    margin: 0;
+                    padding: .5em 1em;
+                    color: black;
+                    min-height: 7em;
+                }
+            }
+            .action-panel {
+                .avatar {
+                    display: block;
+                    width: 2.4em;
+                    height: 2.4em;
+                    border-radius: 100%;
+                    overflow: hidden;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media all and (max-width: 500px) {
+    .post-note-area {
+        margin: 0;
+        margin-top: 2em;
+        border-radius: 0;
+
+        .post-note {
+            border-radius: 0;
+            
+            .content-input {
+            }
+        }
+    }
+    .note-card {
+        margin: 1em 0;
+        border-radius: 0;
+
+        .fold-area {
+            padding: 0;
+            padding-right: 1em;
+        }
+        .note-author {
+            .avatar {
+                width: 48px;
+                height: 48px;
+            }
+            .info {
+                display: flex;
+                flex-flow: column nowrap;
+                margin-left: 1em;
+
+                .time {
+                    margin: 0;
+                }
+            }
+        }
+        .visible-area {
+            padding: 1em;
+            padding-bottom: 0;
+        }
+        .note-content {
+            margin: 0;
+            padding: 0;
+        }
+        .post-data {
+            margin: 0;
+            padding: 0;
+            max-width: unset;
+            justify-content: space-around;
+
+            .item:first-child {
+                padding-left: 1em;
+            }
+        }
     }
 }

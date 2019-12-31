@@ -1,28 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import classnames from "classnames";
 import { PublicUserInfo } from "../data/user";
-import { IconUser } from "../component/icon";
+import { IconUser, IconMenu } from "../component/icon";
 import { NavItem } from "../data/site";
+import { FoldView } from "../component/fold-view";
 
 export function Page(props: { title: string, nav: NavItem[], currentNav: string, children?: React.ReactNode })
 {
     return (
         <>
-            <header className="top-bar">
-                <div className="wrapper">
-                    <nav className="top-nav">
-                        <ul>
-                            {props.nav.map(nav => (
-                                <li className={classnames("nav-item", { "current": props.currentNav === nav.key })} key={nav.key}>
-                                    <a href={nav.url}>{nav.name}</a>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-                    <UserData />
-                </div>
-            </header>
+            <PageHeader title={props.title} nav={props.nav} currentNav={props.currentNav} />
             <main className="page-content">
                 {props.children}
             </main>
@@ -53,4 +41,34 @@ function UserData()
             }
         </aside>
     )
+}
+
+function PageHeader(props: { nav: NavItem[], currentNav: string, title: string })
+{
+    const [extendNav, setExtend] = useState(false);
+    const menuClick = () =>
+    {
+        setExtend(!extendNav);
+    };
+    return (
+        <header className={classnames("top-bar", {"extend": extendNav})}>
+            <div className="wrapper">
+                <div className="title">{props.title}</div>
+                <FoldView extend={extendNav}>
+                    <nav className="top-nav">
+                        <ul>
+                            {props.nav.map(nav => (
+                                <li className={classnames("nav-item", { "current": props.currentNav === nav.key })} key={nav.key}>
+                                    <a href={nav.url}>{nav.name}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </FoldView>
+                <UserData />
+                <IconMenu onClick={menuClick}/>
+            </div>
+            <div className="dim"></div>
+        </header>
+    );
 }

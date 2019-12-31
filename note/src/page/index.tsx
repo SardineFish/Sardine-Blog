@@ -74,7 +74,7 @@ function App()
     
     return (
         <UserContext.Provider value={{ login: false, user: user, setUser: setUserContext }}>
-            <Page title="Note" nav={SiteNavs} currentNav="note">
+            <Page title="Message Board" nav={SiteNavs} currentNav="note">
                 <FixedOnScroll className="side-area">
                     <header className="header">MESSAGE BOARD</header>
                     <Button className="new-post" onClick={postNewClick}>

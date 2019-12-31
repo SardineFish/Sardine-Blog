@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, MouseEvent } from "react";
 import { Comment } from "../data/comment";
 import { IconReply, IconAdd, IconLoading, IconSend } from "./icon";
 import { UserContext } from "../context/UserContext";
@@ -138,6 +138,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
     const userCtx = useContext(UserContext);
 
     const [sending, setSending] = useState(false);
+    const [postVisible, setPostVisible] = useState(false);
     const [hint, setHint] = useState("none" as "name" | "email" | "url" | "error");
     const [error, setError] = useState("");
     const [avatar, setAvatar] = useState(userCtx.user.avatar);
@@ -154,10 +155,21 @@ function PostComment(props: { cid: number, onPost?:()=>void })
     const refUrl = useRef(null as HTMLInputElement | null);
     const refText = useRef(null as HTMLInputElement | null);
 
+    useEffect(() =>
+    {
+        if (props.cid != commentCtx.cid)
+            setPostVisible(true);
+    }, [commentCtx.cid]);
+
     const resetReply = () =>
     {
         commentCtx.setReply(0, null);
     };
+    const addCommentClick = () =>
+    {
+        setPostVisible(true);
+        resetReply();
+    }
     const onEmailBlur = () =>
     {
         const email = refEmail.current && refEmail.current.value;
@@ -168,6 +180,15 @@ function PostComment(props: { cid: number, onPost?:()=>void })
             }, true));
         else
             setAvatar("/static/img/unknown-user-grey.png");
+    };
+    const blockClick = (e: MouseEvent) =>
+    {
+        e.stopPropagation();
+    };
+    const backgroundClick = () =>
+    {
+        setPostVisible(false);
+        resetReply();
     };
     const send = async () =>
     {
@@ -185,6 +206,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
             (refText.current as HTMLDivElement).innerHTML = "";
 
             props.onPost && props.onPost();
+            setPostVisible(false);
         }
         catch (err)
         {
@@ -197,7 +219,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
         <div className="post-area">
             <div className="decoration">
                 <div className="circle-wrapper">
-                    <div className="circle button button-reply" onClick={resetReply}>
+                    <div className="circle button button-reply" onClick={addCommentClick}>
                         <IconAdd />
                     </div>
                 </div>
@@ -205,59 +227,80 @@ function PostComment(props: { cid: number, onPost?:()=>void })
                     <div className="line"></div>
                 </div>
             </div>
-            <div className="hor-wrapper">
-                <div className="avatar-wrapper">
-                    <img src={avatar} className="avatar" />
-                    <div className="line"></div>
-                </div>
-                <div className="input-area">
-                    <div className="info-wrapper">
-                        <div className="user-info">
-                            <div className="hor-wrapper">
+            <p className="post-hint" onClick={addCommentClick}>Click to comment</p>
+            <div className={calssNames("comment-poster", {"show": postVisible}, {"hide": !postVisible})} onClick={backgroundClick}>
+                <div className="hor-wrapper" onClick={blockClick}>
+                    <div className="avatar-wrapper">
+                        <img src={avatar} className="avatar" />
+                        <div className="line"></div>
+                    </div>
+                    <div className="input-area">
+                        <div className="info-wrapper">
+                            <div className="user-info">
+                                <div className="hor-wrapper">
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="text"
+                                            ref={refName}
+                                            className="text-input input-name"
+                                            placeholder="Your Name"
+                                            onFocus={() => setHint("name")}
+                                        />
+                                    </div>
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="email"
+                                            ref={refEmail}
+                                            className="text-input input-email"
+                                            placeholder="Email"
+                                            onFocus={() => setHint("email")}
+                                            onBlur={onEmailBlur}
+                                        />
+                                    </div>
+                                </div>
                                 <input
-                                    type="text"
-                                    ref={refName}
-                                    className="text-input input-name"
-                                    placeholder="Your Name"
-                                    onFocus={()=>setHint("name")}
-                                />
-                                <input
-                                    type="email"
-                                    ref={refEmail}
-                                    className="text-input input-email"
-                                    placeholder="Email"
-                                    onFocus={()=>setHint("email")}
-                                    onBlur={onEmailBlur}
+                                    type="url"
+                                    ref={refUrl}
+                                    className="text-input input-url"
+                                    placeholder="URL (optional)"
+                                    onFocus={() => setHint("url")}
                                 />
                             </div>
-                            <input
-                                type="url"
-                                ref={refUrl}
-                                className="text-input input-url"
-                                placeholder="URL (optional)"
-                                onFocus={()=>setHint("url")}
-                            />
+                            <div className={["button", "button-send", sending ? "sending" : ""].join(" ")} onClick={send}>
+                                {
+                                    sending
+                                        ? <IconLoading className="spin" />
+                                        : <IconSend />
+                                }
+                            </div>
                         </div>
-                        <div className={["button", "button-send", sending ? "sending" : ""].join(" ")} onClick={send}>
-                            {
-                                sending
-                                    ? <IconLoading className="spin" />
-                                    : <IconSend />
-                            }
+                        <div
+                            className="text-input input-comment"
+                            contentEditable={true}
+                            ref={refText}
+                            data-placeholder={commentCtx.replyComment === null
+                                ? "Tell me what you think"
+                                : `Reply to ${commentCtx.replyComment.user.name}`}>
+                        </div>
+                        <p className={calssNames("hint", hint)}>
+                            {hint === "error" ? error : hintText[hint]}
+                        </p>
+                        <div className="mobile-layout">
+                            <div className="avatar-wrapper">
+                                <img src={avatar} className="avatar" />
+                                <div className="line"></div>
+                            </div>
+                            <div className={["button", "button-send", "mobile", sending ? "sending" : ""].join(" ")} onClick={send}>
+                                {
+                                    sending
+                                        ? <IconLoading className="spin" />
+                                        : <IconSend />
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div
-                        className="text-input input-comment"
-                        contentEditable={true}
-                        ref={refText}
-                        data-placeholder={commentCtx.replyComment === null
-                            ? "Tell me what you think"
-                            : `Reply to ${commentCtx.replyComment.user.name}`}>
-                    </div>
-                    <p className={calssNames("hint", {"error": hint==="error"})}>
-                        {hint === "error" ? error : hintText[hint]}
-                    </p>
                 </div>
+                
             </div>
         </div>
     );

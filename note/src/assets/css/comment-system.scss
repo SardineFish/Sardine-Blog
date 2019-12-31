@@ -34,12 +34,20 @@ $ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
         flex-flow: row nowrap;
         align-items: stretch;
 
+        .post-hint {
+            display: none;
+        }
+
         .hint {
             margin: 0;
             margin-top: .5em;
             font-size: 1em;
             color: #AAA;
             font-family: $ui-font;
+
+            &.none {
+                white-space: pre;
+            }
 
             &.error {
                 color: #ff5a5a;
@@ -50,8 +58,16 @@ $ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
             align-items: flex-start;
         }
 
-        &>.hor-wrapper {
+        .comment-poster {
             margin-top: 20px;
+            flex: 1;
+        }
+
+        .input-area {
+            flex: 1;
+            display: flex;
+            flex-flow: column nowrap;
+            margin-bottom: 1em;
         }
 
         .avatar-wrapper .line {
@@ -62,6 +78,17 @@ $ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
             content: attr(data-placeholder);
             cursor: text;
             color: #AAA;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            margin: 0 .5em;
+
+            .text-input {
+                width: 100%;
+                box-sizing: border-box;
+                margin: 0;
+            }
         }
 
         .text-input {
@@ -128,6 +155,10 @@ $ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
                 fill: #4fc3f7;
             }
         }
+
+        .mobile-layout {
+            display: none;
+        }
     }
 
     .info-wrapper {
@@ -136,7 +167,7 @@ $ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
         align-items: flex-end;
 
         .user-info {
-            width: 500px;
+            flex: 1;
             display: flex;
             flex-flow: column nowrap;
 
@@ -351,3 +382,142 @@ $ui-font: "Titillium Web", Roboto, Microsoft YaHei UI, sans-serif;
 
 }
 
+@media all and (max-width: 800px) {
+    .comment-system {
+        .post-area {
+            min-height: 6em;
+
+            .decoration {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+
+                .circle-wrapper {
+                    margin: 0;
+                    position: relative;
+                }
+                .circle {
+                    width: 40px;
+                    height: 40px;
+                    background-color: #4fc3f7;
+
+                    .icon {
+                        opacity: 1;
+                    }
+                }
+            }
+
+            .post-hint {
+                flex: 1;
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                font-family: $ui-font;
+                color: #CCC;
+                margin-left: 1em;
+            }
+
+            .comment-poster {
+                position: fixed;
+                z-index: 5;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.6);
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                display: none;
+                opacity: 0;
+
+                &.show {
+                    display: flex;
+                    opacity: 1;
+                }
+
+                & > .hor-wrapper {
+                    
+                    background-color: white;
+                    margin: 1em;
+                    padding: 1.5em;
+                    padding-bottom: 0;
+                    border-radius: .5em;
+                }
+            }
+
+            .text-input {
+                border: none;
+                background-color: #EEE;
+                padding: .5em 1em;
+                border-radius: .3em;
+
+            }
+
+            .button-send {
+                display: none;
+
+                &.mobile {
+                    display: block;
+                    padding: .5em;
+
+                    .icon {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            .mobile-layout {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                justify-content: flex-end;
+
+                .avatar-wrapper {
+                    width: 48px;
+                    height: 48px;
+                    display: none;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+
+        .comment-loading .circle-wrapper .circle {
+            background-color: #CCC;
+        }
+
+        .comment {
+            .avatar-wrapper {
+                width: 48px;
+            }
+
+            .avatar {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    }
+}
+
+@media all and (max-width: 500px) {
+    .comment-system {
+        .comment-poster {
+            .avatar-wrapper {
+                display: none;
+            }
+            .mobile-layout {
+                justify-content: space-between;
+
+                .avatar-wrapper {
+                    display: block;
+                }
+            }
+        }
+    }
+}

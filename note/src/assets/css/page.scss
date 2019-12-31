@@ -27,11 +27,15 @@ body {
 .fold-view {
     overflow: hidden;
     transition: max-height .3s;
+
+    &.fold {
+        max-height: 0;
+    }
 }
 
 .input-line {
     border: solid 0 transparent;
-    border-bottom: solid .2em #CCC;
+    border-bottom: solid .1em #CCC;
     padding: .2em .5em;
     outline: none;
     font-size: inherit;
@@ -58,9 +62,35 @@ body {
 
     & > .wrapper {
         width: 1200px;
+        padding: 0 2em;
+        box-sizing: border-box;
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;
+    }
+
+    .dim {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9;
+    }
+
+    .title {
+        display: none;
+    }
+
+    .icon-menu {
+        display: none;
+    }
+
+    .fold-view {
+        &.fold {
+            max-height: unset;
+        }
     }
 
     .top-nav {
@@ -145,5 +175,157 @@ body {
 
     to {
         transform: rotateZ(360deg);
+    }
+}
+
+@media all and (max-width: 1200px){
+    .top-bar {
+        & > .wrapper {
+            width: 1000px;
+        }
+    }
+
+    .page-content {
+        width: 1000px;
+    }
+}
+@media all and (max-width: 1000px) {
+    .top-bar {
+        & > .wrapper {
+            width: 100%;
+        }
+
+        .top-nav {
+            .nav-item {
+                a {
+                    padding: 1em;
+                }
+            }
+        }
+    }
+
+    .page-content {
+        width: 100%;
+    }
+
+}
+
+@media all and (max-width: 800px) {
+    .top-bar {
+        position: fixed;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: stretch;
+        padding: 0;
+        height: auto;
+        font-family: $ui-font;
+        z-index: 10;
+
+        &.extend .dim {
+            display: block;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .wrapper {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+        }
+
+        .fold-view {
+            position: fixed;
+            width: 100%;
+            transition: top .3s;
+            z-index: 100;
+            background-color: #F7F7F7;
+            color: #444;
+            max-height: 100%;
+            overflow: auto;
+            
+
+            &.fold {
+                top: -100%;
+                max-height: 100%;
+            }
+            &.extend {
+                top: 0;
+            }
+        }
+
+        .top-nav {
+            width: 100%;
+            margin-top: 4em;
+            opacity: 0;
+            transition: opacity .2s .1s;
+
+            ul {
+                flex-flow: column nowrap;
+                align-items: flex-start;
+            }
+
+            .nav-item {
+                border-bottom: none;
+                padding: 0;
+
+                &.current {
+                    color: black;
+                    font-weight: bold;
+                }
+                a {
+                    padding: 1em;
+                }
+            }
+        }
+
+        .title {
+            flex: 1;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            font-size: 1.4em;
+            margin-left: 1em;
+            transition: color .3s;
+            z-index: 1000;
+        }
+
+        .user-data {
+            margin: 0;
+            align-self: unset;
+            z-index: 1000;
+            .icon {
+                transition: fill .3s;
+            }
+        }
+
+        .icon-menu {
+            display: block;
+            padding: 1em;
+            width: 1.6em;
+            height: 1.6em;
+            fill: $theme-text-color;
+            z-index: 1000;
+            transition: fill .3s;
+
+        }
+        &.extend {
+            .top-nav {
+                opacity: 1;
+            }
+            .title {
+                color: #444;
+            }
+            .user-data .icon {
+                fill: #444;
+            }
+            .icon-menu {
+                fill: #444;
+            }
+        }
+    }
+    .page-content {
+        width: 100%;
     }
 }

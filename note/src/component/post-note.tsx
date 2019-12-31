@@ -109,6 +109,9 @@ export function PostNote(props: {onPost?:(pid:number)=>void})
                 <span className={classNames("hint", {"error": hint==="error"})}>
                     { hint==="error" ? error : hintText[hint]}
                 </span>
+                <span className="avatar mobile">
+                    <img src={avatar} alt="avatar"/>
+                </span>
                 <span className="access-control" onClick={() =>
                 {
                     setPublic(!pub);
