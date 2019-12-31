@@ -772,6 +772,25 @@ h3.pIntroduction {
     margin-left: .5em;
     display: none;
 }
+
+#more-blogs {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2em;
+}
+#more-blogs > * {
+    width: 5em;
+    background: #6ED8D8;
+    color: white;
+    padding: .3em 1em;
+    text-align: center;
+}
+#more-blogs.hide {
+    visibility: collapse;
+}
+
 @media screen and (max-width:1280px) {
     #rightArea {
         width: 360px;

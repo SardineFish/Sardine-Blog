@@ -155,6 +155,7 @@ function loadLatest()
         }
 
         $("#latestItemTemplate").get(0).dataSource = data;
+        $("#more-blogs").removeClass("hide");
     });
 }
 function loadWorks()
