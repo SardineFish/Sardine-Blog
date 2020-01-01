@@ -106,7 +106,7 @@
         {
             $result = $this->runSQLM($sql);
             $lastResult = $result[count($result) - 1];
-            if(!$lastResult.succeed)
+            if(!$lastResult->succeed)
             {
                 throw new Exception($lastResult->error, $lastResult->errno);
             }
