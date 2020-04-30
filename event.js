@@ -438,7 +438,7 @@ function addEventHandle()
     $(".menuButton").attr("onmouseover", "menuButtonMouseOver(this);");
     $(".menuButton").attr("onmouseout", "menuButtonMouseOut(this);");
     topBarOffset = $("#topBar").offset().top;
-    window.onload = loaded;
+    //window.onload = loaded;
     document.getElementById("pageCodeContainer").onmousedown = pageCodeContainerMouseDown;
     window.onmousemove = windowMouseMove;
     document.getElementById("pageCodeContainer").onmouseup = pageCodeContainerMouseUp;
@@ -452,6 +452,7 @@ function addEventHandle()
         pageCodeIconHold = false;
     }
     $("#userFace").click(userFaceClick);
+    loaded();
 }
 addEventHandle();
 
