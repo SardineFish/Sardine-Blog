@@ -186,14 +186,14 @@
                 {
                     $("#progress").stop();
                     $("#progress").animate({ width: "100%" }, 200);
-                    SardineFish.API.Account.User.Face.SetFace($.cookie("uid"), "https://cdn-img.sardinefish.com/" + data.key, function (succeed, dataSet)
+                    SardineFish.API.Account.User.Face.SetFace($.cookie("uid"), "https://img.sardinefish.com/" + data.key, function (succeed, dataSet)
                     {
                         if (!succeed)
                         {
                             console.warn(dataSet.errorCode + ": " + dataSet.msg);
                             return;
                         }
-                        $("#faceImg").attr("src", "http://img.sardinefish.com/" + data.key);
+                        $("#faceImg").attr("src", "https://img.sardinefish.com/" + data.key);
                         $("#progressBar").animate({ "opacity": 0 }, 200);
                         $("#textDone").css("display", "block");
                         $("#textDone").css("opacity", "0");

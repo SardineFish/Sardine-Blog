@@ -85,7 +85,7 @@ class AccountV3
         $time=date("Y-m-d H:i:s");
 
         $size = 256;
-        $default = "https://cdn-global-static.sardinefish.com/img/decoration/unknown-user.png";
+        $default = "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png";
         $user->avatar = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
         
         AccountV3::ValidateUserInfo($user);

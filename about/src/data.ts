@@ -360,7 +360,7 @@ export const friendsData: FriendData[] = [
     {
         name: "东明",
         link: "//hdmmy.github.io/",
-        avatar: "http://img.sardinefish.com/NTI2OA==",
+        avatar: "https://img.sardinefish.com/NTI2OA==",
         note: "游戏物理和 Shader dalao"
     },
     {

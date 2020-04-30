@@ -29,7 +29,7 @@ export function PostNote(props: {onPost?:(pid:number)=>void})
         const email = refEmail.current && refEmail.current.value;
         if (email)
             setAvatar(gravatar.url(email, {
-                default: "https://cdn-global-static.sardinefish.com/img/unknown-user-grey.png",
+                default: "https://cdn-static.sardinefish.com/img/unknown-user-grey.png",
                 size: "256",
             }, true));
         else

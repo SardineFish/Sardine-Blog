@@ -114,7 +114,7 @@ resource.img.works.default.PNG = resource.img.works.url + "Works_Default.png";
 resource.img.works.default.min.PNG = resource.img.works.url + "Works_Default.min.png";
 
 resource.sardineImg = function () { };
-resource.sardineImg.domain = "http://img.sardinefish.com/";
+resource.sardineImg.domain = "https://img.sardinefish.com/";
 resource.sardineImg.get=function(id)
 {
     return resource.sardineImg.domain + id.toString();

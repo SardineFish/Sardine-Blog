@@ -90,7 +90,7 @@
                 <div id="progressBar">
                     <div id="progress"></div>
                 </div>
-                <a id="link" href="http://img.sardinefish.com/233"></a>
+                <a id="link" href="https://img.sardinefish.com/233"></a>
                 <a id="buttonUpload">Upload</a>
             </div>
         </div>
@@ -119,10 +119,10 @@
                 {
                     $("#progress").stop();
                     $("#progress").animate({ width: "100%" }, 200);
-                    $("#link").attr("href", "http://img.sardinefish.com/" + data.key);
-                    $("#link").text("http://img.sardinefish.com/" + data.key);
+                    $("#link").attr("href", "https://img.sardinefish.com/" + data.key);
+                    $("#link").text("https://img.sardinefish.com/" + data.key);
                     uploadComplete({
-                        url: "http://img.sardinefish.com/" + data.key,
+                        url: "https://img.sardinefish.com/" + data.key,
                         key: data.key
                     });
                 }
@@ -153,11 +153,11 @@
                 $("#progressBar").animate({ "opacity": 0 }, 700);
                 $("#buttonUpload").animate({ opacity: 1 }, 200);
             }
-            imgPreview.get(0).src = "http://img.sardinefish.com/" + data.key;
+            imgPreview.get(0).src = "https://img.sardinefish.com/" + data.key;
             if (onUploaded)
             {
                 onUploaded({
-                    url: "http://img.sardinefish.com/" + data.key,
+                    url: "https://img.sardinefish.com/" + data.key,
                     key: data.key
                 });
             }

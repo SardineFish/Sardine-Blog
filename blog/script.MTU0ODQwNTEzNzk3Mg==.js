@@ -382,23 +382,29 @@ function markdownItImagePostProcess(md)
 {
     var imgProcess = md.renderer.rules.image;
 
-    var httpsImageHost = "https://cdn-img.sardinefish.com/";
-    var defaultImageHost = "http://img.sardinefish.com/";
+    var httpsImageHost = "https://img.sardinefish.com/";
+    var defaultImageHost = "https://img.sardinefish.com/";
     var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
     var webArchivePrefixReplacer = atob("aHR0cDovL2ltZy5zYXJkaW5lZmlzaC5jb20v");
 
     md.renderer.rules.image = function (tokens, idx, options, env, slf) {
         var token = tokens[idx];
         var imgUrl = token.attrs[token.attrIndex('src')][1];
+
+        // Replace all http image with https
+
         if (reg.test(imgUrl))
         {
             var img = reg.exec(imgUrl)[2];
-            if (window.location.protocol === "https:")
-                imgUrl = httpsImageHost + img;
-            else
-                imgUrl = defaultImageHost + img;
+
+            // if (window.location.protocol === "https:")
+            //     imgUrl = httpsImageHost + img;
+            // else
+            //     imgUrl = defaultImageHost + img;
+            imgUrl = httpsImageHost + img;
         }
-        imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
+
+        //imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
         console.log(`${token.attrs[token.attrIndex('src')][1]} -> ${imgUrl}`);
         token.attrs[token.attrIndex('src')][1] = imgUrl;
         return imgProcess(tokens, idx, options, env, slf);

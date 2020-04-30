@@ -215,7 +215,7 @@ class Account
 
             // Use Gravatar
             $size = 256;
-            $default = "https://cdn-global-static.sardinefish.com/img/decoration/unknown-user.png";
+            $default = "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png";
             $avatar = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
 
             $sql = 

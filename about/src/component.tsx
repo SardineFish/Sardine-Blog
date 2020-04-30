@@ -283,7 +283,7 @@ export class Banner extends React.Component<{},{x:number,y:number, animate:boole
     }
     render()
     {
-        const resource = window.location.protocol === "https:" ? "//cdn-global-static.sardinefish.com" : "//static.sardinefish.com";
+        const resource = window.location.protocol === "https:" ? "//cdn-static.sardinefish.com" : "//static.sardinefish.com";
         return (
             <div className={["wrapper",this.state.show?"show":""].join(" ")}>
                 <div className="ground" ref="gound"></div>
@@ -776,7 +776,7 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
         const email = (this.refs["input-email"] as HTMLInputElement).value;
         this.setState({
             userAvatar: gravatar.url(email, {
-                default: "https://cdn-global-static.sardinefish.com/img/decoration/unknown-user.png",
+                default: "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png",
             },true)
         });
     }
