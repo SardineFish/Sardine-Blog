@@ -402,5 +402,10 @@ export const friendsData: FriendData[] = [
         name: "PetnaKanojo",
         link: "//moe.petnakanojo.com/",
         avatar: "//github.com/podiumdesu.png"
-    }
+    },
+    {
+        name: "Daniel",
+        link: "https://hustdanielhu.com/",
+        avatar: "https://github.com/Danielhu229.png",
+    },
 ]
