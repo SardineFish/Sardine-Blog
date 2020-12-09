@@ -1,12 +1,17 @@
 <?php
 
+require_once $_SERVER['DOCUMENT_ROOT']."/api/misc/DBHelper.php";
+
 class PostResult
 {
     public $succeed;
     public $error;
     public $errno;
+
     public $pid;
     public $type;
+    public $uid;
+
     public function __construct()
     {
         $this->succeed =false;
@@ -27,7 +32,7 @@ class PostResult
  */
 class Posts
 {
-    public static function Add($type,$mysql=null)
+    public static function Add($type, string $author, $mysql = null)
     {
         if(!class_exists("SarMySQL"))
         {
@@ -55,7 +60,7 @@ class Posts
                     throw new Exception($result->error,$result->errno);
                 }
             }
-            $sql = 'INSERT INTO `posts` (`pid`, `type`) VALUES (NULL, \''.$type.'\');';
+            $sql = 'INSERT INTO `posts` (`pid`, `type`, `uid`) VALUES (NULL, \''.$type.'\', \''.$author.'\');';
             $result=$mysql->runSQL ($sql);
             if(!$result->succeed )
             {
@@ -69,12 +74,12 @@ class Posts
         }
     }
 
-    public static function Get($pid,$mysql=null)
+    public static function Get($pid,$mysql=null) : PostResult
     {
         if(!class_exists("SarMySQL"))
         {
-            require '../lib/mysql/const.php';
-            require "../lib/mysql/MySQL.php";
+            require_once '../lib/mysql/const.php';
+            require_once "../lib/mysql/MySQL.php";
         }
         $r=new PostResult ();
         $pid=(int)$pid;
@@ -113,8 +118,39 @@ class Posts
         }
         $r->pid=$result->data[0]['pid'];
         $r->type =$result->data[0]['type'];
+        $r->uid = $result->data[0]['uid'];
         $r->succeed =true ;
         return $r;
+    }
+
+    public static function GetURL($pid, SarMySQL $mysql = null)
+    {
+        require_once $_SERVER['DOCUMENT_ROOT']."/comment/Comment.php";
+
+        $result = Posts::Get($pid);
+        if (!$result->succeed)
+        {
+            throw new Exception($result->error, $result->errno);
+        }
+        $post = $result;
+
+        if ($post->type == PostType::Comment)
+        {
+            $comment = Comment::GetByPostId($post->pid, $mysql);
+            return Posts::GetURL($comment->root_pid);
+        }
+        else if ($post->type == PostType::Article)
+        {
+            return "https://www.sardinefish.com/blog/?pid=".$post->pid;
+        }
+        else if ($post->type == PostType::Note)
+        {
+            return "https://www.sardinefish.com/note/?pid=".$post->pid;
+        }
+        else if ($post->pid == 1)
+        {
+            return "https://www.sardinefish.com/about/";
+        }
     }
 }
 

@@ -147,6 +147,34 @@ class AccountV3
         if($user->email && !preg_match("/^\\S+@\\S+\\.\\S+$/",$user->email))
             throw new Exception("Invalid email address.",1010100002);
     }
+    public static function GetUserInfo(string $uid, SarMySQL $mysql = null) : UserInfo
+    {
+        try
+        {
+            if(!$mysql)
+                $mysql = DBHelper::Connect();
+            
+            $sql  = 'SELECT * FROM user_data WHERE uid = \''.$uid.'\'';
+
+            $result = $mysql->tryRunSQL($sql);
+            $data = $mysql->tryRunSQL($sql)->data;
+            if(count(data) <= 0)
+                throw new Exception("User not exists.", 1010201006);
+
+            $user = new UserInfo();
+            $user->uid = $data[0]["uid"];
+            $user->name = $data[0]["name"];
+            $user->avatar = $data[0]["icon"];
+            $user->email = $data[0]["email"];
+            $user->level = $data[0]["level"];
+            
+            return $user;
+        }
+        catch (Exception $ex)
+        {
+            throw new Exception("Internal db error", 1010100003);
+        }
+    }
 }
 class UserLevels
 {

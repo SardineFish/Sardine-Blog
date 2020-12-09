@@ -203,7 +203,7 @@ class Article
                 throw new Exception($checkResult->error,$checkResult->errno);
             }
 
-            $article->pid=Posts::Add(PostType::Article,$mysql);
+            $article->pid=Posts::Add(PostType::Article, $checkResult->account->uid, $mysql);
             
             $article->title=Article::Encode($article->title,EncodeType::Custom);
             $article->tags=Article::Encode($article->tags,EncodeType::Custom );

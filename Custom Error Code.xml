@@ -5,6 +5,7 @@
       <class name ="执行错误" from ="1010100000" to ="1010199999">
         <error code ="1010100001" description ="代码执行错误"/>
         <error code ="1010100002" description ="参数错误"/>
+          <error code ="1010100003" description ="数据库查询异常"/>
       </class>
       <class name ="功能性错误" from="1010200000" to ="1010299999">
         <class name ="用户账户" from ="1010201000" to ="1010201999">
