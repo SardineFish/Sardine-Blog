@@ -9,13 +9,7 @@ if (!$pid)
 
 try
 {
-    $result = Posts::Get($pid);
-    if (!$result->succeed)
-    {
-        throw new Exception($result->error, $result->errno);
-    }
-
-    $url = Posts::GetURL($result);
+    $url = Posts::GetURL($pid);
 
     $response->send($url);
 }

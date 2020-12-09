@@ -154,7 +154,7 @@ class AccountV3
             if(!$mysql)
                 $mysql = DBHelper::Connect();
             
-            $sql  = 'SELECT * FROM user_data WHERE uid = \''.$uid.'\'';
+            $sql  = 'SELECT * FROM `user_data` WHERE uid = \''.$uid.'\' AND `ignore` = 0';
 
             $result = $mysql->tryRunSQL($sql);
             $data = $mysql->tryRunSQL($sql)->data;

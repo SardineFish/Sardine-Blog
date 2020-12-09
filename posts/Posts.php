@@ -149,7 +149,7 @@ class Posts
         }
         else if ($post->pid == 1)
         {
-            return "https://www.sardinefish.com/about/";
+            return "https://www.sardinefish.com/about/#about";
         }
     }
 }
