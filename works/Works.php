@@ -179,7 +179,7 @@ class Works
                 throw new Exception ("Version required.",1010100002);
             }
             $work->time=date("Y-m-d H:i:s");
-            $work->pid=Posts::Add(PostType::Works,$mysql);
+            $work->pid=Posts::Add(PostType::Works, $work->author, $mysql);
             $sql = 'INSERT INTO `works` '
                 .' (`index`, `pid`, `name`, `version`, `author`, `tags`, `detail`, `description`, `images`, `news`, `urlDownload`, `time`, `type`, `icon`, `operate`, `ignore`) '
                 .' VALUES (NULL, \''.$work->pid

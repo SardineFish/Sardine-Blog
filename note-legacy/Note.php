@@ -131,7 +131,7 @@ class Note
                 return $r;
             }
 
-            $pid = Posts::Add ('note',$mysql);
+            $pid = Posts::Add ('note', $author, $mysql);
 
             /*$id=All_Add("note",$title,$tags,$text,$uid,$date);
             $allAddResult = All::Add ("note",$title,$tags,$text,$author,$time);
