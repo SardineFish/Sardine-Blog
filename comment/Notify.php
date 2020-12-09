@@ -185,7 +185,7 @@ style="color:#6bdae9">GitHub</a></p>
             '$time' => $replyTime,
             '$viewUrl' => $viewPage,
             '$content' => $replyContent,
-            '$unsubscribeUrl' => "https://www.sardinefish.com/comment/unsubscribe.php?uid=".urlencode($receiverUid)
+            '$unsubscribeUrl' => "https://www.sardinefish.com/comment/unsubscribe/?uid=".urlencode($receiverUid)
         );
         $body = strtr($template, $vars);
 
