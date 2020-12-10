@@ -154,7 +154,11 @@ window.addEventListener("load", () =>
 
     setTimeout(() =>
     {
+        if (!nav)
+            return;
         let element = document.querySelector(`#${nav}`);
+        if (!element)
+            return;
         animate(2, (t) =>
         {
             let rest = element.getBoundingClientRect().top;

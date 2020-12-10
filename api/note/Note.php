@@ -26,7 +26,7 @@ class NoteBoard
         $user = UserInfo::Create($name, $email, $url);
         $user = AccountV3::SimpleAuth($user);
 
-        $pid = Posts::Add("note", $mysql);
+        $pid = Posts::Add("note", $user->uid, $mysql);
         date_default_timezone_set('PRC'); 
         $time = date("Y-m-d H:i:s");
         $text = $mysql->escape($text);

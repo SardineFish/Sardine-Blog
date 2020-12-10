@@ -731,7 +731,7 @@ function processData(data: CommentResponseData):CommentProps
         time: data.time,
         text: data.text,
         url: data.url,
-        replies: parseInt(data.commentCount) > 0
+        replies: (data.comments?.length) > 0
             ? data.comments.map(c => processData(c))
             : []
     };

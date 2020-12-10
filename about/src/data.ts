@@ -406,6 +406,6 @@ export const friendsData: FriendData[] = [
     {
         name: "Daniel",
         link: "https://hustdanielhu.com/",
-        avatar: "https://github.com/Danielhu229.png",
+        avatar: "https://github.com/Danielmelody.png",
     },
 ]
