@@ -5,5 +5,5 @@ $url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=".ST
 $context  = stream_context_create(array());
 $response = file_get_contents($url, false, $context);
 
-echo(json_encode($stat));
+echo($response);
 ?>
