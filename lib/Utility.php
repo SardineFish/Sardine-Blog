@@ -52,9 +52,11 @@ class Response
     }
     public function error(string $error,int $errorCode)
     {
-        $this->msg=$error;
-        $this->data=$errorCode;
-        $this->status=">_<";
+        $this->error = $error;
+        $this->msg = $error;
+        $this->errorCode = $errorCode;
+        $this->data = null;
+        $this->status = ">_<";
         $this->send();
     }
 }

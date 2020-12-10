@@ -11,12 +11,15 @@ class PublicUserInfo
 }
 class UserInfo
 {
+    public $id;
     public $uid;
     public $name;
     public $avatar;
     public $url;
     public $email;
     public $level;
+    public $pwd;
+    public $encryption;
     public static function Create(string $name, string $email, string $url) : UserInfo
     {
         $user = new UserInfo();
@@ -158,7 +161,7 @@ class AccountV3
 
             $result = $mysql->tryRunSQL($sql);
             $data = $mysql->tryRunSQL($sql)->data;
-            if(count(data) <= 0)
+            if(count($data) <= 0)
                 throw new Exception("User not exists.", 1010201006);
 
             $user = new UserInfo();
@@ -167,6 +170,10 @@ class AccountV3
             $user->avatar = $data[0]["icon"];
             $user->email = $data[0]["email"];
             $user->level = $data[0]["level"];
+            $user->pwd = $data[0]['pwd'];
+            $user->encryption = $data[0]['encryption'];
+            $user->id = $data[0]['id'];
+            $user->url = $data[0]['url'];
             
             return $user;
         }
@@ -174,6 +181,38 @@ class AccountV3
         {
             throw new Exception("Internal db error", 1010100003);
         }
+    }
+    public static function SetUserInfo(UserInfo $user, SarMySQL $mysql = null) : UserInfo 
+    {
+        if(!$mysql)
+            $mysql = DBHelper::Connect();
+
+        
+        date_default_timezone_set('PRC'); 
+        $time=date("Y-m-d H:i:s");
+
+        $mysql->beginTranscation();
+            
+        $sql = 
+           ' SET @UID = \''.$mysql->escape($user->uid).'\';'
+         . ' SET @NAME = \''.$mysql->escape($user->name).'\';'
+         . ' SET @PWD = \''.$user->pwd.'\';'
+         . ' SET @ENCRYPTION =\''.$user->encryption.'\';'
+         . ' SET @LEVEL = \''.$user->level.'\';'
+         . ' SET @TIME = \''.$time.'\';'
+         . ' SET @EMAIL = \''.$mysql->escape($user->email).'\';'
+         . ' SET @AVATAR = \''.$mysql->escape($user->avatar).'\';'
+         . ' SET @URL = \''.$mysql->escape($user->url).'\';'
+         . ' SET @ID = \''.$user->id.'\' ;'
+         . ' UPDATE `user_data` SET `ignore` = 1 WHERE `uid` = @UID;'
+         . ' INSERT INTO `user_data` (`id`,`uid`,`name`,`level`,`pwd`,`encryption`,`email`,`icon`,`url`,`operation`,`time`,`ignore`) '
+         . ' VALUES(@ID,@UID,@NAME,@LEVEL,@PWD,@ENCRYPTION,@EMAIL,@AVATAR,@URL,\'edited\',@TIME,0);';
+            
+        $results = $mysql->tryRunSQLM($sql);
+
+        $mysql->commit();
+
+        return $user;
     }
 }
 class UserLevels

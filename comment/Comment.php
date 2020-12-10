@@ -332,5 +332,20 @@ class Comment
             
         return $pid;
     }
+
+    public static function Unsubscribe(string $uid, SarMySQL $mysql = null)
+    {
+        require_once $_SERVER['DOCUMENT_ROOT']."/api/account/Account.php";
+        
+        if (!$mysql)
+            $mysql = DBHelper::Connect();
+
+        $user = AccountV3::GetUserInfo($uid, $mysql);
+
+        $user->email = "";
+
+        AccountV3::SetUserInfo($user, $mysql);
+        
+    }
 }
 ?>

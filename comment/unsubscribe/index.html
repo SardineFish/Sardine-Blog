@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsubscribe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/font/Titillium_Web/TitilliumWeb.css">
+</head>
+<body>
+    <nav id="header" class="font-ui">
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/note/">Notes</a></li>
+            <li><a href="/blog/">Blogs</a></li>
+            <li><a href="https://lab.sardinefish.com/">Lab</a></li>
+            <li><a href="https://github.com/SardineFish">GitHub</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+    </nav>
+    <main id="root" class="state-unsubscribe">
+        <section id="unsubscribe" class="content-block">
+            <header class="header">Unsubscribe Notification</header>
+            <main>
+                <p>
+                    You are about to unsubscribe the Email Notification Push Service from this website.
+                </p>
+                <p>
+                    Your email address will be soon <b>delete</b> from database and will nolonger receive any
+                    notification.
+                </p>
+                <p>
+                    Thanks for your visit to my website. You can get subscribsion back again by comment with your email
+                    address and set allow to receive it.
+                </p>
+            </main>
+            <div class="action">
+                <a id="button-unsubscribe" class="button">Unsubscribe</a>
+                <svg class="icon-loading" viewBox="0 0 24 24">
+                    <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z" />
+                </svg>
+            </div>
+        </section>
+        <section id="error" class="content-block" >
+            <header class="header">Error</header>
+            <main>
+                <p>
+                    An error occured when requesting unsubscribe
+                </p>
+            </main>
+            <a id="button-retry" href="/" class="button">Retry</a>
+        </section>
+        <section id="success" class="content-block" >
+            <header class="header">Successfully Unsubscribed</header>
+            <main>
+                <p>
+                    You have successfully unsubscribe the notification push service.
+                </p>
+            </main>
+            <a href="/" class="button">Back to Homepage</a>
+        </section>
+    </main>
+    <footer id="footer" class="font-ui">
+        <div class="copyright">
+            Copyright © 2015-
+            <span class="time-year"></span> SardineFish, All Rights Reserved
+        </div>
+        <div>
+            Powered by SardineFish
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
