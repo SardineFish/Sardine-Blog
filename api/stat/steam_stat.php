@@ -7,15 +7,17 @@ $response = file_get_contents($url, false, $context);
 $stat = json_decode($response);
 $stat = $stat->response;
 $count = (int)$stat->game_count;
-
+echo("[");
 for ($i = 0; $i < $count; $i ++)
 {
     if ($stat->games[$i]->playtime_forever <= 0)
         continue;
     $url = "http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=".STEAM_API_KEY."&appid=".$stat->games[$i]->appid;
-    $response = file_get_contents($url, false, $context);
+    $response = json_decode(file_get_contents($url, false, $context));
     $stat->games[$i]->game_name = $response->game->gameName;
+    echo(json_encode($stat->games[$i]));
+    echo(", \r\n");
 }
-
-echo(json_encode($stat));
+echo("]")
+// echo(json_encode($stat));
 ?>
