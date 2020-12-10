@@ -600,9 +600,10 @@ export class TextCloud extends React.Component<TextCloudProps,{data:TextCloudRen
     }
     async componentDidMount()
     {
+        await sleep(2);
         type WordFigure = { pos: Vector2, size: Vector2 };
         const placedWords: WordFigure[] = [];
-        const accuracy = this.props.accuracy || 3;
+        const accuracy = this.props.accuracy || 2;
         const placeMode = this.props.placeMode || "center";
         const padding = this.props.padding || 5;
         const boundSize = vec2((this.refs["element"] as HTMLElement).getBoundingClientRect().width, (this.refs["element"] as HTMLElement).getBoundingClientRect().height);

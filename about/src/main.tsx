@@ -1,7 +1,7 @@
 import React, { RefObject } from "react";
 import ReactDOM from "react-dom";
 import { RoseChart, ChartData, DeferSection, Banner, DeferElement, LifeTimer, Age, BarChart, TextCloud, FriendLink, CommentSystem } from "./component";
-import { languageSkillsData, summaryData, toolsData, toolsChartPalette, gameData, friendsData } from "./data";
+import { languageSkillsData, summaryData, toolsData, toolsChartPalette, steamData2020, friendsData, manualUpdateGameData2020 } from "./data";
 import { GithubLogo, SteamLogo, EmailIcon, IconAdd, IconArrowUp } from "./icon";
 import { animate } from "./lib";
 
@@ -9,6 +9,7 @@ class App extends React.Component
 {
     render()
     {
+        const gameData = [...steamData2020, ...manualUpdateGameData2020];
         return (
             <div>
                 <section id="banner">

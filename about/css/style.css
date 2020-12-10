@@ -320,8 +320,8 @@ picture img{
 }
 
 #game-data{
-    width: 1000px;
-    height: 600px;
+    width: 80%;
+    height: 1000px;
     margin: 0 5em;
 }
 #game-data .word{
