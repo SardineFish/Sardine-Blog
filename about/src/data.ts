@@ -1,8 +1,8 @@
 import
-    {
-        ChartData,
-        FriendData
-    } from "./component";
+{
+    ChartData,
+    FriendData
+} from "./component";
 
 export const summaryData: ChartData[] = [{
     name: "Strength",
@@ -44,7 +44,7 @@ export const languageSkillsData: ChartData[] = [{
 },
 {
     name: "VB / VB .NET",
-    value: 0.25,
+    value: 0.2,
     note: "2012-11"
 },
 {
@@ -54,7 +54,7 @@ export const languageSkillsData: ChartData[] = [{
 },
 {
     name: "PHP",
-    value: 0.45,
+    value: 0.25,
     note: "2015-7"
 },
 {
@@ -69,18 +69,23 @@ export const languageSkillsData: ChartData[] = [{
 },
 {
     name: "Python",
-    value: 0.2,
+    value: 0.05,
     note: "2017-12"
 },
 {
     name: "Lua",
-    value: 0.45,
+    value: 0.3,
     note: "2018-11"
 },
 {
     name: "Golang",
-    value: 0.5,
+    value: 0.4 ,
     note: "2019-3"
+},
+{
+    name: "Rust",
+    value: 0.7,
+    note: "2020-11"
 }
 ]
 export const toolsData: ChartData[] = [{
@@ -91,26 +96,30 @@ export const toolsData: ChartData[] = [{
 {
     name: "Front End",
     value: 0.8,
-    note: "HTML5 / CSS3 / React"
+    note: "HTML5 / CSS3 / React / Electron"
 },
 {
     name: "Back End",
-    value: 0.6,
-    note: "PHP+MySQL / .NET Core / Node.Js"
+    value: 0.5,
+    note: "Node.Js / .NET Core / MongoDB / MySQL"
 },
 {
     name: "Game Development",
     value: 0.7,
-    note: "Unity / Cocos2D JS"
+    note: "Unity / UE4 / Cocos2D JS"
+},{
+    name: "Computer Graphics",
+    value: 0.6,
+    note: "Unity SRP / OpenGL / WebGL / DX12"
 },
 {
     name: "3D Modeling",
-    value: 0.4,
+    value: 0.3,
     note: "3ds Max / SketchUp"
 },
 {
     name: "Painting",
-    value: 0.5,
+    value: 0.4,
     note: "PS / SAI"
 },
 {
@@ -126,7 +135,8 @@ export const toolsChartPalette = [
     "#e6351c",
     "#ff8065",
     "#ff6244",
-    "#ffa490"
+    "#ffa490",
+    "#ffc8bb"
 ]
 export const gameDataOld: ChartData[] = [{
     "name": "Counter-Strike",
@@ -628,6 +638,10 @@ export const manualUpdateGameData2020: ChartData[] = [
     {
         name: "Borderlands 3",
         value: 3867,
+    },
+    {
+        name: "osu!",
+        value: 7940
     }
 ]
 

@@ -362,6 +362,7 @@ export class BarChart extends React.Component<BarChartProps, BarChartState>
     getPalette(count: number)
     {
         const palette = this.props.palette || [
+            "#e1f5fe",
             "#03a9f4",
             "#81d4fa",
             "#0277bd",
