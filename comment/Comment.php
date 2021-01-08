@@ -322,6 +322,8 @@ class Comment
                     $viewUrl,
                     $text
                 );
+
+                Comment::SetNotified($pid, true, $mysql);
             }
         }
         catch (Exception $ex)
@@ -331,6 +333,15 @@ class Comment
         
             
         return $pid;
+    }
+
+    public static function SetNotified(int $pid, int $value, SarMySQL $mysql = null)
+    {
+        if (!$mysql)
+            $mysql = DBHelper::Connect();
+
+        $sql = "UPDATE `comment` SET `notified`='".$value."' WHERE `pid`='".$pid."'";
+        $mysql->tryRunSQL($sql);
     }
 
     public static function Unsubscribe(string $uid, SarMySQL $mysql = null)
