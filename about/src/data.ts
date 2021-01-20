@@ -701,5 +701,12 @@ export const friendsData: FriendData[] = [{
     name: "Daniel",
     link: "https://hustdanielhu.com/",
     avatar: "https://github.com/Danielmelody.png",
+    note: "Graphics / PL / 开源社区大佬"
+},
+{
+    name: "逍遥剑客",
+    link: "https://blog.csdn.net/xoyojank",
+    avatar: "https://img.sardinefish.com/OTA0OTA0",
+    note: "引擎行业资深前辈",
 },
 ]
