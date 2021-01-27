@@ -16,7 +16,7 @@ count: number
         "pid": 0,
         "author": "Name",
         "time": "UTC Time",
-        "type": "PlainText | Markdown | HTML",
+        "doc_type": "PlainText | Markdown | HTML",
         "doc": "Content",
         "stats": {
             "likes": 0,

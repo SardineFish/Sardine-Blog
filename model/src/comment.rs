@@ -18,6 +18,7 @@ pub struct Comment {
     pub uid: String,
     pub time: DateTime,
     pub text: String,
+    pub notify: bool,
 }
 
 impl Comment {
@@ -28,6 +29,7 @@ impl Comment {
             author: author.info.name.clone(),
             uid: author.uid.clone(),
             time: Utc::now().into(),
+            notify: false,
             _id: Default::default(),
             text: Default::default(),
         }
