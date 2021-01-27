@@ -1,8 +1,8 @@
 use std::usize;
 
 use bson::{Document, doc};
-use mongodb::{Collection, Database, bson, options::FindOneAndUpdateOptions};
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use mongodb::{Collection, Database, bson, options::{FindOneAndUpdateOptions, FindOptions}};
+use serde::{Serialize, de::DeserializeOwned};
 use tokio::stream::StreamExt;
 
 use crate::{error::*, model::PidType, post_data::PostStats};
@@ -37,7 +37,11 @@ impl PostModel {
     }
 
     pub async fn get_list<T: Post + DeserializeOwned>(&self, from: usize, count: usize) -> Result<Vec<T>> {
-        let result = self.collection.find(None, None)
+        let mut opts = FindOptions::default();
+        opts.skip = Some(from as i64);
+        opts.limit = Some(count as i64);
+
+        let result = self.collection.find(None, opts)
             .await
             .map_model_result()?;
         

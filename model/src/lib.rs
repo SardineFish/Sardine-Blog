@@ -8,3 +8,6 @@ mod note;
 mod post_data;
 mod history;
 mod post;
+
+pub use model::{PidType, Model};
+pub use error::{Error, Result};

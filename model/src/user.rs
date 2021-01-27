@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use bson::Document;
 use mongodb::{Collection, Database, bson::{self, doc}, options::FindOneAndUpdateOptions};
 use serde::{Serialize, Deserialize};
@@ -51,7 +49,7 @@ pub struct UserModel {
 }
 
 impl UserModel {
-    pub fn new(db: Database) -> Self {
+    pub fn new(db: &Database) -> Self {
         Self{
             collection: db.collection(COLLECTION_USER),
         }

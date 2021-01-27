@@ -1,4 +1,3 @@
-use bson::de::{self};
 use mongodb::{bson, error::Error as MongoError};
 
 use crate::model::PidType;

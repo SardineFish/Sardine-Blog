@@ -1,4 +1,3 @@
-use bson::to_document;
 use chrono::Utc;
 use mongodb::{Collection, Database, bson};
 use serde::{Serialize, Deserialize};
@@ -47,7 +46,7 @@ pub struct HistoryModel {
 }
 
 impl HistoryModel {
-    pub fn new(db: Database) -> Self {
+    pub fn new(db: &Database) -> Self {
         Self{
             collection: db.collection(COLLECTION_HISTORY)
         }

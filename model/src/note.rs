@@ -2,7 +2,6 @@ use mongodb::{ bson::{DateTime, oid::ObjectId}};
 use serde::{Serialize, Deserialize};
 
 use crate::{blog::DocType, model::PidType, post::Post, post_data::PostStats};
-use crate::error::*;
 
 #[derive(Serialize, Deserialize)]
 pub struct Note {

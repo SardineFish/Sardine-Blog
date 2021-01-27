@@ -1,16 +1,11 @@
-use crate::{model::{Model, PidType}, post::Post, post_data::{PostDataModel, PostStats}, user::User};
-use chrono::{DateTime, Utc};
-use mongodb::{bson::doc, options::FindOneAndUpdateOptions};
+use crate::{model::{PidType}, post::Post, post_data::{PostStats}, user::User};
+use chrono::{Utc};
+use mongodb::{bson::doc};
 use mongodb::{
     self,
     bson::{self, oid::ObjectId},
-    options::FindOptions,
-    Collection, Database,
 };
-use serde::{Deserialize, Serialize, __private::doc};
-use tokio::stream::StreamExt;
-
-use super::error::*;
+use serde::{Deserialize, Serialize};
 
 
 #[derive(Serialize, Deserialize)]
