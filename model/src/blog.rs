@@ -1,4 +1,4 @@
-use crate::{model::{Model, PidType}, post_data::{PostDataModel, PostStats}};
+use crate::{model::{Model, PidType}, post_data::{PostDataModel, PostStats}, user::User};
 use chrono::{DateTime, Utc};
 use mongodb::{bson::doc, options::FindOneAndUpdateOptions};
 use mongodb::{
@@ -30,6 +30,7 @@ pub struct Blog {
     pub time: bson::DateTime,
     pub doc_type: DocType,
     pub author: String,
+    pub uid: String,
     pub doc: String,
     pub stats: PostStats,
 }
@@ -44,11 +45,12 @@ pub struct BlogContent {
 }
 
 impl Blog {
-    pub fn new(pid: PidType, author: &str) -> Self {
+    pub fn new(pid: PidType, author: &User) -> Self {
         Self {
             pid,
             time: Utc::now().into(),
-            author: author.to_string(),
+            author: author.name.clone(),
+            uid: author.uid.clone(),
             _id: Default::default(),
             title: Default::default(),
             tags: Default::default(),
