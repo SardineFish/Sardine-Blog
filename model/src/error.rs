@@ -1,9 +1,13 @@
-use mongodb::error::Error as MongoError;
+use bson::de::{self};
+use mongodb::{bson, error::Error as MongoError};
+
+use crate::model::PidType;
 
 pub enum Error
 {
     DBError(MongoError),
-
+    DataNotFound(PidType),
+    DeserializeError(bson::de::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -12,6 +16,12 @@ impl From<MongoError> for Error
 {
     fn from(err: MongoError) -> Error {
         Error::DBError(err)
+    }
+}
+
+impl From<bson::de::Error> for Error {
+    fn from(err: bson::de::Error) -> Self {
+        Error::DeserializeError(err)
     }
 }
 

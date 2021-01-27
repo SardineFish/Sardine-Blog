@@ -6,7 +6,7 @@ use super::{blog::BlogModel};
 
 pub type PidType = u32;
 
-struct Model
+pub struct Model
 {
     pub blog: super::blog::BlogModel,
 

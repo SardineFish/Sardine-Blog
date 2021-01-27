@@ -5,4 +5,6 @@ mod user;
 mod blog;
 mod comment;
 mod note;
+mod post_data;
+mod history;
 
