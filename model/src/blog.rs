@@ -49,7 +49,7 @@ impl Blog {
         Self {
             pid,
             time: Utc::now().into(),
-            author: author.name.clone(),
+            author: author.info.name.clone(),
             uid: author.uid.clone(),
             _id: Default::default(),
             title: Default::default(),
@@ -97,7 +97,7 @@ impl BlogModel {
         let doc = self.collection.find_one(query, None)
             .await
             .map_model_result()?
-            .ok_or(Error::DataNotFound(pid))?;
+            .ok_or(Error::PostNotFound(pid))?;
         let blog = bson::from_document(doc).map_model_result()?;
 
         Ok(blog)
@@ -126,7 +126,7 @@ impl BlogModel {
         let result = self.collection.find_one_and_update(query, update, options)
             .await
             .map_model_result()?
-            .ok_or(Error::DataNotFound(pid))?;
+            .ok_or(Error::PostNotFound(pid))?;
 
         bson::from_document(result).map_model_result()
     }

@@ -25,7 +25,7 @@ impl Comment {
         Self {
             pid,
             comment_to,
-            author: author.name.clone(),
+            author: author.info.name.clone(),
             uid: author.uid.clone(),
             time: Utc::now().into(),
             _id: Default::default(),
@@ -59,7 +59,7 @@ impl CommentModel {
         let result = self.collection.find_one(query, None)
             .await
             .map_model_result()?
-            .ok_or(Error::DataNotFound(pid))?;
+            .ok_or(Error::PostNotFound(pid))?;
 
         let comment_collection: CommentCollection = bson::from_document(result)
             .map_model_result()?;
@@ -98,7 +98,7 @@ impl CommentModel {
         let result = self.collection.find_one_and_update(query, update, options)
             .await
             .map_model_result()?
-            .ok_or(Error::DataNotFound(root_pid))?;
+            .ok_or(Error::PostNotFound(root_pid))?;
         
         let mut comment_collection: CommentCollection = bson::from_document(result).map_model_result()?;
         Ok(comment_collection.comments.remove(&pid))

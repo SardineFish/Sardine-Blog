@@ -6,7 +6,8 @@ use crate::model::PidType;
 pub enum Error
 {
     DBError(MongoError),
-    DataNotFound(PidType),
+    PostNotFound(PidType),
+    UserNotFound(String),
     DeserializeError(bson::de::Error),
 }
 
