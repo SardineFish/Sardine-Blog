@@ -9,6 +9,7 @@ pub enum Error
     PostNotFound(PidType),
     UserNotFound(String),
     DeserializeError(bson::de::Error),
+    SerializeError(bson::ser::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -23,6 +24,12 @@ impl From<MongoError> for Error
 impl From<bson::de::Error> for Error {
     fn from(err: bson::de::Error) -> Self {
         Error::DeserializeError(err)
+    }
+}
+
+impl From<bson::ser::Error> for Error {
+    fn from(err: bson::ser::Error) -> Self {
+        Error::SerializeError(err)
     }
 }
 

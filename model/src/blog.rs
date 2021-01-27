@@ -1,4 +1,4 @@
-use crate::{model::{Model, PidType}, post_data::{PostDataModel, PostStats}, user::User};
+use crate::{model::{Model, PidType}, post::Post, post_data::{PostDataModel, PostStats}, user::User};
 use chrono::{DateTime, Utc};
 use mongodb::{bson::doc, options::FindOneAndUpdateOptions};
 use mongodb::{
@@ -12,7 +12,6 @@ use tokio::stream::StreamExt;
 
 use super::error::*;
 
-const COLLECTION_BLOG: &str = "blog";
 
 #[derive(Serialize, Deserialize)]
 pub enum DocType {
@@ -61,89 +60,11 @@ impl Blog {
     }
 }
 
-pub struct BlogModel {
-    collection: Collection,
-}
-
-impl BlogModel {
-    pub fn new(db: &Database) -> Self {
-        Self {
-            collection: db.collection(COLLECTION_BLOG),
-        }
+impl Post for Blog {
+    fn pid(&self) -> PidType {
+        self.pid
     }
-
-    pub async fn get_list(&self, from: usize, count: usize) -> Result<Vec<Blog>> {
-        let mut options = FindOptions::default();
-        options.skip = Some(from as i64);
-        options.limit = Some(count as i64);
-        let result = self
-            .collection
-            .find(None, Some(options))
-            .await
-            .map_model_result()?;
-
-        let blogs: Vec<Blog> = result
-            .filter_map(|t| t.ok().and_then(|doc| bson::from_document::<Blog>(doc).ok()))
-            .collect()
-            .await;
-
-        Ok(blogs)
-    }
-
-    pub async fn get_by_pid(&self, pid: PidType) -> Result<Vec<Blog>> {
-        let query = doc! {
-            "pid": pid,
-        };
-        let doc = self.collection.find_one(query, None)
-            .await
-            .map_model_result()?
-            .ok_or(Error::PostNotFound(pid))?;
-        let blog = bson::from_document(doc).map_model_result()?;
-
-        Ok(blog)
-    }
-
-    pub async fn post(&self, blog: Blog) -> Result<Blog> {
-
-        self.collection.insert_one(bson::to_document(&blog).unwrap(), None)
-            .await
-            .map_model_result()?;
-
-        Ok(blog)
-    }
-
-    pub async fn update(&self, pid: PidType, blog: BlogContent) -> Result<Blog> {
-        
-        let query = doc! {
-            "pid": pid,
-        };
-        let update = doc! {
-            "$set": bson::to_bson(&blog).unwrap(),
-        };
-        let mut options = FindOneAndUpdateOptions::default();
-        options.return_document = Some(mongodb::options::ReturnDocument::After);
-
-        let result = self.collection.find_one_and_update(query, update, options)
-            .await
-            .map_model_result()?
-            .ok_or(Error::PostNotFound(pid))?;
-
-        bson::from_document(result).map_model_result()
-    }
-
-    pub async fn delete(&self, pid: PidType) -> Result<Option<Blog>> {
-        let query = doc! {
-            "pid": pid,
-        };
-
-        let result = self.collection.find_one_and_delete(query, None)
-            .await
-            .map_model_result()?;
-        
-        if let Some(doc) = result {
-            Ok(Some(bson::from_document(doc).map_model_result()?))
-        } else {
-            Ok(None)
-        }
+    fn stats(&self) -> &PostStats {
+        &self.stats
     }
 }

@@ -46,7 +46,7 @@ pub struct CommentModel {
 }
 
 impl CommentModel {
-    pub fn new(db: Database) -> Self {
+    pub fn new(db: &Database) -> Self {
         Self {
             collection: db.collection(COLLECTION_COMMENT)
         }

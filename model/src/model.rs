@@ -1,15 +1,15 @@
 use std::time::Duration;
 
 use mongodb::{self, options::ClientOptions};
-use crate::error::*;
-use super::{blog::BlogModel};
+use crate::{comment::CommentModel, error::*, post::PostModel, post_data::PostDataModel};
 
 pub type PidType = u32;
 
 pub struct Model
 {
-    pub blog: super::blog::BlogModel,
-
+    pub comment: CommentModel,
+    pub post: PostModel,
+    pub post_data: PostDataModel,
 }
 
 impl Model 
@@ -28,7 +28,9 @@ impl Model
         let db = client.database(db_name);
         
         Ok(Model{
-            blog: BlogModel::new(&db)
+            post: PostModel::new(&db),
+            comment: CommentModel::new(&db),
+            post_data: PostDataModel::new(&db)
         })
     }
 }

@@ -7,4 +7,4 @@ mod comment;
 mod note;
 mod post_data;
 mod history;
-
+mod post;

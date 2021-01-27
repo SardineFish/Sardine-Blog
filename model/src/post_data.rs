@@ -15,7 +15,7 @@ pub enum Post{
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct PostStats {
-    pub like: usize,
+    pub likes: usize,
     pub views: usize,
     pub comments: usize,
 }
