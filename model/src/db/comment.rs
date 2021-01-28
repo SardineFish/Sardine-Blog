@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use bson::de;
 use chrono::Utc;
 use mongodb::{Collection, Database, bson::{self, DateTime, doc, oid::ObjectId}, options::FindOneAndUpdateOptions};
 use serde::{Serialize, Deserialize};
@@ -43,6 +44,16 @@ struct CommentCollection {
     pub comments: HashMap<PidType, Comment>,
 }
 
+impl CommentCollection {
+    pub fn new(pid: PidType) -> Self {
+        Self {
+            _id: ObjectId::new(),
+            pid,
+            comments: Default::default(),
+        }
+    }
+}
+
 pub struct CommentModel {
     collection: Collection,
 }
@@ -68,6 +79,16 @@ impl CommentModel {
         
         Ok(comment_collection.comments)
             
+    }
+
+    pub async fn init_comment(&self, pid: PidType) -> Result<()> {
+        let collection = CommentCollection::new(pid);
+
+        self.collection.insert_one(bson::to_document(&collection).unwrap(), None)
+            .await
+            .map_model_result()?;
+
+        Ok(())
     }
 
     pub async fn post(&self, root_pid: PidType, comment: Comment) -> Result<Comment> {
