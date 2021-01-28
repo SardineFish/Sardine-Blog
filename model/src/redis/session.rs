@@ -1,6 +1,6 @@
 use chrono::{DateTime, TimeZone, Utc};
 use redis::{AsyncCommands, FromRedisValue, ToRedisArgs, aio::MultiplexedConnection};
-use crate::error::*;
+use crate::{PidType, error::*};
 
 use super::redis::namespace_key;
 
@@ -12,7 +12,9 @@ pub struct SessionData {
     uid: String,
 }
 
-const NAMESPACE: &str = "session";
+const NAMESPACE_DATA: &str = "session";
+const NAMESPACE_VISITS: &str = "visit";
+
 const KEY_LAST_ACTIVE: &str = "last_active";
 const KEY_ACCESS_TOKEN: &str = "access_token";
 const KEY_UID: &str = "uid";
@@ -20,14 +22,16 @@ const KEY_UID: &str = "uid";
 pub struct Session {
     pub session_id: SessionID,
     redis: MultiplexedConnection,
-    key: String,
+    key_data: String,
+    key_visit: String,
 }
 
 impl Session {
     pub fn with_session_id(session_id: SessionID, redis: MultiplexedConnection) -> Self {
         Self{
             redis,
-            key: namespace_key(NAMESPACE, &session_id),
+            key_data: namespace_key(NAMESPACE_DATA, &session_id),
+            key_visit: namespace_key(NAMESPACE_VISITS, &session_id),
             session_id,
         }
     }
@@ -57,7 +61,7 @@ impl Session {
     }
 
     pub async fn get(&mut self) -> Result<SessionData> {
-        let (timestamp, token, uid): (i64, String, String) = self.redis.hget(&self.key, 
+        let (timestamp, token, uid): (i64, String, String) = self.redis.hget(&self.key_data, 
             &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID])
             .await
             .map_model_result()?;
@@ -72,7 +76,7 @@ impl Session {
     pub async fn set(&mut self, data: &SessionData) -> Result<()> {
         let timestamp = data.last_active.timestamp_millis();
         redis::cmd("HSET")
-            .arg(&self.key)
+            .arg(&self.key_data)
             .arg(KEY_LAST_ACTIVE).arg(timestamp)
             .arg(KEY_ACCESS_TOKEN).arg(&data.access_token)
             .arg(KEY_UID).arg(&data.uid)
@@ -81,14 +85,32 @@ impl Session {
             .map_model_result()
     }
 
+    pub async fn add_visit(&mut self, pid: PidType) -> Result<()> {
+        self.redis.sadd(&self.key_visit, pid)
+            .await
+            .map_model_result()
+    }
+
+    pub async fn check_visit(&mut self, pid: PidType) -> Result<bool> {
+        self.redis.sismember(&self.key_visit, pid)
+            .await
+            .map_model_result()
+    }
+
+    pub async fn reset_visit(&mut self) -> Result<()> {
+        self.redis.del(&self.key_visit)
+            .await
+            .map_model_result()
+    }
+
     async fn get_field<T: FromRedisValue>(&mut self, field: &str) -> Result<T> {
-        self.redis.hget(&self.key, field)
+        self.redis.hget(&self.key_data, field)
             .await
             .map_model_result()
     }
 
     async fn set_field<T : ToRedisArgs + Send + Sync>(&mut self, field: &str, value: T) -> Result<()> {
-        self.redis.hset(&self.key, field, value)
+        self.redis.hset(&self.key_data, field, value)
             .await
             .map_model_result()?;
         Ok(())
