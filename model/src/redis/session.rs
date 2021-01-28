@@ -31,17 +31,17 @@ impl Session {
             session_id,
         }
     }
-    pub async fn last_active(&mut self) -> Result<DateTime<Utc>> {
-        let timestamp = self.get_field(KEY_LAST_ACTIVE).await?;
+    pub async fn last_active(&mut self) -> Result<Option<DateTime<Utc>>> {
+        let timestamp: Option<i64> = self.get_field::<Option<i64>>(KEY_LAST_ACTIVE).await?;
 
-        Ok(Utc.timestamp_millis(timestamp))
+        Ok(timestamp.map(|timestamp| Utc.timestamp_millis(timestamp)))
     }
     pub async fn set_last_active(&mut self, time: &DateTime<Utc>) -> Result<()> {
         let timestamp = time.timestamp_millis();
         self.set_field(KEY_LAST_ACTIVE, timestamp).await
     }
 
-    pub async fn access_token(&mut self) -> Result<String> {
+    pub async fn access_token(&mut self) -> Result<Option<String>> {
         self.get_field(KEY_ACCESS_TOKEN).await
     }
 
@@ -49,7 +49,7 @@ impl Session {
         self.set_field(KEY_ACCESS_TOKEN, value).await
     }
 
-    pub async fn uid(&mut self)->Result<String> {
+    pub async fn uid(&mut self)->Result<Option<String>> {
         self.get_field(KEY_UID).await
     }
     pub async fn set_uid(&mut self, value: &str) -> Result<()> {
