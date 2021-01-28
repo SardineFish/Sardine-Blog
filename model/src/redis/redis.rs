@@ -1,14 +1,26 @@
 use super::{access_cache::AccessCache, session::{Session, SessionID}};
 use crate::error::*;
 
+pub struct RedisOptions {
+    pub addr: String,
+}
+
+impl Default for RedisOptions {
+    fn default() -> Self {
+        Self {
+            addr: "redis://localhost".to_string()
+        }
+    }
+}
+
 pub struct RedisCache {
     _client: redis::Client,
     redis: redis::aio::MultiplexedConnection,
 }
 
 impl RedisCache {
-    pub async fn open(addr: &str) -> Result<Self> {
-        let client = redis::Client::open(addr)
+    pub async fn open(options: RedisOptions) -> Result<Self> {
+        let client = redis::Client::open(options.addr.as_str())
             .map_model_result()?;
 
         let connection = client.get_multiplexed_async_connection()
