@@ -8,14 +8,14 @@ use mongodb::{
 use serde::{Deserialize, Serialize};
 
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum DocType {
     PlainText,
     HTML,
     Markdown,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Blog {
     pub(crate) _id: ObjectId,
     pub pid: PidType,
@@ -29,7 +29,7 @@ pub struct Blog {
     pub stats: PostStats,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct BlogContent {
     pub title: String,
     pub tags: Vec<String>,
@@ -39,17 +39,17 @@ pub struct BlogContent {
 }
 
 impl Blog {
-    pub fn new(pid: PidType, author: &User) -> Self {
+    pub fn new(pid: PidType, author: &User, content: BlogContent) -> Self {
         Self {
             pid,
             time: Utc::now().into(),
             author: author.info.name.clone(),
             uid: author.uid.clone(),
+            title: content.title,
+            tags: content.tags,
+            doc_type: content.doc_type,
+            doc: content.doc,
             _id: Default::default(),
-            title: Default::default(),
-            tags: Default::default(),
-            doc_type: DocType::PlainText,
-            doc: Default::default(),
             stats: Default::default(),
         }
     }

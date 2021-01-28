@@ -13,7 +13,7 @@ pub enum Post{
     Comment(ObjectId),
 }
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct PostStats {
     pub likes: usize,
     pub views: usize,

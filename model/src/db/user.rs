@@ -6,18 +6,18 @@ use crate::error::*;
 
 const COLLECTION_USER: &str = "user";
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum HashMethod {
     SHA256,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct AuthenticationInfo {
     pub password_hash: String,
     pub salt: String,
     pub method: HashMethod,
 }
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct UserInfo{
     pub email: String,
     pub name: String,
@@ -25,7 +25,7 @@ pub struct UserInfo{
     pub avatar: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum Access {
     Root = 32,
     Owner = 16,
@@ -36,7 +36,7 @@ pub enum Access {
     Forbidden = 0,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct User {
     pub uid: String,
     pub access: Access,

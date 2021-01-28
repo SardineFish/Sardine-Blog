@@ -3,7 +3,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::{blog::DocType, model::PidType, post::Post, post_data::PostStats};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Note {
     pub(crate) _id: ObjectId,
     pub pid: PidType,

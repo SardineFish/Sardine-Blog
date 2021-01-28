@@ -63,17 +63,17 @@ impl PostModel {
         bson::from_document(doc).map_model_result()
     }
 
-    pub async fn post<T: Post + Serialize>(&self, post: T) -> Result<T> {
-        let doc = bson::to_document(&post).map_model_result()?;
+    pub async fn post<T: Post + Serialize>(&self, post: &T) -> Result<()> {
+        let doc = bson::to_document(post).map_model_result()?;
         self.collection.insert_one(doc, None)
             .await
             .map_model_result()?;
-        Ok(post)
+        Ok(())
     }
 
-    pub async fn update<T: Serialize, P: Post + DeserializeOwned>(&self, pid: PidType, data: T) -> Result<P> {
+    pub async fn update<T: Serialize, P: Post + DeserializeOwned>(&self, pid: PidType, data: &T) -> Result<P> {
         let update = doc! {
-            "$set": bson::to_bson(&data).map_model_result()?
+            "$set": bson::to_bson(data).map_model_result()?
         };
         let doc = self.collection.find_one_and_update(query(pid), update, self.update_options.clone())
             .await

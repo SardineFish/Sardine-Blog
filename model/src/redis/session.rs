@@ -19,15 +19,15 @@ const KEY_LAST_ACTIVE: &str = "last_active";
 const KEY_ACCESS_TOKEN: &str = "access_token";
 const KEY_UID: &str = "uid";
 
-pub struct Session {
-    pub session_id: SessionID,
+pub struct Session<'s> {
+    pub session_id: &'s SessionID,
     redis: MultiplexedConnection,
     key_data: String,
     key_visit: String,
 }
 
-impl Session {
-    pub fn with_session_id(session_id: SessionID, redis: MultiplexedConnection) -> Self {
+impl<'s> Session<'s> {
+    pub fn with_session_id(session_id: &'s SessionID, redis: MultiplexedConnection) -> Self {
         Self{
             redis,
             key_data: namespace_key(NAMESPACE_DATA, &session_id),
@@ -85,7 +85,7 @@ impl Session {
             .map_model_result()
     }
 
-    pub async fn add_visit(&mut self, pid: PidType) -> Result<()> {
+    pub async fn add_visit(&mut self, pid: PidType) -> Result<bool> {
         self.redis.sadd(&self.key_visit, pid)
             .await
             .map_model_result()

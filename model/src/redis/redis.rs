@@ -35,7 +35,7 @@ impl RedisCache {
     pub fn access(&self) -> AccessCache {
         AccessCache::new(self.redis.clone())
     }
-    pub fn session(&self, session_id: SessionID) -> Session {
+    pub fn session<'s>(&self, session_id: &'s SessionID) -> Session<'s> {
         Session::with_session_id(session_id, self.redis.clone())
     }
 }

@@ -13,4 +13,5 @@ pub use comment::{Comment};
 pub use note::{Note};
 pub use post_data::{PostStats};
 pub use history::{History, HistoryData, Operation};
+pub use post::{Post};
 pub use self::redis::{RedisCache, RedisOptions, SessionID};

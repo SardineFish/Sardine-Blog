@@ -52,7 +52,8 @@ impl HistoryModel {
         }
     }
 
-    pub async fn record(&self, history: History) -> Result<()> {
+    pub async fn record(&self, uid: &str, op: Operation, data: HistoryData) -> Result<()> {
+        let history = History::new(uid.to_string(), op, data);
         self.collection.insert_one(bson::to_document(&history).unwrap(), None)
             .await
             .map_model_result()?;
