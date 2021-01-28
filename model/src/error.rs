@@ -1,4 +1,5 @@
 use mongodb::{bson, error::Error as MongoError};
+use redis::RedisError;
 
 use crate::model::PidType;
 
@@ -9,6 +10,7 @@ pub enum Error
     UserNotFound(String),
     DeserializeError(bson::de::Error),
     SerializeError(bson::ser::Error),
+    RedisError(RedisError),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -29,6 +31,12 @@ impl From<bson::de::Error> for Error {
 impl From<bson::ser::Error> for Error {
     fn from(err: bson::ser::Error) -> Self {
         Error::SerializeError(err)
+    }
+}
+
+impl From<RedisError> for Error {
+    fn from(err: RedisError) -> Self {
+        Error::RedisError(err)
     }
 }
 

@@ -1,13 +1,16 @@
 
-mod model;
+mod db;
 mod error;
-mod user;
-mod blog;
-mod comment;
-mod note;
-mod post_data;
-mod history;
-mod post;
+mod redis;
+
+use db::*;
 
 pub use model::{PidType, Model};
 pub use error::{Error, Result};
+pub use blog::{Blog, BlogContent};
+pub use user::{User, UserInfo, Access, AuthenticationInfo, HashMethod};
+pub use comment::{Comment};
+pub use note::{Note};
+pub use post_data::{PostStats};
+pub use history::{History, HistoryData, Operation};
+pub use self::redis::RedisCache;

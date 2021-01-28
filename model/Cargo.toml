@@ -11,3 +11,4 @@ mongodb = "1.1.1"
 chrono = "0.4.19"
 tokio = { version = "0.2.23", features = ["stream", "full"] }
 serde = "1.0.123"
+redis = { version = "0.19.0", features = ["connection-manager", "tokio-comp"]}
