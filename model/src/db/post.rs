@@ -1,17 +1,21 @@
 use std::usize;
 
 use bson::{Document, doc};
+use chrono::Utc;
 use mongodb::{Collection, Database, bson, options::{FindOneAndUpdateOptions, FindOptions}};
 use serde::{Serialize, de::DeserializeOwned};
 use tokio::stream::StreamExt;
 
-use crate::{error::*, model::PidType, post_data::PostStats};
+use crate::{PostType, error::*, model::PidType, post_data::PostStats};
 
 const COLLECTION_POST: &str = "post";
 
 pub trait Post {
     fn pid(&self) -> PidType;
     fn stats(&self) -> &PostStats;
+    fn author(&self) -> &str;
+    fn time(&self) -> chrono::DateTime<Utc>;
+    fn post_type(&self) -> PostType;
 }
 
 pub struct PostModel {

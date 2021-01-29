@@ -1,9 +1,15 @@
-use model::Error as ModelError;
+use model::{Error as ModelError, PidType};
 
 pub enum Error {
     InvalidParams(String),
     DataNotFound(ModelError),
     InternalModelError(ModelError),
+}
+
+impl Error {
+    pub fn post_not_found(pid: PidType) -> Self {
+        Error::DataNotFound(model::Error::PostNotFound(pid))
+    }
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

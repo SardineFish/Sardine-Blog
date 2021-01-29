@@ -11,7 +11,7 @@ pub use blog::{Blog, BlogContent};
 pub use user::{User, UserInfo, Access, AuthenticationInfo, HashMethod};
 pub use comment::{Comment};
 pub use note::{Note};
-pub use post_data::{PostStats};
+pub use post_data::{PostStats, PostData, PostType};
 pub use history::{History, HistoryData, Operation};
 pub use post::{Post};
 pub use self::redis::{RedisCache, RedisOptions, SessionID};

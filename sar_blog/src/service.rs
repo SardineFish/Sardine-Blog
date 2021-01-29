@@ -10,8 +10,8 @@ pub struct DBModel<'m> {
 }
 
 pub struct Service {
-    model: Model,
-    redis: RedisCache
+    pub(crate) model: Model,
+    pub(crate) redis: RedisCache
 }
 
 impl Service {
@@ -27,7 +27,7 @@ impl Service {
     }
 
     pub fn comment(&self) -> CommentService {
-        CommentService::new(&self.model)
+        CommentService::new(&self)
     }
 
     pub fn note(&self) -> NoteService {

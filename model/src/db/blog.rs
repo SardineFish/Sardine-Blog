@@ -1,4 +1,4 @@
-use crate::{model::{PidType}, post::Post, post_data::{PostStats}, user::User};
+use crate::{PostType, model::{PidType}, post::Post, post_data::{PostStats}, user::User};
 use chrono::{Utc};
 use mongodb::{bson::doc};
 use mongodb::{
@@ -61,5 +61,14 @@ impl Post for Blog {
     }
     fn stats(&self) -> &PostStats {
         &self.stats
+    }
+    fn author(&self) -> &str {
+        &self.author
+    }
+    fn time(&self) -> chrono::DateTime<Utc> {
+        self.time.into()
+    }
+    fn post_type(&self) -> PostType {
+        PostType::Blog(self._id.clone())
     }
 }

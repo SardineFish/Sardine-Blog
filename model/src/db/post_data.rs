@@ -1,16 +1,18 @@
 use mongodb::{Collection, Database, bson::{self, DateTime, doc, oid::ObjectId}};
 use serde::{Serialize, Deserialize};
 
-use crate::{ model::PidType};
+use crate::{Post, model::PidType};
 use crate::error::*;
+
+use super::post;
 
 const COLLECTION_POST_DATA: &str = "post_data";
 
 #[derive(Serialize, Deserialize)]
-pub enum Post{
+pub enum PostType{
     Blog(ObjectId),
     Note(ObjectId),
-    Comment(ObjectId),
+    Comment(ObjectId, PidType),
 }
 
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -26,7 +28,19 @@ pub struct PostData {
     pub pid: PidType,
     pub author: String,
     pub time: DateTime,
-    pub post: Post,
+    pub post: PostType,
+}
+
+impl<T> From<T> for PostData where T : Post {
+    fn from(post: T) -> Self {
+        Self {
+            _id: ObjectId::new(),
+            pid: post.pid(),
+            author: post.author().to_string(),
+            time: post.time().into(),
+            post: post.post_type(),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -78,5 +92,25 @@ impl PostDataModel {
 
         let metadata: PostMetaData = bson::from_document(result).expect("Failed to deserialize metadata.");
         Ok(metadata.posts)
+    }
+
+    pub async fn add_post<T: Post>(&self, post: T) -> Result<()> {
+        let post_data = PostData::from(post);
+        self.collection.insert_one(bson::to_document(&post_data).map_model_result()?, None)
+            .await
+            .map_model_result()?;
+        Ok(())
+    }
+
+    pub async fn get_by_pid(&self, pid: PidType) -> Result<PostData> {
+        let query = doc!{
+            "_id": pid
+        };
+        let doc = self.collection.find_one(query, None)
+            .await
+            .map_model_result()?
+            .ok_or(Error::PostNotFound(pid))?;
+        
+        bson::from_document(doc).map_model_result()
     }
 }
