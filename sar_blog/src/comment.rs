@@ -104,12 +104,12 @@ impl<'m> CommentService<'m> {
 
     pub async fn post(&self, comment_to: PidType, text: &str, session_id: &SessionID, author_info: &AnonymousUserInfo) -> Result<PidType> {
         let post_data = self.model.post_data.get_by_pid(comment_to).await.map_service_err()?;
-        let pid = self.model.post_data.new_pid().await.map_service_err()?;
         let uid = self.redis.session(&session_id).uid().await.map_service_err()?;
         let user = match &uid {
             Some(uid) => self.model.user.get_by_uid(uid).await.map_service_err()?,
             None => self.service.user().get_anonymous(author_info).await?
         };
+        let pid = self.model.post_data.new_pid().await.map_service_err()?;
 
         let root_pid = match post_data.post {
             PostType::Comment(_, pid) => pid,

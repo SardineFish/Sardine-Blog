@@ -6,8 +6,6 @@ use crate::error::*;
 
 const COLLECTION_USER: &str = "user";
 
-const DEFAULT_AVATAR: &str = "/img/decoration/unknown-user.png";
-
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum HashMethod {

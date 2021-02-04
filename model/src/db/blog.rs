@@ -8,7 +8,7 @@ use mongodb::{
 use serde::{Deserialize, Serialize};
 
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 pub enum DocType {
     PlainText,
     HTML,

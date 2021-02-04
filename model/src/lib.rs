@@ -7,7 +7,7 @@ use db::*;
 
 pub use model::{PidType, Model};
 pub use error::{Error, Result};
-pub use blog::{Blog, BlogContent};
+pub use blog::{Blog, BlogContent, DocType};
 pub use user::{User, UserInfo, Access, AuthenticationInfo, HashMethod, AnonymousUserInfo};
 pub use comment::{Comment};
 pub use note::{Note};

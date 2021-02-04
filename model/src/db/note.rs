@@ -2,7 +2,7 @@ use chrono::Utc;
 use mongodb::{ bson::{DateTime, oid::ObjectId}};
 use serde::{Serialize, Deserialize};
 
-use crate::{PostType, blog::DocType, model::PidType, post::Post, post_data::PostStats};
+use crate::{PostType, User, blog::DocType, model::PidType, post::Post, post_data::PostStats};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Note {
@@ -14,6 +14,21 @@ pub struct Note {
     pub doc_type: DocType,
     pub doc: String,
     pub stats: PostStats,
+}
+
+impl Note {
+    pub fn new(pid: PidType, author: &User, doc_type: DocType, content: &str) -> Self {
+        Self {
+            pid,
+            author: author.info.name.clone(),
+            uid: author.uid.clone(),
+            doc_type,
+            doc: content.to_string(),
+            time: Utc::now().into(),
+            stats: Default::default(),
+            _id: Default::default(),
+        }
+    }
 }
 
 impl Post for Note {

@@ -32,7 +32,7 @@ impl Service {
     }
 
     pub fn note(&self) -> NoteService {
-        NoteService::new(&self.model)
+        NoteService::new(&self)
     }
     pub fn user(&self) -> UserService {
         UserService::new(&self)
