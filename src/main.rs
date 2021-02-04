@@ -1,4 +1,13 @@
-use actix_web::{self, App, HttpServer};
+#![feature(trait_alias)]
+
+use actix_web::{self, App, HttpServer, web, get};
+
+mod controller;
+mod middleware;
+mod misc;
+
+use misc::error;
+use misc::response;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

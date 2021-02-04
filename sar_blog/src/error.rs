@@ -1,5 +1,8 @@
+use std::fmt;
+
 use model::{Error as ModelError, PidType};
 
+#[derive(Debug)]
 pub enum Error {
     InvalidParams(String),
     DataNotFound(ModelError),
@@ -9,8 +12,23 @@ pub enum Error {
 }
 
 impl Error {
+    pub fn code(&self) -> u64 {
+        match self {
+            Error::InvalidParams(_) => 0x0100,
+            Error::DataNotFound(err) => 0x0200 | err.code(),
+            Error::InternalModelError(err) => 0x0300 | err.code(),
+            Error::Unauthorized => 0x0400,
+            Error::PasswordIncorrect => 0x0500,
+        }
+    }
     pub fn post_not_found(pid: PidType) -> Self {
         Error::DataNotFound(model::Error::PostNotFound(pid))
+    }
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Service Error")
     }
 }
 

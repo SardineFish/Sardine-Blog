@@ -1,8 +1,11 @@
+use std::fmt;
+
 use mongodb::{bson, error::Error as MongoError};
 use redis::RedisError;
 
 use crate::model::PidType;
 
+#[derive(Debug)]
 pub enum Error
 {
     DBError(MongoError),
@@ -12,6 +15,27 @@ pub enum Error
     SerializeError(bson::ser::Error),
     RedisError(RedisError),
 }
+
+impl Error {
+    pub fn code(&self) -> u64 {
+        match self {
+            Error::DBError(_) => 0x01,
+            Error::PostNotFound(_) => 0x02,
+            Error::UserNotFound(_) => 0x03,
+            Error::DeserializeError(_) => 0x04,
+            Error::SerializeError(_) => 0x05,
+            Error::RedisError(_) => 0x06,
+        }
+    }
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Internal model error.")
+    }
+}
+
+
 
 pub type Result<T> = std::result::Result<T, Error>;
 
