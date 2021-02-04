@@ -6,10 +6,15 @@ use super::redis::namespace_key;
 
 pub type SessionID = String;
 
+pub struct SessionAuthInfo {
+    pub token: String,
+    pub uid: String,
+    pub salt: String,
+}
+
 pub struct SessionData {
-    last_active: DateTime<Utc>,
-    access_token: String,
-    uid: String,
+    pub last_active: DateTime<Utc>,
+    pub auth_info: SessionAuthInfo,
 }
 
 const NAMESPACE_DATA: &str = "session";
@@ -18,6 +23,7 @@ const NAMESPACE_VISITS: &str = "visit";
 const KEY_LAST_ACTIVE: &str = "last_active";
 const KEY_ACCESS_TOKEN: &str = "access_token";
 const KEY_UID: &str = "uid";
+const KEY_SALT: &str = "salt";
 
 pub struct Session<'s> {
     pub session_id: &'s SessionID,
@@ -60,17 +66,31 @@ impl<'s> Session<'s> {
         self.set_field(KEY_UID, value).await
     }
 
-    pub async fn get(&mut self) -> Result<SessionData> {
-        let (timestamp, token, uid): (i64, String, String) = self.redis.hget(&self.key_data, 
-            &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID])
+    pub async fn salt(&mut self) -> Result<Option<String>> {
+        self.get_field(KEY_SALT).await
+    }
+    pub async fn set_salt(&mut self, value: &str) -> Result<()> {
+        self.set_field(KEY_SALT, value).await
+    }
+
+    pub async fn get(&mut self) -> Result<Option<SessionData>> {
+        let (timestamp, token, uid, salt): (Option<i64>, Option<String>, Option<String>, Option<String>) = self.redis.hget(&self.key_data, 
+            &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID, KEY_SALT])
             .await
             .map_model_result()?;
-        
-        Ok(SessionData {
-            last_active: Utc.timestamp_millis(timestamp),
-            access_token: token,
-            uid
-        })
+
+        if let (Some(timestamp), Some(token), Some(uid), Some(salt)) = (timestamp, token, uid, salt) {
+            Ok(Some(SessionData {
+                last_active: Utc.timestamp_millis(timestamp),
+                auth_info: SessionAuthInfo {
+                    uid,
+                    token,
+                    salt,
+                }
+            }))
+        } else {
+            Ok(None)
+        }
     }
 
     pub async fn set(&mut self, data: &SessionData) -> Result<()> {
@@ -78,8 +98,8 @@ impl<'s> Session<'s> {
         redis::cmd("HSET")
             .arg(&self.key_data)
             .arg(KEY_LAST_ACTIVE).arg(timestamp)
-            .arg(KEY_ACCESS_TOKEN).arg(&data.access_token)
-            .arg(KEY_UID).arg(&data.uid)
+            .arg(KEY_ACCESS_TOKEN).arg(&data.auth_info.token)
+            .arg(KEY_UID).arg(&data.auth_info.uid)
             .query_async(&mut self.redis)
             .await
             .map_model_result()

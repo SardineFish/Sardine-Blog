@@ -4,8 +4,6 @@ use serde::{Serialize, Deserialize};
 use crate::{Post, model::PidType};
 use crate::error::*;
 
-use super::post;
-
 const COLLECTION_POST_DATA: &str = "post_data";
 
 #[derive(Serialize, Deserialize)]

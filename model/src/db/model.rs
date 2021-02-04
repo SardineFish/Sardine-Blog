@@ -1,25 +1,10 @@
 use std::time::Duration;
 
 use mongodb::{self, options::ClientOptions};
+use options::ServiceOptions;
 use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostModel, post_data::PostDataModel, user::UserModel};
 
 pub type PidType = u32;
-
-pub struct DBOptions {
-    pub addr: String,
-    pub db_name: String,
-    pub timeout_ms: u64,
-}
-
-impl Default for DBOptions {
-    fn default() -> Self {
-        Self {
-            addr: "mongodb://localhost".to_string(),
-            db_name: "sar_blog".to_string(),
-            timeout_ms: 100,
-        }
-    }
-}
 
 pub struct Model
 {
@@ -32,12 +17,12 @@ pub struct Model
 
 impl Model 
 {
-    pub async fn open(options: DBOptions) -> Result<Self> {
-        let mut opt = ClientOptions::parse(&options.addr)
+    pub async fn open(options: &ServiceOptions) -> Result<Self> {
+        let mut opt = ClientOptions::parse(&options.db_addr)
             .await
             .map_model_result()?;
-        opt.connect_timeout = Some(Duration::from_millis(options.timeout_ms));
-        opt.server_selection_timeout = Some(Duration::from_millis(options.timeout_ms));
+        opt.connect_timeout = Some(Duration::from_millis(options.db_timeout));
+        opt.server_selection_timeout = Some(Duration::from_millis(options.db_timeout));
 
         let client = mongodb::Client::with_options(opt)
             .map_model_result()?;

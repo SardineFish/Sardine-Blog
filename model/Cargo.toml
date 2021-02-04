@@ -7,8 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+options = { path = "../options" }
 mongodb = "1.1.1"
 chrono = "0.4.19"
 tokio = { version = "0.2.23", features = ["stream", "full"] }
 serde = "1.0.123"
 redis = { version = "0.19.0", features = ["connection-manager", "tokio-comp"]}
+md5 = "0.7.0"

@@ -796,6 +796,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "md5"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
+
+[[package]]
 name = "memchr"
 version = "2.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -909,7 +915,9 @@ name = "model"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "md5",
  "mongodb",
+ "options",
  "redis",
  "serde",
  "tokio 0.2.24",
@@ -1027,6 +1035,13 @@ name = "opaque-debug"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
+
+[[package]]
+name = "options"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "os_info"

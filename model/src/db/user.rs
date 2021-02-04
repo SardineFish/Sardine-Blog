@@ -6,8 +6,12 @@ use crate::error::*;
 
 const COLLECTION_USER: &str = "user";
 
+const DEFAULT_AVATAR: &str = "/img/decoration/unknown-user.png";
+
+
 #[derive(Serialize, Deserialize, Clone)]
 pub enum HashMethod {
+    NoLogin,
     SHA256,
 }
 
@@ -19,11 +23,13 @@ pub struct AuthenticationInfo {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub struct UserInfo{
-    pub email: String,
     pub name: String,
-    pub url: String,
+    pub email: Option<String>,
+    pub url: Option<String>,
     pub avatar: String,
 }
+
+pub type AnonymousUserInfo = UserInfo;
 
 #[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum Access {
@@ -42,6 +48,51 @@ pub struct User {
     pub access: Access,
     pub info: UserInfo,
     pub auth_info: AuthenticationInfo,
+}
+
+impl User {
+    pub fn registered_user(uid: &str, info: &UserInfo, auth: &AuthenticationInfo) -> Self {
+        Self {
+            uid: uid.to_string(),
+            auth_info: auth.clone(),
+            access: Access::Registered,
+            info: info.clone(),
+        }
+    }
+
+    pub fn root(auth: AuthenticationInfo) -> Self {
+        Self {
+            uid: "root".to_string(),
+            auth_info: auth,
+            access: Access::Root,
+            info: UserInfo {
+                name: "Root User".to_string(),
+                email: None,
+                url: None,
+                avatar: String::default(),
+            }
+        }
+    }
+
+    pub fn anonymous(info: &AnonymousUserInfo) -> Self {
+        let uid: String = if let Some(email) = &info.email {
+            format!("{:x}", md5::compute(email)) 
+        } else {
+            format!("{:X}", md5::compute(&info.name))
+        };
+
+        Self {
+            uid,
+            info: info.clone(),
+            access: Access::Anonymous,
+            auth_info: AuthenticationInfo {
+                method: HashMethod::NoLogin,
+                salt: String::default(),
+                password_hash: String::default(),
+            },
+        }
+    }
+
 }
 
 pub struct UserModel {
@@ -67,6 +118,13 @@ impl UserModel {
             "email": email,
         };
         self.query_user(query).await?.ok_or(Error::UserNotFound(email.to_string()))
+    }
+
+    pub async fn add(&self, user: &User) -> Result<()> {
+        self.collection.insert_one(bson::to_document(user).map_model_result()?, None)
+            .await
+            .map_model_result()?;
+        Ok(())
     }
 
     pub async fn update_password(&self, uid: &str, auth_info: AuthenticationInfo) -> Result<User> {
