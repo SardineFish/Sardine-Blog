@@ -11,3 +11,5 @@ model = { path = "../model" }
 serde = "1.0.123"
 pulldown-cmark = "0.8.0"
 chrono = "0.4.19"
+sha2 = "0.9.3"
+options = { path = "../options" }

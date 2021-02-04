@@ -1,4 +1,5 @@
-use model::{DBOptions, Model, RedisCache, RedisOptions};
+use model::{ Model, RedisCache};
+use options::ServiceOptions;
 
 use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, user::UserService};
 
@@ -15,10 +16,10 @@ pub struct Service {
 }
 
 impl Service {
-    pub async fn open(db_options: DBOptions, redis_options: RedisOptions) -> Result<Self> {
+    pub async fn open(service_options: ServiceOptions) -> Result<Self> {
         Ok(Self {
-            model: Model::open(db_options).await.map_service_err()?,
-            redis: RedisCache::open(redis_options).await.map_service_err()?,
+            model: Model::open(&service_options).await.map_service_err()?,
+            redis: RedisCache::open(&service_options).await.map_service_err()?,
         })
     }
 
@@ -34,6 +35,6 @@ impl Service {
         NoteService::new(&self.model)
     }
     pub fn user(&self) -> UserService {
-        UserService::new(&self.model)
+        UserService::new(&self)
     }
 }

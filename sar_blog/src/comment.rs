@@ -2,9 +2,9 @@ use std::{borrow::{Borrow, BorrowMut}, cell::{Ref, RefCell, RefMut}, collections
 use std::rc::Rc;
 
 use chrono::{DateTime, Utc};
-use model::{Comment, History, HistoryData, Model, PidType, PostData, PostType};
+use model::{AnonymousUserInfo, AuthenticationInfo, Comment, History, HistoryData, Model, PidType, PostData, PostType, RedisCache, SessionAuthInfo, SessionID};
 use serde::{Deserialize, Serialize, Serializer};
-use crate::{service::Service, user::AnonymousUserInfo, utils::json_datetime_format};
+use crate::{service::Service, utils::json_datetime_format};
 
 use crate::{error::*, utils};
 
@@ -81,6 +81,7 @@ impl From<Comment> for NestedComment {
 
 pub struct CommentService<'m> {
     model: &'m Model,
+    redis: &'m RedisCache,
     service: &'m Service,
 }
 
@@ -89,6 +90,7 @@ impl<'m> CommentService<'m> {
         Self{
             service: service,
             model: &service.model,
+            redis: &service.redis,
         }
     }
 
@@ -100,10 +102,14 @@ impl<'m> CommentService<'m> {
         CommentService::construct_comments(comments, pid, depth_limit)
     }
 
-    pub async fn post(&self, comment_to: PidType, text: &str, author_info: &AnonymousUserInfo) -> Result<PidType> {
+    pub async fn post(&self, comment_to: PidType, text: &str, session_id: &SessionID, author_info: &AnonymousUserInfo) -> Result<PidType> {
         let post_data = self.model.post_data.get_by_pid(comment_to).await.map_service_err()?;
         let pid = self.model.post_data.new_pid().await.map_service_err()?;
-        let user = self.service.user().get_anonymous(&author_info).await?;
+        let uid = self.redis.session(&session_id).uid().await.map_service_err()?;
+        let user = match &uid {
+            Some(uid) => self.model.user.get_by_uid(uid).await.map_service_err()?,
+            None => self.service.user().get_anonymous(author_info).await?
+        };
 
         let root_pid = match post_data.post {
             PostType::Comment(_, pid) => pid,

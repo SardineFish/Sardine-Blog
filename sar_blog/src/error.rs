@@ -4,6 +4,8 @@ pub enum Error {
     InvalidParams(String),
     DataNotFound(ModelError),
     InternalModelError(ModelError),
+    Unauthorized,
+    PasswordIncorrect,
 }
 
 impl Error {
