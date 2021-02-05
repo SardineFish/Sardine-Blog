@@ -1,0 +1,51 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Redis",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "redis-server",
+                "./redis.conf"
+            ],
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/data/redis"
+            }
+        },
+        {
+            "label": "Start MongoDB",
+            "type": "shell",
+            "command": "mongod",
+            "args": [
+                "--dbpath",
+                "${workspaceFolder}/data/db"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "type": "cargo",
+            "command": "check",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "label": "rust: cargo check"
+        },
+        {
+            "type": "cargo",
+            "command": "run",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "label": "rust: cargo run"
+        }
+    ]
+}
