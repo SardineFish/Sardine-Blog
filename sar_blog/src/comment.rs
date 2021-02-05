@@ -61,7 +61,7 @@ impl Serialize for NestedCommentRef {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
             S: Serializer {
-        self.serialize(serializer)
+        self.borrow().serialize(serializer)
     }
 }
 
@@ -128,7 +128,7 @@ impl<'m> CommentService<'m> {
         Ok(pid)
     }
 
-    pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<Comment>> {
+    pub async fn delete(&self, pid: PidType) -> Result<Option<Comment>> {
         let post_data = self.model.post_data.get_by_pid(pid).await.map_service_err()?;
         if let PostType::Comment(_, root_pid) = post_data.post {
             let comment = self.model.comment.delete(root_pid, pid).await.map_service_err()?;

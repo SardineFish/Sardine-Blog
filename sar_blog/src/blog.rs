@@ -6,7 +6,7 @@ use crate::{Service, error::*, utils};
 pub struct BlogService<'m> {
     service: &'m Service,
     model: &'m Model,
-    redis: &'m RedisCache
+    _redis: &'m RedisCache
 }
 
 pub struct BlogPreview {
@@ -38,7 +38,7 @@ impl<'m> BlogService<'m> {
         Self{
             service,
             model: &service.model,
-            redis: &service.redis,
+            _redis: &service.redis,
         }
     }
 

@@ -5,6 +5,8 @@ mod comment;
 mod post_data;
 mod error;
 mod service;
+
+#[allow(dead_code)]
 mod utils;
 mod session;
 

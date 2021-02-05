@@ -3,10 +3,6 @@ use model::{SessionAuthInfo, Model, RedisCache, SessionID};
 use sha2::{Digest, Sha256};
 use crate::{error::*, service::Service};
 
-pub struct LoginData {
-
-}
-
 pub struct UserService<'m> {
     model: &'m Model,
     redis: &'m RedisCache,
@@ -71,7 +67,7 @@ impl<'m> UserService<'m> {
             Ok(user) => user,
         };
 
-        let hashFunc: HashFunc = match &user.auth_info.method {
+        let hash_func: HashFunc = match &user.auth_info.method {
             model::HashMethod::SHA256 => sha256,
             model::HashMethod::NoLogin => return Err(Error::PasswordIncorrect),
         };
@@ -82,7 +78,7 @@ impl<'m> UserService<'m> {
             .ok_or(Error::PasswordIncorrect)?;
 
 
-        let server_pwd_hash = hashFunc(format!("{}{}", user.auth_info.password_hash, salt).as_str());
+        let server_pwd_hash = hash_func(format!("{}{}", user.auth_info.password_hash, salt).as_str());
         if server_pwd_hash == user_pwd_hash {
             Ok(user)
         } else {
