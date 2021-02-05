@@ -59,6 +59,10 @@ impl<T: Serialize> Response<T> {
             _ => Err(actix_web::error::ErrorInternalServerError("Failed to construct service request"))
         }
     }
+    pub async fn run<R : Serialize, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R> {
+        let result = func.await;
+        Response::<R>::from(result)
+    }
 }
 
 impl<T : Serialize> From<Result<T, Error>> for Response<T> {

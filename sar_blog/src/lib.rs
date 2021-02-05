@@ -6,10 +6,12 @@ mod post_data;
 mod error;
 mod service;
 
-#[allow(dead_code)]
-mod utils;
 mod session;
+
+#[allow(dead_code)]
+pub mod utils;
 
 pub use error::Error;
 pub use service::Service;
 pub use model;
+pub use blog::BlogPreview;

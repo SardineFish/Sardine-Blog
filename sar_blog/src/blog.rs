@@ -1,7 +1,10 @@
 
+use chrono::{DateTime, Utc};
 use model::{Blog, BlogContent, HistoryData, Model, PidType, RedisCache, SessionID};
+use serde::{Serialize};
 
 use crate::{Service, error::*, utils};
+use utils::json_datetime_format;
 
 pub struct BlogService<'m> {
     service: &'m Service,
@@ -9,9 +12,12 @@ pub struct BlogService<'m> {
     _redis: &'m RedisCache
 }
 
+#[derive(Serialize)]
 pub struct BlogPreview {
     pub pid: PidType,
     pub title: String,
+    #[serde(with="json_datetime_format")]
+    pub time: DateTime<Utc>,
     pub tags: Vec<String>,
     pub author: String,
     pub preview: String, 
@@ -26,6 +32,7 @@ impl BlogPreview {
         BlogPreview {
             pid: blog.pid,
             title: blog.title,
+            time: blog.time.into(),
             tags: blog.tags,
             author: blog.author,
             preview,
@@ -66,7 +73,7 @@ impl<'m> BlogService<'m> {
         Ok(blog)
     }
 
-    pub async fn post(&self, uid: &str, blog_content: BlogContent) -> Result<PidType> {
+    pub async fn post(&self, uid: &str, blog_content: &BlogContent) -> Result<PidType> {
         let pid = self.model.post_data.new_pid().await.map_service_err()?;
         let user = self.model.user.get_by_uid(&uid).await.map_service_err()?;
         let blog = Blog::new(pid, &user, blog_content);
@@ -78,6 +85,19 @@ impl<'m> BlogService<'m> {
             .map_service_err()?;
 
         Ok(pid)
+    }
+
+    pub async fn update(&self, pid: PidType, uid: &str, blog_content: &BlogContent) -> Result<()> {
+        let mut blog: Blog = self.model.post.get_by_pid(pid).await.map_service_err()?;
+        let user = self.model.user.get_by_uid(uid).await.map_service_err()?;
+
+        blog.update_content(&user, blog_content);
+        self.model.post.update::<Blog, Blog>(pid, &blog).await.map_service_err()?;
+        self.model.history.record(uid, model::Operation::Create, HistoryData::Blog(blog))
+            .await
+            .map_service_err()?;
+
+        Ok(())
     }
 
     pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<Blog>> {

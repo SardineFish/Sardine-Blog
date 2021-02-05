@@ -39,3 +39,17 @@ impl fmt::Display for Error {
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
+
+
+pub trait MapControllerError<T> {
+    fn map_contoller_result(self) -> Result<T>;
+}
+
+impl<T> MapControllerError<T> for std::result::Result<T, ServiceError> {
+    fn map_contoller_result(self) -> Result<T> {
+        match self {
+            Ok(x) => Ok(x),
+            Err(err) => Err(Error::ServiceError(err))
+        }
+    }
+}

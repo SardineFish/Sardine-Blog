@@ -7,7 +7,6 @@ use mongodb::{
 };
 use serde::{Deserialize, Serialize};
 
-
 #[derive(Serialize, Deserialize, Clone, Copy)]
 pub enum DocType {
     PlainText,
@@ -29,29 +28,39 @@ pub struct Blog {
     pub stats: PostStats,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct BlogContent {
     pub title: String,
     pub tags: Vec<String>,
-    pub time: bson::DateTime,
     pub doc_type: DocType,
     pub doc: String,
 }
 
 impl Blog {
-    pub fn new(pid: PidType, author: &User, content: BlogContent) -> Self {
+    pub fn new(pid: PidType, author: &User, content: &BlogContent) -> Self {
         Self {
             pid,
             time: Utc::now().into(),
             author: author.info.name.clone(),
             uid: author.uid.clone(),
-            title: content.title,
-            tags: content.tags,
+            title: content.title.clone(),
+            tags: content.tags.clone(),
             doc_type: content.doc_type,
-            doc: content.doc,
+            doc: content.doc.clone(),
             _id: Default::default(),
             stats: Default::default(),
         }
+    }
+
+    pub fn update_content(&mut self, author: &User, content: &BlogContent) {
+        self.time = Utc::now().into();
+        self.author = author.info.name.clone();
+        self.uid = author.uid.clone();
+        self.title = content.title.clone();
+        self.tags = content.tags.clone();
+        self.doc_type = content.doc_type;
+        self.doc = content.doc.clone();
+
     }
 }
 

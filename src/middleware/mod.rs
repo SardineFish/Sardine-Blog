@@ -6,5 +6,5 @@ mod session;
 mod auth;
 
 pub use error_formatter::error_formatter;
-pub use session::session;
+pub use session::{session, Session};
 pub use auth::authentication;

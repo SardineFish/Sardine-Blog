@@ -37,7 +37,7 @@ count: number
 For authorized user, simply send the content. `Markdown` and `HTML` are only available for user authorized with access `Trusted`
 ```json
 {
-    "type": "PlainText | Markdown | HTML",
+    "doc_type": "PlainText | Markdown | HTML",
     "doc": "Content",
 }
 ```
@@ -48,7 +48,8 @@ For anonymous user, send user infos additionally:
     "name": "UTF-8 text within 32 chars",
     "email": "(optional) Used for notification and Gravatar",
     "url": "(optional) Url of your website",
-    "type": "PlainText",
+    "avatar": "User avatar, normally use Gravatar by user email.",
+    "doc_type": "PlainText",
     "doc": "Content",
 }
 ```

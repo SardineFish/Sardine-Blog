@@ -1,3 +1,9 @@
+mod extractor;
+mod note;
+mod blog;
+mod comment;
+mod executor;
+
 use actix_web::web::{ServiceConfig, scope};
 
 use crate::middleware;

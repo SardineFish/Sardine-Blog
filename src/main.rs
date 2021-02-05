@@ -5,6 +5,7 @@ use actix_web::{self, App, HttpServer, get, middleware::Logger, web};
 mod controller;
 mod middleware;
 mod misc;
+use misc::error;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

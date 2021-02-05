@@ -1,4 +1,4 @@
-use std::{borrow::BorrowMut, cell::RefMut};
+use std::{cell::RefMut};
 
 use model::{AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, User, UserInfo};
 use model::{SessionAuthInfo, Model, RedisCache, SessionID};

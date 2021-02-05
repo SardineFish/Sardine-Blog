@@ -18,6 +18,9 @@ impl Session {
             session_id
         }
     }
+    pub fn id(&self) -> &String {
+        &self.session_id
+    }
 }
 
 fn map_internal_error(err: sar_blog::Error) -> actix_web::Error {
