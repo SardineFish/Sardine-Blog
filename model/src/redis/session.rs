@@ -1,5 +1,5 @@
 use chrono::{DateTime, TimeZone, Utc};
-use redis::{AsyncCommands, FromRedisValue, ToRedisArgs, aio::MultiplexedConnection};
+use redis::{AsyncCommands, FromRedisValue, RedisError, ToRedisArgs, aio::MultiplexedConnection};
 use crate::{PidType, error::*};
 
 use super::redis::namespace_key;
@@ -39,6 +39,33 @@ impl<'s> Session<'s> {
             key_data: namespace_key(NAMESPACE_DATA, &session_id),
             key_visit: namespace_key(NAMESPACE_VISITS, &session_id),
             session_id,
+        }
+    }
+    pub async fn exists(&mut self) -> Result<bool> {
+        self.redis.exists(&self.key_data).await.map_model_result()
+    }
+    pub async fn try_init(&mut self) -> Result<bool> {
+        let keys = &[&self.key_data, &self.key_visit];
+        redis::cmd("WATCH").arg(keys).query_async(&mut self.redis).await.map_model_result()?;
+        let mut p = redis::pipe();
+
+        let existed: bool = self.redis.exists(&self.key_data).await.map_model_result()?;
+        if existed {
+            redis::cmd("UNWATCH").query_async(&mut self.redis).await.map_model_result()?;
+            Ok(false)
+        } else {
+            let result: std::result::Result<(), RedisError> = p.atomic()
+                .hset(&self.key_data, KEY_LAST_ACTIVE, Utc::now().timestamp_millis())
+                .del(&self.key_visit)
+                .query_async(&mut self.redis)
+                .await;
+
+            if let Err(err) = result {
+                redis::cmd("UNWATCH").query_async(&mut self.redis).await.map_model_result()?;
+                Err(err).map_model_result()
+            } else {
+                Ok(true)
+            }
         }
     }
     pub async fn last_active(&mut self) -> Result<Option<DateTime<Utc>>> {
@@ -105,10 +132,13 @@ impl<'s> Session<'s> {
             .map_model_result()
     }
 
-    pub async fn add_visit(&mut self, pid: PidType) -> Result<bool> {
-        self.redis.sadd(&self.key_visit, pid)
+    pub async fn add_visit(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
+        let not_visited: bool = self.redis.sadd(&self.key_visit, pid)
             .await
-            .map_model_result()
+            .map_model_result()?;
+        
+        self.redis.expire(&self.key_visit, expire_seconds).await.map_model_result()?;
+        Ok(not_visited)
     }
 
     pub async fn check_visit(&mut self, pid: PidType) -> Result<bool> {
@@ -117,11 +147,11 @@ impl<'s> Session<'s> {
             .map_model_result()
     }
 
-    pub async fn reset_visit(&mut self) -> Result<()> {
-        self.redis.del(&self.key_visit)
-            .await
-            .map_model_result()
-    }
+    // pub async fn reset_visit(&mut self) -> Result<()> {
+    //     self.redis.del(&self.key_visit)
+    //         .await
+    //         .map_model_result()
+    // }
 
     async fn get_field<T: FromRedisValue>(&mut self, field: &str) -> Result<T> {
         self.redis.hget(&self.key_data, field)

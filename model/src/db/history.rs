@@ -41,6 +41,7 @@ impl History {
     }
 }
 
+#[derive(Clone)]
 pub struct HistoryModel {
     collection: Collection,
 }

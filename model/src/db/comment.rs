@@ -71,6 +71,7 @@ impl CommentCollection {
     }
 }
 
+#[derive(Clone)]
 pub struct CommentModel {
     collection: Collection,
 }

@@ -79,16 +79,15 @@ where
 }
 
 
-
 macro_rules! async_middleware {
     (pub $name: ident, $async_func: ident) => {
-        pub fn $name<S, B>() -> super::FuncMiddleware<S, AsyncMiddlewareRtn<B>>
+        pub fn $name<S, B>() -> self::FuncMiddleware<S, AsyncMiddlewareRtn<B>>
         where
             S: ServiceT<B> + 'static,
             S::Future: 'static,
             B: MessageBody
         {
-            super::FuncMiddleware::from_func(move |req, srv| {
+            self::FuncMiddleware::from_func(move |req, srv| {
                 Box::pin(async move {
                     $async_func(req, srv).await
                 })

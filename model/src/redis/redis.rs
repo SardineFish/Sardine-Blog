@@ -3,6 +3,7 @@ use options::ServiceOptions;
 use super::{access_cache::AccessCache, session::{Session, SessionID}};
 use crate::error::*;
 
+#[derive(Clone)]
 pub struct RedisCache {
     _client: redis::Client,
     redis: redis::aio::MultiplexedConnection,

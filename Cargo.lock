@@ -1556,6 +1556,7 @@ name = "options"
 version = "0.1.0"
 dependencies = [
  "serde",
+ "time 0.2.25",
 ]
 
 [[package]]
@@ -2040,10 +2041,11 @@ dependencies = [
  "futures",
  "futures-util",
  "log",
- "model",
+ "options",
  "sar_blog",
  "serde",
  "serde_json",
+ "time 0.2.25",
 ]
 
 [[package]]
@@ -2051,9 +2053,11 @@ name = "sar_blog"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "hex",
  "model",
  "options",
  "pulldown-cmark",
+ "rand 0.8.3",
  "serde",
  "sha2 0.9.3",
 ]

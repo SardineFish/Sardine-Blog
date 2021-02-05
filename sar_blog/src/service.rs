@@ -1,18 +1,19 @@
-use model::{ Model, RedisCache};
+use model::{Model, RedisCache};
 use options::ServiceOptions;
+use rand::{SeedableRng, prelude::StdRng};
 
-use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, user::UserService};
+use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, user::UserService};
 
 use crate::error::*;
+use std::{cell::RefCell};
 
-pub struct DBModel<'m> {
-    db: &'m Model,
-    redis: RedisCache,
-}
 
+#[derive(Clone)]
 pub struct Service {
     pub(crate) model: Model,
-    pub(crate) redis: RedisCache
+    pub(crate) redis: RedisCache,
+    pub(crate) rng: RefCell<StdRng>,
+    pub option: ServiceOptions,
 }
 
 impl Service {
@@ -20,11 +21,13 @@ impl Service {
         Ok(Self {
             model: Model::open(&service_options).await.map_service_err()?,
             redis: RedisCache::open(&service_options).await.map_service_err()?,
+            rng: RefCell::new(StdRng::from_entropy()),
+            option: service_options,
         })
     }
 
     pub fn blog(&self) -> BlogService {
-        BlogService::new(&self.model, &self.redis)
+        BlogService::new(self)
     }
 
     pub fn comment(&self) -> CommentService {
@@ -34,7 +37,16 @@ impl Service {
     pub fn note(&self) -> NoteService {
         NoteService::new(&self)
     }
+
     pub fn user(&self) -> UserService {
         UserService::new(&self)
+    }
+
+    pub fn post_data(&self) -> PostDataService {
+        PostDataService::new(self)
+    }
+
+    pub fn session(&self) -> SessionService {
+        SessionService::new(self)
     }
 }

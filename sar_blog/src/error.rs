@@ -7,6 +7,7 @@ pub enum Error {
     InvalidParams(String),
     DataNotFound(ModelError),
     InternalModelError(ModelError),
+    InternalServiceError(&'static str),
     Unauthorized,
     PasswordIncorrect,
 }
@@ -19,6 +20,7 @@ impl Error {
             Error::InternalModelError(err) => 0x0300 | err.code(),
             Error::Unauthorized => 0x0400,
             Error::PasswordIncorrect => 0x0500,
+            Error::InternalServiceError(_) => 0x0600,
         }
     }
     pub fn post_not_found(pid: PidType) -> Self {

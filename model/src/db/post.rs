@@ -18,6 +18,7 @@ pub trait Post {
     fn post_type(&self) -> PostType;
 }
 
+#[derive(Clone)]
 pub struct PostModel {
     collection: Collection,
     update_options: FindOneAndUpdateOptions,

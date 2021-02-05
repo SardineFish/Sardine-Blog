@@ -93,6 +93,7 @@ impl User {
 
 }
 
+#[derive(Clone)]
 pub struct UserModel {
     collection: Collection,
 }

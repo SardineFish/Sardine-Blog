@@ -47,6 +47,7 @@ struct PostMetaData {
     pub posts: PidType,
 }
 
+#[derive(Clone)]
 pub struct PostDataModel {
     collection: Collection,
     meta_id: ObjectId,

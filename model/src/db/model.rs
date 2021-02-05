@@ -6,6 +6,7 @@ use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostMo
 
 pub type PidType = u32;
 
+#[derive(Clone)]
 pub struct Model
 {
     pub user: UserModel,

@@ -1,11 +1,10 @@
-use std::ops::Add;
 
-use chrono::{Duration, Utc};
-use model::{Blog, BlogContent, History, HistoryData, Model, PidType, Post, RedisCache, SessionID};
+use model::{Blog, BlogContent, HistoryData, Model, PidType, RedisCache, SessionID};
 
-use crate::{error::*, service::DBModel, utils, visit::update_visit_count};
+use crate::{Service, error::*, utils};
 
 pub struct BlogService<'m> {
+    service: &'m Service,
     model: &'m Model,
     redis: &'m RedisCache
 }
@@ -35,10 +34,11 @@ impl BlogPreview {
 }
 
 impl<'m> BlogService<'m> {
-    pub fn new(model: &'m Model, redis: &'m RedisCache) -> Self {
+    pub fn new(service: &'m Service) -> Self {
         Self{
-            model,
-            redis
+            service,
+            model: &service.model,
+            redis: &service.redis,
         }
     }
 
@@ -59,7 +59,7 @@ impl<'m> BlogService<'m> {
             .await
             .map_service_err()?;
 
-        blog.stats.views = update_visit_count(&self.model, &self.redis, &blog, session_id)
+        blog.stats.views = self.service.post_data().visit(&blog, &session_id)
             .await
             .map_service_err()?;
 

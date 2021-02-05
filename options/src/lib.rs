@@ -1,4 +1,6 @@
+mod json_duration_format;
 use serde::{Serialize, Deserialize};
+use time::Duration;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceOptions {
@@ -8,6 +10,10 @@ pub struct ServiceOptions {
     pub db_timeout: u64,
     pub redis_addr: String,
     pub default_avatar: String,
+    #[serde(with="json_duration_format")]
+    pub visit_expire_time: Duration,
+    #[serde(with="json_duration_format")]
+    pub session_expire: Duration,
 }
 
 impl Default for ServiceOptions {
@@ -19,6 +25,8 @@ impl Default for ServiceOptions {
             db_timeout: 100,
             redis_addr: "redis://localhost".to_string(),
             default_avatar: "/img/decoration/unknown-user.png".to_string(),
+            visit_expire_time: Duration::days(1), // one day
+            session_expire: Duration::weeks(1), // one week
         }
     }
 }
