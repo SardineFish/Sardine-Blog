@@ -4,7 +4,7 @@ use actix_http::{HttpMessage, body::MessageBody, cookie::Cookie, error::ErrorInt
 use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 
 use sar_blog::{Service, model::SessionID};
-use time::{Duration, OffsetDateTime};
+use web::service;
 
 use super::func_middleware::*;
 
@@ -52,11 +52,15 @@ where
 
     request.extensions_mut().insert(Session::new(session_id.clone()));
 
+    let options = service.option.clone();
+
     let mut response = srv.borrow_mut().call(request).await?;
+
+    let service = response.request().app_data::<sar_blog::Service>().unwrap();
     if set_session {
         let mut cookie = Cookie::new("session_id", &session_id);
-        let now = OffsetDateTime::now_utc();
-        cookie.set_expires(now + Duration::weeks(1));
+        // cookie.set_expires(now + Duration::weeks(1));
+        cookie.set_expires(time_crate::OffsetDateTime::now_utc() + time_crate::Duration::seconds(service.option.session_expire.num_seconds()));
         response.response_mut().add_cookie(&cookie)?;
     }
 

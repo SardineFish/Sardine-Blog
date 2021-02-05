@@ -12,6 +12,24 @@ We use access level to control the operation permissions, access levels are sequ
 
 Users with higher value of access level have higher permission.
 
+
+--------
+
+
+## Get Authentication Challenge
+`GET /api/user/{uid:string}/challenge`
+
+### Response
+```json
+{
+    "salt": "Salt string",
+    "method": "Hash method <SHA256 | ...>",
+    "challenge": "Random challenge string",
+}
+```
+
+--------
+
 ## Login
 `POST /api/user/login`
 
@@ -19,14 +37,14 @@ Users with higher value of access level have higher permission.
 ```json
 {
     "user": "Uid or Email",
-    "secret": "Password Hash"
+    "pwd_hash": "Password Hash calculated by hash(hash(password + salt) + challenge)"
 }
 ```
 
 ### Response
 ```json
 {
-    "session": "Session ID",
+    "session_id": "Session ID",
     "token": "Token",
     "expire": "Expire Time",
 }
@@ -48,19 +66,20 @@ After successfully sign up, the user will have default access level of `Register
 ```json
 {
     "uid": "[_A-Za-z][_A-Za-z0-9]{5,31}",
-    "email": "user@example.com",
-    "password": "Hashed password, e.g. sha256(passwd + salt)",
+    "pwd_hash": "Hashed password, e.g. sha256(passwd + salt)",
     "salt": "24bit Random value in b64",
     "method": "sha256",
     "name": "UTF-8 Text within 32 chars",
-    "url": "Your website url (optional)",
+    "email": "(optional) user@example.com",
+    "url": "(optional) Your website url",
+    "avatar": "avatar url",
 }
 ```
 
 ### Response
 ```json
 {
-    "session": "Session ID",
+    "session_id": "Session ID",
     "token": "Token",
     "expire": "Expire Time",
 }
@@ -74,9 +93,9 @@ After successfully sign up, the user will have default access level of `Register
 ## Sign Out 
 `auth <any>`
 
-`POST /api/user/signout`
+`DELETE /api/user/session`
 
-`DELETE /api/user/signout/{session}`
+`DELETE /api/user/session/{session_id:string}`
 
 No additional request and response data if succed.
 

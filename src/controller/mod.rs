@@ -2,6 +2,7 @@ mod extractor;
 mod note;
 mod blog;
 mod comment;
+mod user;
 mod executor;
 
 use actix_web::web::{ServiceConfig, scope};

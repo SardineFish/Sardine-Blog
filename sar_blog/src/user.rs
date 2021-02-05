@@ -1,6 +1,7 @@
 use std::{cell::RefMut};
 
-use model::{AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, User, UserInfo};
+use chrono::{Utc};
+use model::{Access, AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, User, UserInfo};
 use model::{SessionAuthInfo, Model, RedisCache, SessionID};
 use rand::{RngCore, prelude::StdRng};
 use sha2::{Digest, Sha256};
@@ -18,6 +19,13 @@ pub struct UserService<'m> {
     service: &'m Service,
     model: &'m Model,
     redis: &'m RedisCache,
+}
+
+#[derive(Serialize)]
+pub struct AuthToken {
+    pub session_id: SessionID, 
+    pub token: String,
+    pub expire: i64,
 }
 
 impl<'m> UserService<'m> {
@@ -61,7 +69,7 @@ impl<'m> UserService<'m> {
         Ok(user)
     }
 
-    pub async fn register(&self, uid: &str, info: &UserInfo, auth_info: &AuthenticationInfo) -> Result<User> {
+    pub async fn register(&self, session_id: &SessionID, uid: &str, info: &UserInfo, auth_info: &AuthenticationInfo) -> Result<AuthToken> {
         let user = User::registered_user(uid, info, auth_info);
         
         self.model.user.add(&user).await.map_service_err()?;
@@ -69,10 +77,10 @@ impl<'m> UserService<'m> {
             .await
             .map_service_err()?;
 
-        Ok(user)
+        self.grant_token(session_id, uid).await
     }
 
-    pub async fn login(&self, session_id: &SessionID, uid: &str, user_pwd_hash: &str)->Result<User> {
+    pub async fn login(&self, session_id: &SessionID, uid: &str, user_pwd_hash: &str)->Result<AuthToken> {
         let result = self.model.user.get_by_uid(uid).await;
         let user = match result {
             Err(model::Error::UserNotFound(_)) => return Err(Error::PasswordIncorrect),
@@ -96,22 +104,80 @@ impl<'m> UserService<'m> {
             return Err(Error::PasswordIncorrect);
         }
 
-        let token = gen_token(self.service.rng.borrow_mut());
-
-        self.redis.session(session_id).set_uid(&user.uid).await.map_service_err()?;
-        self.redis.session(session_id).set_access_token(&token).await.map_service_err()?;
-        self.redis.access().add_session_by_uid(uid, session_id).await.map_service_err()?;
-        
-        Ok(user)
+        self.grant_token(session_id, uid).await
     }
 
-    pub async fn get_login_info(&self, session_id: &SessionID, uid: &str) -> Result<AuthChallenge> {
+    pub async fn get_auth_challenge(&self, session_id: &SessionID, uid: &str) -> Result<AuthChallenge> {
         let result = self.model.user.get_by_uid(uid).await;
         match result {
             Ok(user) => self.create_challenge(session_id, &user.auth_info.salt, user.auth_info.method).await,
             Err(model::Error::UserNotFound(_)) => self.create_fake_challenge(session_id, uid).await,
             Err(err)=> Err(err).map_service_err()
         }
+    }
+
+    pub async fn sign_out(&self, target_session: &SessionID, session_id: &SessionID) -> Result<()> {
+        if target_session != session_id {
+            let self_uid = self.redis.session(session_id).uid()
+                .await
+                .map_service_err()?
+                .ok_or(Error::Unauthorized)?;
+            let target_uid = self.redis.session(target_session).uid()
+                .await
+                .map_service_err()?
+                .ok_or(Error::DataNotFound(model::Error::SessionNotFound(target_session.to_string())))?;
+            if self_uid != target_uid {
+                return Err(Error::Unauthorized);
+            }
+        }
+
+        let token = self.redis.session(session_id).access_token().await.map_service_err()?;
+        let uid = self.redis.session(session_id).uid().await.map_service_err()?;
+        self.redis.session(session_id).delete().await.map_service_err()?;
+        if let (Some(token), Some(uid)) = (token, uid) {
+            self.redis.access().delete_session_token(&uid, session_id, &token).await.map_service_err()?;
+        }
+
+        Ok(())
+    }
+
+    pub async fn get_access(&self, session_id: &SessionID) -> Result<Access> {
+        let uid = self.redis.session(session_id).uid()
+            .await
+            .map_service_err()?
+            .ok_or(Error::Unauthorized)?;
+        match self.model.user.get_by_uid(&uid).await {
+            Ok(user) => Ok(user.access),
+            Err(model::Error::UserNotFound(_)) => Err(Error::Unauthorized),
+            Err(err) => Err(Error::from(err)),
+        }
+    }
+
+    pub async fn grant_access(&self, session_id: &SessionID, uid: &str, access: Access) -> Result<User> {
+        let user = self.model.user.get_by_uid(uid).await.map_service_err()?;
+        let self_access = self.get_access(session_id).await.map_service_err()?;
+        if self_access <= user.access {
+            return Err(Error::Unauthorized);
+        }
+        
+        let user = self.model.user.grant_access(uid, access).await.map_service_err()?;
+        Ok(user)
+    }
+
+    async fn grant_token(&self, session_id: &SessionID, uid: &str) -> Result<AuthToken> {
+        let token = gen_token(self.service.rng.borrow_mut());
+
+        self.redis.session(session_id).set_uid(uid).await.map_service_err()?;
+        self.redis.session(session_id).set_access_token(&token).await.map_service_err()?;
+        self.redis.access().add_token(uid, session_id, &token, self.service.option.session_expire.num_seconds() as usize)
+            .await
+            .map_service_err()?;
+
+        Ok(AuthToken {
+            session_id: session_id.clone(),
+            token,
+            expire: (Utc::now() + self.service.option.session_expire).timestamp()
+        })
     }
 
     async fn create_fake_challenge(&self, session_id: &SessionID, uid: &str) -> Result<AuthChallenge> {

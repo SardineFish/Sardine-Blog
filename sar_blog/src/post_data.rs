@@ -16,7 +16,7 @@ impl<'s> PostDataService<'s> {
 
     pub async fn visit<T: Post + DeserializeOwned>(&self, post: &T, session_id: &SessionID) -> Result<usize> {
         let not_visited = self.service.redis.session(session_id)
-            .add_visit(post.pid(), self.service.option.visit_expire_time.whole_seconds() as usize)
+            .add_visit(post.pid(), self.service.option.visit_expire_time.num_seconds() as usize)
             .await
             .map_service_err()?;
     

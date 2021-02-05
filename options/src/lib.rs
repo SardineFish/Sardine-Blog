@@ -1,6 +1,6 @@
 mod json_duration_format;
 use serde::{Serialize, Deserialize};
-use time::Duration;
+use chrono::Duration;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceOptions {

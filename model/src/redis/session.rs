@@ -1,5 +1,5 @@
 use chrono::{DateTime, TimeZone, Utc};
-use redis::{AsyncCommands, FromRedisValue, RedisError, ToRedisArgs, aio::MultiplexedConnection};
+use redis::{AsyncCommands, FromRedisValue, RedisError, ToRedisArgs, aio::MultiplexedConnection, pipe};
 use paste::paste;
 
 use crate::{PidType, error::*};
@@ -27,6 +27,12 @@ const KEY_UID: &str = "uid";
 const KEY_CHALLENGE: &str = "challenge";
 const KEY_FAKE_SALT: &str = "fake_salt";
 
+
+macro_rules! ref_type {
+    (String) => {&str};
+    ($type: ident) => {&$type};
+}
+
 macro_rules! session_field {
     ($type: ident, $name: ident, $key: ident) => {
         paste! {
@@ -34,7 +40,7 @@ macro_rules! session_field {
             pub async fn $name(&mut self) -> Result<Option<$type>> {
                 self.get_field($key).await
             }
-            pub async fn [<set_ $name>](&mut self, value: &$type) -> Result<()> {
+            pub async fn [<set_ $name>](&mut self, value: ref_type!($type)) -> Result<()> {
                 self.set_field($key, value).await
             }
         }
@@ -100,6 +106,16 @@ impl<'s> Session<'s> {
 
     pub async fn set_access_token(&mut self, value: &str) -> Result<()> {
         self.set_field(KEY_ACCESS_TOKEN, value).await
+    }
+
+    pub async fn delete(&mut self) -> Result<()> {
+        pipe()
+            .atomic()
+            .del(&self.key_data)
+            .del(&self.key_visit)
+            .query_async(&mut self.redis)
+            .await
+            .map_model_result()
     }
 
     session_field!(String, uid, KEY_UID);

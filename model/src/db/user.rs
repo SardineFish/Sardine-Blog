@@ -29,7 +29,7 @@ pub struct UserInfo{
 
 pub type AnonymousUserInfo = UserInfo;
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub enum Access {
     Root = 32,
     Owner = 16,

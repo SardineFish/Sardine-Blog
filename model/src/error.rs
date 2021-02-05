@@ -11,6 +11,7 @@ pub enum Error
     DBError(MongoError),
     PostNotFound(PidType),
     UserNotFound(String),
+    SessionNotFound(String),
     DeserializeError(bson::de::Error),
     SerializeError(bson::ser::Error),
     RedisError(RedisError),
@@ -22,9 +23,10 @@ impl Error {
             Error::DBError(_) => 0x01,
             Error::PostNotFound(_) => 0x02,
             Error::UserNotFound(_) => 0x03,
-            Error::DeserializeError(_) => 0x04,
-            Error::SerializeError(_) => 0x05,
-            Error::RedisError(_) => 0x06,
+            Error::SessionNotFound(_) => 0x04,
+            Error::DeserializeError(_) => 0x05,
+            Error::SerializeError(_) => 0x06,
+            Error::RedisError(_) => 0x07,
         }
     }
 }

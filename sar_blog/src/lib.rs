@@ -16,3 +16,4 @@ pub use service::Service;
 pub use model;
 pub use blog::BlogPreview;
 pub use comment::NestedCommentRef;
+pub use user::{AuthToken, AuthChallenge};
