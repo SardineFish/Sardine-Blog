@@ -3,7 +3,7 @@ use std::fmt;
 use actix_http::http::StatusCode;
 use futures::{Future, future::{Ready, ready}};
 use serde::{Serialize};
-use actix_web::{HttpRequest, HttpResponse, Responder};
+use actix_web::{FromRequest, HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}};
 use sar_blog::Error as ServiceError;
 
 use super::error::Error;
@@ -48,6 +48,17 @@ pub enum Response<T : Serialize = ()> {
     Ok(T),
     ClientError(Error),
     ServerError(Error),
+}
+
+impl<T: Serialize> Response<T> {
+    pub async fn to_service_response(self, request: ServiceRequest) -> actix_web::Result<ServiceResponse> {
+        let (http_request, payload) = request.into_parts();
+        let response = self.respond_to(&http_request).await?;
+        match ServiceRequest::from_parts(http_request, payload) {
+            Ok(request) => Ok(request.into_response(response)),
+            _ => Err(actix_web::error::ErrorInternalServerError("Failed to construct service request"))
+        }
+    }
 }
 
 impl<T : Serialize> From<Result<T, Error>> for Response<T> {

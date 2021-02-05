@@ -1,5 +1,7 @@
 use chrono::{DateTime, TimeZone, Utc};
 use redis::{AsyncCommands, FromRedisValue, RedisError, ToRedisArgs, aio::MultiplexedConnection};
+use paste::paste;
+
 use crate::{PidType, error::*};
 
 use super::redis::namespace_key;
@@ -9,7 +11,6 @@ pub type SessionID = String;
 pub struct SessionAuthInfo {
     pub token: String,
     pub uid: String,
-    pub salt: String,
 }
 
 pub struct SessionData {
@@ -23,7 +24,22 @@ const NAMESPACE_VISITS: &str = "visit";
 const KEY_LAST_ACTIVE: &str = "last_active";
 const KEY_ACCESS_TOKEN: &str = "access_token";
 const KEY_UID: &str = "uid";
-const KEY_SALT: &str = "salt";
+const KEY_CHALLENGE: &str = "challenge";
+const KEY_FAKE_SALT: &str = "fake_salt";
+
+macro_rules! session_field {
+    ($type: ident, $name: ident, $key: ident) => {
+        paste! {
+
+            pub async fn $name(&mut self) -> Result<Option<$type>> {
+                self.get_field($key).await
+            }
+            pub async fn [<set_ $name>](&mut self, value: &$type) -> Result<()> {
+                self.set_field($key, value).await
+            }
+        }
+    };
+}
 
 pub struct Session<'s> {
     pub session_id: &'s SessionID,
@@ -86,33 +102,24 @@ impl<'s> Session<'s> {
         self.set_field(KEY_ACCESS_TOKEN, value).await
     }
 
-    pub async fn uid(&mut self)->Result<Option<String>> {
-        self.get_field(KEY_UID).await
-    }
-    pub async fn set_uid(&mut self, value: &str) -> Result<()> {
-        self.set_field(KEY_UID, value).await
-    }
+    session_field!(String, uid, KEY_UID);
 
-    pub async fn salt(&mut self) -> Result<Option<String>> {
-        self.get_field(KEY_SALT).await
-    }
-    pub async fn set_salt(&mut self, value: &str) -> Result<()> {
-        self.set_field(KEY_SALT, value).await
-    }
+    session_field!(String, challenge, KEY_CHALLENGE);
+
+    session_field!(String, fake_salt, KEY_FAKE_SALT);
 
     pub async fn get(&mut self) -> Result<Option<SessionData>> {
-        let (timestamp, token, uid, salt): (Option<i64>, Option<String>, Option<String>, Option<String>) = self.redis.hget(&self.key_data, 
-            &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID, KEY_SALT])
+        let (timestamp, token, uid): (Option<i64>, Option<String>, Option<String>) = self.redis.hget(&self.key_data, 
+            &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID])
             .await
             .map_model_result()?;
 
-        if let (Some(timestamp), Some(token), Some(uid), Some(salt)) = (timestamp, token, uid, salt) {
+        if let (Some(timestamp), Some(token), Some(uid)) = (timestamp, token, uid) {
             Ok(Some(SessionData {
                 last_active: Utc.timestamp_millis(timestamp),
                 auth_info: SessionAuthInfo {
                     uid,
                     token,
-                    salt,
                 }
             }))
         } else {

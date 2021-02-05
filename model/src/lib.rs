@@ -1,4 +1,4 @@
-
+#![feature(concat_idents)]
 mod db;
 mod error;
 mod redis;

@@ -8,20 +8,19 @@ use std::pin::Pin;
 use std::rc::Rc;
 use std::cell::{RefCell};
 
-pub trait ServiceT<B> = Service<ServiceRequest, Response = ServiceResponse<B>, Error = actix_web::Error>;
-pub type AsyncMiddlewareRtn<B> = Pin<Box<dyn Future<Output = Result<ServiceResponse<B>, actix_web::Error>>>>;
+pub trait ServiceT = Service<ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>;
+pub type AsyncMiddlewareRtn = Pin<Box<dyn Future<Output = Result<ServiceResponse, actix_web::Error>>>>;
 
 #[derive(Clone)]
 pub struct FuncMiddleware<S, F> {
     func: fn(req: ServiceRequest, service: Rc<RefCell<S>>) -> F,
 }
 
-impl<S, B, F> FuncMiddleware<S, F>
+impl<S, F> FuncMiddleware<S, F>
 where
-    S: ServiceT<B> + 'static,
+    S: ServiceT + 'static,
     S::Future: 'static,
-    B: MessageBody,
-    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>>
+    F: Future<Output = Result<ServiceResponse, actix_web::Error>>
 {
     pub fn from_func(func: fn(req: ServiceRequest, service: Rc<RefCell<S>>) -> F) -> Self{
         Self {
@@ -30,14 +29,13 @@ where
     }
 }
 
-impl<S, B, F> Transform<S, ServiceRequest> for FuncMiddleware<S, F>
+impl<S, F> Transform<S, ServiceRequest> for FuncMiddleware<S, F>
 where
-    S: ServiceT<B> + 'static,
+    S: ServiceT + 'static,
     S::Future: 'static,
-    B: MessageBody,
-    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>> + 'static
+    F: Future<Output = Result<ServiceResponse, actix_web::Error>> + 'static
 {
-    type Response = ServiceResponse<B>;
+    type Response = ServiceResponse;
     type Error = actix_web::Error;
     type InitError = ();
     type Transform = FuncMiddlewareFuture<S, F>;
@@ -55,14 +53,13 @@ pub struct FuncMiddlewareFuture<S, F> {
     service: Rc<RefCell<S>>,
 }
 
-impl<S, B, F> Service<ServiceRequest> for FuncMiddlewareFuture<S, F>
+impl<S, F> Service<ServiceRequest> for FuncMiddlewareFuture<S, F>
 where
-    S: ServiceT<B> + 'static,
+    S: ServiceT + 'static,
     S::Future: 'static,
-    B: MessageBody, 
-    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>> + 'static
+    F: Future<Output = Result<ServiceResponse, actix_web::Error>> + 'static
 {
-    type Response = ServiceResponse<B>;
+    type Response = ServiceResponse;
     type Error = actix_web::Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
     fn poll_ready(&mut self, ctx: &mut task::Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -81,11 +78,10 @@ where
 
 macro_rules! async_middleware {
     (pub $name: ident, $async_func: ident) => {
-        pub fn $name<S, B>() -> self::FuncMiddleware<S, AsyncMiddlewareRtn<B>>
+        pub fn $name<S>() -> self::FuncMiddleware<S, AsyncMiddlewareRtn>
         where
-            S: ServiceT<B> + 'static,
+            S: ServiceT + 'static,
             S::Future: 'static,
-            B: MessageBody
         {
             self::FuncMiddleware::from_func(move |req, srv| {
                 Box::pin(async move {
