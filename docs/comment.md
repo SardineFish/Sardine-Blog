@@ -3,6 +3,11 @@
 ## Get Comment of Pid
 `Get /api/comment/{pid:number}`
 
+### Query Params
+```
+depth: number
+```
+
 ### Response
 ```json
 [
@@ -38,6 +43,7 @@
     "name": "(*) Display Name", 
     "email": "(optional) used for notification & Gravatar",
     "url": "(optional) Your website url",
+    "avatar": "Avatar url, normally use Gravatar by user email.",
     "text": "Content Text",
 }
 ```
