@@ -1,6 +1,7 @@
-use model::{Model, RedisCache};
+use model::{AuthenticationInfo, Model, RedisCache, User};
 use options::ServiceOptions;
-use rand::{SeedableRng, prelude::StdRng};
+use rand::{RngCore, SeedableRng, prelude::StdRng};
+use sha2::{Digest, Sha256};
 
 use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, user::UserService};
 
@@ -48,5 +49,30 @@ impl Service {
 
     pub fn session(&self) -> SessionService {
         SessionService::new(self)
+    }
+
+    pub async fn init_database(&self) -> Result<()> {
+        log::warn!("Init database...");
+        log::warn!("Will rewrite some metadata in database which is very important!");
+        self.model.init().await.map_service_err()?;
+
+        log::warn!("Secrete of root user will be generated randomly, please make sure to change it.");
+        let mut secret: [u8; 16] = [0; 16];
+        self.rng.borrow_mut().fill_bytes(&mut secret);
+        let hash = format!("{:x}", Sha256::digest(&secret));
+        
+        let user = User::root(AuthenticationInfo{
+            method: model::HashMethod::SHA256,
+            password_hash: hash.clone(),
+            salt: "".to_string()
+        });
+
+        self.model.user.add(&user).await.map_service_err()?;
+
+        log::warn!("The secrete of root is '{}'", hash);
+
+        log::warn!("Init completed.");
+        
+        Ok(())
     }
 }

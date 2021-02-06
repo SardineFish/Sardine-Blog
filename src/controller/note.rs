@@ -37,8 +37,17 @@ impl From<Note> for PubNote {
 
 #[derive(Deserialize)]
 struct QueryParams {
+    #[serde(default = "default_from")]
     from: usize,
+    #[serde(default = "default_count")]
     count: usize,
+}
+
+fn default_from() -> usize {
+    0
+}
+fn default_count() -> usize {
+    10
 }
 
 #[derive(Deserialize)]

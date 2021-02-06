@@ -15,3 +15,4 @@ sha2 = "0.9.3"
 options = { path = "../options" }
 rand = { version = "0.8.3", features = ["std_rng"] }
 hex = "0.4.2"
+log = "0.4.14"

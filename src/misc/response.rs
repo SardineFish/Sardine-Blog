@@ -1,6 +1,6 @@
 use std::fmt;
 
-use actix_http::http::StatusCode;
+use actix_http::{ResponseBuilder, cookie::Cookie, http::StatusCode};
 use futures::{Future, future::{Ready, ready}};
 use serde::{Serialize};
 use actix_web::{FromRequest, HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}};
@@ -44,7 +44,32 @@ impl From<Error> for ErrorResponseData {
     }
 }
 
-pub enum Response<T : Serialize = ()> {
+pub trait BuildResponse {
+    fn build_response(self, builder: ResponseBuilder) -> Result<HttpResponse, Error>;
+}
+
+impl<T> BuildResponse for T where T : Serialize {
+    fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
+        let response = SuccessResponseData::with_data(self);
+        let body = serde_json::to_string(&response)
+            .map_err(|_| Error::SerializeError)?;
+        Ok(builder.content_type("application/json").body(body))
+    }
+}
+
+pub struct WithCookie<'c, T : Serialize>(pub T, pub Vec<Cookie<'c>>);
+
+impl<'c, T : Serialize> BuildResponse for WithCookie<'c, T> {
+    fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
+        let Self(data, cookies) = self;
+        for cookie in cookies {
+            builder.cookie(cookie.clone());
+        }
+        data.build_response(builder)
+    }
+}
+
+pub enum Response<T : BuildResponse = ()> {
     Ok(T),
     ClientError(Error),
     ServerError(Error),
@@ -65,7 +90,7 @@ impl<T: Serialize> Response<T> {
     }
 }
 
-impl<T : Serialize> From<Result<T, Error>> for Response<T> {
+impl<T : BuildResponse> From<Result<T, Error>> for Response<T> {
     fn from(result: Result<T, Error>) -> Self {
         match result {
             Ok(data) => Response::Ok(data),
@@ -77,7 +102,7 @@ impl<T : Serialize> From<Result<T, Error>> for Response<T> {
     }
 }
 
-pub async fn run<R : Serialize, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R> {
+pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R> {
     let result = func.await;
     Response::<R>::from(result)
 }
@@ -90,17 +115,27 @@ async fn get_foo() -> Response<Option<u32>> {
     }).await
 }
 
-impl<T: Serialize> Responder for Response<T> {
+impl<T: BuildResponse> Responder for Response<T> {
     type Error = actix_web::Error;
     type Future = Ready<Result<HttpResponse, Self::Error>>;
     fn respond_to(self, req: &HttpRequest) -> Self::Future {
 
-        let (status_code, body) = match self {
-            Response::Ok(data) => (StatusCode::OK,
-                serde_json::to_string(&SuccessResponseData::with_data(data)).map_err(|_|Error::SerializeError)),
+        let error_response = match self {
+            Response::Ok(data) => {
+                let result = data.build_response(HttpResponse::build(StatusCode::OK));
+                match result {
+                    Ok(http_response) => return ready(Ok(http_response)),
+                    Err(err) => Response::ServerError(err)
+                }
+            }
+            others => others
+        };
+
+        let (status_code, body) = match error_response {
             Response::ClientError(err) => (err.status_code(), 
                 serde_json::to_string(&ErrorResponseData::from(err)).map_err(|_|Error::SerializeError)),
             Response::ServerError(err) => (err.status_code(), Err(err)),
+            _ => unreachable!(),
         };
         
         match body {

@@ -2,6 +2,7 @@
 mod db;
 mod error;
 mod redis;
+mod misc;
 
 use db::*;
 

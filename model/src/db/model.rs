@@ -4,7 +4,7 @@ use mongodb::{self, options::ClientOptions};
 use options::ServiceOptions;
 use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostModel, post_data::PostDataModel, user::UserModel};
 
-pub type PidType = u32;
+pub type PidType = i32;
 
 #[derive(Clone)]
 pub struct Model
@@ -37,5 +37,10 @@ impl Model
             post_data: PostDataModel::new(&db),
             history: HistoryModel::new(&db)
         })
+    }
+
+    pub async fn init(&self) -> Result<()> {
+        self.post_data.init_meta().await?;
+        Ok(())
     }
 }

@@ -131,7 +131,8 @@ impl UserModel {
         let result = self.collection.update_one(query, update, opts)
             .await
             .map_model_result()?;
-        if result.modified_count <= 0 {
+
+        if result.upserted_id.is_none() {
             Err(Error::UserExisted(user.uid.to_string()))
         } else {
             Ok(())

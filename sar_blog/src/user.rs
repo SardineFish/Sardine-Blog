@@ -21,7 +21,7 @@ pub struct UserService<'m> {
     redis: &'m RedisCache,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct AuthToken {
     pub session_id: SessionID, 
     pub token: String,

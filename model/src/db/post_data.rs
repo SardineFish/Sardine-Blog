@@ -1,6 +1,7 @@
 use mongodb::{Collection, Database, bson::{self, DateTime, doc, oid::ObjectId}};
 use serde::{Serialize, Deserialize};
 
+use crate::misc::usize_format;
 use crate::{Post, model::PidType};
 use crate::error::*;
 
@@ -15,8 +16,11 @@ pub enum PostType{
 
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct PostStats {
+    #[serde(with="usize_format")]
     pub likes: usize,
+    #[serde(with="usize_format")]
     pub views: usize,
+    #[serde(with="usize_format")]
     pub comments: usize,
 }
 

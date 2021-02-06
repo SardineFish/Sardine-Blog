@@ -6,6 +6,8 @@ use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 use sar_blog::{Service, model::SessionID};
 use web::service;
 
+use crate::misc::cookie::gen_session_cookie;
+
 use super::func_middleware::*;
 
 pub struct Session {
@@ -56,9 +58,7 @@ where
 
     let service = response.request().app_data::<web::Data<Service>>().unwrap();
     if set_session {
-        let mut cookie = Cookie::new("session_id", &session_id);
-        // cookie.set_expires(now + Duration::weeks(1));
-        cookie.set_expires(time_crate::OffsetDateTime::now_utc() + time_crate::Duration::seconds(service.option.session_expire.num_seconds()));
+        let cookie = gen_session_cookie(&session_id, service.option.session_expire);
         response.response_mut().add_cookie(&cookie)?;
     }
 

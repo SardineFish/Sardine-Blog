@@ -1,8 +1,11 @@
-use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}};
+use std::vec;
+
+use actix_http::cookie::{Cookie, CookieBuilder};
+use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}, Responder, HttpResponse, HttpRequest};
 use sar_blog::{AuthChallenge, AuthToken, model::{Access, AuthenticationInfo, HashMethod, User, UserInfo}};
 use serde::{Serialize, Deserialize};
 
-use crate::{middleware, misc::{error::MapControllerError, response::Response}};
+use crate::{middleware, misc::{cookie::gen_token_cookies, error::MapControllerError, response::{Response, WithCookie}, utils}};
 
 use super::{executor::execute, extractor};
 
@@ -56,16 +59,20 @@ async fn get_challenge(service: extractor::Service, session: extractor::Session,
 }
 
 #[post("/login")]
-async fn login(service: extractor::Service, session: extractor::Session, data: Json<LoginData>) -> Response<AuthToken> {
+async fn login<'c>(service: extractor::Service, session: extractor::Session, data: Json<LoginData>) -> Response<WithCookie<'c, AuthToken>> {
     execute(async move {
-        service.user().login(session.id(), &data.uid, &data.pwd_hash)
+        let token = service.user().login(session.id(), &data.uid, &data.pwd_hash)
             .await
-            .map_contoller_result()
+            .map_contoller_result()?;
+
+        let (cookie_session, cookie_token) = gen_token_cookies(&token, service.option.session_expire);
+
+        Ok(WithCookie(token, vec![cookie_session, cookie_token]))
     }).await
 }
 
 #[post("/signup")]
-async fn sign_up(service: extractor::Service, session: extractor::Session, data: Json<SignUpData>) -> Response<AuthToken> {
+async fn sign_up<'c>(service: extractor::Service, session: extractor::Session, data: Json<SignUpData>) -> Response<WithCookie<'c, AuthToken>> {
     execute(async move {
         let user_info = UserInfo {
             name: data.name.clone(),
@@ -78,9 +85,13 @@ async fn sign_up(service: extractor::Service, session: extractor::Session, data:
             password_hash: data.pwd_hash.clone(),
             salt: data.salt.clone(),
         };
-        service.user().register(session.id(), &data.uid, &user_info, &auth_info)
+        let token = service.user().register(session.id(), &data.uid, &user_info, &auth_info)
             .await
-            .map_contoller_result()
+            .map_contoller_result()?;
+
+        let (cookie_session, cookie_token) = gen_token_cookies(&token, service.option.session_expire);
+        
+        Ok(WithCookie(token, vec![cookie_session, cookie_token]))
     }).await
 }
 

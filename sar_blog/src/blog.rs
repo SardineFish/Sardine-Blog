@@ -93,7 +93,7 @@ impl<'m> BlogService<'m> {
 
         blog.update_content(&user, blog_content);
         self.model.post.update::<Blog, Blog>(pid, &blog).await.map_service_err()?;
-        self.model.history.record(uid, model::Operation::Create, HistoryData::Blog(blog))
+        self.model.history.record(uid, model::Operation::Update, HistoryData::Blog(blog))
             .await
             .map_service_err()?;
 
