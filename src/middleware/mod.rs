@@ -7,4 +7,4 @@ mod auth;
 
 pub use error_formatter::error_formatter;
 pub use session::{session, Session};
-pub use auth::authentication;
+pub use auth::{authentication, auth_from_request};

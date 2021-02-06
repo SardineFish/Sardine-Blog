@@ -48,14 +48,14 @@ macro_rules! session_field {
 }
 
 pub struct Session<'s> {
-    pub session_id: &'s SessionID,
+    pub session_id: &'s str,
     redis: MultiplexedConnection,
     key_data: String,
     key_visit: String,
 }
 
 impl<'s> Session<'s> {
-    pub fn with_session_id(session_id: &'s SessionID, redis: MultiplexedConnection) -> Self {
+    pub fn with_session_id(session_id: &'s str, redis: MultiplexedConnection) -> Self {
         Self{
             redis,
             key_data: namespace_key(NAMESPACE_DATA, &session_id),

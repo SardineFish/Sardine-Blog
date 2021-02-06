@@ -1,5 +1,6 @@
 #![feature(trait_alias)]
 #![feature(or_patterns)]
+#[allow(warnings)]
 
 use actix_web::{self, App, HttpServer, get, middleware::Logger, web};
 

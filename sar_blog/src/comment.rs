@@ -102,12 +102,18 @@ impl<'m> CommentService<'m> {
         CommentService::construct_comments(comments, pid, depth_limit)
     }
 
-    pub async fn post(&self, comment_to: PidType, text: &str, session_id: &SessionID, author_info: &AnonymousUserInfo) -> Result<PidType> {
+    pub async fn post(&self, comment_to: PidType, text: &str, session_id: &SessionID, author_info: Option<&AnonymousUserInfo>) -> Result<PidType> {
         let post_data = self.model.post_data.get_by_pid(comment_to).await.map_service_err()?;
-        let uid = self.redis.session(&session_id).uid().await.map_service_err()?;
-        let user = match &uid {
-            Some(uid) => self.model.user.get_by_uid(uid).await.map_service_err()?,
-            None => self.service.user().get_anonymous(author_info).await?
+        let user = match author_info {
+            Some(info) => self.service.user().get_anonymous(info).await?,
+            None => {
+                let uid = self.redis.session(&session_id).uid()
+                .await
+                .map_service_err()?
+                .ok_or(Error::Unauthorized)?;
+
+                self.model.user.get_by_uid(&uid).await.map_service_err()?
+            },
         };
         let pid = self.model.post_data.new_pid().await.map_service_err()?;
 
@@ -119,6 +125,8 @@ impl<'m> CommentService<'m> {
         let mut comment = Comment::new(root_pid, pid, comment_to, &user);
         comment.text = text.to_string();
 
+        self.model.post_data.add_post(&comment).await.map_service_err()?;
+
         self.model.comment.post(&comment).await.map_service_err()?;
 
         self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Comment(comment))
@@ -129,9 +137,17 @@ impl<'m> CommentService<'m> {
     }
 
     pub async fn delete(&self, pid: PidType) -> Result<Option<Comment>> {
-        let post_data = self.model.post_data.get_by_pid(pid).await.map_service_err()?;
+        let post_data = self.model.post_data.get_by_pid(pid).await;
+        let post_data = match post_data {
+            Err(model::Error::PostNotFound(_)) => return Ok(None),
+            Err(err) => return Err(Error::from(err)),
+            Ok(post_data) => post_data
+        };
+
         if let PostType::Comment(_, root_pid) = post_data.post {
             let comment = self.model.comment.delete(root_pid, pid).await.map_service_err()?;
+
+            self.model.post_data.delete_post(pid).await.map_service_err()?;
 
             Ok(comment)
         } else {
@@ -141,26 +157,36 @@ impl<'m> CommentService<'m> {
 
     fn construct_comments(comments: Vec<Comment>, root_pid: PidType, depth_limit: usize) -> Result<Vec<NestedCommentRef>> {
         let mut nested_comments: HashMap<PidType, NestedCommentRef> = HashMap::with_capacity(comments.len());
+        let mut comment_container: HashMap<PidType, PidType> = HashMap::with_capacity(comments.len());
         let mut root_comments = Vec::<NestedCommentRef>::with_capacity(4);
         
         for comment in comments {
             let comment_ref = NestedCommentRef::new(comment);
             nested_comments.insert(comment_ref.pid(), comment_ref.clone());
 
-            if comment_ref.pid() == root_pid || depth_limit == 1 {
+            if comment_ref.comment_to() == root_pid || depth_limit == 1 {
                 comment_ref.borrow_mut().depth = 1;
+                comment_container.insert(comment_ref.pid(), root_pid);
                 root_comments.push(comment_ref);
             } else {
-                let parent = nested_comments.get(&comment_ref.comment_to())
-                    .ok_or(Error::post_not_found(comment_ref.borrow().comment_to))?;
+                let parent = nested_comments.get(&comment_ref.comment_to());
+                if parent.is_none() {
+                    continue;
+                }
+                let parent = parent.unwrap();
 
                 if parent.depth() < depth_limit {
                     comment_ref.borrow_mut().depth = parent.depth() + 1;
+                    comment_container.insert(comment_ref.pid(), parent.pid());
                     parent.borrow_mut().comments.push(comment_ref);
                 } else {
                     comment_ref.borrow_mut().depth = parent.depth();
-                    let grandparent = nested_comments.get(&parent.comment_to())
+                    let parent_container_pid = *comment_container.get(&parent.pid())
+                        .ok_or(Error::post_not_found(parent.pid()))?;
+                        
+                    let grandparent = nested_comments.get(&parent_container_pid)
                         .ok_or(Error::post_not_found(parent.comment_to()))?;
+                    comment_container.insert(comment_ref.pid(), parent_container_pid);
                     grandparent.borrow_mut().comments.push(comment_ref);
                 }
             }

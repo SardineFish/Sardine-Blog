@@ -37,7 +37,7 @@ impl<'m> UserService<'m> {
         }
     }
 
-    pub async fn auth(&self, session_id: &SessionID, token: &str) -> Result<SessionAuthInfo> {
+    pub async fn auth(&self, session_id: &str, token: &str) -> Result<SessionAuthInfo> {
         let session = self.redis.session(session_id).get()
             .await
             .map_service_err()?

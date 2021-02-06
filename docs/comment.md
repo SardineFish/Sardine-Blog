@@ -44,7 +44,7 @@ depth: number
     "email": "(optional) used for notification & Gravatar",
     "url": "(optional) Your website url",
     "avatar": "Avatar url, normally use Gravatar by user email.",
-    "text": "Content Text",
+    "text": "Content Text"
 }
 ```
 *(\*) For anonymous user, the name is required. For user signed in, only the content is required.*

@@ -34,6 +34,8 @@ impl<'m> NoteService<'m> {
 
         let note = Note::new(pid, &user, doc_type, &content);
 
+        self.model.post_data.add_post(&note).await.map_service_err()?;
+
         self.model.post.post(&note).await.map_service_err()?;
         Ok(pid)
     }

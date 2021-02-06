@@ -33,8 +33,8 @@ pub struct PostData {
     pub post: PostType,
 }
 
-impl<T> From<T> for PostData where T : Post {
-    fn from(post: T) -> Self {
+impl<T> From<&T> for PostData where T : Post {
+    fn from(post: &T) -> Self {
         Self {
             _id: ObjectId::new(),
             pid: post.pid(),
@@ -97,7 +97,7 @@ impl PostDataModel {
         Ok(metadata.posts)
     }
 
-    pub async fn add_post<T: Post>(&self, post: T) -> Result<()> {
+    pub async fn add_post<T: Post>(&self, post: &T) -> Result<()> {
         let post_data = PostData::from(post);
         self.collection.insert_one(bson::to_document(&post_data).map_model_result()?, None)
             .await
@@ -105,9 +105,25 @@ impl PostDataModel {
         Ok(())
     }
 
+    pub async fn delete_post(&self, pid: PidType) -> Result<Option<PostData>> {
+        let query = doc! {
+            "pid": pid
+        };
+        let doc = self.collection.find_one_and_delete(query, None)
+            .await
+            .map_model_result()?;
+
+        if let Some(doc) = doc {
+            Ok(Some(bson::from_document(doc)
+                .map_model_result()?))
+        } else {
+            Ok(None)
+        }
+    }
+
     pub async fn get_by_pid(&self, pid: PidType) -> Result<PostData> {
         let query = doc!{
-            "_id": pid
+            "pid": pid
         };
         let doc = self.collection.find_one(query, None)
             .await

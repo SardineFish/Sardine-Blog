@@ -78,6 +78,8 @@ impl<'m> BlogService<'m> {
         let user = self.model.user.get_by_uid(&uid).await.map_service_err()?;
         let blog = Blog::new(pid, &user, blog_content);
 
+        self.model.post_data.add_post(&blog).await.map_service_err()?;
+
         self.model.post.post(&blog).await.map_service_err()?;
         self.model.comment.init_comment(pid).await.map_service_err()?;
         self.model.history.record(uid, model::Operation::Create, HistoryData::Blog(blog))
@@ -107,6 +109,7 @@ impl<'m> BlogService<'m> {
             self.model.history.record(uid, model::Operation::Delete, HistoryData::Blog(blog.clone()))
                 .await
                 .map_service_err()?;
+            self.model.post_data.delete_post(pid).await.map_service_err()?;
         }
 
         Ok(blog)

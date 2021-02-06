@@ -1,13 +1,18 @@
-use actix_web::{delete, get, post, web::{Json, Path, Query, ServiceConfig, scope}};
+use actix_web::{HttpRequest, delete, get, post, web::{scope, Json, Path, Query, ServiceConfig}};
 use chrono::DateTime;
-use sar_blog::{NestedCommentRef, model::{AnonymousUserInfo, Comment, PidType}};
-use serde::{Serialize, Deserialize};
+use sar_blog::{
+    model::{AnonymousUserInfo, Comment, PidType},
+    NestedCommentRef,
+};
+use serde::{Deserialize, Serialize};
 
-use crate::{middleware, misc::{error::MapControllerError, response::Response}};
+use crate::{
+    middleware,
+    misc::{error::MapControllerError, response::Response},
+};
 
 use super::{executor::execute, extractor};
 use sar_blog::utils::json_datetime_format;
-
 
 #[derive(Deserialize)]
 struct QueryParams {
@@ -28,7 +33,7 @@ struct PubComment {
     pid: PidType,
     comment_to: PidType,
     author: String,
-    #[serde(with="json_datetime_format")]
+    #[serde(with = "json_datetime_format")]
     time: DateTime<chrono::Utc>,
     text: String,
 }
@@ -46,35 +51,60 @@ impl From<Comment> for PubComment {
 }
 
 #[get("/{pid}")]
-async fn get_nested_comments(service: extractor::Service, Path(pid): Path<PidType>, Query(params): Query<QueryParams>) -> Response<Vec<NestedCommentRef>> {
+async fn get_nested_comments(
+    service: extractor::Service,
+    Path(pid): Path<PidType>,
+    Query(params): Query<QueryParams>,
+) -> Response<Vec<NestedCommentRef>> {
     execute(async move {
-        service.comment().get_comments_of_pid(pid, params.depth)
+        service
+            .comment()
+            .get_comments_of_pid(pid, params.depth)
             .await
             .map_contoller_result()
-    }).await
+    })
+    .await
 }
 
 #[post("/{pid}")]
-async fn post(service: extractor::Service, session: extractor::Session, Path(pid): Path<PidType>, data: Json<CommentUpload>) -> Response<PidType> {
+async fn post(
+    service: extractor::Service,
+    session: extractor::Session,
+    Path(pid): Path<PidType>,
+    data: Json<CommentUpload>,
+    request: HttpRequest,
+) -> Response<PidType> {
     execute(async move {
-        let author_info = AnonymousUserInfo {
-            name: data.name.clone(),
-            avatar: data.avatar.clone(),
-            email: data.email.clone(),
-            url: data.url.clone()
+        let auth = middleware::auth_from_request(&service, &request)
+            .await?;
+        let author_info = match auth {
+            Some(_) => None,
+            None => Some(AnonymousUserInfo {
+                name: data.name.clone(),
+                avatar: data.avatar.clone(),
+                email: data.email.clone(),
+                url: data.url.clone(),
+            })
         };
-        service.comment().post(pid, &data.text, session.id(), &author_info)
+        service
+            .comment()
+            .post(pid, &data.text, session.id(), author_info.as_ref())
             .await
             .map_contoller_result()
-    }).await
+    })
+    .await
 }
 
-#[delete("/{pid}", wrap="middleware::authentication()")]
-async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<PubComment>> {
+#[delete("/{pid}", wrap = "middleware::authentication()")]
+async fn delete(
+    service: extractor::Service,
+    Path(pid): Path<PidType>,
+) -> Response<Option<PubComment>> {
     execute(async move {
         let comment = service.comment().delete(pid).await.map_contoller_result()?;
         Ok(comment.map(PubComment::from))
-    }).await
+    })
+    .await
 }
 
 pub fn config(cfg: &mut ServiceConfig) {
@@ -82,7 +112,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         scope("/comment")
             .service(get_nested_comments)
             .service(post)
-            .service(delete)
-            
+            .service(delete),
     );
 }
