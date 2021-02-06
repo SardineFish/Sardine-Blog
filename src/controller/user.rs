@@ -1,8 +1,8 @@
-use actix_web::{delete, get, post, put, web::{Json, Path}};
+use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}};
 use sar_blog::{AuthChallenge, AuthToken, model::{Access, AuthenticationInfo, HashMethod, User, UserInfo}};
 use serde::{Serialize, Deserialize};
 
-use crate::misc::{error::MapControllerError, response::Response};
+use crate::{middleware, misc::{error::MapControllerError, response::Response}};
 
 use super::{executor::execute, extractor};
 
@@ -84,7 +84,7 @@ async fn sign_up(service: extractor::Service, session: extractor::Session, data:
     }).await
 }
 
-#[delete("/session")]
+#[delete("/session", wrap="middleware::authentication()")]
 async fn sign_out_self(service: extractor::Service, session: extractor::Session) -> Response<()> {
     execute(async move {
         service.user().sign_out(session.id(), session.id())
@@ -93,7 +93,7 @@ async fn sign_out_self(service: extractor::Service, session: extractor::Session)
     }).await
 }
 
-#[delete("/session/{session_id}")]
+#[delete("/session/{session_id}", wrap="middleware::authentication()")]
 async fn sign_out_session(service: extractor::Service, session: extractor::Session, Path(target): Path<String>) -> Response<()> {
     execute(async move {
         service.user().sign_out(&target, session.id())
@@ -102,7 +102,7 @@ async fn sign_out_session(service: extractor::Service, session: extractor::Sessi
     }).await
 }
 
-#[put("/{uid}/access")]
+#[put("/{uid}/access", wrap="middleware::authentication()")]
 async fn grant_access(service: extractor::Service, session: extractor::Session, Path(uid): Path<String>, data: Json<GrantAccessData>) -> Response<UserAccessInfo> {
     execute(async move {
         let user = service.user().grant_access(session.id(), &uid, data.access)
@@ -110,4 +110,15 @@ async fn grant_access(service: extractor::Service, session: extractor::Session, 
             .map_contoller_result()?;
         Ok(UserAccessInfo::from(user))
     }).await
+}
+
+pub fn config(cfg: &mut ServiceConfig) {
+    cfg.service(scope("/user")
+        .service(login)
+        .service(sign_up)
+        .service(get_challenge)
+        .service(sign_out_self)
+        .service(sign_out_session)
+        .service(grant_access)
+    );
 }

@@ -69,7 +69,7 @@ async fn post(service: extractor::Service, session: extractor::Session, Path(pid
     }).await
 }
 
-#[delete("/{pid}")]
+#[delete("/{pid}", wrap="middleware::authentication()")]
 async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<PubComment>> {
     execute(async move {
         let comment = service.comment().delete(pid).await.map_contoller_result()?;
@@ -80,12 +80,9 @@ async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): P
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(
         scope("/comment")
-                .service(get_nested_comments)
-                .service(post)
-    )
-        .service(
-            scope("/comment")
-                .wrap(middleware::authentication())
-                .service(delete)
+            .service(get_nested_comments)
+            .service(post)
+            .service(delete)
+            
     );
 }

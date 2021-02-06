@@ -11,6 +11,10 @@ use crate::middleware;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/api")
+        .configure(blog::config)
+        .configure(comment::config)
+        .configure(note::config)
+        .configure(user::config)
         .wrap(middleware::session())
     );
 }

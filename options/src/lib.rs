@@ -20,7 +20,7 @@ impl Default for ServiceOptions {
     fn default() -> Self {
         Self {
             listen: "localhost:3000".to_string(),
-            db_addr: "mongo://localhost".to_string(),
+            db_addr: "mongodb://localhost".to_string(),
             db_name: "sar_blog".to_string(),
             db_timeout: 100,
             redis_addr: "redis://localhost".to_string(),

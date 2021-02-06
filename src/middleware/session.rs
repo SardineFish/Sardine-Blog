@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use actix_http::{HttpMessage, body::MessageBody, cookie::Cookie, error::ErrorInternalServerError};
+use actix_http::{HttpMessage, body::{Body, MessageBody}, cookie::Cookie, error::ErrorInternalServerError};
 use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 
 use sar_blog::{Service, model::SessionID};
@@ -29,7 +29,7 @@ fn map_internal_error(err: sar_blog::Error) -> actix_web::Error {
 
 async fn session_middleware<S>(request: ServiceRequest, srv: Rc<RefCell<S>>) -> Result<ServiceResponse, actix_web::Error> 
 where
-    S: ServiceT,
+    S: ServiceT<Body>,
     S::Future: 'static,
 {
     let service = request.app_data::<web::Data<sar_blog::Service>>().unwrap();
@@ -52,11 +52,9 @@ where
 
     request.extensions_mut().insert(Session::new(session_id.clone()));
 
-    let options = service.option.clone();
-
     let mut response = srv.borrow_mut().call(request).await?;
 
-    let service = response.request().app_data::<sar_blog::Service>().unwrap();
+    let service = response.request().app_data::<web::Data<Service>>().unwrap();
     if set_session {
         let mut cookie = Cookie::new("session_id", &session_id);
         // cookie.set_expires(now + Duration::weeks(1));

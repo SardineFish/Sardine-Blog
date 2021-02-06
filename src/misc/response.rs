@@ -69,7 +69,10 @@ impl<T : Serialize> From<Result<T, Error>> for Response<T> {
     fn from(result: Result<T, Error>) -> Self {
         match result {
             Ok(data) => Response::Ok(data),
-            Err(err) => Response::ServerError(err)
+            Err(err) => match err.status_code() {
+                StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
+                _ => Response::ClientError(err)
+            },
         }
     }
 }

@@ -8,10 +8,11 @@ edition = "2018"
 
 [dependencies]
 options = { path = "../options" }
-mongodb = "1.1.1"
+mongodb = "1.1.0"
 chrono = "0.4.19"
-tokio = { version = "0.2.23", features = ["stream", "full"] }
+tokio = { version = "0.2.24", features = ["stream", "full"] }
 serde = "1.0.123"
-redis = { version = "0.19.0", features = ["connection-manager", "tokio-comp"]}
+redis = { version = "0.17.0", features = ["connection-manager", "tokio-comp"]}
 md5 = "0.7.0"
 paste = "1.0"
+futures-util = "0.3.12"

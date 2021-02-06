@@ -1,6 +1,4 @@
-use actix_http::{
-    body::{Body, ResponseBody},
-};
+use actix_http::{body::{Body, ResponseBody}, http::header};
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::{web::Bytes, Result};
 use futures::{future::Ready, task, Future};
@@ -39,11 +37,12 @@ pub fn error_formatter() -> ErrorFormatter {
     ErrorFormatter {}
 }
 
-impl<S> Transform<S, ServiceRequest> for ErrorFormatter
+impl<S> Transform<S> for ErrorFormatter
 where
-    S: Service<ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
+    S: Service<Request = ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
     S::Future: 'static,
 {
+    type Request = ServiceRequest;
     type Response = ServiceResponse;
     type Error = actix_web::Error;
     type InitError = ();
@@ -59,11 +58,12 @@ pub struct ErrorFormatterMiddleware<S> {
     service: S,
 }
 
-impl<S> Service<ServiceRequest> for ErrorFormatterMiddleware<S>
+impl<S> Service for ErrorFormatterMiddleware<S>
 where
-    S: Service<ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
+    S: Service<Request = ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
     S::Future: 'static,
 {
+    type Request = ServiceRequest;
     type Response = ServiceResponse;
     type Error = actix_web::Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
@@ -72,11 +72,19 @@ where
         self.service.poll_ready(ctx)
     }
 
-    fn call(&mut self, req: ServiceRequest) -> Self::Future {
+    fn call(&mut self, req: Self::Request) -> Self::Future {
         let future = self.service.call(req);
         Box::pin(async move {
             let result = future.await?;
-            if result.status().is_client_error() || result.status().is_server_error() {
+            let status = result.status();
+            if status.is_client_error() || status.is_server_error() {
+
+                // Ignore if already in json format.
+                let content_type = result.headers().get(header::CONTENT_TYPE);
+                if let Some("application/json") = content_type.and_then(|v|v.to_str().ok()) {
+                    return Ok(result);
+                }
+
                 let result = result.map_body(|_, body| match body {
                     ResponseBody::Body(Body::Bytes(bytes)) => {
                         let json = ErrorMessage::from_bytes(bytes).into_json();
@@ -88,7 +96,7 @@ where
                     }
                     _ => {
                         warn!("Unkown error response body");
-                        let json = ErrorMessage::from_string("").into_json();
+                        let json = ErrorMessage::from_string(status.to_string()).into_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     }
                 });

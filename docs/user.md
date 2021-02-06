@@ -68,7 +68,7 @@ After successfully sign up, the user will have default access level of `Register
     "uid": "[_A-Za-z][_A-Za-z0-9]{5,31}",
     "pwd_hash": "Hashed password, e.g. sha256(passwd + salt)",
     "salt": "24bit Random value in b64",
-    "method": "sha256",
+    "method": "<SHA256>",
     "name": "UTF-8 Text within 32 chars",
     "email": "(optional) user@example.com",
     "url": "(optional) Your website url",
