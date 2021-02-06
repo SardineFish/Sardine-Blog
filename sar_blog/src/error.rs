@@ -34,7 +34,15 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Service Error")
+        match self {
+            Error::InvalidParams(str) => fmt::Display::fmt(str, f),
+            Error::DataNotFound(err) | Error::DataConflict(err) => fmt::Display::fmt(err, f),
+            Error::Unauthorized => write!(f, "Unauthorized"),
+            Error::PasswordIncorrect => write!(f, "Password incorrect"),
+            Error::InvalidChallenge => write!(f, "Invalid challenge"),
+            Error::InternalModelError(err) => fmt::Display::fmt(err,f),
+            _ => write!(f, "Internal Server Error"),
+        }
     }
 }
 

@@ -71,7 +71,7 @@ Each individual IP will increase views count once per day.
     "title": "Title",
     "tags": ["tag1", "..."],
     "doc_type": "PlainText | Markdown | HTML",
-    "doc": "Document Content",
+    "doc": "Document Content"
 }
 ```
 

@@ -36,7 +36,10 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Error")
+        match self {
+            Error::ServiceError(err) => fmt::Display::fmt(&err, f),
+            Error::SerializeError | Error::WebError(_) => write!(f, "Internal Error"),
+        }
     }
 }
 

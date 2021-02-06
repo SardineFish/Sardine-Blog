@@ -35,7 +35,12 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Internal model error.")
+        match self {
+            Error::PostNotFound(pid) => write!(f, "Post of pid '{}' not exists", pid),
+            Error::UserNotFound(uid) => write!(f, "User of uid '{}' not exists", uid),
+            Error::UserExisted(uid) => write!(f, "User of uid '{}' already existed", uid),
+            _ => write!(f, "Internal Server Error"),
+        }
     }
 }
 
