@@ -36,7 +36,7 @@ Users with higher value of access level have higher permission.
 ### Request
 ```json
 {
-    "user": "Uid or Email",
+    "uid": "Uid or Email",
     "pwd_hash": "Password Hash calculated by hash(hash(password + salt) + challenge)"
 }
 ```

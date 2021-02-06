@@ -15,6 +15,7 @@ pub enum Error
     DeserializeError(bson::de::Error),
     SerializeError(bson::ser::Error),
     RedisError(RedisError),
+    UserExisted(String),
 }
 
 impl Error {
@@ -27,6 +28,7 @@ impl Error {
             Error::DeserializeError(_) => 0x05,
             Error::SerializeError(_) => 0x06,
             Error::RedisError(_) => 0x07,
+            Error::UserExisted(_) => 0x08,
         }
     }
 }

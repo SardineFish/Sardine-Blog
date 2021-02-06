@@ -1,5 +1,5 @@
 use bson::Document;
-use mongodb::{Collection, Database, bson::{self, doc}, options::FindOneAndUpdateOptions};
+use mongodb::{Collection, Database, bson::{self, doc}, options::{FindOneAndUpdateOptions, UpdateOptions}};
 use serde::{Serialize, Deserialize};
 
 use crate::error::*;
@@ -120,10 +120,22 @@ impl UserModel {
     }
 
     pub async fn add(&self, user: &User) -> Result<()> {
-        self.collection.insert_one(bson::to_document(user).map_model_result()?, None)
+        let query = doc! {
+            "uid": &user.uid
+        };
+        let update = doc! {
+            "$setOnInsert": bson::to_bson(user).map_model_result()?
+        };
+        let mut opts = UpdateOptions::default();
+        opts.upsert = Some(true);
+        let result = self.collection.update_one(query, update, opts)
             .await
             .map_model_result()?;
-        Ok(())
+        if result.modified_count <= 0 {
+            Err(Error::UserExisted(user.uid.to_string()))
+        } else {
+            Ok(())
+        }
     }
 
     pub async fn update_password(&self, uid: &str, auth_info: AuthenticationInfo) -> Result<User> {

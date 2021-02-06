@@ -93,10 +93,10 @@ impl<'m> UserService<'m> {
             model::HashMethod::NoLogin => return Err(Error::PasswordIncorrect),
         };
 
-        let challenge = self.redis.session(session_id).challenge()
+        let challenge = self.redis.session(session_id).use_challenge()
             .await
             .map_service_err()?
-            .ok_or(Error::PasswordIncorrect)?;
+            .ok_or(Error::InvalidChallenge)?;
 
 
         let server_pwd_hash = hash_func(format!("{}{}", user.auth_info.password_hash, challenge).as_str());
@@ -201,10 +201,13 @@ impl<'m> UserService<'m> {
         rng.fill_bytes(&mut challenge);
 
         let challenge = hex::encode(challenge);
-        self.redis.session(session_id).set_challenge(&challenge).await.map_service_err()?;
+        self.redis.session(session_id)
+            .set_challenge(&challenge, self.service.option.challenge_expire.num_seconds() as usize)
+            .await
+            .map_service_err()?;
 
         Ok(AuthChallenge {
-            challenge: hex::encode(&challenge),
+            challenge: challenge,
             method,
             salt: salt.to_string(),
         })

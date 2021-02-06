@@ -14,6 +14,8 @@ pub struct ServiceOptions {
     pub visit_expire_time: Duration,
     #[serde(with="json_duration_format")]
     pub session_expire: Duration,
+    #[serde(with="json_duration_format")]
+    pub challenge_expire: Duration,
 }
 
 impl Default for ServiceOptions {
@@ -25,8 +27,9 @@ impl Default for ServiceOptions {
             db_timeout: 100,
             redis_addr: "redis://localhost".to_string(),
             default_avatar: "/img/decoration/unknown-user.png".to_string(),
-            visit_expire_time: Duration::days(1), // one day
-            session_expire: Duration::weeks(1), // one week
+            visit_expire_time: Duration::days(1),
+            session_expire: Duration::weeks(1), 
+            challenge_expire: Duration::hours(1),
         }
     }
 }

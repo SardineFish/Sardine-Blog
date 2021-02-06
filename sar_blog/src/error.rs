@@ -10,6 +10,8 @@ pub enum Error {
     InternalServiceError(&'static str),
     Unauthorized,
     PasswordIncorrect,
+    DataConflict(ModelError),
+    InvalidChallenge,
 }
 
 impl Error {
@@ -21,6 +23,8 @@ impl Error {
             Error::Unauthorized => 0x0400,
             Error::PasswordIncorrect => 0x0500,
             Error::InternalServiceError(_) => 0x0600,
+            Error::DataConflict(_) => 0x0700,
+            Error::InvalidChallenge => 0x0800,
         }
     }
     pub fn post_not_found(pid: PidType) -> Self {
@@ -40,6 +44,7 @@ impl From<ModelError> for Error {
     fn from(err: ModelError) -> Self {
         match err {
             ModelError::PostNotFound(_) | ModelError::UserNotFound(_) => Error::DataNotFound(err),
+            ModelError::UserExisted(_) => Error::DataConflict(err),
             _ => Error::InternalModelError(err),
         }
     }

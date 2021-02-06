@@ -20,11 +20,11 @@ pub struct SessionData {
 
 const NAMESPACE_DATA: &str = "session";
 const NAMESPACE_VISITS: &str = "visit";
+const NAMESPACE_CHALLENGE: &str = "challenge";
 
 const KEY_LAST_ACTIVE: &str = "last_active";
 const KEY_ACCESS_TOKEN: &str = "access_token";
 const KEY_UID: &str = "uid";
-const KEY_CHALLENGE: &str = "challenge";
 const KEY_FAKE_SALT: &str = "fake_salt";
 
 
@@ -118,9 +118,29 @@ impl<'s> Session<'s> {
             .map_model_result()
     }
 
-    session_field!(String, uid, KEY_UID);
+    pub async fn use_challenge(&mut self) -> Result<Option<String>> {
+        let key = namespace_key(NAMESPACE_CHALLENGE, self.session_id);
+        let (challenge, ): (Option<String>, ) = pipe()
+            .get(&key)
+            .del(&key).ignore()
+            .query_async(&mut self.redis)
+            .await
+            .map_model_result()?;
+        Ok(challenge)
+    }
 
-    session_field!(String, challenge, KEY_CHALLENGE);
+    pub async fn set_challenge(&mut self, value: &str, expire: usize) -> Result<()> {
+        let key = namespace_key(NAMESPACE_CHALLENGE, self.session_id);
+        pipe()
+            .set(&key, value)
+            .expire(&key, expire)
+            .query_async(&mut self.redis)
+            .await
+            .map_model_result()
+
+    }
+
+    session_field!(String, uid, KEY_UID);
 
     session_field!(String, fake_salt, KEY_FAKE_SALT);
 
