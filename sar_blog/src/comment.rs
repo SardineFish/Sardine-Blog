@@ -2,7 +2,7 @@ use std::{ cell::{Ref, RefCell, RefMut}, collections::{HashMap}};
 use std::rc::Rc;
 
 use chrono::{DateTime, Utc};
-use model::{AnonymousUserInfo, Comment, HistoryData, Model, PidType, PostType, RedisCache, SessionID};
+use model::{AnonymousUserInfo, BlogContent, Comment, CommentContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache, SessionID};
 use serde::{ Serialize, Serializer};
 use crate::{service::Service, utils::json_datetime_format};
 
@@ -12,7 +12,7 @@ use crate::{error::*};
 pub struct NestedComment {
     pub pid: PidType,
     pub comment_to: PidType,
-    pub author: String,
+    pub author: PubUserInfo,
     #[serde(with="json_datetime_format")]
     pub time: DateTime<Utc>,
     pub text: String,
@@ -95,7 +95,7 @@ impl<'m> CommentService<'m> {
     }
 
     pub async fn get_comments_of_pid(&self, pid: PidType, depth_limit: usize) ->Result<Vec<NestedCommentRef>> {
-        let comments = self.model.comment.get(pid)
+        let comments = self.model.comment.get_by_comment_root(pid)
             .await
             .map_service_err()?;
 
@@ -103,7 +103,9 @@ impl<'m> CommentService<'m> {
     }
 
     pub async fn post(&self, comment_to: PidType, text: &str, session_id: &SessionID, author_info: Option<&AnonymousUserInfo>) -> Result<PidType> {
-        let post_data = self.model.post_data.get_by_pid(comment_to).await.map_service_err()?;
+        let post = self.model.post.get_raw_by_pid(comment_to)
+            .await
+            .map_service_err()?;
         let user = match author_info {
             Some(info) => self.service.user().get_anonymous(info).await?,
             None => {
@@ -115,41 +117,39 @@ impl<'m> CommentService<'m> {
                 self.model.user.get_by_uid(&uid).await.map_service_err()?
             },
         };
-        let pid = self.model.post_data.new_pid().await.map_service_err()?;
 
-        let root_pid = match post_data.post {
-            PostType::Comment(_, pid) => pid,
-            _ => comment_to,
+        let comment_root = match &post.data {
+            PostType::Blog(_) | PostType::Note(_) => post.pid,
+            PostType::Comment(content) => content.comment_root,
         };
+        let comment = PostType::Comment(CommentContent {
+            comment_root,
+            comment_to,
+            text: text.to_owned(),
+        });
+        let post = self.model.post.new_post(comment, &user)
+            .await
+            .map_service_err()?;
+        
+        self.model.post.insert(&post).await.map_service_err()?;
 
-        let mut comment = Comment::new(root_pid, pid, comment_to, &user);
-        comment.text = text.to_string();
-
-        self.model.post_data.add_post(&comment).await.map_service_err()?;
-
-        self.model.comment.post(&comment).await.map_service_err()?;
-
-        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Comment(comment))
+        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(post.data))
             .await
             .map_service_err()?;
 
-        Ok(pid)
+        Ok(post.pid)
     }
 
-    pub async fn delete(&self, pid: PidType) -> Result<Option<Comment>> {
-        let post_data = self.model.post_data.get_by_pid(pid).await;
-        let post_data = match post_data {
-            Err(model::Error::PostNotFound(_)) => return Ok(None),
-            Err(err) => return Err(Error::from(err)),
-            Ok(post_data) => post_data
-        };
-
-        if let PostType::Comment(_, root_pid) = post_data.post {
-            let comment = self.model.comment.delete(root_pid, pid).await.map_service_err()?;
-
-            self.model.post_data.delete_post(pid).await.map_service_err()?;
-
-            Ok(comment)
+    pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<CommentContent>> {
+        let result = self.model.post.delete::<CommentContent>(pid)
+            .await
+            .map_service_err()?;
+        
+        if let Some(content) = result {
+            self.model.history.record(uid, model::Operation::Delete, HistoryData::Post(PostType::Comment(content.clone())))
+                .await
+                .map_service_err()?;
+            Ok(Some(content))
         } else {
             Ok(None)
         }

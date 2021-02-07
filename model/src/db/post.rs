@@ -1,11 +1,11 @@
-use std::usize;
+use std::{ops::Deref, usize};
 
-use bson::{Document, doc};
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions}};
+use bson::{Document, doc, from_bson};
+use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndDeleteOptions, FindOneAndUpdateOptions}};
 use tokio::stream::StreamExt;
 use super::post_data::{Post, PostContent};
 
-use crate::{PostType, error::*, model::PidType};
+use crate::{PostType, User, error::*, model::PidType};
 
 use super::{post_data::FlatPostData};
 
@@ -135,7 +135,7 @@ impl PostModel {
         Ok(())
     }
     
-    pub async fn new_pid(&self) -> Result<PidType> {
+    pub async fn new_post(&self, post_type: PostType, author: &User) -> Result<Post> {
         let query = doc! {
             "_id": &self.meta_id,
         };
@@ -151,7 +151,10 @@ impl PostModel {
             .expect("Missing Metadata");
 
         let metadata: PostMetaData = bson::from_document(result).expect("Failed to deserialize metadata.");
-        Ok(metadata.posts)
+
+        let pid = metadata.posts;
+
+        Ok(Post::new(pid, post_type, author))
     }
 
     pub async fn insert(&self, post: &Post) -> Result<()> {
@@ -161,7 +164,7 @@ impl PostModel {
         Ok(())
     }
 
-    pub async fn delete(&self, pid: PidType) -> Result<Option<PostType>> {
+    pub async fn delete<T: PostContent + DeserializeOwned>(&self, pid: PidType) -> Result<Option<T>> {
         let query = doc! {
             "pid": pid
         };
@@ -169,9 +172,12 @@ impl PostModel {
             .await
             .map_model_result()?;
 
-        if let Some(doc) = doc {
-            Ok(Some(bson::from_document(doc)
-                .map_model_result()?))
+        if let Some(mut doc) = doc {
+            let content_doc= doc.remove("data").ok_or(Error::InternalError("Missing 'data' field in BSON"))?
+                .as_document_mut().ok_or(Error::InternalError("Invalid 'data' field in BSON"))?
+                .remove("content").ok_or(Error::InternalError("Missing 'content' field in BSON"))?;
+            
+            Ok(Some(bson::from_bson(content_doc).map_model_result()?))
         } else {
             Ok(None)
         }

@@ -40,7 +40,11 @@ Each individual IP will increase views count once per day.
 {
     "pid": 0,
     "title": "Title",
-    "author": "Name",
+    "author": {
+        "name": "Display name",
+        "avatar": "Avatar url",
+        "url": "Url",
+    },
     "time": "UTC Time",
     "tags": ["tag1", "..."],
     "type": "PlainText | Markdown | HTML",
@@ -124,18 +128,10 @@ Each individual IP will increase views count once per day.
 If the blog exists, the full data will be returned.
 ```json
 {
-    "pid": 0,
     "title": "Title",
-    "author": "Name",
-    "time": "UTC Time",
     "tags": ["tag1", "..."],
-    "type": "PlainText | Markdown | HTML",
+    "doc_type": "PlainText | Markdown | HTML",
     "doc": "Document Content",
-    "stats": {
-        "likes": 0,
-        "views": 0,
-        "comments": 0,
-    }
 }
 ```
 

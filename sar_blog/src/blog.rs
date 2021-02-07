@@ -1,6 +1,6 @@
 
 use chrono::{DateTime, Utc};
-use model::{Blog, BlogContent, HistoryData, Model, PidType, RedisCache, SessionID};
+use model::{Blog, BlogContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache, SessionID};
 use serde::{Serialize};
 
 use crate::{Service, error::*, utils};
@@ -19,7 +19,7 @@ pub struct BlogPreview {
     #[serde(with="json_datetime_format")]
     pub time: DateTime<Utc>,
     pub tags: Vec<String>,
-    pub author: String,
+    pub author: PubUserInfo,
     pub preview: String, 
 }
 
@@ -62,7 +62,7 @@ impl<'m> BlogService<'m> {
     }
 
     pub async fn get_by_pid(&self, session_id: &SessionID, pid: PidType) -> Result<Blog> {
-        let mut blog: Blog = self.model.post.get_by_pid(pid)
+        let mut blog: Blog = self.model.post.get_post_by_pid(pid)
             .await
             .map_service_err()?;
 
@@ -73,45 +73,44 @@ impl<'m> BlogService<'m> {
         Ok(blog)
     }
 
-    pub async fn post(&self, uid: &str, blog_content: &BlogContent) -> Result<PidType> {
-        let pid = self.model.post_data.new_pid().await.map_service_err()?;
+    pub async fn post(&self, uid: &str, blog_content: BlogContent) -> Result<PidType> {
         let user = self.model.user.get_by_uid(&uid).await.map_service_err()?;
-        let blog = Blog::new(pid, &user, blog_content);
+        let post_type = PostType::Blog(blog_content);
+        let post = self.model.post.new_post(post_type, &user)
+            .await
+            .map_service_err()?;
+        
+        self.model.post.insert(&post).await.map_service_err()?;
 
-        self.model.post_data.add_post(&blog).await.map_service_err()?;
-
-        self.model.post.post(&blog).await.map_service_err()?;
-        self.model.comment.init_comment(pid).await.map_service_err()?;
-        self.model.history.record(uid, model::Operation::Create, HistoryData::Blog(blog))
+        self.model.history.record(uid, model::Operation::Create, HistoryData::Post(post.data))
             .await
             .map_service_err()?;
 
-        Ok(pid)
+        Ok(post.pid)
     }
 
-    pub async fn update(&self, pid: PidType, uid: &str, blog_content: &BlogContent) -> Result<()> {
-        let mut blog: Blog = self.model.post.get_by_pid(pid).await.map_service_err()?;
-        let user = self.model.user.get_by_uid(uid).await.map_service_err()?;
-
-        blog.update_content(&user, blog_content);
-        self.model.post.update::<Blog, Blog>(pid, &blog).await.map_service_err()?;
-        self.model.history.record(uid, model::Operation::Update, HistoryData::Blog(blog))
+    pub async fn update(&self, pid: PidType, uid: &str, blog_content: BlogContent) -> Result<()> {
+        self.model.post.update_content(pid, &blog_content)
+            .await
+            .map_service_err()?;
+        
+        self.model.history.record(uid, model::Operation::Update, HistoryData::Post(PostType::Blog(blog_content)))
             .await
             .map_service_err()?;
 
         Ok(())
     }
 
-    pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<Blog>> {
-        let blog: Option<Blog> = self.model.post.delete(pid).await.map_service_err()?;
+    pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<BlogContent>> {
 
-        if let Some(blog) = &blog {
-            self.model.history.record(uid, model::Operation::Delete, HistoryData::Blog(blog.clone()))
+        let post: Option<BlogContent> = self.model.post.delete(pid).await.map_service_err()?;
+        if let Some(content) = post {
+            self.model.history.record(uid, model::Operation::Delete, HistoryData::Post(PostType::Blog(content.clone())))
                 .await
                 .map_service_err()?;
-            self.model.post_data.delete_post(pid).await.map_service_err()?;
+            Ok(Some(content))
+        } else {
+            Ok(None)
         }
-
-        Ok(blog)
     }
 }

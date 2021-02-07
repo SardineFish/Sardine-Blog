@@ -43,11 +43,11 @@ depth: number
     "name": "(*) Display Name", 
     "email": "(optional) used for notification & Gravatar",
     "url": "(optional) Your website url",
-    "avatar": "Avatar url, normally use Gravatar by user email.",
+    "avatar": "(*) Avatar url, normally use Gravatar by user email.",
     "text": "Content Text"
 }
 ```
-*(\*) For anonymous user, the name is required. For user signed in, only the content is required.*
+*(\*) For anonymous user, the `name` and `avatar` is required. For user signed in, only the content is required.*
 
 ### Response
 ```json

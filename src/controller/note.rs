@@ -1,7 +1,7 @@
-use actix_web::{get, post, web};
+use actix_web::{HttpRequest, get, post, web};
 use chrono::{DateTime, Utc};
 use futures::Future;
-use sar_blog::model::{AnonymousUserInfo, DocType, Note, PidType, PostStats, SessionAuthInfo};
+use sar_blog::model::{AnonymousUserInfo, DocType, Note, NoteContent, PidType, PostStats, PubUserInfo, SessionAuthInfo};
 use sar_blog::utils::json_datetime_format;
 use serde::{Serialize, Deserialize};
 use web::{Json, Query, ServiceConfig, scope};
@@ -14,7 +14,7 @@ use super::{executor::execute, extractor::{self, ExtensionMove}};
 #[derive(Serialize)]
 struct PubNote {
     pid: PidType,
-    author: String,
+    author: PubUserInfo,
     #[serde(with="json_datetime_format")]
     time: DateTime<Utc>,
     doc_type: DocType,
@@ -52,15 +52,15 @@ fn default_count() -> usize {
 
 #[derive(Deserialize)]
 struct NoteUpload {
-    name: String,
+    name: Option<String>,
     email: Option<String>,
     url: Option<String>,
-    avatar: String,
+    avatar: Option<String>,
     doc_type: DocType,
     doc: String,
 }
 
-#[get("/")]
+#[get("")]
 async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>) -> Response<Vec<PubNote>>{
     execute(async move {
         let list = service.note().get_list(params.from, params.count)
@@ -73,17 +73,28 @@ async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>
     }).await
 }
 
-#[post("/")]
-async fn post(service: extractor::Service, session: extractor::Session, data: Json<NoteUpload>) -> Response<PidType> {
+#[post("")]
+async fn post(service: extractor::Service, session: extractor::Session, data: Json<NoteUpload>, request: HttpRequest) -> Response<PidType> {
     execute(async move {
-        let author_info: AnonymousUserInfo = AnonymousUserInfo {
-            avatar: data.avatar.clone(),
-            email: data.email.clone(),
-            name: data.name.clone(),
-            url: data.url.clone(),
+
+        let auth = middleware::auth_from_request(&service, &request)
+            .await?;
+        let author_info = match auth {
+            Some(_) => None,
+            None => Some(AnonymousUserInfo {
+                name: data.name.as_ref().ok_or(Error::invalid_params("Missing 'name'"))?.clone(),
+                avatar: data.avatar.as_ref().ok_or(Error::invalid_params("Missing 'avatar'"))?.clone(),
+                email: data.email.clone(),
+                url: data.url.clone(),
+            })
         };
 
-        let pid = service.note().post(session.id(), &author_info, data.doc_type, &data.doc)
+        let content = NoteContent {
+            doc_type: data.doc_type,
+            doc: data.doc.clone()
+        };
+
+        let pid = service.note().post(session.id(), author_info.as_ref(), content)
             .await
             .map_contoller_result()?;
         Ok(pid)

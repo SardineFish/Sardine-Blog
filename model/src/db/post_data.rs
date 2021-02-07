@@ -84,6 +84,43 @@ impl FlatPostData for Comment{
     }
 }
 
+pub trait PostData {
+    fn stats(&self) -> &PostStats;
+    fn pid(&self) -> PidType;
+}
+impl PostData for Post {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+impl PostData for Blog {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+impl PostData for Note {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+impl PostData for Comment {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+
 pub trait PostContent {
     // fn from_post(post: Post) -> Result<Self>;
 }
@@ -91,19 +128,3 @@ pub trait PostContent {
 impl PostContent for BlogContent{}
 impl PostContent for NoteContent{}
 impl PostContent for CommentContent{}
-
-#[derive(Clone)]
-pub struct PostDataModel {
-    collection: Collection,
-    meta_id: ObjectId,
-}
-
-
-impl PostDataModel {
-    pub fn new(db: &Database) -> Self{
-        Self{
-            collection: db.collection(COLLECTION_POST_DATA),
-            meta_id: ObjectId::with_bytes([0;12]),
-        }
-    }
-}

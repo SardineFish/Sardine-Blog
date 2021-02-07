@@ -1,4 +1,4 @@
-use model::{AnonymousUserInfo, DocType, Model, Note, PidType, RedisCache, SessionID};
+use model::{AnonymousUserInfo, DocType, HistoryData, Model, Note, NoteContent, PidType, PostType, RedisCache, SessionID};
 
 use crate::error::*;
 use crate::service::Service;
@@ -24,19 +24,29 @@ impl<'m> NoteService<'m> {
             .map_service_err()
     }
 
-    pub async fn post(&self, session_id: &SessionID, author_info: &AnonymousUserInfo, doc_type: DocType,  content: &str) -> Result<PidType> {
-        let uid = self.redis.session(session_id).uid().await.map_service_err()?;
-        let user = match &uid {
-            Some(uid) => self.model.user.get_by_uid(uid).await.map_service_err()?,
-            None => self.service.user().get_anonymous(author_info).await?
+    pub async fn post(&self, session_id: &SessionID, author_info: Option<&AnonymousUserInfo>, content: NoteContent) -> Result<PidType> {
+        let user = match author_info {
+            Some(info) => self.service.user().get_anonymous(info).await?,
+            None => {
+                let uid = self.redis.session(&session_id).uid()
+                .await
+                .map_service_err()?
+                .ok_or(Error::Unauthorized)?;
+
+                self.model.user.get_by_uid(&uid).await.map_service_err()?
+            },
         };
-        let pid = self.model.post_data.new_pid().await.map_service_err()?;
+        let note = PostType::Note(content);
+        let post = self.model.post.new_post(note, &user)
+            .await
+            .map_service_err()?;
+        
+        self.model.post.insert(&post).await.map_service_err()?;
 
-        let note = Note::new(pid, &user, doc_type, &content);
+        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(post.data))
+            .await
+            .map_service_err()?;
 
-        self.model.post_data.add_post(&note).await.map_service_err()?;
-
-        self.model.post.post(&note).await.map_service_err()?;
-        Ok(pid)
+        Ok(post.pid)
     }
 }

@@ -50,7 +50,7 @@ For anonymous user, send user infos additionally:
     "url": "(optional) Url of your website",
     "avatar": "User avatar, normally use Gravatar by user email.",
     "doc_type": "PlainText",
-    "doc": "Content",
+    "doc": "Content"
 }
 ```
 

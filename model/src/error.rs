@@ -17,6 +17,8 @@ pub enum Error
     RedisError(RedisError),
     UserExisted(String),
     PostTypeMissmatch,
+    BSONAccessError(bson::document::ValueAccessError),
+    InternalError(&'static str),
 }
 
 impl Error {
@@ -31,6 +33,8 @@ impl Error {
             Error::RedisError(_) => 0x07,
             Error::UserExisted(_) => 0x08,
             Error::PostTypeMissmatch => 0x09,
+            Error::BSONAccessError(_) => 0x0a,
+            Error::InternalError(_) => 0xff,
         }
     }
 }
@@ -66,6 +70,12 @@ impl From<bson::de::Error> for Error {
 impl From<bson::ser::Error> for Error {
     fn from(err: bson::ser::Error) -> Self {
         Error::SerializeError(err)
+    }
+}
+
+impl From<bson::document::ValueAccessError> for Error {
+    fn from(err: bson::document::ValueAccessError) -> Self {
+        Error::BSONAccessError(err)
     }
 }
 

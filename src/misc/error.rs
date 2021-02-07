@@ -32,6 +32,9 @@ impl Error {
             Error::ServiceError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
+    pub fn invalid_params(msg: &str) -> Error {
+        Error::ServiceError(ServiceError::InvalidParams(msg.to_string()))
+    }
 }
 
 impl fmt::Display for Error {

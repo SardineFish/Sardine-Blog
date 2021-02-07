@@ -1,13 +1,11 @@
 use actix_web::{HttpRequest, delete, get, post, web::{scope, Json, Path, Query, ServiceConfig}};
 use chrono::DateTime;
-use sar_blog::{
-    model::{AnonymousUserInfo, Comment, PidType},
-    NestedCommentRef,
-};
+use sar_blog::{NestedCommentRef, model::{AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo}};
 use serde::{Deserialize, Serialize};
 
 use crate::{
     middleware,
+    error::Error,
     misc::{error::MapControllerError, response::Response},
 };
 
@@ -16,15 +14,19 @@ use sar_blog::utils::json_datetime_format;
 
 #[derive(Deserialize)]
 struct QueryParams {
+    #[serde(default = "default_depth")]
     depth: usize,
+}
+fn default_depth() -> usize {
+    7
 }
 
 #[derive(Deserialize)]
 struct CommentUpload {
-    name: String,
+    name: Option<String>,
     email: Option<String>,
     url: Option<String>,
-    avatar: String,
+    avatar: Option<String>,
     text: String,
 }
 
@@ -32,7 +34,7 @@ struct CommentUpload {
 struct PubComment {
     pid: PidType,
     comment_to: PidType,
-    author: String,
+    author: PubUserInfo,
     #[serde(with = "json_datetime_format")]
     time: DateTime<chrono::Utc>,
     text: String,
@@ -80,8 +82,8 @@ async fn post(
         let author_info = match auth {
             Some(_) => None,
             None => Some(AnonymousUserInfo {
-                name: data.name.clone(),
-                avatar: data.avatar.clone(),
+                name: data.name.as_ref().ok_or(Error::invalid_params("Missing 'name'"))?.clone(),
+                avatar: data.avatar.as_ref().ok_or(Error::invalid_params("Missing 'avatar'"))?.clone(),
                 email: data.email.clone(),
                 url: data.url.clone(),
             })
@@ -98,11 +100,12 @@ async fn post(
 #[delete("/{pid}", wrap = "middleware::authentication()")]
 async fn delete(
     service: extractor::Service,
+    auth: extractor::Auth,
     Path(pid): Path<PidType>,
-) -> Response<Option<PubComment>> {
+) -> Response<Option<CommentContent>> {
     execute(async move {
-        let comment = service.comment().delete(pid).await.map_contoller_result()?;
-        Ok(comment.map(PubComment::from))
+        let comment = service.comment().delete(&auth.uid, pid).await.map_contoller_result()?;
+        Ok(comment)
     })
     .await
 }

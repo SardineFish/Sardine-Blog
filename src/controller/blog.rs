@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use actix_web::{get, post, put, delete, web::{self, Path}};
 use chrono::DateTime;
-use sar_blog::{BlogPreview, model::{Blog, BlogContent, DocType, PidType, PostStats}};
+use sar_blog::{BlogPreview, model::{Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo}};
 use serde::{Serialize, Deserialize};
 use web::{Query, ServiceConfig, scope};
 
@@ -30,7 +30,7 @@ fn default_count() -> usize {
 struct PubBlog {
     pid: PidType,
     title: String,
-    author: String,
+    author: PubUserInfo,
     #[serde(with="json_datetime_format")]
     time: DateTime<chrono::Utc>,
     tags: Vec<String>,
@@ -72,7 +72,7 @@ async fn get_by_pid(service: extractor::Service, Path(pid): Path<PidType>, sessi
 #[post("", wrap="middleware::authentication()")]
 async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>) -> Response<PidType> {
     execute(async move {
-        let pid = service.blog().post(&auth.uid, data.deref()).await.map_contoller_result()?;
+        let pid = service.blog().post(&auth.uid, data.to_owned()).await.map_contoller_result()?;
         Ok(pid)
     }).await
 }
@@ -81,7 +81,7 @@ async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Jso
 #[put("/{pid}", wrap="middleware::authentication()")]
 async fn update(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>, Path(pid): Path<PidType>) -> Response<PidType> {
     execute(async move {
-        service.blog().update(pid, &auth.uid, &data)
+        service.blog().update(pid, &auth.uid, data.to_owned())
             .await
             .map_contoller_result()?;
         Ok(pid)
@@ -89,13 +89,13 @@ async fn update(service: extractor::Service, auth: extractor::Auth, data: web::J
 }
 
 #[delete("/{pid}", wrap="middleware::authentication()")]
-async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<PubBlog>> {
+async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<BlogContent>> {
     execute(async move {
         let blog = service.blog().delete(&auth.uid, pid)
             .await
             .map_contoller_result()?;
         
-        Ok(blog.map(PubBlog::from))
+        Ok(blog)
     }).await
 }
 

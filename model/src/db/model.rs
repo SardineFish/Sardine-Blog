@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use mongodb::{self, options::ClientOptions};
 use options::ServiceOptions;
-use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostModel, post_data::PostDataModel, user::UserModel};
+use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostModel, user::UserModel};
 
 pub type PidType = i32;
 
@@ -12,7 +12,6 @@ pub struct Model
     pub user: UserModel,
     pub comment: CommentModel,
     pub post: PostModel,
-    pub post_data: PostDataModel,
     pub history: HistoryModel,
 }
 
@@ -34,7 +33,6 @@ impl Model
             user: UserModel::new(&db),
             post: PostModel::new(&db),
             comment: CommentModel::new(&db),
-            post_data: PostDataModel::new(&db),
             history: HistoryModel::new(&db)
         })
     }
