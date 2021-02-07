@@ -1,11 +1,9 @@
 use chrono::Utc;
-use mongodb::{Collection, Cursor, Database, bson::{self, DateTime, doc, oid::ObjectId}, options::{AggregateOptions, FindOneAndUpdateOptions}};
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
-use tokio::stream::StreamExt;
+use mongodb::{Collection, Database, bson::{DateTime, doc, oid::ObjectId}};
+use serde::{Deserialize, Serialize};
 
 use crate::{Blog, BlogContent, Comment, Note, User, misc::usize_format};
 use crate::{ model::PidType};
-use crate::error::*;
 
 use super::{comment::CommentContent, note::NoteContent};
 

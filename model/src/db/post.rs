@@ -1,14 +1,13 @@
 use std::usize;
 
 use bson::{Document, doc};
-use chrono::Utc;
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, FindOptions}};
+use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions}};
 use tokio::stream::StreamExt;
 use super::post_data::{Post, PostContent};
 
-use crate::{PostType, error::*, model::PidType, post_data::PostStats};
+use crate::{PostType, error::*, model::PidType};
 
-use super::{post_data::FlatPostData, user::PubUserInfo};
+use super::{post_data::FlatPostData};
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
 
@@ -30,13 +29,14 @@ struct PostMetaData {
     pub posts: PidType,
 }
 
+#[allow(dead_code)]
 fn query(pid: PidType) -> Document {
     doc! {
         "pid": pid
     }
 }
 
-
+#[allow(dead_code)]
 pub enum SortOrder{
     ASC = 1,
     DESC = -1,

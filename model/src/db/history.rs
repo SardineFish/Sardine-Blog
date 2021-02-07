@@ -2,7 +2,7 @@ use chrono::Utc;
 use mongodb::{Collection, Database, bson};
 use serde::{Serialize, Deserialize};
 
-use crate::{BlogContent, PostType, blog::Blog, comment::Comment, note::Note, user::User};
+use crate::{ PostType, user::User};
 use crate::error::*;
 
 const COLLECTION_HISTORY: &str = "history";

@@ -1,13 +1,12 @@
-use chrono::Utc;
-use futures_util::TryStreamExt;
-use mongodb::{Collection, Database, bson::{self, DateTime, doc, oid::ObjectId}, options::FindOneAndUpdateOptions};
+
+use mongodb::{Collection, Database, bson::{self, doc}};
 use serde::{Serialize, Deserialize};
 use tokio::stream::StreamExt;
 
-use crate::{Post, PostType, PostStats, model::PidType, user::User};
+use crate::{PostStats, model::PidType};
 use crate::error::*;
 
-use super::{post::PostModel, post_data::{PostContent, PostDataModel}, user::PubUserInfo};
+use super::{post::PostModel, user::PubUserInfo};
 
 const COLLECTION_COMMENT: &str = "post";
 

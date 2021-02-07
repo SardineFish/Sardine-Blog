@@ -1,11 +1,9 @@
-use chrono::Utc;
-use mongodb::{ bson::{DateTime, oid::ObjectId}};
+use mongodb::{ bson::{DateTime}};
 use serde::{Serialize, Deserialize};
 
-use crate::error::*;
-use crate::{PostType, User, blog::DocType, model::PidType, post_data::{PostStats, Post}};
+use crate::{ blog::DocType, model::PidType, post_data::{PostStats}};
 
-use super::{post_data::PostContent, user::PubUserInfo};
+use super::{ user::PubUserInfo};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NoteContent {

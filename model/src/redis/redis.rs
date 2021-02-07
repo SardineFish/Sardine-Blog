@@ -1,6 +1,6 @@
 use options::ServiceOptions;
 
-use super::{access_cache::AccessCache, session::{Session, SessionID}};
+use super::{access_cache::AccessCache, session::{Session}};
 use crate::error::*;
 
 #[derive(Clone)]
