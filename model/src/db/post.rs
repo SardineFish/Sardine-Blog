@@ -188,7 +188,9 @@ impl PostModel {
             "pid": pid
         };
         let update = doc! {
-            "data.content": bson::to_bson(&content).map_model_result()?
+            "$set": {
+                "data.content": bson::to_bson(&content).map_model_result()?
+            }
         };
         self.collection.find_one_and_update(query, update, None)
             .await
@@ -317,14 +319,15 @@ impl PostModel {
             "$replaceRoot": {
                 "newRoot": {
                     "$mergeObjects": [
-                        "$post",
+                        "$data.content",
                         {
                             "pid": "$pid",
+                            "uid": "$uid",
                             "time": "$time",
                             "stats": "$stats",
                             "author": {
                                 "$arrayElemAt": ["$user_info.info", 0]
-                            }
+                            },
                         }
                     ]
                 }

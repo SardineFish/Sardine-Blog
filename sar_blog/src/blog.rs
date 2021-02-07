@@ -50,7 +50,7 @@ impl<'m> BlogService<'m> {
     }
 
     pub async fn get_preview_list(&self, skip: usize, limit: usize) -> Result<Vec<BlogPreview>> {
-        let list: Vec<Blog> = self.model.post.get_list(skip, limit)
+        let list: Vec<Blog> = self.model.post.get_list::<Blog>(skip, limit)
             .await
             .map_service_err()?;
         
