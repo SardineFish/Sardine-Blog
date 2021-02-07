@@ -40,7 +40,7 @@ impl Model
     }
 
     pub async fn init(&self) -> Result<()> {
-        self.post_data.init_meta().await?;
+        self.post.init_meta().await?;
         Ok(())
     }
 }

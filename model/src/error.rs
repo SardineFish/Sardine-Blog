@@ -16,6 +16,7 @@ pub enum Error
     SerializeError(bson::ser::Error),
     RedisError(RedisError),
     UserExisted(String),
+    PostTypeMissmatch,
 }
 
 impl Error {
@@ -29,6 +30,7 @@ impl Error {
             Error::SerializeError(_) => 0x06,
             Error::RedisError(_) => 0x07,
             Error::UserExisted(_) => 0x08,
+            Error::PostTypeMissmatch => 0x09,
         }
     }
 }

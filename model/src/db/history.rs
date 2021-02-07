@@ -2,16 +2,14 @@ use chrono::Utc;
 use mongodb::{Collection, Database, bson};
 use serde::{Serialize, Deserialize};
 
-use crate::{blog::Blog, comment::Comment, note::Note, user::User};
+use crate::{BlogContent, PostType, blog::Blog, comment::Comment, note::Note, user::User};
 use crate::error::*;
 
 const COLLECTION_HISTORY: &str = "history";
 
 #[derive(Serialize, Deserialize)]
 pub enum HistoryData {
-    Blog(Blog),
-    Note(Note),
-    Comment(Comment),
+    Post(PostType),
     User(User),
 }
 #[derive(Serialize, Deserialize)]

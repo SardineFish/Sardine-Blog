@@ -27,6 +27,23 @@ pub struct UserInfo{
     pub avatar: String,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct PubUserInfo {
+    name: String,
+    avatar: String,
+    url: Option<String>,
+}
+
+impl From<&User> for PubUserInfo {
+    fn from(user: &User) -> Self {
+        Self {
+            name: user.info.name.clone(),
+            avatar: user.info.avatar.clone(),
+            url: user.info.url.clone(),
+        }
+    }
+}
+
 pub type AnonymousUserInfo = UserInfo;
 
 #[derive(Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
@@ -47,6 +64,7 @@ pub struct User {
     pub info: UserInfo,
     pub auth_info: AuthenticationInfo,
 }
+
 
 impl User {
     pub fn registered_user(uid: &str, info: &UserInfo, auth: &AuthenticationInfo) -> Self {
