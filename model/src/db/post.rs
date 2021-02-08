@@ -1,27 +1,17 @@
-use std::{ops::Deref, usize};
+use std::{ usize};
 
-use bson::{Document, doc, from_bson};
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndDeleteOptions, FindOneAndUpdateOptions}};
+use bson::{Document, doc, DateTime};
+use chrono::Utc;
+use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{ FindOneAndUpdateOptions}};
 use tokio::stream::StreamExt;
-use super::post_data::{Post, PostContent};
 
-use crate::{PostType, User, error::*, model::PidType};
-
-use super::{post_data::FlatPostData};
+use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, User, error::*, model::PidType};
+use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
 
 const COLLECTION_POST: &str = "post";
 const COLLECTION_META: &str = "meta";
-
-// pub trait Post {
-//     fn pid(&self) -> PidType;
-//     fn stats(&self) -> &PostStats;
-//     fn author(&self) -> &PubUserInfo;
-//     fn time(&self) -> chrono::DateTime<Utc>;
-//     fn post_type(&self) -> PostType;
-// }
-
 
 #[derive(Serialize, Deserialize)]
 struct PostMetaData {
@@ -41,6 +31,114 @@ pub enum SortOrder{
     ASC = 1,
     DESC = -1,
 }
+
+
+#[derive(Serialize, Deserialize, Default, Clone)]
+pub struct PostStats {
+    #[serde(with="usize_format")]
+    pub likes: usize,
+    #[serde(with="usize_format")]
+    pub views: usize,
+    #[serde(with="usize_format")]
+    pub comments: usize,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(tag = "type", content = "content")]
+pub enum PostType {
+    Note(NoteContent),
+    Blog(BlogContent),
+    Comment(CommentContent),
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Post {
+    pub(crate) _id: ObjectId,
+    pub pid: PidType,
+    pub uid: String,
+    pub time: DateTime,
+    pub stats: PostStats,
+    pub data: PostType,
+}
+
+impl Post {
+    pub fn new(pid: PidType, post: PostType, author: &User) -> Self{
+        Self {
+            _id: ObjectId::new(),
+            pid,
+            uid: author.uid.to_string(),
+            time: Utc::now().into(),
+            stats: Default::default(),
+            data: post,
+        }
+    }
+}
+
+pub trait FlatPostData {
+    fn post_type() -> &'static str;
+}
+
+impl FlatPostData for Blog{
+    fn post_type() -> &'static str {
+        "Blog"
+    }
+}
+impl FlatPostData for Note{
+    fn post_type() -> &'static str {
+        "Note"
+    }
+}
+impl FlatPostData for Comment{
+    fn post_type() -> &'static str {
+        "Comment"
+    }
+}
+
+pub trait PostData {
+    fn stats(&self) -> &PostStats;
+    fn pid(&self) -> PidType;
+}
+impl PostData for Post {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+impl PostData for Blog {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+impl PostData for Note {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+impl PostData for Comment {
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+}
+
+pub trait PostContent {
+    // fn from_post(post: Post) -> Result<Self>;
+}
+
+impl PostContent for BlogContent{}
+impl PostContent for NoteContent{}
+impl PostContent for CommentContent{}
+
 
 #[derive(Clone)]
 pub struct PostModel {
@@ -62,64 +160,6 @@ impl PostModel {
             meta_id: ObjectId::with_bytes([0;12]),
         }
     }
-
-    // pub async fn get_list<T: FlatPostData + DeserializeOwned>(&self, from: usize, count: usize) -> Result<Vec<T>> {
-    //     let mut opts = FindOptions::default();
-    //     opts.skip = Some(from as i64);
-    //     opts.limit = Some(count as i64);
-
-    //     let result = self.collection.find(None, opts)
-    //         .await
-    //         .map_model_result()?;
-        
-    //     let posts: Vec<T> = result.filter_map(
-    //         |t| t.ok().and_then(
-    //             |doc| bson::from_document(doc).ok()))
-    //         .collect()
-    //         .await;
-
-    //     Ok(posts)
-    // }
-
-    // pub async fn get_by_pid<T: Post + DeserializeOwned>(&self, pid: PidType) -> Result<T> {
-    //     let doc = self.collection.find_one(query(pid), None)
-    //         .await
-    //         .map_model_result()?
-    //         .ok_or(Error::PostNotFound(pid))?;
-
-    //     bson::from_document(doc).map_model_result()
-    // }
-
-    // pub async fn post<T: Post + Serialize>(&self, post: &T) -> Result<()> {
-    //     let doc = bson::to_document(post).map_model_result()?;
-    //     self.collection.insert_one(doc, None)
-    //         .await
-    //         .map_model_result()?;
-    //     Ok(())
-    // }
-
-    // pub async fn update<T: Serialize, P: Post + DeserializeOwned>(&self, pid: PidType, data: &T) -> Result<P> {
-    //     let update = doc! {
-    //         "$set": bson::to_bson(data).map_model_result()?
-    //     };
-    //     let doc = self.collection.find_one_and_update(query(pid), update, self.update_options.clone())
-    //         .await
-    //         .map_model_result()?
-    //         .ok_or(Error::PostNotFound(pid))?;
-
-    //     bson::from_document(doc).map_model_result()
-    // }
-
-    // pub async fn delete<P: Post + DeserializeOwned>(&self, pid: PidType) -> Result<Option<P>> {
-    //     let doc = self.collection.find_one_and_delete(query(pid), None)
-    //         .await
-    //         .map_model_result()?;
-    //     if let Some(doc) = doc {
-    //         Ok(Some(bson::from_document(doc).map_model_result()?))
-    //     } else {
-    //         Ok(None)
-    //     }
-    // }
 
     
     pub async fn init_meta(&self) -> Result<()> {

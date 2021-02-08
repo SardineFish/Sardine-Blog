@@ -9,6 +9,8 @@ pub struct NoteService<'m> {
     service: &'m Service,
 }
 
+// TODO: Access check for message doc_type
+
 impl<'m> NoteService<'m> {
     pub fn new(service: &'m Service) -> Self {
         Self {
