@@ -1,4 +1,3 @@
-use std::ops::Deref;
 
 use actix_web::{get, post, put, delete, web::{self, Path}};
 use chrono::DateTime;

@@ -1,7 +1,6 @@
 use actix_web::{HttpRequest, get, post, web};
 use chrono::{DateTime, Utc};
-use futures::Future;
-use sar_blog::{Author, model::{AnonymousUserInfo, DocType, Note, NoteContent, PidType, PostStats, PubUserInfo, SessionAuthInfo}};
+use sar_blog::{Author, model::{AnonymousUserInfo, DocType, Note, NoteContent, PidType, PostStats, PubUserInfo}};
 use sar_blog::utils::json_datetime_format;
 use serde::{Serialize, Deserialize};
 use web::{Json, Query, ServiceConfig, scope};
@@ -10,7 +9,7 @@ use crate::utils::EmptyAsNone;
 use crate::error::*;
 use crate::{middleware, misc::response::Response};
 
-use super::{executor::execute, extractor::{self, ExtensionMove}};
+use super::{executor::execute, extractor::{self}};
 
 #[derive(Serialize)]
 struct PubNote {

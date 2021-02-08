@@ -1,10 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
 
-use actix_http::{HttpMessage, body::{Body, MessageBody}, cookie::Cookie, error::ErrorInternalServerError};
+use actix_http::{HttpMessage, body::{Body}};
 use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 
 use sar_blog::{Service, model::SessionID};
-use web::service;
 
 use crate::misc::cookie::gen_session_cookie;
 

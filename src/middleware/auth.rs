@@ -1,9 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
 
-use actix_http::{HttpMessage, body::{Body, MessageBody}, cookie::Cookie, error::ErrorInternalServerError};
-use actix_web::{dev::{Service, ServiceRequest, ServiceResponse}, web};
+use actix_http::{HttpMessage, body::{Body}};
+use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 use error::Error;
-use sar_blog::{Error as ServiceError, model::SessionAuthInfo, model::User};
+use sar_blog::{Error as ServiceError, model::SessionAuthInfo};
 use crate::misc::error;
 
 use crate::misc::response::Response;

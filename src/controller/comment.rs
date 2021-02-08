@@ -67,7 +67,6 @@ async fn get_nested_comments(
 #[post("/{pid}")]
 async fn post(
     service: extractor::Service,
-    session: extractor::Session,
     Path(pid): Path<PidType>,
     data: Json<CommentUpload>,
     request: HttpRequest,

@@ -1,10 +1,8 @@
-use std::fmt;
 
 use actix_http::{ResponseBuilder, cookie::Cookie, http::StatusCode};
 use futures::{Future, future::{Ready, ready}};
 use serde::{Serialize};
-use actix_web::{FromRequest, HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}};
-use sar_blog::Error as ServiceError;
+use actix_web::{ HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}};
 
 use super::error::Error;
 
@@ -84,10 +82,6 @@ impl<T: Serialize> Response<T> {
             _ => Err(actix_web::error::ErrorInternalServerError("Failed to construct service request"))
         }
     }
-    pub async fn run<R : Serialize, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R> {
-        let result = func.await;
-        Response::<R>::from(result)
-    }
 }
 
 impl<T : BuildResponse> From<Result<T, Error>> for Response<T> {
@@ -110,7 +104,7 @@ pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: 
 #[actix_web::get("/")]
 async fn get_foo() -> Response<Option<u32>> {
     run(async move {
-        let t = Err(Error::WebError(actix_web::error::ErrorInternalServerError("")))?;
+        let _t = Err(Error::WebError(actix_web::error::ErrorInternalServerError("")))?;
         Ok(Some(1 as u32))
     }).await
 }
@@ -118,7 +112,7 @@ async fn get_foo() -> Response<Option<u32>> {
 impl<T: BuildResponse> Responder for Response<T> {
     type Error = actix_web::Error;
     type Future = Ready<Result<HttpResponse, Self::Error>>;
-    fn respond_to(self, req: &HttpRequest) -> Self::Future {
+    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
 
         let error_response = match self {
             Response::Ok(data) => {

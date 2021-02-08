@@ -1,5 +1,4 @@
 use futures::Future;
-use serde::Serialize;
 
 use crate::misc::{error, response::{BuildResponse, Response}};
 
