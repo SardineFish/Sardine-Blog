@@ -110,7 +110,7 @@ No additional request and response data if succed.
 ### Request
 ```json
 {
-    "access": "Access Level",
+    "access": "Access Level"
 }
 ```
 

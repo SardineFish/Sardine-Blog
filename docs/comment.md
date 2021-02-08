@@ -9,23 +9,22 @@ depth: number
 ```
 
 ### Response
+The max nesting depth is specific by `depth` in query params. 
+Comments which depth > `depth` will be flatten into the parent comment.
 ```json
 [
     {
         "pid": 0,
         "comment_to": 0,
-        "author": "Uid",
-        "time": "UTC Time",
+        "author": {
+            "name": "Name of author",
+            "avatar": "http://example.com/avatar.png",
+            "url": "http://user.example.com/ or null"
+        },
+        "time": "Sun, 07 Feb 2021 15:42:15 +0000",
         "text": "Content Text",
-        "replies": [
-            {
-                "pid": 0,
-                "comment_to": 0,
-                "author": "Uid",
-                "time": "UTC Time",
-                "text": "Content Text"
-            }
-        ]
+        "comments": ["..."],
+        "depth": 1
     }
 ]
 ```
@@ -41,20 +40,16 @@ depth: number
 ```json
 {
     "name": "(*) Display Name", 
+    "avatar": "(*) Avatar url, normally use Gravatar by user email.",
     "email": "(optional) used for notification & Gravatar",
     "url": "(optional) Your website url",
-    "avatar": "(*) Avatar url, normally use Gravatar by user email.",
     "text": "Content Text"
 }
 ```
 *(\*) For anonymous user, the `name` and `avatar` is required. For user signed in, only the content is required.*
 
 ### Response
-```json
-{
-    "pid": 0
-}
-```
+Responsed data is just the `pid` of the blog.
 
 ### Error
 - `404` The post of `pid` to comment not exists.
@@ -71,11 +66,9 @@ depth: number
 ### Response
 ```json
 {
-    "pid": 0,
     "comment_to": 0,
-    "author": "Uid",
-    "time": "UTC Time",
-    "text": "Content Text",
+    "comment_root": 0,
+    "text": "Content Text"
 }
 ```
 If the comment of `pid` not exists, `204 No Content` with no additional data will responsed.

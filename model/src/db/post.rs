@@ -264,7 +264,8 @@ impl PostModel {
 
     pub async fn get_post_by_pid<P : FlatPostData + DeserializeOwned>(&self, pid:PidType) -> Result<P> {
         let query = doc!{
-            "pid": pid
+            "pid": pid,
+            "data.type": P::post_type()
         };
 
         let doc = Self::get_flat_posts(&self.collection, query, 0, 1, None)

@@ -14,14 +14,18 @@ count: number
 [
     {
         "pid": 0,
-        "author": "Name",
-        "time": "UTC Time",
-        "doc_type": "PlainText | Markdown | HTML",
-        "doc": "Content",
+        "author": {
+            "name": "Name of author",
+            "avatar": "http://example.com/avatar.png",
+            "url": "http://example.com/ or null"
+        },
+        "time": "Mon, 08 Feb 2021 07:43:39 +0000",
+        "doc_type": "PlainText",
+        "doc": "Message Content",
         "stats": {
             "likes": 0,
             "views": 0,
-            "comments": 0,
+            "comments": 0
         }
     }
 ]
@@ -55,11 +59,7 @@ For anonymous user, send user infos additionally:
 ```
 
 ### Response
-```json
-{
-    "pid": 0
-}
-```
+Responsed data is the `pid` of the message.
 
 --------
 

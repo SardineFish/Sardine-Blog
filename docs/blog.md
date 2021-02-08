@@ -15,15 +15,14 @@ count: number
     {
         "pid": 0,
         "title": "Title",
-        "author": "Name",
-        "time": "UTC Time",
+        "time": "Sun, 07 Feb 2021 15:04:33 +0000",
         "tags": ["tag1", "..."],
-        "preview": "Preview content",
-        "stats": {
-            "likes": 0,
-            "views": 0,
-            "comments": 0,
-        }
+        "author": {
+            "name": "Name of author",
+            "avatar": "http://example.com/avatar.png",
+            "url": "http://user.example.com/ or null"
+        },
+        "preview": "Preview content of blog"
     }
 ]
 ```
@@ -41,18 +40,18 @@ Each individual IP will increase views count once per day.
     "pid": 0,
     "title": "Title",
     "author": {
-        "name": "Display name",
-        "avatar": "Avatar url",
-        "url": "Url",
+        "name": "Name of Test",
+        "avatar": "http://example.com/avatar.png",
+        "url": "http://user.example.com/ or null"
     },
-    "time": "UTC Time",
+    "time": "Sun, 07 Feb 2021 15:04:33 +0000",
     "tags": ["tag1", "..."],
-    "type": "PlainText | Markdown | HTML",
-    "doc": "Document Content",
+    "doc_type": "PlainText",
+    "doc": "Content of the blog",
     "stats": {
         "likes": 0,
         "views": 0,
-        "comments": 0,
+        "comments": 0
     }
 }
 ```
@@ -80,11 +79,7 @@ Each individual IP will increase views count once per day.
 ```
 
 ### Response
-```json
-{
-    "pid": 0
-}
-```
+Responsed data is just the `pid` of the blog.
 
 
 --------
@@ -106,11 +101,7 @@ Each individual IP will increase views count once per day.
 ```
 
 ### Response
-```json
-{
-    "pid": 0
-}
-```
+Responsed data is just the `pid` of the blog.
 
 ### Error
 - `404` Blog not exists.
