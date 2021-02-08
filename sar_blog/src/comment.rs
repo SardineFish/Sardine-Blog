@@ -2,9 +2,9 @@ use std::{ cell::{Ref, RefCell, RefMut}, collections::{HashMap}};
 use std::rc::Rc;
 
 use chrono::{DateTime, Utc};
-use model::{AnonymousUserInfo, BlogContent, Comment, CommentContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache, SessionID};
+use model::{Comment, CommentContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache};
 use serde::{ Serialize, Serializer};
-use crate::{service::Service, utils::json_datetime_format};
+use crate::{service::Service, user::Author, utils::json_datetime_format};
 
 use crate::{error::*};
 
@@ -49,14 +49,6 @@ impl NestedCommentRef{
     }
 }
 
-// impl Deref for NestedCommentRef {
-//     type Target = NestedComment;
-//     fn deref(&self) -> &Self::Target {
-//         let comment: Ref<'_, NestedComment> = RefCell::borrow(&self.0);
-//         comment
-//     }
-// }
-
 impl Serialize for NestedCommentRef {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -81,7 +73,7 @@ impl From<Comment> for NestedComment {
 
 pub struct CommentService<'m> {
     model: &'m Model,
-    redis: &'m RedisCache,
+    _redis: &'m RedisCache,
     service: &'m Service,
 }
 
@@ -90,7 +82,7 @@ impl<'m> CommentService<'m> {
         Self{
             service: service,
             model: &service.model,
-            redis: &service.redis,
+            _redis: &service.redis,
         }
     }
 
@@ -102,20 +94,14 @@ impl<'m> CommentService<'m> {
         CommentService::construct_comments(comments, pid, depth_limit)
     }
 
-    pub async fn post(&self, comment_to: PidType, text: &str, session_id: &SessionID, author_info: Option<&AnonymousUserInfo>) -> Result<PidType> {
+    pub async fn post(&self, comment_to: PidType, text: &str, author: Author) -> Result<PidType> {
         let post = self.model.post.get_raw_by_pid(comment_to)
             .await
             .map_service_err()?;
-        let user = match author_info {
-            Some(info) => self.service.user().get_anonymous(info).await?,
-            None => {
-                let uid = self.redis.session(&session_id).uid()
-                .await
-                .map_service_err()?
-                .ok_or(Error::Unauthorized)?;
-
-                self.model.user.get_by_uid(&uid).await.map_service_err()?
-            },
+       let user = match author {
+            Author::Anonymous(info) => self.service.user().get_anonymous(&info).await?,
+            Author::Authorized(auth) => 
+                self.model.user.get_by_uid(&auth.uid).await.map_service_err()?
         };
 
         let comment_root = match &post.data {

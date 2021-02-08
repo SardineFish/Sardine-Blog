@@ -1,13 +1,9 @@
 use actix_web::{HttpRequest, delete, get, post, web::{scope, Json, Path, Query, ServiceConfig}};
 use chrono::DateTime;
-use sar_blog::{NestedCommentRef, model::{AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo}};
+use sar_blog::{Author, NestedCommentRef, model::{AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo}};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    middleware,
-    error::Error,
-    misc::{error::MapControllerError, response::Response},
-};
+use crate::{error::Error, middleware, misc::{error::MapControllerError, response::Response, utils::EmptyAsNone}};
 
 use super::{executor::execute, extractor};
 use sar_blog::utils::json_datetime_format;
@@ -79,18 +75,25 @@ async fn post(
     execute(async move {
         let auth = middleware::auth_from_request(&service, &request)
             .await?;
-        let author_info = match auth {
-            Some(_) => None,
-            None => Some(AnonymousUserInfo {
-                name: data.name.as_ref().ok_or(Error::invalid_params("Missing 'name'"))?.clone(),
-                avatar: data.avatar.as_ref().ok_or(Error::invalid_params("Missing 'avatar'"))?.clone(),
-                email: data.email.clone(),
-                url: data.url.clone(),
+        let author = match auth {
+            Some(auth) => Author::Authorized(auth),
+            None => Author::Anonymous(AnonymousUserInfo {
+                name: data.name.as_ref()
+                    .empty_as_none()
+                    .ok_or(Error::invalid_params("Missing 'name'"))?
+                    .clone(),
+                avatar: data.avatar.as_ref()
+                    .empty_as_none()
+                    .ok_or(Error::invalid_params("Missing 'avatar'"))?
+                    .clone(),
+                email: data.email.clone().empty_as_none(),
+                url: data.url.clone().empty_as_none(),
             })
         };
+
         service
             .comment()
-            .post(pid, &data.text, session.id(), author_info.as_ref())
+            .post(pid, &data.text, author)
             .await
             .map_contoller_result()
     })

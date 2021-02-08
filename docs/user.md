@@ -65,7 +65,7 @@ After successfully sign up, the user will have default access level of `Register
 ### Request
 ```json
 {
-    "uid": "[_A-Za-z][_A-Za-z0-9]{5,31}",
+    "uid": "[_A-Za-z0-9]{6,32}",
     "pwd_hash": "Hashed password, e.g. sha256(passwd + salt)",
     "salt": "24bit Random value in b64",
     "method": "<SHA256>",

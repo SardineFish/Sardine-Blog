@@ -1,5 +1,4 @@
-use model::{PostData, PidType, Post, SessionID};
-use serde::de::DeserializeOwned;
+use model::{PostData, SessionID};
 
 use crate::{Service, error::*};
 

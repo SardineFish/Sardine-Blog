@@ -6,13 +6,18 @@ use model::{SessionAuthInfo, Model, RedisCache, SessionID};
 use rand::{RngCore, prelude::StdRng};
 use sha2::{Digest, Sha256};
 use serde::{Serialize};
-use crate::{error::*, service::Service};
+use crate::{error::*, service::Service, validate::{Validate, validate_uid}};
 
 #[derive(Serialize)]
 pub struct AuthChallenge {
     pub method: HashMethod,
     pub salt: String,
     pub challenge: String,
+}
+
+pub enum Author {
+    Anonymous(AnonymousUserInfo),
+    Authorized(SessionAuthInfo),
 }
 
 pub struct UserService<'m> {
@@ -53,6 +58,7 @@ impl<'m> UserService<'m> {
 
     /// Get or create an anonymous user
     pub async fn get_anonymous(&self, info: &AnonymousUserInfo) -> Result<User> {
+        info.validate()?;
         let user = User::anonymous(info);
         
         match self.model.user.get_by_uid(&user.uid).await {
@@ -70,6 +76,7 @@ impl<'m> UserService<'m> {
     }
 
     pub async fn register(&self, session_id: &SessionID, uid: &str, info: &UserInfo, auth_info: &AuthenticationInfo) -> Result<AuthToken> {
+        validate_uid(uid)?;
         let user = User::registered_user(uid, info, auth_info);
         
         self.model.user.add(&user).await.map_service_err()?;

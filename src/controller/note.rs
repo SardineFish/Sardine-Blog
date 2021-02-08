@@ -1,11 +1,12 @@
 use actix_web::{HttpRequest, get, post, web};
 use chrono::{DateTime, Utc};
 use futures::Future;
-use sar_blog::model::{AnonymousUserInfo, DocType, Note, NoteContent, PidType, PostStats, PubUserInfo, SessionAuthInfo};
+use sar_blog::{Author, model::{AnonymousUserInfo, DocType, Note, NoteContent, PidType, PostStats, PubUserInfo, SessionAuthInfo}};
 use sar_blog::utils::json_datetime_format;
 use serde::{Serialize, Deserialize};
 use web::{Json, Query, ServiceConfig, scope};
 
+use crate::utils::EmptyAsNone;
 use crate::error::*;
 use crate::{middleware, misc::response::Response};
 
@@ -74,18 +75,24 @@ async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>
 }
 
 #[post("")]
-async fn post(service: extractor::Service, session: extractor::Session, data: Json<NoteUpload>, request: HttpRequest) -> Response<PidType> {
+async fn post(service: extractor::Service, data: Json<NoteUpload>, request: HttpRequest) -> Response<PidType> {
     execute(async move {
 
         let auth = middleware::auth_from_request(&service, &request)
             .await?;
-        let author_info = match auth {
-            Some(_) => None,
-            None => Some(AnonymousUserInfo {
-                name: data.name.as_ref().ok_or(Error::invalid_params("Missing 'name'"))?.clone(),
-                avatar: data.avatar.as_ref().ok_or(Error::invalid_params("Missing 'avatar'"))?.clone(),
-                email: data.email.clone(),
-                url: data.url.clone(),
+        let author = match auth {
+            Some(auth) => Author::Authorized(auth),
+            None => Author::Anonymous(AnonymousUserInfo {
+                name: data.name.as_ref()
+                    .empty_as_none()
+                    .ok_or(Error::invalid_params("Missing 'name'"))?
+                    .clone(),
+                avatar: data.avatar.as_ref()
+                    .empty_as_none()
+                    .ok_or(Error::invalid_params("Missing 'avatar'"))?
+                    .clone(),
+                email: data.email.clone().empty_as_none(),
+                url: data.url.clone().empty_as_none(),
             })
         };
 
@@ -94,7 +101,7 @@ async fn post(service: extractor::Service, session: extractor::Session, data: Js
             doc: data.doc.clone()
         };
 
-        let pid = service.note().post(session.id(), author_info.as_ref(), content)
+        let pid = service.note().post(author, content)
             .await
             .map_contoller_result()?;
         Ok(pid)

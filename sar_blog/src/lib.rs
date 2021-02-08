@@ -5,7 +5,7 @@ mod comment;
 mod post_data;
 mod error;
 mod service;
-
+mod validate;
 mod session;
 
 #[allow(dead_code)]
@@ -16,4 +16,4 @@ pub use service::Service;
 pub use model;
 pub use blog::BlogPreview;
 pub use comment::NestedCommentRef;
-pub use user::{AuthToken, AuthChallenge};
+pub use user::{AuthToken, AuthChallenge, Author};
