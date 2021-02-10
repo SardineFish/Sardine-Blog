@@ -2,10 +2,10 @@ use std::{ usize};
 
 use bson::{Document, doc, DateTime};
 use chrono::Utc;
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{ FindOneAndUpdateOptions}};
+use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, UpdateOptions}};
 use tokio::stream::StreamExt;
 
-use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, User, error::*, model::PidType};
+use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, error::*, model::PidType};
 use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
@@ -62,11 +62,11 @@ pub struct Post {
 }
 
 impl Post {
-    pub fn new(pid: PidType, post: PostType, author: &User) -> Self{
+    pub fn new(pid: PidType, post: PostType, author: &str) -> Self{
         Self {
             _id: ObjectId::new(),
             pid,
-            uid: author.uid.to_string(),
+            uid: author.to_string(),
             time: Utc::now().into(),
             stats: Default::default(),
             data: post,
@@ -175,7 +175,7 @@ impl PostModel {
         Ok(())
     }
     
-    pub async fn new_post(&self, post_type: PostType, author: &User) -> Result<Post> {
+    pub async fn new_post(&self, post_type: PostType, uid: &str) -> Result<Post> {
         let query = doc! {
             "_id": &self.meta_id,
         };
@@ -194,14 +194,26 @@ impl PostModel {
 
         let pid = metadata.posts;
 
-        Ok(Post::new(pid, post_type, author))
+        Ok(Post::new(pid, post_type, uid))
     }
 
     pub async fn insert(&self, post: &Post) -> Result<()> {
-        self.collection.insert_one(bson::to_document(&post).map_model_result()?, None)
+        let query = doc! {
+            "pid": post.pid
+        };
+        let update = doc! {
+            "$setOnInsert": bson::to_bson(&post).map_model_result()?
+        };
+        let mut opts = UpdateOptions::default();
+        opts.upsert = Some(true);
+        let result = self.collection.update_one(query, update, opts)
             .await
             .map_model_result()?;
-        Ok(())
+        if result.upserted_id.is_none() {
+            Err(Error::PostExisted(post.pid))
+        } else {
+            Ok(())
+        }
     }
 
     pub async fn delete<T: PostContent + DeserializeOwned>(&self, pid: PidType) -> Result<Option<T>> {
@@ -256,7 +268,13 @@ impl PostModel {
         };
         let result: Vec<P> = Self::get_flat_posts(&self.collection, query, skip, limit, Some(("time", SortOrder::DESC)))
             .await?
-            .filter_map(|d| d.ok().and_then(|doc| bson::from_document::<P>(doc).ok()))
+            .filter_map(|d| d.ok().and_then(|doc| {
+                let result = bson::from_document::<P>(doc);
+                if let Err(err) = &result {
+                    log::warn!("Error when deserializing a {}: {}", P::post_type(), err);
+                }
+                result.ok()
+            }))
             .collect()
             .await;
         Ok(result)
@@ -319,6 +337,9 @@ impl PostModel {
         limit: usize,
         sort: Option<(&str,SortOrder)>
     ) -> Result<Cursor> {
+
+        log::debug!("Get post at {}+{}", skip, limit);
+        
         let mut pipeline: Vec<bson::Document> = Vec::new();
         pipeline.push(doc!{
             "$match": filter,
@@ -330,6 +351,7 @@ impl PostModel {
                 }
             });
         }
+        
         pipeline.push(doc!{
             "$skip": skip as i32
         });

@@ -1,5 +1,5 @@
 [package]
-name = "model"
+name = "data_migration"
 version = "0.1.0"
 authors = ["SardineFish <Sardine@live.cn>"]
 edition = "2018"
@@ -7,13 +7,12 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-options = { path = "../options" }
-mongodb = "1.1.0"
-chrono = "0.4.19"
-tokio = { version = "0.2.24", features = ["stream", "full"] }
-serde = "1.0.123"
-redis = { version = "0.17.0", features = ["connection-manager", "tokio-comp"]}
-md5 = "0.7.0"
-paste = "1.0"
-futures-util = "0.3.12"
+mysql = "20.1.0"
+model = { path = "../model" }
+env_logger = "0.8.2"
 log = "0.4.14"
+serde = "1.0.123"
+options = { path = "../options" }
+url = "2.2.0"
+tokio = { version = "0.2.24", features = ["stream", "full"] }
+email-address-parser = "1.0.0"

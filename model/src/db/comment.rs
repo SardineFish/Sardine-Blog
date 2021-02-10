@@ -6,7 +6,7 @@ use tokio::stream::StreamExt;
 use crate::{PostStats, model::PidType};
 use crate::error::*;
 
-use super::{post::PostModel, user::PubUserInfo};
+use super::{post::{PostModel, SortOrder}, user::PubUserInfo};
 
 const COLLECTION_COMMENT: &str = "post";
 
@@ -44,6 +44,7 @@ pub struct CommentContent {
     pub comment_to: PidType,
     pub comment_root: PidType,
     pub text: String,
+    pub notified: bool,
 }
 
 // impl Post for Comment {
@@ -98,9 +99,15 @@ impl CommentModel {
             "data.type": "Comment",
             "data.content.comment_root": pid,
         };
-        let result: Vec<Comment> = PostModel::get_flat_posts(&self.collection, query, 0, 64, None)
+        let result: Vec<Comment> = PostModel::get_flat_posts(&self.collection, query, 0, 128, Some(("pid", SortOrder::ASC)))
             .await?
-            .filter_map(|d|d.ok().and_then(|doc| bson::from_document::<Comment>(doc).ok()))
+            .filter_map(|d|d.ok().and_then(|doc| {
+                let result = bson::from_document::<Comment>(doc);
+                if let Err(err) = &result {
+                    log::warn!("Error when deserializing a Comment: {}", err);
+                }
+                result.ok()
+            }))
             .collect()
             .await;
         

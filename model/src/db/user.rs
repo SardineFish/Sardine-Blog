@@ -11,6 +11,9 @@ const COLLECTION_USER: &str = "user";
 pub enum HashMethod {
     NoLogin,
     SHA256,
+    SHA1,
+    MD5,
+    Plain,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

@@ -53,7 +53,6 @@ impl<'m> UserService<'m> {
         } else {
             Ok(session.auth_info)
         }
-        
     }
 
     /// Get or create an anonymous user
@@ -97,6 +96,9 @@ impl<'m> UserService<'m> {
 
         let hash_func: HashFunc = match &user.auth_info.method {
             model::HashMethod::SHA256 => sha256,
+            model::HashMethod::SHA1 => sha1,
+            model::HashMethod::MD5 => md5,
+            model::HashMethod::Plain => plain,
             model::HashMethod::NoLogin => return Err(Error::PasswordIncorrect),
         };
 
@@ -226,6 +228,15 @@ type HashFunc = fn(input: &str) -> String;
 
 fn sha256(input: &str) -> String {
     format!("{:x}", Sha256::digest(input.as_bytes()))
+}
+fn sha1(input: &str) -> String {
+    sha1::Sha1::from(input).digest().to_string()
+}
+fn md5(input: &str) -> String {
+    format!("{:x}", md5::compute(input))
+}
+fn plain(input: &str) -> String {
+    input.to_string()
 }
 
 fn gen_token(mut rng: RefMut<StdRng>) -> String {

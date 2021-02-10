@@ -1667,6 +1667,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "futures-util",
+ "log",
  "md5",
  "mongodb",
  "options",
@@ -2387,12 +2388,14 @@ dependencies = [
  "hex",
  "lazy_static",
  "log",
+ "md5",
  "model",
  "options",
  "pulldown-cmark",
  "rand 0.8.3",
  "regex",
  "serde",
+ "sha1",
  "sha2 0.9.3",
  "url",
 ]

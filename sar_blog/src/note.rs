@@ -33,7 +33,7 @@ impl<'m> NoteService<'m> {
         content.validate_with_access(user.access)?;
 
         let note = PostType::Note(content);
-        let post = self.model.post.new_post(note, &user)
+        let post = self.model.post.new_post(note, &user.uid)
             .await
             .map_service_err()?;
         

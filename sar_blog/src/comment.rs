@@ -112,8 +112,9 @@ impl<'m> CommentService<'m> {
             comment_root,
             comment_to,
             text: text.to_owned(),
+            notified: false,
         });
-        let post = self.model.post.new_post(comment, &user)
+        let post = self.model.post.new_post(comment, &user.uid)
             .await
             .map_service_err()?;
         

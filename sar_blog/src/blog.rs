@@ -76,7 +76,7 @@ impl<'m> BlogService<'m> {
     pub async fn post(&self, uid: &str, blog_content: BlogContent) -> Result<PidType> {
         let user = self.model.user.get_by_uid(&uid).await.map_service_err()?;
         let post_type = PostType::Blog(blog_content);
-        let post = self.model.post.new_post(post_type, &user)
+        let post = self.model.post.new_post(post_type, &user.uid)
             .await
             .map_service_err()?;
         

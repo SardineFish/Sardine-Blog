@@ -16,6 +16,7 @@ pub enum Error
     SerializeError(bson::ser::Error),
     RedisError(RedisError),
     UserExisted(String),
+    PostExisted(PidType),
     PostTypeMissmatch,
     BSONAccessError(bson::document::ValueAccessError),
     InternalError(&'static str),
@@ -32,8 +33,9 @@ impl Error {
             Error::SerializeError(_) => 0x06,
             Error::RedisError(_) => 0x07,
             Error::UserExisted(_) => 0x08,
-            Error::PostTypeMissmatch => 0x09,
-            Error::BSONAccessError(_) => 0x0a,
+            Error::PostExisted(_) => 0x09,
+            Error::PostTypeMissmatch => 0x0a,
+            Error::BSONAccessError(_) => 0x0b,
             Error::InternalError(_) => 0xff,
         }
     }
@@ -45,6 +47,7 @@ impl fmt::Display for Error {
             Error::PostNotFound(pid) => write!(f, "Post of pid '{}' not exists", pid),
             Error::UserNotFound(uid) => write!(f, "User of uid '{}' not exists", uid),
             Error::UserExisted(uid) => write!(f, "User of uid '{}' already existed", uid),
+            Error::PostExisted(pid) => write!(f, "Post of pid '{}' already existed", pid),
             _ => write!(f, "Internal Server Error"),
         }
     }
