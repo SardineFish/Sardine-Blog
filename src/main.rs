@@ -21,17 +21,19 @@ async fn main() -> std::io::Result<()> {
         .get_matches();
 
     let opts = options::ServiceOptions::default();
+    let opts_moved = opts.clone();
     let service = sar_blog::Service::open(opts.clone()).await.unwrap();
     if matches.is_present("init") {
         service.init_database().await.unwrap();
     }
 
-    HttpServer::new(move || {
+    HttpServer::new( move || {
         App::new()
+            .data(opts_moved.clone())
             .data(service.clone())
             .wrap(middleware::error_formatter())
             .wrap(Logger::default())
-            .configure(controller::config)
+            .configure(controller::config(opts_moved.clone()))
     })
     .bind(&opts.listen)?
     .run()

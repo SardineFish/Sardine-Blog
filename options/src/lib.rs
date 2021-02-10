@@ -16,6 +16,7 @@ pub struct ServiceOptions {
     pub session_expire: Duration,
     #[serde(with="json_duration_format")]
     pub challenge_expire: Duration,
+    pub web_root: String,
 }
 
 impl Default for ServiceOptions {
@@ -30,6 +31,7 @@ impl Default for ServiceOptions {
             visit_expire_time: Duration::days(1),
             session_expire: Duration::weeks(1), 
             challenge_expire: Duration::hours(1),
+            web_root: "./web-root".to_owned(),
         }
     }
 }

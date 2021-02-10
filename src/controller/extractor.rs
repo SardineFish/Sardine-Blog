@@ -3,6 +3,7 @@ use futures_util::future::{ok, err};
 
 use actix_web::{FromRequest, HttpRequest, dev::Payload, web};
 use futures::future::Ready;
+use options::ServiceOptions;
 use sar_blog::model::SessionAuthInfo;
 
 use crate::middleware;
@@ -49,3 +50,4 @@ impl<T: Sized + 'static> FromRequest for ExtensionMove<T> {
 pub type Service = web::Data<sar_blog::Service>;
 pub type Session = ExtensionMove<middleware::Session>;
 pub type Auth = ExtensionMove<SessionAuthInfo>;
+pub type Options = web::Data<ServiceOptions>;
