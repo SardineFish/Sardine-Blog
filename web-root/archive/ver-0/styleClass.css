@@ -1,0 +1,413 @@
+﻿.menuButton
+{
+    background-color: transparent;
+    display: block;
+    height: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: auto;
+    color: black;
+    font-size: 26px;
+    font-weight: 100;
+    text-align: center;
+    line-height: 50px;
+    border-bottom: solid 5px;
+    border-bottom-width: 5px;
+    border-color: rgba(255, 255, 255, 0.00);
+    position: relative;
+    float: left;
+}
+.button
+{
+    width: auto;
+}
+.borderObject
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(200,200,200,1.00);
+}
+.text1
+{
+    font-size: 72px;
+    font-weight: 100;
+    margin: 0px;
+}
+.text2
+{
+    font-size: 60px;
+    font-weight: 100;
+    margin: 0px;
+}
+.text3
+{
+    font-size: 48px;
+    font-weight: 100;
+    margin: 0px;
+}
+.text4
+{
+    font-size: 36px;
+    font-weight: 200;
+    margin: 0px;
+}
+.text5
+{
+    font-size: 24px;
+    font-weight: 300;
+    margin: 0px;
+}
+.text6
+{
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0px;
+}
+.text12px
+{
+    font-size: 12px;
+    margin: 0px;
+    font-weight: 500;
+}
+.divFloat
+{
+    position: fixed;
+    padding: 0px;
+    margin: 0px;
+    z-index: 10000;
+}
+.pIntroduction
+{
+    color: rgba(128, 128, 128, 1.00);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.oneLineText
+{
+    white-space: nowrap;
+    overflow :hidden;
+}
+.transparentBackgroundOjbect
+{
+    background-color: transparent;
+}
+.miniTag
+{
+    display: inline-block;
+    background-color: rgba(164, 164, 208, 1);
+    height: 20px;
+    width: auto;
+    margin-right: 4px;
+}
+.miniTagText
+{
+    display:inline-block;
+    position: relative;
+    bottom: 5px;
+    color: white;
+    height: 16px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 6px;
+    margin-right: 8px;
+}
+.latestItem
+{
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    padding-top: 5px;
+    margin-top: 10px;
+    background-color: white;
+    border: solid 1px rgba(200,200,200,1.00);
+}
+.latestTag
+{
+    font-style: normal;
+    font-family: Helvetica;
+    color: gray;
+    font-size: 12px;
+    border-radius: 3px;
+    border: solid 1px rgba(200,200,200,1.00);
+    padding-bottom: 3px;
+    padding-top: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: relative;
+    bottom: 5px;
+    margin-right: 10px;
+}
+.latestTitle
+{
+    cursor: pointer;
+}
+.latestTime
+{
+    color: gray;
+    font-size: 12px;
+    font-weight: 100;
+    cursor: pointer;
+}
+.latestTime:before 
+{
+    font-family: fontIcon;
+    content: "\e023";
+    position: relative;
+    top: 1px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.latestText
+{
+    font-weight: 100;
+    margin-top: 10px;
+    max-width: 645px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 14px;
+}
+.latestBottom
+{
+    height: 23px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 5px;
+    border-top: solid 1px rgba(240,240,240,1.00);
+    cursor: default;
+}
+.worksItem
+{
+    padding-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-bottom: 20px;
+    border-bottom: solid 1px rgba(200,200,200,1.00);
+    display: block;
+}
+.worksTypeMusic:before 
+{
+    font-family: fontIcon;
+    content: "\e002";
+    font-size: 16px;
+    color: #66CCFF;
+    position: relative;
+    top: 0px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.worksTypeVideo:before 
+{
+    font-family: fontIcon;
+    content: "\e059";
+    font-size: 16px;
+    color: #66CCFF;
+    position: relative;
+    top: 0px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.worksTypePicture:before 
+{
+    font-family: fontIcon;
+    content: "\e060";
+    font-size: 16px;
+    color: #66CCFF;
+    position: relative;
+    top: 0px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.worksTypeApp:before 
+{
+    font-family: fontIcon;
+    content: "\e010";
+    font-size: 16px;
+    color: #66CCFF;
+    position: relative;
+    top: 0px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.worksTypeOther:before 
+{
+    font-family: fontIcon;
+    content: "\e022";
+    font-size: 16px;
+    color: #66CCFF;
+    position: relative;
+    top: 0px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.worksName
+{
+    font-size: 24px;
+    font-weight: 300;
+    display: inline;
+    color: rgba(51, 132, 213, 1);
+}
+.worksName:hover
+{
+    text-decoration:underline;
+}
+.worksTime
+{
+    font-size: 12px;
+    font-weight: 100;
+    color: gray;
+    display: inline;
+    margin-right: 10px;
+}
+.worksTime:before
+{
+    font-family: fontIcon;
+    content: "\e023";
+    position: relative;
+    top: 1px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.worksTags
+{
+    font-size: 12px;
+    font-weight: 100;
+    color: gray;
+    display: inline;
+}
+.worksTags:before
+{
+    font-family: fontIcon;
+    content: "\e041";
+    position: relative;
+    color: #66CCFF;
+    top: 1px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.worksText
+{
+    font-weight: 100;
+    margin-top: 10px;
+    font-size: 14px;
+}
+.articleItem
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: block;
+    padding-left:10px;
+    padding-right: 10px;
+}
+.articleTitle
+{
+    font-size: 24px;
+    font-weight: 300;
+    display: inline;
+    color: rgba(51, 132, 213, 1);
+}
+.articleTitle:hover
+{
+    text-decoration: underline;
+}
+.articleTime
+{
+    font-size: 12px;
+    font-weight: 100;
+    color: gray;
+    display: inline;
+    margin-right: 10px;
+}
+.articleTime:before
+{
+    font-family: fontIcon;
+    content: "\e023";
+    position: relative;
+    top: 1px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.articleTags
+{
+    font-size: 12px;
+    font-weight: 100;
+    color: gray;
+    display: inline;
+}
+.articleTags:before
+{
+    font-family: fontIcon;
+    content: "\e041";
+    position: relative;
+    color: #66CCFF;
+    top: 1px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+.articleText
+{
+    font-weight: 100;
+    margin-top: 10px;
+    font-size: 14px;
+}
+.areaNameText
+{
+    font-weight: 400;
+    font-size: 16px;
+    color: white;
+    margin: 5px;
+}
+.areaNameContainer
+{
+    background-color: rgba(63, 150, 207, 1.00);
+    display: inline-block;
+}
+.textWithIcon
+{
+    font-weight:100;
+    font-size: 12px;
+    float: left;
+    margin-left: 10px;
+    color: gray;
+}
+.iconComment:before
+{
+    color: rgba(133, 156, 188, 1);
+    position: relative;
+    top: 2px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    margin-right: 5px;
+    display: inline-block;
+    font-family: fontIcon;
+    content: "\e111";
+}
+.iconLike:before
+{
+    color: rgba(133, 156, 188, 1);
+    position: relative;
+    top: 2px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    margin-right: 5px;
+    display: inline-block;
+    font-family: fontIcon;
+    content: "\e125";
+}
+.iconBrowse:before
+{
+    color: rgba(133, 156, 188, 1);
+    position: relative;
+    top: 2px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    margin-right: 5px;
+    display: inline-block;
+    font-family: fontIcon;
+    content: "\e032";
+}

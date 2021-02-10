@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Random Seat</title>
+    <script src="jquery.min.js">
+    </script>
+    <style >
+
+        body {
+            font-family: sans-serif;
+        }
+        a{
+            text-decoration: none;
+        }
+
+        .button {
+            display: block;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            background-color: #2196F3;
+            border-radius: 2px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0px 3px 10px rgba(0,0,0,0.2);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .group {
+            padding: 10px;
+        }
+        .desk {
+            border: solid 1px black;
+            width: 200px;
+            height: 50px;
+            position: relative;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .left {
+            display: block;
+            width: 50%;
+            margin: 0px;
+            padding: 0px;
+            text-align: center;
+        }
+        .divide {
+            height: 100%;
+            border: solid 0.5px black;
+            margin: 0px;
+            padding: 0px;
+            width: 0px;
+        }
+        .right {
+            display: block;
+            width: 50%;
+            margin: 0px;
+            padding: 0px;
+            text-align: center;
+        }
+
+        #functionArea {
+            padding: 20px;
+        }
+        #buttonRandom {
+            margin: auto;
+        }
+        #classroom {
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="root" >
+        <div id="top">
+            <div id="topBar">
+
+            </div>
+        </div>
+        <div id="content">
+            <div id="functionArea" onselectstart="return false;">
+                <a id="buttonRandom" class="button">Random</a>
+            </div>
+            <div>
+                <p style="width: 200px;border:solid 1px black;text-align:center;padding:20px;margin:auto;">讲台</p>
+            </div>
+            <div id="classroom">
+                <div id="group1" class="group">
+                    <div id="desk1" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk2" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk3" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk4" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk5" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk6" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                </div>
+                <div id="group2" class="group">
+                    <div id="desk1" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk2" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk3" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk4" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk5" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk6" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                </div>
+                <div id="group3" class="group">
+                    <div id="desk1" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk2" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk3" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk4" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk5" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk6" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                </div>
+                <div id="group4" class="group">
+                    <div id="desk1" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk2" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk3" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk4" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk5" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                    <div id="desk6" class="desk">
+                        <p id="left" class="left seat"></p>
+                        <hr class="divide" />
+                        <p id="right" class="right seat"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var nameList = ["林燏",
+                        "龙泳帆",
+                        "唐韦佳",
+                        "罗嘉睿",
+                        "刘婷",
+                        "肖平平",
+                        "欧远芳",
+                        "周雯婷",
+                        "邹滢滢",
+                        "霍棋涔",
+                        "唐梦璇",
+                        "赵丽萍",
+                        "黎升琳",
+                        "丁微喆",
+                        "蒋海萍",
+                        "秦洁",
+                        "蒋碧宇",
+                        "徐祯",
+                        "王雨墨",
+                        "刘阳婷",
+                        "李桂娟",
+                        "张利元",
+                        "刘长涛",
+                        "盘顺辉",
+                        "陈天越",
+                        "李义丰",
+                        "廖小硕",
+                        "张睿",
+                        "吴佳鑫",
+                        "申浩",
+                        "莫逸佳",
+                        "吴建林",
+                        "陈剑",
+                        "陈黎",
+                        "倪梓凯",
+                        "张文杰",
+                        "张钧淳",
+                        "周雨桓",
+                        "陈辛懿",
+                        "陈斌",
+                        "杨世春",
+                        "黄云天",
+                        "朱斯威",
+                        "粟逸",
+                        "刘万越",
+                        "梁宇骁",
+                        "蒋成宇",
+                        "黄博源"];
+        nameList.copy=function ()
+        {
+            var list = [];
+            for (var i = 0; i < this.length; i++)
+            {
+                list[i] = this[i];
+            }
+            list.remove = function (index)
+            {
+                for (var i = index; i < this.length - 1; i++)
+                {
+                    this[i] = this[i + 1];
+                }
+                this.length -= 1;
+            }
+            return list;
+        }
+        $("#buttonRandom").click(function (e)
+        {
+            var list = nameList.copy();
+            var seats = $(".seat");
+            var index = 0;
+            while (list.length)
+            {
+                var i = parseInt(Math.random() * list.length);
+                var name = list[i];
+                list.remove(i);
+                $(seats.get(index++)).text(name);
+            }
+        });
+    </script>
+</body>
+</html>

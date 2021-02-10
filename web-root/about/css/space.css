@@ -1,0 +1,186 @@
+#space {
+    background-color: transparent;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    perspective: 600px;
+    perspective-origin: center;
+}
+
+#solar-system {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(80deg);*/
+}
+
+#sun {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff06b;
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(-80deg);*/
+    z-index: 100;
+}
+
+#root.darken #sun {
+    box-shadow: 0 0 30px #fff06b;
+}
+
+#solar-system svg {
+    perspective: 300px;
+}
+
+#mercury {
+    height: 100px;
+    width: 100px;
+    top: calc(50% - 51px);
+    left: calc(50% - 51px);
+    animation-duration: 1.06s;
+}
+
+#mercury .antiRotate {
+    width: 10px;
+    height: 10px;
+    top: calc(50% - 5px);
+    left: -5px;
+    animation-duration: 1.06s;
+}
+
+#mercury .planet {
+    background-color: #a0a0a0;
+}
+
+#venus {
+    width: 140px;
+    height: 140px;
+    top: calc(50% - 71px);
+    left: calc(50% - 71px);
+    animation-duration: 1.757s;
+}
+
+#venus .antiRotate {
+    width: 14px;
+    height: 14px;
+    top: calc(50% - 7px);
+    left: -7px;
+    animation-duration: 1.757s;
+}
+
+#venus .planet {
+    background-color: #eae5cf;
+}
+
+#earth {
+    width: 200px;
+    height: 200px;
+    top: calc(50% - 101px);
+    left: calc(50% - 101px);
+    animation-duration: 3s;
+}
+
+#earth .antiRotate {
+    width: 20px;
+    height: 20px;
+    top: calc(50% - 10px);
+    left: -10px;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    z-index: -1;
+}
+
+#earth .planet {
+    background-color: #6DB5FF;
+}
+
+#mars {
+    animation-duration: 4.96s;
+    width: 280px;
+    height: 280px;
+    top: calc(50% - 141px);
+    left: calc(50% - 141px);
+}
+
+#mars .planet {
+    background-color: #ffbe6d;
+}
+
+#mars .antiRotate {
+    height: 14px;
+    width: 14px;
+    top: calc(50% - 7px);
+    left: -7px;
+    animation-duration: 4.96s;
+}
+
+.planet {
+    border-radius: 50%;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(-80deg);*/
+    width: 100%;
+    height: 100%;
+}
+
+.orbit {
+    border: solid 1px rgba(128, 128, 128, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 0px;
+    left: auto;
+    animation-name: planetRotate;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transform-style: preserve-3d;
+    transform-origin: center;
+}
+
+.antiRotate {
+    animation-name: planetAntiRotate;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: absolute;
+    transform-origin: center;
+    transform-style: preserve-3d;
+}
+
+#solar-system g {
+    transform-origin: 500px 500px;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    perspective-origin: center;
+    transform-style: preserve-3d;
+    transform: rotateY(45deg);
+}
+
+@keyframes planetRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes planetAntiRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

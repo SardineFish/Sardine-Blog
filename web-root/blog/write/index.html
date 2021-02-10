@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Blog</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="//libs.cdnjs.net/jquery/3.2.1/jquery.min.js"></script>
+    <link href="/font/Open_Sans/OpenSans.css" rel="stylesheet" type="text/css">
+    <link href="/font/Raleway/Raleway.css" rel="stylesheet" type="text/css">
+    <link href="/font/material-design-icons-3.0.1/material-icons.css" rel="stylesheet" type="text/css">
+    <script src="/lib/Script/HTMLTemplate/v0.2.1/HTMLTemplate.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.2.1/ObserveList.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/tools.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        <div id="top" class="font-UI">
+            <div id="top-center">
+                <nav id="top-nav">
+                    <a class="item" href="/">HOME</a>
+                    <a class="item" href="/note/">NOTES</a>
+                    <a class="item" href="/article/">ARTICLES</a>
+                    <a class="item current" href="/works/">WORKS</a>
+                    <a class="item" href="/about/">ABOUT</a>
+                    <a class="item" href="/more/">MORE</a>
+
+                </nav>
+                <div class="top-right">
+                    <div id="search" class="top-icon">
+
+                    </div>
+                    <div id="account-area" class="flex-center">
+                        <a id="login" class="top-icon" href="/account/login">person</a>
+                        <div id="user-login-wrapper" class="flex-center">
+                            <a id="write" class="top-icon" href="/blog/write/">edit</a>
+                            <div id="user">
+                                <img id="user-avatar" src="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main id="main">
+            <div id="center">
+                <article id="writer">
+                    <header id="header">
+                        <div id="title-wrapper">
+                            <input type="text" id="title" class="textbox" placeholder="Title">
+                        </div>
+                        <ul id="tags-wrapper">
+                            <template id="tag-template">
+                                <li class="tag" contenteditable="true" data-text="Tag">{{$element$}}</li>
+                            </template>
+                            <li id="add-tag" class="material-icons">add</li>
+                        </ul>
+                        <div id="settings" class="font-UI">
+                            <span>DocType:</span>
+                            <ul id="doc-types">
+                                <li class="item" data-doct-ype="text">Plain Text</li>
+                                <li class="item selected" data-doc-type="markdown">Markdown</li>
+                                <li class="item" data-doc-type="html">HTML</li>
+                            </ul>
+                            <div id="publish" class="material-icons">send</div>
+                        </div>
+                    </header>
+                    <main>
+                        <iframe id="editor" src="/lib/HTML/editor/SarEditor.html">
+
+                        </iframe>
+                    </main>
+                </article>
+            </div>
+        </main>
+        <footer id="footer" class="font-UI">
+            <p>Copyright © 2015-<span><script>document.write(new Date().getFullYear())</script></span> SardineFish, All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+
+</html>

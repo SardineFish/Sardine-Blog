@@ -1,0 +1,676 @@
+@import "./page.scss";
+@import "./comment-system.scss";
+
+$base-color: white;
+$base-text-color: #888;
+
+.top-bar {
+    //position: fixed;
+}
+
+.page-content {
+    display: flex;
+    flex-flow: row nowrap;
+    padding-top: 3em;
+}
+
+.side-area {
+    font-family: $ui-font;
+    width: 300px;
+    user-select: none;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+    position: relative;
+
+    & > .content {
+        margin-top: 2em;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-end;
+    }
+
+    &.fixed > .content {
+        position: fixed;
+        margin-top: 0;
+        top: 2em;
+    }
+
+    .header {
+        font-size: 1.6em;
+        text-align: right;
+        margin-bottom: .5em;
+        color: #CCC;
+    }
+
+    .new-post {
+        width: fit-content;
+        background-color: $theme-color-light;
+        color: white;
+        padding: .5em 1.5em;
+        border-radius: 5em;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: center;
+        fill: white;
+        transition: background-color .2s;
+
+        &.normal {
+            background-color: #68c4f0;
+        }
+        &.click {
+            background-color: $theme-color;
+        }
+        &.hover {
+            background-color: #8dd4f5;
+        }
+        .icon {
+            width: 1.4em;
+            height: 1.4em;
+            margin-right: .5em;
+        }
+    }
+
+    .timeline {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-end;
+        margin-top: 3em;
+        text-align: right;
+
+        .time {
+            margin: .5em 0;
+            padding: .5em 1em;
+            color: #777;
+            border-right: solid .2em transparent;
+            letter-spacing: .1em;
+            transition: all .3s;
+
+            &.current {
+                color: black;
+                font-weight: bold;
+                border-right-color: $theme-color;
+            }
+        }
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
+.notes-area {
+    flex: 1 1;
+    margin-left: 2em;
+}
+
+.note-card {
+    background-color: $base-color;
+    color: $base-text-color;
+    border-radius: .5em;
+    margin: 2em;
+    overflow: hidden;
+
+    .visible-area {
+        padding: 2em;
+        padding-bottom: 1em;
+        box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
+    }
+    .fold-area {
+        background-color: #F7F7F7;
+        padding: 0 2em;
+    }
+
+
+    .note-author {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        user-select: none;
+
+        .avatar {
+            height: 64px;
+            width: 64px;
+            border-radius: 64px;
+            overflow: hidden;
+
+            img {
+                height: 100%;
+                width: auto;
+            }
+        }
+        .info {
+            margin-left: 2em;
+        }
+        .name {
+            color: #222;
+            font-weight: bolder;
+
+            text-decoration: none;
+            border-bottom: solid .1em transparent;
+            transition: all .2s;
+
+            &:hover {
+                border-bottom-color: $theme-color;
+                color: $theme-color;
+            }
+        }
+        .time {
+            font-size: .8em;
+            margin-left: 2em;
+            color: #AAA;
+        }
+    }
+
+    .note-content {
+        margin: 0 64px;
+        padding-left: 2em;
+        line-height: 1.5em;
+
+        a {
+            text-decoration: none;
+            color: $theme-color;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        img {
+            max-width: 100%;
+        }
+    }
+
+    .post-data {
+        margin-left: 64px;
+        padding-left: 2em;
+        max-width: 8em;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        user-select: none;
+
+        .item {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            padding: 1em;
+            fill: #CCC;
+            color: #CCC;
+
+            &:first-child {
+                padding-left: 0;
+            }
+
+            .icon {
+                height: 1.6em;
+                width: 1.6em;
+            }
+            .value {
+                margin-left: .5em;
+            }
+        }
+
+        .comments {
+            cursor: pointer;
+
+            &.extend {
+                fill: $theme-color-light;
+                color: $theme-color-light;
+            }
+        }
+
+        .like-button {
+            cursor: pointer;
+            transition: all .3s;
+
+            &.liked {
+                color: #ff81a4;
+                fill: #ff81a4;
+            }
+
+            .value {
+                position: relative;
+
+                .plus-one {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    font-family: $ui-font;
+                    font-size: .6em;
+                    color: #ff81a4;
+                    opacity: 0;
+                }
+            }
+
+            &.liked .plus-one {
+                animation-name: plus-one-anim;
+                animation-duration: .4s;
+                animation-iteration-count: 1;
+                animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+                animation-fill-mode: forwards;
+                
+            }
+        }
+    }
+}
+
+@keyframes plus-one-anim {
+    0% {
+        top: 0;
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        top: -2em;
+        opacity: 0;
+    }
+}
+
+.post-note-area {
+    margin: 2em;
+    border-radius: .5em;
+
+    &.fold {
+        margin: 0;
+    }
+}
+.post-note {
+    min-height: 240px;
+    background-color: white;
+    color: $base-text-color;
+    padding: 2em;
+    padding-bottom: 1em;
+    border-radius: .5em;
+    display: flex;
+    flex-flow: column nowrap;
+    transition: height .3s;
+    position: relative;
+
+    .decoration {
+        width: 4em;
+        height: 4em;
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        .bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-top: solid 4em #b8e5f9;
+            border-right: solid 4em transparent;
+        }
+        .icon {
+            fill: white;
+            z-index: 1;
+            position: absolute;
+            width: 1.6em;
+            height: 1.6em;
+            top: .5em;
+            left: .5em;
+        }
+    }
+
+    .author {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        .avatar {
+            height: 64px;
+            width: 64px;
+            border-radius: 64px;
+            overflow: hidden;
+
+            img {
+                height: 100%;
+            }
+        }
+
+        .info {
+            flex: 1;
+            display: flex;
+            flex-flow: row nowrap;
+            margin-left: 2em;
+            justify-content: stretch;
+
+            .input-wrapper {
+                flex: 1;
+                margin-right: 1em;
+
+                &.url {
+                    flex-grow: 2;
+                }
+                input {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            }
+        }
+
+        
+    }
+    .content {
+        flex: 1 0;
+        margin-left: 64px;
+        display: flex;
+        flex-flow: column nowrap;
+        margin-top: 1em;
+
+        .content-input {
+            flex: 1;
+            border-left: solid .2em transparent;
+            transition: all .3s;
+            outline: none;
+            padding: .3em 1em;
+            margin-left: 1em;
+
+            &:focus {
+                border-left-color: $theme-color-light;
+            }
+            &:empty::before {
+                content: attr(data-placeholder);
+                color: #CCC;
+            }
+        }
+    }
+    .action-panel {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        user-select: none;
+        align-items: center;
+        font-family: $ui-font;
+
+        .hint {
+            flex: 1;
+            font-size: .8em;
+            color: #AAA;
+
+            &.error {
+                color: #ff5a5a;
+            }
+        }
+
+        .access-control {
+            font-family: $ui-font;
+            font-weight: bold;
+            font-size: .8em;
+            color: #CCC;
+            cursor: pointer;
+            margin-right: 1em;
+            fill: #CCC;
+            transition: all .2s;
+
+            &:hover {
+                color: #AAA;
+                fill: #AAA;
+            }
+
+            .access {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                padding: .5em;
+            }
+            .icon {
+                height: 1.6em;
+                width: 1.6em;
+                margin-right: .5em;
+            }
+        }
+        .send-button {
+            padding: .5em;
+            fill: $theme-color-light;
+            transition: fill .2s;
+
+            &.normal {
+                fill: #68c4f0;
+            }
+
+            &.click {
+                fill: $theme-color;
+            }
+
+            &.hover {
+                fill: #8dd4f5;
+            }
+
+            .icon {
+                height: 2em;
+                width: 2em;
+            }
+        }
+    }
+}
+
+.loading {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    height: 5em;
+
+    .icon {
+        fill: $theme-color-light;
+        height: 2em;
+        width: 2em;
+    }
+}
+
+.mobile {
+    display: none;
+}
+
+@media all and (max-width: 1200px) {
+    .post-note {
+        .author {
+            .info {
+                .input-wrapper.url {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+    .side-area {
+        width: 14em;
+    }
+}
+
+@media all and (max-width: 1000px) {
+    .side-area {
+        width: 12em;
+
+        .header {
+            font-size: 1.4em;
+        }
+    }
+
+    .notes-area {
+        margin-left: 0;
+    }
+}
+
+@media all and (max-width: 800px) {
+    .notes-area {
+        margin-left: 0;
+    }
+    .side-area {
+        display: flex;
+        position: fixed;
+        right: 1em;
+        bottom: 2em;
+
+        header {
+            display: none;
+        }
+        .timeline {
+            display: none;
+        }
+        .new-post {
+            width: 3em;
+            height: 3em;
+            padding: 0;
+            border-radius: 100%;
+            box-sizing: content-box;
+
+            span {
+                display: none;
+            }
+            .icon {
+                margin: 0;
+                width: 1.6em;
+                height: 1.6em;
+            }
+        }
+    }
+    .notes-area {
+        margin: 0;
+        margin-top: 2em;
+        padding: 0;
+    }
+
+    .post-note-area {
+        margin: 1em;
+    }
+
+    .note-card {
+        margin: 1em;
+
+        .fold-area {
+            padding: 0 1em;
+        }
+        .note-content {
+            color: black;
+        }
+    }
+}
+
+@media all and (max-width: 600px) {
+    .post-note-area {
+        margin-top: 3em;
+
+        .post-note {
+            padding: 1em;
+            
+            .decoration {
+                display: none;
+            }
+            .author {
+                .avatar {
+                    display: none;
+                }
+                .info {
+                    margin: 0;
+                    padding: 0;
+                    flex-flow: row wrap;
+
+                    .input-wrapper {
+                        margin: .5em;
+                        
+                        .input-line {
+                            border: none;
+                            background-color: #EEE;
+                            border-radius: .3em;
+                            padding: .5em 1em;
+                        }
+                    }
+                    .input-wrapper.url {
+                        flex-basis: 100%;
+                    }
+                }
+            }
+            .content {
+                margin: .5em;
+                border-radius: .3em;
+                background-color: #EEE;
+
+                .content-input {
+                    border: none;
+                    margin: 0;
+                    padding: .5em 1em;
+                    color: black;
+                    min-height: 7em;
+                }
+            }
+            .action-panel {
+                .avatar {
+                    display: block;
+                    width: 2.4em;
+                    height: 2.4em;
+                    border-radius: 100%;
+                    overflow: hidden;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media all and (max-width: 500px) {
+    .post-note-area {
+        margin: 0;
+        margin-top: 2em;
+        border-radius: 0;
+
+        .post-note {
+            border-radius: 0;
+            
+            .content-input {
+            }
+        }
+    }
+    .note-card {
+        margin: 1em 0;
+        border-radius: 0;
+
+        .fold-area {
+            padding: 0;
+            padding-right: 1em;
+        }
+        .note-author {
+            .avatar {
+                width: 48px;
+                height: 48px;
+            }
+            .info {
+                display: flex;
+                flex-flow: column nowrap;
+                margin-left: 1em;
+
+                .time {
+                    margin: 0;
+                }
+            }
+        }
+        .visible-area {
+            padding: 1em;
+            padding-bottom: 0;
+        }
+        .note-content {
+            margin: 0;
+            padding: 0;
+        }
+        .post-data {
+            margin: 0;
+            padding: 0;
+            max-width: unset;
+            justify-content: space-around;
+
+            .item:first-child {
+                padding-left: 1em;
+            }
+        }
+    }
+}

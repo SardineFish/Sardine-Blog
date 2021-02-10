@@ -1,0 +1,126 @@
+﻿html{
+    background-color: black;
+}
+body {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    min-width: 1280px;
+    font-family: "Roboto", sans-serif;
+
+
+    margin: auto;
+}
+
+#first {
+    height: 700px;
+    position: relative;
+}
+#first .imgBlock {
+    width: calc(100% /2);
+    height: 100%;
+    position: absolute;
+}
+
+#first .imgBlock img {
+    width: 500px;
+    position: absolute;
+    top: 200px;
+    right: 200px;
+}
+
+#first .textBlock {
+    position: absolute;
+    width: calc(100% /2);
+    right: 0px;
+    height: 100%;
+}
+
+#first .text {
+    position: absolute;
+    font-size: 36px;
+    top: 200px;
+    left: 80px;
+}
+
+#summary {
+    height: 1000px;
+    position: relative;
+    z-index: 100;
+}
+
+#summary #tags {
+    position: absolute;
+    top: 100px;
+    height: calc(100% - 200px);
+    width: 100%;
+    opacity: 0.4;
+}
+
+#summary img {
+    height: 60px;
+    position: absolute;
+}
+
+#summary .textBlock {
+    position: absolute;
+    top: 180px;
+    font-size: 24px;
+    color: white;
+    left: 10%;
+}
+
+
+#summary .bg {
+    transform: skew(0deg, -5deg);
+    height: 100%;
+    background-color: #333333;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.8);
+}
+
+#character {
+    height: 2000px;
+    background-color: #8D6E63;
+    position: relative;
+    top: -200px;
+    padding-top: 500px;
+    padding-bottom: 200px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#character img {
+    width: 100%;
+}
+#character #lines{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+#character .imgBlock{
+    width: 50%;
+    position: relative;
+}
+#character .imgBlock .textBlock{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+}
+#character .imgBlock p{
+    position: absolute;
+    margin: 0px;
+}
+
+#character #characteristics {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 24px;
+    color: white;
+    max-width: 40%;
+    overflow: hidden;
+    max-height: 1000px;
+}

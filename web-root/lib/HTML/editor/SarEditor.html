@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <title>Web Viewer</title>
+    <!--
+        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi" />
+        -->
+    <script src="//libs.cdnjs.net/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js"></script>
+    <script src="//libs.cdnjs.net/highlight.js/9.9.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/markdown-it-emoji/1.4.0/markdown-it-emoji.min.js"></script>
+    <script src="//libs.cdnjs.net/highlight.js/9.9.0/highlight.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="/lib/css/github-markdown-css/github-markdown.css" rel="stylesheet" type="text/css">
+    <link href="//libs.cdnjs.net/highlight.js/9.9.0/styles/github.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.1/katex.min.css">
+    <script src="/lib/Script/markdown-it-katex/dist/markdown-it-katex.js"></script>
+</head>
+
+<body >
+    <div style="height:100%">
+        <div id="topArea" onselectstart="return false;">
+            <div id="left">
+                <div id="fontFamily" class="dropbox shadow1">
+                    <div class="display">Sans-Serif</div>
+                    <ul class="list">
+                        <li class="selected"></li>
+                        <li>Sans-Serif</li>
+                        <li>Segoe UI</li>
+                        <li>Microsoft YaHei UI</li>
+                    </ul>
+                </div>
+                <div id="fontSizeBox" class="flex-center">
+                    <div id="minus" class="circleButton icon shadow1">remove</div>
+                    <div id="fontSize" class="textbox shadow1" contenteditable="true">16px</div>
+                    <div id="plus" class="circleButton icon shadow1">add</div>
+                </div>
+                <div id="textDecoration" class="flex-center">
+                    <div id="italic" class="button icon shadow1">format_italic</div>
+                    <div id="bold" class="button icon shadow1">format_bold</div>
+                    <div id="underline" class="button icon shadow1">format_underline</div>
+                </div>
+                <div id="insert" class="flex-center">
+                    <div id="link" class="button icon shadow1">link</div>
+                    <div id="image" class="button icon shadow1">image</div>
+                </div>
+            </div>
+            <div id="right">
+                <ul id="render-types">
+                    <li id="code" class="item selected">Code</li>
+                    <li id="markdown" class="item">Markdown</li>
+                    <li id="html" class="item">HTML</li>
+                </ul>
+            </div>
+        </div>
+        <div id="textArea">
+            <pre id="input-text" class="markdown-body" contenteditable="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></pre>
+            <div id="text" class="markdown-body"></div>
+        </div>
+    </div>
+    <script src="script.js">
+    </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/jquery.shadow-animation/1/mainfile"></script>
+    <script src="http://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <style>
+        body{
+            background: rgba(250,250,250,1.00);
+            font-family: 'Segoe UI',Microsoft YaHei, Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .border
+        {
+        }
+        #uploadArea {
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+            background: white;
+            padding: 20px;
+            width: 600px;
+            height: 256px;
+            margin: auto;
+            position: relative;
+        }
+
+        #preFace{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        #preFaceBorder{
+            height: 256px;
+            width: 256px;
+        }
+        #faceImg{
+            height: 100%;
+            width: 100%;
+        }
+        #newFace {
+            height:256px;
+            width:256px;
+        }
+        #buttonUpload {
+            display: block;
+            margin: auto;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            top: 100px;
+            width: 160px;
+            border: none;
+            box-shadow: 0px 2px 7px rgba(0,0,0,0.2);
+            font-size: 20px;
+            color: white;
+            background-color: #03a9f4;
+            cursor: pointer;
+        }
+        #progressBar {
+            display: none;
+            opacity: 0;
+            width: 100%;
+            height: 5px;
+            position: absolute;
+            top: 120px;
+            background: rgba(240,240,240,1.0);
+        }
+        #progress {
+            height: 100%;
+            width: 0%;
+            background-color: rgba(20, 210, 118, 1);
+        }
+        #textDone{
+            display: none;
+            opacity: 0;
+            position: relative;
+            top: 100px;
+            text-align: center;
+            font-size: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div id="uploadArea" onselectstart="return false;" ondragstart="return false;">
+            <input id="filePicker" type="file" hidden="hidden"/>
+            <div style="width:100%;height:100%;position:relative;">
+                <div id="preFace">
+                    <div id="preFaceBorder" class="border">
+                        <img id="faceImg" src="/account/user/face/getFace.php"/>
+                    </div>
+                </div>
+                <div style="position:absolute;top:0px;right:0px;">
+                    <div id="newFace">
+                        <a id="buttonUpload">Upload</a>
+                        <div id="progressBar">
+                            <div id="progress"></div>
+                        </div>
+                        <div id="textDone">
+                            Done.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function upload()
+        {
+            SardineFish.API.Img.Upload.GetTokenAsync(function (succeed, data)
+            {
+                if (!succeed)
+                {
+                    console.warn(data.msg);
+                    return;
+                }
+                var formData = new FormData();
+                formData.append("token", data.token);
+                formData.append("key", data.key);
+                formData.append("file", $("#filePicker").get(0).files[0]);
+                var request = new XMLHttpRequest();
+                request.open("POST", data.url);
+                request.upload.onprogress = function (e)
+                {
+                    var progress = e.loaded * 100 / e.total;
+                    $("#progress").stop();
+                    $("#progress").animate({ width: progress + "%" }, 200);
+                }
+                request.onload = function (e)
+                {
+                    $("#progress").stop();
+                    $("#progress").animate({ width: "100%" }, 200);
+                }
+                request.onerror=function (e)
+                {
+                    var x = e;
+                }
+                request.onreadystatechange = function (e)
+                {
+                    if (request.readyState != 4)
+                        return;
+                    var response = request.responseText;
+
+                }
+                request.send(formData);
+            });
+            
+        }
+        $("#buttonUpload").mouseenter(function (e)
+        {
+            $("#buttonUpload").stop();
+            $("#buttonUpload").animate({ boxShadow: "0px 4px 10px rgba(0,0,0,0.2)" }, 200);
+        });
+        $("#buttonUpload").mouseout(function (e)
+        {
+            $("#buttonUpload").stop();
+            $("#buttonUpload").animate({ boxShadow: "0px 2px 6px rgba(0,0,0,0.2)" }, 200);
+        });
+        $("#buttonUpload").click(function (e)
+        {
+            $("#filePicker").get(0).click();
+        });
+        $("#filePicker").change(function (e)
+        {
+            $("#buttonUpload").stop();
+            $("#buttonUpload").animate({ opacity: 0 }, 700, function ()
+            {
+                $("#buttonUpload").css("display", "none");
+                $("#progressBar").css("opacity", "0");
+                $("#progressBar").css("display", "block");
+                $("#progressBar").animate({ "opacity": 1 }, 1000);
+            });
+            SardineFish.API.Img.Upload.Upload($("#filePicker").get(0).files[0], {
+                progress: function (progress)
+                {
+                    $("#progress").stop();
+                    $("#progress").animate({ width: progress * 100 + "%" }, 200);
+                },
+                error: function (e)
+                {
+
+                },
+                complete: function (data)
+                {
+                    $("#progress").stop();
+                    $("#progress").animate({ width: "100%" }, 200);
+                    SardineFish.API.Account.User.Face.SetFace($.cookie("uid"), "https://img.sardinefish.com/" + data.key, function (succeed, dataSet)
+                    {
+                        if (!succeed)
+                        {
+                            console.warn(dataSet.errorCode + ": " + dataSet.msg);
+                            return;
+                        }
+                        $("#faceImg").attr("src", "https://img.sardinefish.com/" + data.key);
+                        $("#progressBar").animate({ "opacity": 0 }, 200);
+                        $("#textDone").css("display", "block");
+                        $("#textDone").css("opacity", "0");
+                        $("#textDone").animate({ opacity: 1 }, 200);
+
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

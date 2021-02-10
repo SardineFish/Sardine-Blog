@@ -1,0 +1,4 @@
+font/
+img/
+node_modules/
+*.js.map

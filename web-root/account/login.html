@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Sign in</title>
+    <script src="../resource.js"></script>
+    <script src="../lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script >
+        document.write(toScriptHTMLTag(lib.jQueryMinJs));
+        document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
+        document.write(toScriptHTMLTag(lib.jQueryColorMinJs));
+    </script>
+    <script src="/lib/Script/SardineFish/SardineFish.Web.UI.js"></script>
+    <style>
+        @media (max-width: 1024px) , (max-aspect-ratio: 1/1)
+        {
+            #loginArea{
+                position: relative;
+                margin: auto;
+                margin-top: 10%;
+            }
+            #bgImg{
+                display: none;
+            }
+        }
+        @media (min-width:1024px) and (min-aspect-ratio: 1/1)
+        {
+            #loginArea{
+                position:absolute;
+                right: 15%;
+            }
+            #loginContent{
+                margin-top: 20%;
+            }
+        }
+        @keyframes ring{
+            from{
+                transform: rotate(0deg);
+            }
+            to{
+                transform: rotate(360deg);
+            }
+        }
+        body
+        {
+            background-color: rgba(250,250,250,1.00);
+            padding: 0px;
+            margin: 0px;
+            font-family: "Microsoft YaHei UI", 'Microsoft YaHei';
+        }
+        .title {
+            font-weight: 100;
+            color: #009688;
+            padding: 0px;
+            margin: 0px;
+        }
+        .borderObject {
+            border-bottom: solid 2px #009688;
+        }
+        .button {
+            font-weight: normal;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.3);
+            background-color: #009688;
+            width: 170px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #centerArea 
+        {
+        }
+        #loginArea {
+            height: 100%;
+            width: 500px;
+            background-color: #FFFFFF;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            border-bottom-width: 0px;
+            border-top-width: 0px;
+            margin-bottom: 50px;
+            padding: 30px;
+        }
+        #loginContent
+        {
+            margin-left: 30px;
+            margin-right: 30px;
+
+        }
+        #loginTitle
+        {
+            font-size: 36px;
+            text-align: center;
+        }
+        #loginInputArea {
+            position: relative;
+            margin-top: 50px;
+            z-index: 1000;
+        }
+        #uidInputArea
+        {
+
+        }
+        #uidTitle
+        {
+            font-size: 16px;
+            font-weight: 100;
+        }
+        #uidText 
+        {
+            font-size: 20px;
+            border: none;
+            width: 418px;
+            margin: 0px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        #pwdInputArea
+        {
+            margin-top: 30px;
+        }
+        #pwdTitle
+        {
+            font-size: 16px;
+            font-weight: 100;
+        }
+        #pwdText
+        {
+            font-size: 20px;
+            border: none;
+            width: 418px;
+            margin: 0px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        #loginRing {
+            opacity: 0;
+            width: 100%;
+            height: 60px;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            position: absolute;
+            text-align: center;
+            top: 0px;
+        }
+        #ring {
+            display: block;
+            height: 60px;
+            width: 60px;
+            margin: auto;
+            border: solid 3px rgba(0, 150, 136, 1);
+            border-radius: 100%;
+            border-top-color: transparent;
+            animation-duration: 1s;
+            animation-name: ring;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        #warningArea
+        {
+            margin-top: 20px;
+        }
+        #warningText {
+            margin: 0px;
+            color: #f44336;
+            font-size: 12px;
+        }
+        #loginButtonArea
+        {
+            margin-top: 30px;
+            position: relative;
+        }
+        #buttonLogin
+        {
+            font-size: 16px;
+        }
+        #buttonRegister {
+            background-color: #ffc107;
+            color: black;
+            padding-top: 9px;
+            padding-bottom: 9px;
+            position: absolute;
+            right: 0px;
+        }
+        #bgImg
+        {
+            max-height: 70%;
+            max-width: 100%;
+            position: fixed;
+            bottom: 0px;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div id="centerArea">
+            <div id="loginArea">
+                <div id="loginContent">
+                    <p id="loginTitle" class="title">Sign in</p>
+                    <div style="position:relative">
+                        <div id="loginInputArea">
+                            <div id="uidInputArea">
+                                <p id="uidTitle" class="title">Username</p>
+                                <div class="borderObject">
+                                    <input id="uidText" type="text" />
+                                </div>
+                            </div>
+                            <div id="pwdInputArea">
+                                <p id="pwdTitle" class="title">Password</p>
+                                <div class="borderObject">
+                                    <input id="pwdText" type="password" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="loginRing">
+                            <div id="ring">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="warningArea">
+                        <p id="warningText">&nbsp;</p>
+                    </div>
+                    <div id="loginButtonArea">
+                        <a id="buttonLogin" class="button" onselectstart="return false" onclick="buttonLoginClick(this)">Sign in</a>
+                        <a id="buttonRegister" class="button" onselectstart="return false" href="/account/register">Sign up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <img id="bgImg" src="https://cdn-static.sardinefish.com/img/decoration/Login.jpg" ondragstart="return false;" onselectstart="return false;"/>
+    </div>
+    <script>
+        
+        function buttonLoginClick(sender)
+        {
+            $("#loginRing").stop();
+            $("#loginInputArea").stop();
+            $("#loginInputArea").animate({ opacity: 0 }, 150, function ()
+            {
+                $("#loginRing").animate({ opacity: 1 }, 300);
+            });
+            $("#warningText").html("&nbsp;");
+            var uid = document.getElementById("uidText").value;
+            var pwd = document.getElementById("pwdText").value;
+            SardineFish.API.Account.Login(uid, pwd, function (succeed, msg)
+            {
+                if (!succeed)
+                {
+                    $("#loginRing").stop();
+                    $("#loginInputArea").stop();
+                    $("#loginRing").animate({ opacity: 0 }, 300, function ()
+                    {
+                        $("#loginInputArea").animate({ opacity: 1 }, 100);
+                        $("#warningText").text(msg);
+                    });
+                    return;
+                }
+                var url = $.cookie("ref");
+                if (!url || url == "")
+                    url = "/";
+                window.location = url;
+            });
+        }
+        function loginAreaKeyPress(e)
+        {
+            if (!e)
+                return;
+            if (e.char == '\n')
+                buttonLoginClick(null);
+        }
+        SardineFish.Web.UI.setButton($("#buttonLogin"), ButtonStyle.ColorTransit);
+        SardineFish.Web.UI.setButton($("#buttonRegister"), ButtonStyle.ColorTransit);
+        document.getElementById("loginArea").onkeypress = loginAreaKeyPress;
+    </script>
+</body>
+</html>

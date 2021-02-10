@@ -1,0 +1,397 @@
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(0,0,0,0.05);
+    font-family: "Open Sans","Roboto","等线","Microsoft YaHei",sans-serif;
+}
+
+a {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.font-UI {
+    font-family: "Raleway",sans-serif;
+}
+
+#top-nav > .item {
+    display: inline-block;
+    padding: 20px 30px;
+    cursor: pointer;
+    color: white;
+}
+*:focus{
+    outline: none;
+}
+
+#top {
+    background-color: #4DD0E1;
+}
+
+#top-center {
+    width: 1200px;
+    margin: auto;
+    padding-top: 30px;
+    display: flex;
+    align-items: center;
+}
+
+#top-nav {
+    
+}
+
+#main {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: stretch;
+}
+
+#center {
+    width: 1024px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}    
+
+.article {
+    padding-top: 100px;
+}
+
+.title {
+    padding: .5em 0;
+    font-size: 2em;
+    text-align: center;
+    color: rgba(0,0,0,0.7);
+    
+}
+
+.article-info {
+    text-align: center;
+    display: block;
+    color: rgba(0,0,0,0.3);
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.article .time {
+    display: inline-block;
+}
+.time::before{
+    content: "access_time"
+}
+
+.author {
+    display: inline-block;
+    margin-left: 3em;
+}
+.author::before {
+    content: "edit";
+}
+
+.tags-wrapper {
+    display: inline-block;
+    margin-left: 3em;
+}
+.tags-wrapper::before{
+    content: "\E54E";
+}
+.with-icon::before{
+    font-family: "Material Icons";
+    font-size: 1.2em;
+    height: 1.2em;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+    margin-right: 0.3em;
+}
+
+.tag {
+    display: inline-block;
+    padding: .3em 1em;
+    border-radius: 100px;
+    background-color: #E0F7FA;
+    margin: .5em;
+    font-size: .8em;
+    color: #777;
+    min-width: 3em;
+    text-align: center;
+}
+
+.content {
+    margin-top: 2em;
+    line-height: 2;
+    min-height: 400px;
+    color: #555;
+    font-size: 16px;
+}
+
+hr {
+    border: solid 1px;
+    margin: 0;
+    padding: 0;
+}
+
+.divider {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+
+
+.divide-line {
+    flex: auto;
+    height: 0;
+    border: solid 0.5px rgba(0,0,0,0.1);
+}
+
+.divide-name {
+    margin-right: 1em;
+    color: #4DD0E1;
+}
+
+.comment-area {
+    margin-top: 100px;
+}
+
+input {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    background-color: transparent;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+.textbox {
+    
+    padding: 0.2em .5em;
+    background-color: white;
+    border-bottom: solid 2px #B2EBF2;
+}
+
+
+
+
+textarea {
+    border: none;
+    overflow: hidden;
+    resize: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+}
+[contentEditable=true]:empty:not(:focus):before{
+    content:attr(data-text);
+    color: rgba(0,0,0,0.3);
+}
+
+
+
+#footer {
+    background-color: rgba(0,0,0,0.05);
+    height: 100px;
+    display: flex;
+    flex-flow:  column nowrap;
+    justify-content: center;
+    align-items: center;
+    color: #AAA;
+}
+
+#top-nav .current {
+    display: inline-flex;
+}
+
+.top-right {
+    flex: 1 1;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#login {
+    color: white;
+    font-size: 24px;
+}
+
+.top-icon {
+    font-family: 'Material Icons';
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 1em;
+}
+
+
+
+
+
+#user-avatar {
+    height: 100%;
+    border-radius: 100%;
+}
+
+#user {
+    height: 40px;
+    position: relative;
+}
+
+#account-area.login > #login {
+    display: none;
+}
+
+#account-area.login > #user-login-wrapper {
+    display: flex;
+}
+
+#search::before {
+    content: "search";
+}
+
+
+
+.top-icon {
+    color: white;
+    font-size: 24px;
+}
+
+
+#user-action {
+}
+
+.flex-center {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#user-login-wrapper {
+    display: none;
+}
+
+#editor {
+    margin-top: 400px;
+    border: none 0px;
+    height: 1000px;
+    padding: 0;
+    margin: 0;
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+#writer {
+    background-color: white;
+    margin-top: 100px;
+    border-radius: 5px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.01);
+    overflow: hidden;
+}
+
+#header {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+#title-wrapper {
+    display: flex;
+    align-items: stretch;
+    border-bottom: solid 1px rgba(0,0,0,0.05);
+}
+
+#title {
+    font-size: 2em;
+    border-bottom: none;
+    width: 100%;
+    text-align: center;
+    padding: .5em 1em;
+}
+#title::placeholder{
+    color: #AAA;
+}
+
+#tags-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: .5em;
+}
+
+#doc-types {
+    flex: auto 1;
+    display: flex;
+    padding: .5em;
+    justify-content: flex-start;
+    align-content: center;
+}
+
+#doc-types > .item {
+    margin: .5em;
+    padding: .2em 1em;
+    border-radius: 1000px;
+    border: solid 2px white;
+    color: #AAA;
+    cursor: pointer;
+    transition: all .1s;
+}
+
+#settings {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 1em;
+    font-weight: bold;
+    color: #555;
+}
+
+
+
+
+
+#doc-types > .item.selected {
+    background-color: #4DD0E1;
+    border-color:#4DD0E1;
+    color: white;
+}
+
+#publish {
+    font-size: 36px;
+    cursor: pointer;
+    color: #80DEEA;
+    transition: all .3s;
+}
+#publish:hover{
+    color: #26C6DA;
+}
+
+#add-tag {
+    color: #AAA;
+    padding: .5em 1em;
+    cursor: pointer;
+    transition: all .3s;
+}
+#add-tag:hover{
+    color: #80DEEA;
+}
