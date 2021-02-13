@@ -1,0 +1,15 @@
+{
+  "name": "sardinefish",
+  "version": "1.0.0",
+  "description": "",
+  "main": "SardineFish.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "SardineFish",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-loader": "^8.0.17",
+    "webpack": "^5.21.2"
+  }
+}
