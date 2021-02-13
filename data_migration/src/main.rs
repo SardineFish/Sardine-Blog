@@ -3,7 +3,7 @@ use std::env::{self, args};
 use chrono::Local;
 use mysql::{Pool, chrono::{self, DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc, naive}, prelude::Queryable, serde_json, time::PrimitiveDateTime};
 use mysql::serde::Deserialize;
-use model::{Access, AuthenticationInfo, Blog, BlogContent, CommentContent, DocType, HashMethod, HistoryData, Model, Note, NoteContent, Operation, PidType, Post, PostStats, PostType, User, UserInfo};
+use model::{Access, AuthenticationInfo, Blog, BlogContent, CommentContent, DocType, HashMethod, HistoryData, MiscellaneousPostContent, Model, Note, NoteContent, Operation, PidType, Post, PostStats, PostType, User, UserInfo};
 use options::ServiceOptions;
 use tokio::macros;
 
@@ -255,6 +255,65 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
         model.history.record_with_time(&post.uid, op, HistoryData::Post(post.data), post.time.into())
                 .await.unwrap();
     }
+
+    let reg = regex::Regex::new(r"(browse|like|comment) (note|article|comment)(\d+)").unwrap();
+
+    let stats = conn.query_map(r#"SELECT * FROM `statistics`"#, |(index, key, value): (i32, String, i32)| {
+        if key == "visited" {
+            log::info!("Get home visits {}", value);
+            (0 as PidType, "views", value as usize)
+        } else {
+            if let Some(caps) = reg.captures(&key) {
+                if let (Some(action), Some(post_type), Some(pid)) = (caps.get(1), caps.get(2), caps.get(3)) {
+                    log::info!("Get {} {} {} = {}", post_type.as_str(), pid.as_str(), action.as_str(), value);
+                    match action.as_str() {
+                        "browse" => (pid.as_str().parse::<PidType>().unwrap(), "views", value as usize),
+                        "like" => (pid.as_str().parse::<PidType>().unwrap(), "likes", value as usize),
+                        "comment" => (pid.as_str().parse::<PidType>().unwrap(), "comments", value as usize),
+                        _ => (0 as PidType, "", 0 as usize)
+                    }
+                } else {
+                    (0 as PidType, "", 0 as usize)
+                }
+            } else {
+                log::warn!("Unmatched key '{}'", &key);
+                (0 as PidType, "", 0 as usize)
+            }
+        }
+
+    }).unwrap();
+
+    for (pid, action, value) in stats {
+        if pid == 0 {
+            let mut stats = if let Ok(stats) = model.post.get_stats(pid).await {
+                stats
+            } else {
+                let post = Post::new(0, PostType::Miscellaneous(MiscellaneousPostContent {
+                    description: "Post stats for home page".to_owned(),
+                    url: "https://www.sardinefish.com/".to_owned(),
+                }), "SardineFish");
+                model.post.insert(&post)
+                    .await
+                    .unwrap();
+                post.stats
+            };
+            stats.views = value;
+            model.post.set_stats(0, &stats).await.unwrap();
+        } else {
+            if let Ok(mut stats) = model.post.get_stats(pid).await {
+                match action {
+                    "views" => stats.views = value,
+                    "likes" => stats.likes = value,
+                    "comments" => stats.comments = value,
+                    _ => (),
+                }
+                model.post.set_stats(pid, &stats).await.unwrap();
+            } else {
+                log::warn!("Post of pid '{}' not found.", pid);
+            }
+        }
+    }
+    
 }
 
 fn url_or_none(url: String) -> Option<String> {

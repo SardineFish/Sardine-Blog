@@ -16,3 +16,4 @@ options = { path = "../options" }
 url = "2.2.0"
 tokio = { version = "0.2.24", features = ["stream", "full"] }
 email-address-parser = "1.0.0"
+regex = "1.4.3"

@@ -1,4 +1,8 @@
-﻿var pageCodeEditor;
+﻿/**
+* @typedef {import("./lib/Script/SardineFish/SardineFish.API.d.ts")}
+*/
+
+var pageCodeEditor;
 HTMLTemplate.Init();
 function getVisited(callback)
 {

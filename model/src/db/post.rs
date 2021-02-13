@@ -44,11 +44,18 @@ pub struct PostStats {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
+pub struct MiscellaneousPostContent {
+    pub description: String,
+    pub url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
 #[serde(tag = "type", content = "content")]
 pub enum PostType {
     Note(NoteContent),
     Blog(BlogContent),
     Comment(CommentContent),
+    Miscellaneous(MiscellaneousPostContent),
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -309,6 +316,27 @@ impl PostModel {
     pub async fn add_comment(&self, pid: PidType) -> Result<usize> {
         let post = self.increase_stats(pid, "comments").await?;
         Ok(post.stats.comments)
+    }
+
+    pub async fn get_stats(&self, pid: PidType) -> Result<PostStats> {
+        let post = self.get_raw_by_pid(pid).await?;
+        Ok(post.stats)
+    }
+
+    pub async fn set_stats(&self, pid: PidType, stats: &PostStats) -> Result<()> {
+        let query = doc! {
+            "pid": pid
+        };
+        let update = doc! {
+            "$set": {
+                "stats": bson::to_bson(&stats).map_model_result()?
+            }
+        };
+        self.collection.update_one(query, update, None)
+            .await
+            .map_model_result()?;
+
+        Ok(())
     }
 
     async fn increase_stats(&self, pid: PidType, key: &str) -> Result<Post> {

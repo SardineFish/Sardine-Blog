@@ -518,6 +518,7 @@ dependencies = [
  "model",
  "mysql",
  "options",
+ "regex",
  "serde",
  "tokio",
  "url",
