@@ -27,7 +27,7 @@
     <script src="/lib/Script/markdown-it-katex/dist/markdown-it-katex.js"></script>
     <script src="/lib/Script/tools.js"></script>
     <script src="/lib/Script/require.js"></script>
-    <script src="script.MTU0ODQwNTEzNzk3Mg==.js"></script>
+    <script src="blogView.js"></script>
 </head>
 
 <body>
@@ -143,7 +143,7 @@
                             <header id="title" class="title">{{title}}</header>
                             <div class="article-info">
                                 <time class="time with-icon">{{time}}</time>
-                                <div class="author with-icon">{{author}}</div>
+                                <div class="author with-icon">{{author.name}}</div>
                                 <ul class="tags-wrapper with-icon">
                                     <template class="tag-template" datasource="{{tags}}">
                                         <li class="tag">{{$element$}}</li>
@@ -151,7 +151,7 @@
                                 </ul>
                             </div>
                         </hgroup>
-                        <main class="content markdown-body">{{"bind":"document","render":"html"}}</main>
+                        <main class="content markdown-body">{{"bind":"doc","render":"html"}}</main>
                     </article>
                 </template>
                 <div class="comment-area">
@@ -194,7 +194,7 @@
                     </div>
                     <ul class="comment-render">
                         <template id="comment-template">
-                            <li class="comment" data-pid="{{pid}}" data-name="{{name}}" data-uid="{{uid}}">
+                            <li class="comment" data-pid="{{pid}}" data-name="{{author.name}}" data-uid="{{author.name}}">
                                 <div class="decoration">
                                     <div class="circle-wrapper">
                                         <div class="circle button-reply">
@@ -208,12 +208,12 @@
                                 <div class="ver-wrapper">
                                     <main class="hor-wrapper">
                                         <div class="avatar-wrapper">
-                                            <img class="avatar" data-src='{{"bind":"avatar", "default":"/img/decoration/unknown-user.png"}}' onerror="this.src='/img/decoration/unknown-user.png'">
+                                            <img class="avatar" data-src='{{"bind":"author.avatar", "default":"/img/decoration/unknown-user.png"}}' onerror="this.src='/img/decoration/unknown-user.png'">
                                             <div class="line"></div>
                                         </div>
                                         <div class="comment-wrapper">
                                             <header class="sender-info">
-                                                <span class="name">{{name}}</span>
+                                                <span class="name">{{author.name}}</span>
                                                 <a class="email"></a>
                                                 <div class="time with-icon">{{time}}</div>
                                             </header>

@@ -1,49 +1,33 @@
 ﻿/**
-* @typedef {import("./lib/Script/SardineFish/SardineFish.API.d.ts")}
+* @typedef {import("./lib/Script/SardineFish/SardineFish.API")}
 */
 
 var pageCodeEditor;
 HTMLTemplate.Init();
 function getVisited(callback)
 {
-    var request = new XMLHttpRequest();
-    request.open("GET", "statistics/visited.php", true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.onreadystatechange = function ()
+    SardineFish.API.PostData.getStatsByPid({ pid: 0 }).then(stats =>
     {
-        if (request.readyState != 4)
-            return;
-        var json = request.responseText;
-        var result;
-        try
-        {
-            result = eval('(' + json + ')');
-        }
-        catch (ex) { throw new Error("JSON解析失败 json=" + json); }
-        if (result.status != "^_^")
-            throw new Error("获取访客数失败");
-
         var visited;
-        switch (result.data % 10)
+        switch (stats.views % 10)
         {
             case 1:
-                visited = result.data.toString() + "st";
+                visited = stats.views.toString() + "st";
                 break;
             case 2:
-                visited = result.data.toString() + "nd";
+                visited = stats.views.toString() + "nd";
                 break;
             case 3:
-                visited = result.data.toString() + "rd";
+                visited = stats.views.toString() + "rd";
                 break;
             default:
-                visited = result.data.toString() + "th";
+                visited = stats.views.toString() + "th";
         }
         var text = "You are the " + visited + " visitor.";
         $("#welcomeVisitor").text(text);
         if (callback)
             callback();
-    };
-    request.send();
+    });
 }
 function loadTopArea(callback)
 {
@@ -148,14 +132,15 @@ function pageCodeRun()
 }
 function loadLatest()
 {
-    SardineFish.API.All.GetLatest(1, 10, function (succeed, data)
-    {
-        if (!succeed)
-            return;
+    SardineFish.API.Blog.getList({
+        from: 0,
+        count: 10
+    }).then(data => {
         $("#loading").css("display", "none");
-        for (var i = 0; i < data.length ; i++)
+        for (var i = 0; i < data.length; i++)
         {
-            data[i].url = "/" + data[i].type + "/" + "?pid=" + data[i].pid;
+            data[i].url = `/blog/${data[i].pid}`;
+            // data[i].url = "/" + data[i].type + "/" + "?pid=" + data[i].pid;
         }
 
         $("#latestItemTemplate").get(0).dataSource = data;

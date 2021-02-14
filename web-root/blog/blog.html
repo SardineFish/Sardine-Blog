@@ -158,7 +158,7 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
                 <div id="list">
                     <template id="articleItemTemplate" class="articleItem shadow-block">
                        <div class="articleItem shadow-block">
-                        <a class="articleTitle" href="/blog/?pid={{pid}}" click="preventDefault();">{{title}}</a>
+                        <a class="articleTitle" href="/blog/{{pid}}" click="preventDefault();">{{title}}</a>
                         <div class="articleTimeTags" onselectstart="return false;">
                             <div class="articleTime">{{time}}</div>
                             <div class="articleTags">
@@ -167,7 +167,7 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
                                </template>
                             </div>
                         </div>
-                        <div class="articleText">{{document}}</div>
+                        <div class="articleText">{{preview}}</div>
                        </div>
                     </template>
                 </div>
@@ -187,7 +187,7 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
             </div>
         </footer>
     </div>
-    <script src="event.js"></script>
+    <script src="index.js"></script>
     <script>
         document.querySelectorAll(".time-year").forEach(function (item) {
             item.innerText = new Date().getFullYear();

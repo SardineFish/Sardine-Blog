@@ -1,4 +1,8 @@
 /**
+ * @typedef {import("../lib/Script/SardineFish/SardineFish.API")}
+ */
+
+/**
  * 
  * @param {String} selector
  * @returns {HTMLElement} 
@@ -30,13 +34,14 @@ window.onload = function ()
     HTMLTemplate.Init();
     initTopBar();
 
-    var search = parseSearch();
-    if (search["pid"])
-    {
-        pid = cid = search["pid"];
-        loadBlog(search["pid"]);
-        loadComment(search["pid"]);
-    }
+    const caps = /\d+$/.exec(window.location.pathname);
+    if (!caps)
+        throw new Error("Invalid url");
+    let pid = parseInt(caps[0]);
+
+    loadBlog(pid);
+    loadComment(pid);
+
     checkLogin();
     initCommentPost();
 
@@ -73,25 +78,17 @@ function scrollToTop(time)
 
 function checkLogin()
 {
-    SardineFish.API.Account.CheckLogin(function (data)
+    SardineFish.API.User.checkAuth({}).then(uid =>
     {
-        if (data)
+        document.querySelector("#account-area").className = "login";
+        document.querySelector("#user-avatar").src = `/api/user/${uid}/avatar`;
+        var uid = data.uid;
+        SardineFish.API.User.getInfo({}).then(info =>
         {
-            document.querySelector("#account-area").className = "login";
-            document.querySelector("#user-avatar").src = "/account/user/face/getFace.php?uid=" + data.uid;
-            var uid = data.uid;
-            SardineFish.API.Account.User.GetInfo(uid,
-                function (data)
-                {
-                    $("#sender-avatar").src = data.face;
-                    $("#input-name").value = data.name;
-                    $("#input-email").value = data.email;
-                },
-                function (msg, code)
-                {
-                
-                });
-        }
+            $("#sender-avatar").src = info.avatar;
+            $("#input-name").value = info.name;
+            $("#input-email").value = info.email;
+        });
     });
 }
 
@@ -128,8 +125,11 @@ function loadBlog(pid) {
     var hljsLib = "//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1";
 
     $("#write").href = "/blog/write/?pid=" + pid;
-    SardineFish.API.Article.Get(pid, function (data) {
-        if (data.docType == "markdown")
+
+    SardineFish.API.Blog.getByPid({ pid: pid }).then(data =>
+    {
+        data.time = SardineFish.API.Utils.formatDateTime(new Date(data.time));
+        if (data.doc_type === SardineFish.API.DocType.Markdown)
         {
             var unknowLanguages = {};
             if (new Date(data.time).getTime() < 1546272000000)
@@ -159,7 +159,7 @@ function loadBlog(pid) {
                     },
                     renderer: renderer
                 });
-                data.document = marked(data.document);
+                data.doc = marked(data.doc);
             }
             else
             {
@@ -170,12 +170,16 @@ function loadBlog(pid) {
                     langPrefix: 'lang-', // CSS language prefix for fenced blocks. Can be
                     linkify: true, // Autoconvert URL-like text to links
                     typographer: false,
-                    highlight: function (str, lang) {
-                        if (lang && hljs.getLanguage(lang)) {
-                            try {
+                    highlight: function (str, lang)
+                    {
+                        if (lang && hljs.getLanguage(lang))
+                        {
+                            try
+                            {
                                 return hljs.highlight(lang, str).value;
-                            } catch (__) {}
-                        } else if (lang) {
+                            } catch (__) { }
+                        } else if (lang)
+                        {
                             unknowLanguages[lang] = true;
                         }
                         return hljs.highlightAuto(str).value;
@@ -184,28 +188,39 @@ function loadBlog(pid) {
                 markdownItImagePostProcess(md);
                 md.use(markdownitEmoji);
                 md.use(markdownitKatex);
-                data.document = md.render(data.document);
-                
+                data.doc = md.render(data.doc);
+
                 // Post highlight
-                Object.keys(unknowLanguages).forEach(lang => {
+                Object.keys(unknowLanguages).forEach(lang =>
+                {
                     fetch(`${hljsLib}/languages/${lang}.min.js`)
                         .then(response => response.text())
-                        .then(code => {
+                        .then(code =>
+                        {
                             eval(code);
                             $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
                         });
                 });
             }
         }
+
         document.querySelector("#article-template").dataSource = data;
         loadContentNav();
         $("#page-title").innerText = data.title;
         $("#loading").style.display = "none";
         $$(".hide-loading").forEach(el => el.className = el.className.replace("hide-loading", ""));
         document.head.title = document.title = data.title;
-    }, function (msg, code)
+    }).catch(err =>
     {
-        $("#error-code").innerText = code;
+        switch (err.code)
+        {
+            case 0x30202:
+                err.code = 404;
+                break;
+            default:
+                err.code = `0x${err.code.toString(16)}`;
+        }
+        $("#error-code").innerText = err.code;
         $("#load-error").className = "show";
         $("#sun").onclick = () =>
         {
@@ -213,7 +228,7 @@ function loadBlog(pid) {
                 $("#root").className = $("#root").className.replace("darken", "");
             else
                 $("#root").className = addClass($("#root").className, "darken");
-           
+
         }
         loadPuzzle();
     });
@@ -279,14 +294,20 @@ function loadContentNav()
     });
 }
 
-function loadComment(cid) {
-    SardineFish.API.Comment.GetList(cid, 0, 500, Math.round(new Date().getTime() / 1000), function (succeed, data) {
-        if (!succeed) {
-            console.warn(data);
-            return;
-        }
+function formatTime(comment)
+{
+    comment.time = SardineFish.API.Utils.formatDateTime(new Date(comment.time));
+    comment.comments.forEach(formatTime);
+}
+
+function loadComment(cid)
+{
+    SardineFish.API.Comment.getByPid({ pid: cid, depth: 6 }).then(comments =>
+    {
+        comments.forEach(formatTime);
         var templateElement = document.querySelector("#comment-template");
-        templateElement.dataSource = data;
+        comments = comments.sort((a, b) => a.pid - b.pid);
+        templateElement.dataSource = comments;
         $$(".comment-render .comment").forEach(function (element)
         {
             var commentPid = element.dataset['pid'];

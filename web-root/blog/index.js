@@ -1,4 +1,8 @@
-﻿var pageCode = (function ()
+﻿/**
+ * @typedef {import("../lib/Script/SardineFish/SardineFish.API")}
+ */
+
+var pageCode = (function ()
 {
     var pageCodeEditor;
     var pageCodeContainerMouseDownLocationX = 0;
@@ -136,18 +140,17 @@ function LoadArticle(count)
         document: "This article is for testing."
     });
     return;*/
-    SardineFish.API.Article.GetList(loadTime, viewIndex, count, true, function (succeed, data)
+    SardineFish.API.Blog.getList({
+        from: viewIndex,
+        count: count,
+    }).then(data =>
     {
-        if(!succeed)
-        {
-            console.warn(data);
-        }
         for (var i = 0; i < data.length; i++)
         {
             articleList.add(data[i]);
         }
         viewIndex = articleList.length;
-        loading = false
+        loading = false;
     });
 }
 itemTemplate.dataSource = articleList;
@@ -192,14 +195,14 @@ function initTopMenu()
 
 function checkLogin()
 {
-    SardineFish.API.Account.CheckLogin(function (data)
-    {
-        if (data)
+    SardineFish.API.User.checkAuth({})
+        .then(uid =>
         {
+            console.log(uid);
             $("#account-area").addClass("login");
-            $("#user-avatar").get(0).src = "/account/user/face/getFace.php?uid=" + data.uid;
-        }
-    });
+            $("#user-avatar").get(0).src = `/api/user/${uid}/avatar`;
+        })
+        .catch(() => { });
 }
 
 var windowTop = 0;
