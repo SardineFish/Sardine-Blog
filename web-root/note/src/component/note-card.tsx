@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Note } from "../data/note";
 import { IconView, IconLikeFill, IconLikeOutline, IconComment } from "./icon";
 import classnames from "classnames";
-import { PostData } from "../data/postData";
-import { Comment } from "../data/comment";
 import { FoldView } from "./fold-view";
 import { CommentSystem } from "./comments";
-import { urlWrapper } from "../misc/utils";
+import { urlDefault } from "../misc/utils";
+import API, { DocType, Note } from "../../../lib/Script/SardineFish/SardineFish.API";
 
 export function NoteCard(props: {note: Note})
 {
@@ -27,8 +25,8 @@ export function NoteCard(props: {note: Note})
         setAvatar(props.note.author.avatar);
         if (!refContent.current)
             return;
-        if (props.note.author.level ===  "developer" || props.note.author.level === "admin")
-            refContent.current.innerHTML = props.note.text;
+        if (props.note.doc_type === DocType.HTML)
+            refContent.current.innerHTML = props.note.doc;
     }, [props.note]);
 
     return (
@@ -39,23 +37,23 @@ export function NoteCard(props: {note: Note})
                         <img src={avatar} alt="avatar" onError={onAvatarFailed} />
                     </div>
                     <div className="info">
-                        <a className="name" href={urlWrapper(props.note.author.url)}>{props.note.author.name}</a>
+                        <a className="name" href={urlDefault(props.note.author.url || "")}>{props.note.author.name}</a>
                         <span className="time">{props.note.time}</span>
                     </div>
                 </header>
                 <main className="note-content">
-                    <p ref={refContent}>{props.note.text}</p>
+                    <p ref={refContent}>{props.note.doc}</p>
                 </main>
                 <footer>
                     <div className="post-data">
                         <span className="item views">
                             <IconView />
-                            <span className="value">{props.note.postData.views}</span>
+                            <span className="value">{props.note.stats.views}</span>
                         </span>
-                        <LikeButton className="item like" pid={props.note.pid} likes={props.note.postData.likes} />
+                        <LikeButton className="item like" pid={props.note.pid} likes={props.note.stats.likes} />
                         <span className={classnames("item", "comments", { "extend": extend})} onClick={extendComments}>
                             <IconComment />
-                            <span className="value">{props.note.postData.comments}</span>
+                            <span className="value">{props.note.stats.comments}</span>
                         </span>
                     </div>
                 </footer>
@@ -74,10 +72,15 @@ function LikeButton(props: {pid: number, likes: number, className?: string})
     const hitLike = async () =>
     {
         if (liked)
-            return;
-        setLikes(likes + 1);
-        setLike(true);
-        await PostData.hitLike({}, { pid: props.pid });
+        {
+            setLikes(await API.PostData.dislike({ pid: props.pid }));
+            setLike(false);
+        }
+        else
+        {
+            setLikes(await API.PostData.like({ pid: props.pid }, {}));
+            setLike(true);
+        }
     };
     return (
         <span className={classnames("like-button", { "liked": liked }, props.className)} onClick={hitLike}>

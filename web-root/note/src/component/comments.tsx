@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, useRef, MouseEvent } from "react";
-import { Comment } from "../data/comment";
 import { IconReply, IconAdd, IconLoading, IconSend } from "./icon";
 import { UserContext } from "../context/UserContext";
 import linq from "linq";
 import gravatar from "gravatar";
 import calssNames from "classnames";
-import { urlWrapper } from "../misc/utils";
+import { urlDefault } from "../misc/utils";
+import API, { Comment, DocType } from "../../../lib/Script/SardineFish/SardineFish.API";
 
 const CommentContext = React.createContext({
     replyComment: null as Comment | null,
@@ -22,7 +22,7 @@ export function CommentSystem(props: {cid: number, loadComments?: boolean, level
     const reloadComments = async () =>
     {
         setLoading(true);
-        const comments = await Comment.get(props.cid);
+        const comments = await API.Comment.getByPid({ pid: props.cid });
         
         setComments(comments);
     };
@@ -76,10 +76,10 @@ export function CommentSystem(props: {cid: number, loadComments?: boolean, level
 
 function CommentRenderer(props: { comment: Comment, level: number, levelLimit: number })
 {
-    const hasReplies = props.level < props.levelLimit && props.comment.replies.length > 0;
+    const hasReplies = props.level < props.levelLimit && props.comment.comments.length > 0;
     const comment = props.comment;
-    const user = props.comment.user;
-    const timeString = props.comment.time.toDateString();
+    const user = props.comment.author;
+    const timeString = API.Utils.formatDateTime(new Date(props.comment.time));
     const [avatar, setAvatar] = useState(user.avatar,   );
     const context = useContext(CommentContext);
     const avatarFailed = () =>
@@ -92,7 +92,7 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
     }
     useEffect(() =>
     {
-        setAvatar(props.comment.user.avatar);
+        setAvatar(props.comment.author.avatar);
     }, [props.comment]);
 
     return (
@@ -115,7 +115,7 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
                     </div>
                     <div className="comment-wrapper">
                         <header className="sender-info">
-                            <a className="name" href={urlWrapper(user.url)} target="_blank">{user.name}</a>
+                            <a className="name" href={urlDefault(user.url)} target="_blank">{user.name}</a>
                             <span className="time">{timeString}</span>
                         </header>
                         <main className="comment-text">{comment.text}</main>
@@ -123,7 +123,7 @@ function CommentRenderer(props: { comment: Comment, level: number, levelLimit: n
                 </div>
                 <ul className="replies">
                     {
-                        comment.replies.map((reply, idx) => (
+                        comment.comments.map((reply, idx) => (
                             <CommentRenderer comment={reply} key={idx} level={props.level + 1} levelLimit={props.levelLimit}/>
                         ))
                     }
@@ -196,12 +196,20 @@ function PostComment(props: { cid: number, onPost?:()=>void })
         setSending(true);
         try
         {
-            const pid = await Comment.post({}, {
-                cid: commentCtx.cid,
+            const email = (refEmail.current as HTMLInputElement).value;
+            const avatar = gravatar.url(email, {
+                default: "https://cdn-static.sardinefish.com/img/unknown-user-grey.png",
+                size: "256",
+            }, true);
+
+            const pid = await API.Comment.post({
+                pid: commentCtx.cid,
+            }, {
                 name: (refName.current as HTMLInputElement).value,
-                email: (refEmail.current as HTMLInputElement).value,
+                email: email,
                 url: (refUrl.current as HTMLInputElement).value,
-                text: (refText.current as HTMLDivElement).innerText
+                avatar: avatar,
+                text: (refText.current as HTMLDivElement).innerText,
             });
                 
             (refText.current as HTMLDivElement).innerHTML = "";
@@ -281,7 +289,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
                             ref={refText}
                             data-placeholder={commentCtx.replyComment === null
                                 ? "Tell me what you think"
-                                : `Reply to ${commentCtx.replyComment.user.name}`}>
+                                : `Reply to ${commentCtx.replyComment.author.name}`}>
                         </div>
                         <p className={calssNames("hint", hint)}>
                             {hint === "error" ? error : hintText[hint]}

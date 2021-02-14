@@ -41,30 +41,30 @@ export declare enum DocType {
     Markdown = "Markdown",
     HTML = "HTML"
 }
-interface AuthChallenge {
+export interface AuthChallenge {
     salt: string;
     method: HashMethod;
     challenge: string;
 }
-interface SessionToken {
+export interface SessionToken {
     session_id: string;
     token: string;
     expire: number;
 }
-interface PubUserInfo {
+export interface PubUserInfo {
     name: string;
     avatar: string;
     url: string | null;
 }
-interface UserInfo extends PubUserInfo {
+export interface UserInfo extends PubUserInfo {
     email: string | null;
 }
-interface PostStats {
+export interface PostStats {
     views: number;
     likes: number;
     comments: number;
 }
-interface BlogPreview {
+export interface BlogPreview {
     pid: number;
     title: string;
     time: string;
@@ -72,7 +72,7 @@ interface BlogPreview {
     author: PubUserInfo;
     preview: string;
 }
-interface Blog {
+export interface Blog {
     pid: number;
     title: string;
     author: PubUserInfo;
@@ -88,7 +88,7 @@ export interface BlogContent {
     doc_type: DocType;
     doc: string;
 }
-interface Note {
+export interface Note {
     pid: number;
     author: PubUserInfo;
     time: string;
@@ -96,7 +96,7 @@ interface Note {
     doc: string;
     stats: PostStats;
 }
-interface Comment {
+export interface Comment {
     pid: number;
     comment_to: number;
     author: PubUserInfo;
@@ -291,8 +291,7 @@ declare const SardineFishAPI: {
                 type: "string";
                 validator: typeof validateUrl;
             };
-            doc_type: "string";
-            doc: {
+            text: {
                 type: "string";
                 validator: typeof validateNonEmpty;
             };

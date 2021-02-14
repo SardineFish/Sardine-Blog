@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import "../assets/css/index.scss";
 import { Page } from "./page";
 import { SiteNavs } from "../data/site";
-import { Note, NoteBoard } from "../data/note";
-import { getCurrentUnixTime } from "../data/api";
+// import { Note, NoteBoard } from "../data/note";
+import API, { Note, UserInfo } from "../../../lib/Script/SardineFish/SardineFish.API";
 import { NoteCard } from "../component/note-card";
 import linq from "linq";
 import classnames from "classnames";
@@ -15,35 +15,33 @@ import { scrollToTop } from "../misc/utils";
 import { FoldView } from "../component/fold-view";
 import { PostNote } from "../component/post-note";
 import { UserContext } from "../context/UserContext";
-import { PublicUserInfo } from "../data/user";
 
 function App()
 {
     const [notes, setNotes] = useState([] as Note[]);
-    const [time, setTime] = useState(getCurrentUnixTime());
     const [startIdx, setStartIdx] = useState(0);
     const [showPost, setShowPost] = useState(false);
-    const [user, setUser] = useState({ name: "", uid: "", avatar: "/static/img/unknown-user-grey.png", url: "#" } as PublicUserInfo);
+    const [user, setUser] = useState({ name: "", avatar: "/static/img/unknown-user-grey.png", url: null, email: null } as UserInfo);
     const loadCount = 10;
     const loading = notes.length < startIdx;
     
-    const loadComments = async () =>
+    const loadNotes = async () =>
     {
         if (startIdx > notes.length)
             return;
         setStartIdx(startIdx + loadCount);
-        const newNotes = await NoteBoard.get({
-            time: time,
-            startIdx: startIdx,
+        const newNotes = await API.Note.getList({
+            from: startIdx,
             count: loadCount
         });
+
         setNotes([...notes, ...newNotes]);
     };
     const onScroll = () =>
     {
         const footer = document.querySelector(".page-footer");
         if (footer && footer.getBoundingClientRect().top < window.innerHeight)
-            loadComments();
+            loadNotes();
     };
     const postNewClick = () =>
     {
@@ -53,11 +51,10 @@ function App()
     };
     const reload = () =>
     {
-        setTime(getCurrentUnixTime());
         setStartIdx(0);
         setNotes([]);
     };
-    const setUserContext = (user: PublicUserInfo) =>
+    const setUserContext = (user: UserInfo) =>
     {
         setUser(user);
     }
@@ -67,7 +64,7 @@ function App()
         if (notes.length > 0)
             return () => window.removeEventListener("scroll", onScroll);
         if (startIdx == 0)
-            loadComments();
+            loadNotes();
         return () => window.removeEventListener("scroll", onScroll);
     });
 

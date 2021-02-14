@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import classnames from "classnames";
-import { PublicUserInfo } from "../data/user";
 import { IconUser, IconMenu } from "../component/icon";
 import { NavItem } from "../data/site";
 import { FoldView } from "../component/fold-view";
+import { UserInfo } from "../../../lib/Script/SardineFish/SardineFish.API";
 
 export function Page(props: { title: string, nav: NavItem[], currentNav: string, children?: React.ReactNode })
 {
@@ -30,7 +30,7 @@ function UserData()
             {user.login
                 ? <div className="avatar">
                     <a href="/account/user/face/upload.html">
-                        <img src={(user.user as PublicUserInfo).avatar} alt="avatar" />
+                        <img src={(user.user as UserInfo).avatar} alt="avatar" />
                     </a>
                 </div>
                 : <div className="avatar empty">

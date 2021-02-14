@@ -1,7 +1,7 @@
 
 export async function scrollToTop(time: number = .5)
 {
-    return new Promise(resolve =>
+    return new Promise<void>(resolve =>
     {
         const func = (t: number) =>
         {
@@ -23,9 +23,9 @@ export async function scrollToTop(time: number = .5)
     });
 }
 
-export function urlWrapper(url: string)
+export function urlDefault(url: string | null)
 {
-    if (/^\s*$/.test(url))
+    if (!url || /^\s*$/.test(url))
         return "#";
     if (!/^https?:\/\//i.test(url))
         return `//${url}`;

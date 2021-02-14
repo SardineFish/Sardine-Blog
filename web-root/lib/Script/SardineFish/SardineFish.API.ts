@@ -356,40 +356,40 @@ export enum DocType
     HTML = "HTML",
 }
 
-interface AuthChallenge
+export interface AuthChallenge
 {
     salt: string,
     method: HashMethod,
     challenge: string,
 }
 
-interface SessionToken
+export interface SessionToken
 {
     session_id: string,
     token: string,
     expire: number,
 }
 
-interface PubUserInfo
+export interface PubUserInfo
 {
     name: string,
     avatar: string,
     url: string | null,
 }
 
-interface UserInfo extends PubUserInfo
+export interface UserInfo extends PubUserInfo
 {
     email: string | null,
 }
 
-interface PostStats
+export interface PostStats
 {
     views: number,
     likes: number,
     comments: number,
 }
 
-interface BlogPreview
+export interface BlogPreview
 {
     pid: number,
     title: string,
@@ -399,7 +399,7 @@ interface BlogPreview
     preview: string,
 }
 
-interface Blog
+export interface Blog
 {
     pid: number,
     title: string,
@@ -419,7 +419,7 @@ export interface BlogContent
     doc: string,
 }
 
-interface Note
+export interface Note
 {
     pid: number,
     author: PubUserInfo,
@@ -429,7 +429,7 @@ interface Note
     stats: PostStats,
 }
 
-interface Comment
+export interface Comment
 {
     pid: number,
     comment_to: number,
@@ -575,8 +575,7 @@ const SardineFishAPI = {
                     optional: true,
                 },
                 avatar: Url,
-                doc_type: "string",
-                doc: {
+                text: {
                     type: "string",
                     validator: validateNonEmpty,
                 }

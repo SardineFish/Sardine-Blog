@@ -2,7 +2,8 @@ import React, { useState, useRef } from "react";
 import { IconEarth, IconEyeOff, IconSend, IconAsterisk } from "./icon";
 import { Button } from "./button";
 import gravatar from "gravatar";
-import { NoteBoard } from "../data/note";
+// import { NoteBoard } from "../data/note";
+import API, { DocType } from "../../../lib/Script/SardineFish/SardineFish.API";
 import classNames from "classnames";
 
 export function PostNote(props: {onPost?:(pid:number)=>void})
@@ -40,12 +41,19 @@ export function PostNote(props: {onPost?:(pid:number)=>void})
     {
         try
         {
-            const pid = await NoteBoard.post({}, {
-                author: (refName.current as HTMLInputElement).value,
-                email: (refEmail.current as HTMLInputElement).value,
+            const email = (refEmail.current as HTMLInputElement).value;
+            const avatar = gravatar.url(email, {
+                default: "https://cdn-static.sardinefish.com/img/unknown-user-grey.png",
+                size: "256",
+            }, true)
+            const pid = await API.Note.post({}, {
+                name: (refName.current as HTMLInputElement).value,
+                email: email,
                 url: (refUrl.current as HTMLInputElement).value,
-                text: (refText.current as HTMLDivElement).innerText
-            });
+                avatar: avatar,
+                doc: (refText.current as HTMLDivElement).innerText,
+                doc_type: DocType.PlainText,
+            })
             props.onPost && props.onPost(pid);
             (refText.current as HTMLDivElement).innerHTML = "";
         }

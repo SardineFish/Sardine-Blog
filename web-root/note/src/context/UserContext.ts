@@ -1,8 +1,8 @@
 import React from "react";
-import { PublicUserInfo } from "../data/user";
+import { UserInfo } from "../../../lib/Script/SardineFish/SardineFish.API";
 
 export const UserContext = React.createContext({
     login: false,
-    user: { name: "", uid: "", avatar: "/static/img/unknown-user-grey.png", url: "#" } as PublicUserInfo,
-    setUser: (user: PublicUserInfo) => { }
+    user: { name: "", avatar: "/static/img/unknown-user-grey.png", url: "#" } as UserInfo,
+    setUser: (user: UserInfo) => { }
 });

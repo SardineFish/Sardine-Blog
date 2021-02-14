@@ -360,8 +360,7 @@ const SardineFishAPI = {
                 optional: true,
             },
             avatar: Url,
-            doc_type: "string",
-            doc: {
+            text: {
                 type: "string",
                 validator: validateNonEmpty,
             }
