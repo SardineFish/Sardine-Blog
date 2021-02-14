@@ -3,8 +3,8 @@ import * as linq from "linq";
 import { Color, animate, counter, interpolate, sleep, getPalette, Vector2, vec2, scale, minus, plus, forEachAsync, waitLoad } from "./lib";
 import moment from "moment";
 import { IconSend, IconReply, IconAdd, IconLoading } from "./icon";
-import { APIResponse, CommentResponseData, SarAPI } from "./api";
 import gravatar from "gravatar";
+import SardineFish, * as SarAPI from "../../lib/Script/SardineFish/SardineFish.API";
 
 export interface ChartData
 {
@@ -222,8 +222,8 @@ export class Banner extends React.Component<{},{x:number,y:number, animate:boole
     {
         try
         {
-            const visitCount: number = (await fetch("/statistics/visited.php")
-                .then(response => response.json())).data;
+            const stats = await SardineFish.PostData.getStatsByPid({ pid: 0 });
+            const visitCount = stats.views;
             let visitText = "";
             switch (visitCount % 10)
             {
@@ -722,17 +722,16 @@ export function FriendLink(props: { data: FriendData })
         </div>
     )
 }
-function processData(data: CommentResponseData):CommentProps
+function processData(data: SarAPI.Comment):CommentProps
 {
     return {
-        avatar: data.avatar,
-        name: data.name,
-        postID: parseInt(data.pid),
-        commentID: parseInt(data.cid),
-        uid: data.uid,
-        time: data.time,
+        avatar: data.author.avatar,
+        name: data.author.name,
+        postID: data.pid,
+        commentID: data.comment_to,
+        time: SardineFish.Utils.formatDateTime(new Date(data.time)),
         text: data.text,
-        url: data.url,
+        url: data.author.url,
         replies: (data.comments?.length) > 0
             ? data.comments.map(c => processData(c))
             : []
@@ -794,9 +793,18 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
         const email = (this.refs["input-email"] as HTMLInputElement).value;
         const url = (this.refs["input-url"] as HTMLInputElement).value;
         const text = (this.refs["input-comment"] as HTMLElement).innerText;
+        const avatar = gravatar.url(email, {
+            default: "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png",
+        }, true);
         try
         {
-            await SarAPI.Comment.Post(this.state.replyID, name, email, url, text);
+            await SardineFish.Comment.post({ pid: this.state.replyID }, {
+                name,
+                email,
+                avatar,
+                url,
+                text,
+            });
             (this.refs["input-comment"] as HTMLElement).innerText = "";
             await this.reload();
             this.setState({
@@ -813,15 +821,10 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
     }
     async reload()
     {
-        const count = this.props.count || 100;
-        const response = (await fetch(`/comment/getList.php?cid=${this.props.pageID}&count=${count}`).then(r => r.json())) as APIResponse<CommentResponseData[]>;
-        //let response: any = { "status": "^_^", "errorCode": null, "error": null, "data": [{ "pid": "315", "cid": 313, "uid": "b6f69dfdfd2bd7cdb4d79bafd0db0ab90c26ee00", "name": "%&*%*&\uffe5&\u2026\u2026", "text": "CXY\u5927\u50bb\u903c\uff01", "time": "2019-01-24 22:14:03", "avatar": "https:\/\/www.gravatar.com\/avatar\/1e0f7b027e1d6da3bc2dfb8d94858557?d=https:\/\/static.sardinefish.com\/img\/decoration\/unknown-user.png&s=256", "commentCount": "1", "comments": [{ "pid": "317", "cid": 315, "uid": "SardineFish", "name": "SardineFish", "text": "\u6211\u6c38\u8fdc\u559c\u6b22LYH\uff01", "time": "2019-01-25 00:22:22", "avatar": "https:\/\/cdn-img.sardinefish.com\/NjczODc3", "commentCount": "0", "like": "0" }], "like": "0" }, { "pid": "316", "cid": 313, "uid": "Dwscdv3", "name": "Dwscdv3", "text": "\u697c\u4e0a +1\uff08x", "time": "2019-01-25 00:22:14", "avatar": "http:\/\/img.sardinefish.com\/363", "commentCount": "0", "like": "0" }], "msg": "", "processTime": 1548690762500 };
-        if (response.status != "^_^")
-        {
-            console.error(`Get comment failed. ${response.errorCode}: ${response.msg}`);
-            return;
-        }
-        let data = response.data as CommentResponseData[];
+        let data = await SardineFish.Comment.getByPid({
+            pid: this.props.pageID,
+            depth: 6
+        });
         if (data && data.length > 0)
         {
             let props = data.map(d => processData(d));
@@ -903,7 +906,6 @@ interface CommentProps
 {
     commentID: number;
     postID: number;
-    uid: string;
     name: string;
     text: string;
     avatar: string;

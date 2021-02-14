@@ -1,6 +1,6 @@
 {
   "name": "sardine-web-note",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A note board on SardineFish's Web Site.",
   "main": "index.js",
   "scripts": {

@@ -216,7 +216,7 @@ export function cross(u: Vector2, v: Vector2): number
 
 export async function animate(time: number, callback: (t: number) => void)
 {
-    return new Promise((resolve, reject) =>
+    return new Promise<void>((resolve, reject) =>
     {
         let tick = -1;
         let totalTime = 0;
@@ -270,7 +270,7 @@ export function interpolate(from: number, to: number, t: number)
 
 export async function sleep(time: number)
 {
-    return new Promise((resolve) =>
+    return new Promise<void>((resolve) =>
     {
         setTimeout(() =>
         {
@@ -303,7 +303,7 @@ export async function forEachAsync<T>(arr: T[], callback: (element: T, idx: numb
 
 export async function waitLoad(element: HTMLImageElement)
 {
-    return new Promise((resolve, reject) =>
+    return new Promise<void>((resolve, reject) =>
     {
         if (element.complete)
             resolve();
