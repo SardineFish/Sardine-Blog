@@ -362,7 +362,7 @@ interface Blog
     stats: PostStats,
 }
 
-interface BlogContent
+export interface BlogContent
 {
     title: string,
     tags: string[],
@@ -389,6 +389,12 @@ interface Comment
     text: string,
     comments: Comment[],
     depth: number,
+}
+
+export interface MiscellaneousPostContent
+{
+    description: string,
+    url: string,
 }
 
 const SardineFishAPI = {
@@ -526,6 +532,26 @@ const SardineFishAPI = {
                 comment_root: number,
                 text: string,
             }>(),
+    },
+    PostData: {
+        getStatsByPid: api("GET", "/api/post/{pid}/stats")
+            .path({ pid: "number" })
+            .response<PostStats>(),
+        like: api("POST", "/api/post/{pid}/like")
+            .path({ pid: "number" })
+            .response<number>(),
+        dislike: api("DELETE", "/api/post/{pid}/like")
+            .path({ pid: "number" })
+            .response<number>(),
+        postMisc: api("POST", "/api/post/misc_post")
+            .body({
+                description: {
+                    type: "string",
+                    validator: validateNonEmpty,
+                },
+                url: Url,
+            })
+            .response<number>(),
     }
 }
 

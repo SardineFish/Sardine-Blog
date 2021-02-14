@@ -402,6 +402,26 @@ var SardineFishAPI = {
         delete: api("DELETE", "/api/comment/{pid}")
             .path({ pid: "number" })
             .response(),
+    },
+    PostData: {
+        getStatsByPid: api("GET", "/api/post/{pid}/stats")
+            .path({ pid: "number" })
+            .response(),
+        like: api("POST", "/api/post/{pid}/like")
+            .path({ pid: "number" })
+            .response(),
+        dislike: api("DELETE", "/api/post/{pid}/like")
+            .path({ pid: "number" })
+            .response(),
+        postMisc: api("POST", "/api/post/misc_post")
+            .body({
+            description: {
+                type: "string",
+                validator: validateNonEmpty,
+            },
+            url: Url,
+        })
+            .response(),
     }
 };
 var SardineFish = window.SardineFish || {};

@@ -78,7 +78,7 @@ interface Blog {
     doc: string;
     stats: PostStats;
 }
-interface BlogContent {
+export interface BlogContent {
     title: string;
     tags: string[];
     doc_type: DocType;
@@ -100,6 +100,10 @@ interface Comment {
     text: string;
     comments: Comment[];
     depth: number;
+}
+export interface MiscellaneousPostContent {
+    description: string;
+    url: string;
 }
 declare const SardineFishAPI: {
     User: {
@@ -285,6 +289,33 @@ declare const SardineFishAPI: {
             comment_root: number;
             text: string;
         } | null>;
+    };
+    PostData: {
+        getStatsByPid: (params: Required<RequiredParams<FullParamsDeclare<{
+            pid: "number";
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            pid: "number";
+        }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<PostStats>;
+        like: (params: Required<RequiredParams<FullParamsDeclare<{
+            pid: "number";
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            pid: "number";
+        }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>, body: ValueType<ParamsDeclare>) => Promise<number>;
+        dislike: (params: Required<RequiredParams<FullParamsDeclare<{
+            pid: "number";
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            pid: "number";
+        }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<number>;
+        postMisc: (params: ValueType<{}>, body: ValueType<FullParamsDeclare<{
+            description: {
+                type: "string";
+                validator: typeof validateNonEmpty;
+            };
+            url: {
+                type: "string";
+                validator: typeof validateUrl;
+            };
+        }> & ParamsDeclare>) => Promise<number>;
     };
 };
 declare global {
