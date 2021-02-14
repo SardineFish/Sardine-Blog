@@ -37,7 +37,7 @@ window.onload = function ()
     const caps = /\d+$/.exec(window.location.pathname);
     if (!caps)
         throw new Error("Invalid url");
-    let pid = parseInt(caps[0]);
+    pid = parseInt(caps[0]);
 
     loadBlog(pid);
     loadComment(pid);
@@ -306,7 +306,7 @@ function loadComment(cid)
     {
         comments.forEach(formatTime);
         var templateElement = document.querySelector("#comment-template");
-        comments = comments.sort((a, b) => a.pid - b.pid);
+        comments = comments.sort((a, b) => b.pid - a.pid);
         templateElement.dataSource = comments;
         $$(".comment-render .comment").forEach(function (element)
         {
@@ -334,13 +334,17 @@ function initCommentPost()
         var name = $("#input-name").value;
         var email = $("#input-email").value;
         var text = $("#input-comment").innerText;
-        SardineFish.API.Comment.Post(cid, name, email, text, function (succeed,data)
+        var hash = CryptoJS.MD5(email).toString();
+        var avatar = `https://www.gravatar.com/avatar/${hash}?s=256&d=${encodeURIComponent("https://cdn-static.sardinefish.com/img/unknown-user-grey.png")}`;
+        SardineFish.API.Comment.post({ pid: cid }, {
+            name: name,
+            email: email,
+            text: text,
+            avatar: avatar
+        }).then(() =>
         {
-            if (succeed)
-            {
-                $("#input-comment").innerHTML = "";
-                loadComment(pid);
-            }    
+            $("#input-comment").innerHTML = "";
+            loadComment(pid);
         });
     });
 }
