@@ -55,7 +55,7 @@ impl From<ModelError> for Error {
     fn from(err: ModelError) -> Self {
         match err {
             ModelError::PostNotFound(_) | ModelError::UserNotFound(_) => Error::DataNotFound(err),
-            ModelError::UserExisted(_) => Error::DataConflict(err),
+            ModelError::UserExisted(_) | ModelError::PostExisted(_) => Error::DataConflict(err),
             _ => Error::InternalModelError(err),
         }
     }

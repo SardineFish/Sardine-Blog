@@ -256,7 +256,7 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
                 .await.unwrap();
     }
 
-    let reg = regex::Regex::new(r"(browse|like|comment) (note|article|comment)(\d+)").unwrap();
+    let reg = regex::Regex::new(r"^(browse|like|comment) (note|article|comment)([1-9]|[1-9][0-9]+)$").unwrap();
 
     let stats = conn.query_map(r#"SELECT * FROM `statistics`"#, |(index, key, value): (i32, String, i32)| {
         if key == "visited" {
@@ -270,14 +270,14 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
                         "browse" => (pid.as_str().parse::<PidType>().unwrap(), "views", value as usize),
                         "like" => (pid.as_str().parse::<PidType>().unwrap(), "likes", value as usize),
                         "comment" => (pid.as_str().parse::<PidType>().unwrap(), "comments", value as usize),
-                        _ => (0 as PidType, "", 0 as usize)
+                        _ => (-1 as PidType, "", 0 as usize)
                     }
                 } else {
-                    (0 as PidType, "", 0 as usize)
+                    (-1 as PidType, "", 0 as usize)
                 }
             } else {
                 log::warn!("Unmatched key '{}'", &key);
-                (0 as PidType, "", 0 as usize)
+                (-1 as PidType, "", 0 as usize)
             }
         }
 
@@ -288,6 +288,7 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
             let mut stats = if let Ok(stats) = model.post.get_stats(pid).await {
                 stats
             } else {
+                log::info!("Create pid 0");
                 let post = Post::new(0, PostType::Miscellaneous(MiscellaneousPostContent {
                     description: "Post stats for home page".to_owned(),
                     url: "https://www.sardinefish.com/".to_owned(),
@@ -297,8 +298,11 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
                     .unwrap();
                 post.stats
             };
+            log::info!("Set home page views {}", value);
             stats.views = value;
             model.post.set_stats(0, &stats).await.unwrap();
+        } else if pid < 0 {
+            continue
         } else {
             if let Ok(mut stats) = model.post.get_stats(pid).await {
                 match action {
@@ -313,6 +317,20 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
             }
         }
     }
+
+    let post = Post::new(1, PostType::Miscellaneous(MiscellaneousPostContent {
+        description: "Post stats for about page".to_owned(),
+        url: "https://www.sardinefish.com/about/".to_owned(),
+    }), "SardineFish");
+    if let Err(err) = model.post.insert(&post).await {
+        log::warn!("Failed to create misc post for about page: {}", err);
+    }
+
+    let result = conn.query_map(r"SELECT pid from posts ORDER BY pid DESC LIMIT 1", |pid: i32| {
+        pid
+    }).unwrap();
+    log::info!("Reset base pid to {}", result[0]);
+    model.post.reset_pid_base(result[0]).await.unwrap();
     
 }
 

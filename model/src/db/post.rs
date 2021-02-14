@@ -2,7 +2,7 @@ use std::{ usize};
 
 use bson::{Document, doc, DateTime};
 use chrono::Utc;
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, UpdateOptions}};
+use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, ReturnDocument, UpdateOptions}};
 use tokio::stream::StreamExt;
 
 use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, error::*, model::PidType};
@@ -168,7 +168,6 @@ impl PostModel {
         }
     }
 
-    
     pub async fn init_meta(&self) -> Result<()> {
         let data = PostMetaData {
             _id: self.meta_id.clone(),
@@ -178,6 +177,22 @@ impl PostModel {
         self.collection.insert_one(bson::to_document(&data).unwrap(), None)
             .await
             .map_model_result()?;
+
+        Ok(())
+    }
+
+    pub async fn reset_pid_base(&self, pid: PidType) -> Result<()> {
+        let query = doc! {
+            "_id": &self.meta_id,
+        };
+        let update = doc!{
+            "$set": {
+                "posts": pid
+            }
+        };
+        self.collection.find_one_and_update(query, update, None)
+            .await?
+            .expect("Missing Metadata");
 
         Ok(())
     }
@@ -192,7 +207,9 @@ impl PostModel {
             }
         };
 
-        let result = self.collection.find_one_and_update(query, update, None)
+        let mut opts = FindOneAndUpdateOptions::default();
+        opts.return_document = Some(ReturnDocument::After);
+        let result = self.collection.find_one_and_update(query, update, Some(opts))
             .await
             .map_model_result()?
             .expect("Missing Metadata");
