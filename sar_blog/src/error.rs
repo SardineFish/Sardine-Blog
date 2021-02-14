@@ -12,6 +12,7 @@ pub enum Error {
     PasswordIncorrect,
     DataConflict(ModelError),
     InvalidChallenge,
+    AccessDenied,
 }
 
 impl Error {
@@ -25,6 +26,7 @@ impl Error {
             Error::InternalServiceError(_) => 0x0600,
             Error::DataConflict(_) => 0x0700,
             Error::InvalidChallenge => 0x0800,
+            Error::AccessDenied => 0x0900,
         }
     }
     pub fn post_not_found(pid: PidType) -> Self {
@@ -40,7 +42,8 @@ impl fmt::Display for Error {
             Error::Unauthorized => write!(f, "Unauthorized"),
             Error::PasswordIncorrect => write!(f, "Password incorrect"),
             Error::InvalidChallenge => write!(f, "Invalid challenge"),
-            Error::InternalModelError(err) => fmt::Display::fmt(err,f),
+            Error::InternalModelError(err) => fmt::Display::fmt(err, f),
+            Error::AccessDenied => fmt::Display::fmt("Access Denied", f),
             _ => write!(f, "Internal Server Error"),
         }
     }

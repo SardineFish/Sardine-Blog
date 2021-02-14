@@ -1,6 +1,6 @@
 use actix_web::{HttpRequest, delete, get, post, web::{scope, Json, Path, Query, ServiceConfig}};
 use chrono::DateTime;
-use sar_blog::{Author, NestedCommentRef, model::{AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo}};
+use sar_blog::{Author, NestedCommentRef, model::{AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo, Access}};
 use serde::{Deserialize, Serialize};
 
 use crate::{error::Error, middleware, misc::{error::MapControllerError, response::Response, utils::EmptyAsNone}};
@@ -99,7 +99,7 @@ async fn post(
     .await
 }
 
-#[delete("/{pid}", wrap = "middleware::authentication()")]
+#[delete("/{pid}", wrap = "middleware::authentication(Access::Trusted)")]
 async fn delete(
     service: extractor::Service,
     auth: extractor::Auth,

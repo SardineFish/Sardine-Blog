@@ -21,7 +21,7 @@ lazy_static!{
 
 pub fn validate_uid(uid: &str) -> Result<()> {
     let reg = Regex::new(r"^[_A-Za-z0-9]{6,32}$").unwrap();
-    if !reg.is_match(uid) {
+    if reg.is_match(uid) {
         Ok(())
     } else {
         Err(Error::InvalidParams("'uid' dose not match /^[_A-Za-z0-9]{6,32}$/".to_owned()))

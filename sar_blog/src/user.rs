@@ -42,7 +42,7 @@ impl<'m> UserService<'m> {
         }
     }
 
-    pub async fn auth(&self, session_id: &str, token: &str) -> Result<SessionAuthInfo> {
+    pub async fn auth_session(&self, session_id: &str, token: &str) -> Result<SessionAuthInfo> {
         let session = self.redis.session(session_id).get()
             .await
             .map_service_err()?
@@ -52,6 +52,15 @@ impl<'m> UserService<'m> {
             Err(Error::Unauthorized)
         } else {
             Ok(session.auth_info)
+        }
+    }
+
+    pub async fn auth_access(&self, uid: &str, required_access: Access) -> Result<User> {
+        let user = self.model.user.get_by_uid(uid).await?;
+        if user.access >= required_access {
+            Ok(user)
+        } else {
+            Err(Error::AccessDenied)
         }
     }
 

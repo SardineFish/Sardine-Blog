@@ -308,6 +308,11 @@ impl PostModel {
         Ok(post.stats.likes)
     }
 
+    pub async fn dislike(&self, pid: PidType) -> Result<usize> {
+        let post = self.decrease_stats(pid, "likes").await?;
+        Ok(post.stats.likes)
+    }
+
     pub async fn view(&self, pid: PidType) -> Result<usize> {
         let post = self.increase_stats(pid, "views").await?;
         Ok(post.stats.views)
@@ -346,6 +351,25 @@ impl PostModel {
         let update = doc! {
             "$inc": {
                 format!("stats.{}", key): 1
+            }
+        };
+        let mut options = FindOneAndUpdateOptions::default();
+        options.return_document = Some(mongodb::options::ReturnDocument::After);
+        let doc = self.collection.find_one_and_update(query, update, self.update_options.clone())
+            .await
+            .map_model_result()?
+            .ok_or(Error::PostNotFound(pid))?;
+        
+        bson::from_document(doc).map_model_result()
+    }
+
+    async fn decrease_stats(&self, pid: PidType, key: &str) -> Result<Post> {
+        let query = doc! {
+            "pid": pid
+        };
+        let update = doc! {
+            "$inc": {
+                format!("stats.{}", key): -1
             }
         };
         let mut options = FindOneAndUpdateOptions::default();

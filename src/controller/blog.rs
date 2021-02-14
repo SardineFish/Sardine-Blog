@@ -1,7 +1,7 @@
 
 use actix_web::{get, post, put, delete, web::{self, Path}};
 use chrono::DateTime;
-use sar_blog::{BlogPreview, model::{Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo}};
+use sar_blog::{BlogPreview, model::{Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo, Access}};
 use serde::{Serialize, Deserialize};
 use web::{Query, ServiceConfig, scope};
 
@@ -68,7 +68,7 @@ async fn get_by_pid(service: extractor::Service, Path(pid): Path<PidType>, sessi
     }).await
 }
 
-#[post("", wrap="middleware::authentication()")]
+#[post("", wrap="middleware::authentication(Access::Trusted)")]
 async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>) -> Response<PidType> {
     execute(async move {
         let pid = service.blog().post(&auth.uid, data.to_owned()).await.map_contoller_result()?;
@@ -77,7 +77,7 @@ async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Jso
 }
 
 
-#[put("/{pid}", wrap="middleware::authentication()")]
+#[put("/{pid}", wrap="middleware::authentication(Access::Trusted)")]
 async fn update(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>, Path(pid): Path<PidType>) -> Response<PidType> {
     execute(async move {
         service.blog().update(pid, &auth.uid, data.to_owned())
@@ -87,7 +87,7 @@ async fn update(service: extractor::Service, auth: extractor::Auth, data: web::J
     }).await
 }
 
-#[delete("/{pid}", wrap="middleware::authentication()")]
+#[delete("/{pid}", wrap="middleware::authentication(Access::Trusted)")]
 async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<BlogContent>> {
     execute(async move {
         let blog = service.blog().delete(&auth.uid, pid)

@@ -5,6 +5,7 @@ mod comment;
 mod user;
 mod executor;
 mod web_static;
+mod post_data;
 
 use actix_web::web::{ServiceConfig, scope};
 use options::ServiceOptions;
@@ -18,6 +19,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .configure(comment::config)
             .configure(note::config)
             .configure(user::config)
+            .configure(post_data::config)
             .wrap(middleware::session())
         ).service(scope("").configure(web_static::config(opts.clone())));
     }

@@ -105,7 +105,7 @@ impl<'m> CommentService<'m> {
         };
 
         let comment_root = match &post.data {
-            PostType::Blog(_) | PostType::Note(_) => post.pid,
+            PostType::Blog(_) | PostType::Note(_) | PostType::Miscellaneous(_) => post.pid,
             PostType::Comment(content) => content.comment_root,
         };
         let comment = PostType::Comment(CommentContent {
@@ -119,7 +119,11 @@ impl<'m> CommentService<'m> {
             .map_service_err()?;
         
         self.model.post.insert(&post).await.map_service_err()?;
-
+        self.model.post.add_comment(comment_to).await?;
+        if comment_to != comment_root {
+            self.model.post.add_comment(comment_root).await?;
+        }
+ 
         self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(post.data))
             .await
             .map_service_err()?;

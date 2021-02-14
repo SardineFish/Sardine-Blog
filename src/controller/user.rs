@@ -94,7 +94,7 @@ async fn sign_up<'c>(service: extractor::Service, session: extractor::Session, d
     }).await
 }
 
-#[delete("/session", wrap="middleware::authentication()")]
+#[delete("/session", wrap="middleware::authentication(Access::Registered)")]
 async fn sign_out_self(service: extractor::Service, session: extractor::Session) -> Response<()> {
     execute(async move {
         service.user().sign_out(session.id(), session.id())
@@ -103,7 +103,7 @@ async fn sign_out_self(service: extractor::Service, session: extractor::Session)
     }).await
 }
 
-#[delete("/session/{session_id}", wrap="middleware::authentication()")]
+#[delete("/session/{session_id}", wrap="middleware::authentication(Access::Registered)")]
 async fn sign_out_session(service: extractor::Service, session: extractor::Session, Path(target): Path<String>) -> Response<()> {
     execute(async move {
         service.user().sign_out(&target, session.id())
@@ -112,7 +112,7 @@ async fn sign_out_session(service: extractor::Service, session: extractor::Sessi
     }).await
 }
 
-#[put("/{uid}/access", wrap="middleware::authentication()")]
+#[put("/{uid}/access", wrap="middleware::authentication(Access::Trusted)")]
 async fn grant_access(service: extractor::Service, session: extractor::Session, Path(uid): Path<String>, data: Json<GrantAccessData>) -> Response<UserAccessInfo> {
     execute(async move {
         let user = service.user().grant_access(session.id(), &uid, data.access)

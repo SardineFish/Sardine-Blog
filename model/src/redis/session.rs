@@ -1,3 +1,4 @@
+
 use chrono::{DateTime, TimeZone, Utc};
 use redis::{AsyncCommands, FromRedisValue, RedisError, ToRedisArgs, aio::MultiplexedConnection, pipe};
 use paste::paste;
@@ -20,6 +21,7 @@ pub struct SessionData {
 
 const NAMESPACE_DATA: &str = "session";
 const NAMESPACE_VISITS: &str = "visit";
+const NAMESPACE_LIKED: &str = "liked";
 const NAMESPACE_CHALLENGE: &str = "challenge";
 
 const KEY_LAST_ACTIVE: &str = "last_active";
@@ -139,7 +141,6 @@ impl<'s> Session<'s> {
             .map_model_result()
 
     }
-
     session_field!(String, uid, KEY_UID);
 
     session_field!(String, fake_salt, KEY_FAKE_SALT);
@@ -189,6 +190,29 @@ impl<'s> Session<'s> {
             .await
             .map_model_result()
     }
+
+    pub async fn add_like(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
+        let key = namespace_key(NAMESPACE_LIKED, &self.session_id);
+        let (result,): (bool,) = pipe()
+            .sadd(&key, pid)
+            .expire(&key, expire_seconds).ignore()
+            .query_async(&mut self.redis)
+            .await
+            .map_model_result()?;
+        Ok(result)
+    }
+
+    pub async fn remove_like(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
+        let key = namespace_key(NAMESPACE_LIKED, &self.session_id);
+        let (result,): (bool, ) = pipe()
+            .srem(&key, pid)
+            .expire(&key, expire_seconds).ignore()
+            .query_async(&mut self.redis)
+            .await
+            .map_model_result()?;
+        Ok(result)
+    }
+
 
     // pub async fn reset_visit(&mut self) -> Result<()> {
     //     self.redis.del(&self.key_visit)
