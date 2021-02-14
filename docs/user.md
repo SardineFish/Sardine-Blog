@@ -16,6 +16,16 @@ Users with higher value of access level have higher permission.
 --------
 
 
+## Check authorization
+`GET /api/user`
+
+### Response
+Response data is the `uid` of yourself.
+
+### Error
+- `403` if unauthorized.
+
+
 ## Get Authentication Challenge
 `GET /api/user/{uid:string}/challenge`
 

@@ -1,4 +1,4 @@
-use std::vec;
+use std::{ops::Deref, vec};
 
 use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}};
 use sar_blog::{AuthChallenge, AuthToken, model::{Access, AuthenticationInfo, HashMethod, User, UserInfo}};
@@ -46,6 +46,14 @@ impl From<User> for UserAccessInfo {
 #[derive(Deserialize)]
 struct GrantAccessData {
     access: Access,
+}
+
+
+#[get("", wrap = "middleware::authentication(Access::Registered)")]
+async fn check_auth(auth: extractor::Auth) -> Response<String> {
+    execute(async move {
+        Ok(auth.0.uid)
+    }).await
 }
 
 #[get("/{uid}/challenge")]
@@ -128,7 +136,7 @@ async fn get_avatar(service: extractor::Service, Path(uid): Path<String>) -> Res
         let avatar = service.user().get_avatar(&uid).await.map_contoller_result()?;
         Ok(Redirect::SeeOther(avatar))
     }).await
-} 
+}
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/user")
@@ -139,5 +147,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(sign_out_session)
         .service(grant_access)
         .service(get_avatar)
+        .service(check_auth)
     );
 }

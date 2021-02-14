@@ -220,7 +220,8 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
             else if (value !== undefined)
                 queryParams.push(`${key}=${encodeURIComponent(this.queryInfo[key].validator(key, value as never).toString())}`);
         }
-        url = url + "?" + queryParams.join("&");
+        if (queryParams.length > 0)
+            url = url + "?" + queryParams.join("&");
 
         if (this.dataInfo !== undefined)
         {
@@ -256,10 +257,16 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         if (response.status >= 400)
         {
             const body = await this.parseBody<ErrorResponse>(response);
+            console.warn(`Server response error: ${body.code.toString(16)}: ${body.msg}`);
             throw new Error(`Error: ${body.code.toString(16)}: ${body.msg}`);
         }
 
-        const responseBody = await this.parseBody<SuccessResponse<Response>>(response);
+        const responseBody = await this.parseBody<SuccessResponse<Response> | ErrorResponse>(response);
+        if (responseBody.status == ">_<")
+        {
+            console.warn(`Server response error: ${responseBody.code.toString(16)}: ${responseBody.msg}`);
+            throw new Error(responseBody.msg);
+        }
         return responseBody.data;
     }
     private async parseBody<T extends ErrorResponse | SuccessResponse<Response>>(response: globalThis.Response)
@@ -407,6 +414,8 @@ export interface MiscellaneousPostContent
 
 const SardineFishAPI = {
     User: {
+        checkAuth: api("GET", "/api/user")
+            .response<string>(),
         getChallenge: api("GET", "/api/user/{uid}/challenge")
             .path({ uid: Uid })
             .response<AuthChallenge>(),

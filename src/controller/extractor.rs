@@ -8,7 +8,7 @@ use sar_blog::model::SessionAuthInfo;
 
 use crate::middleware;
 
-pub struct ExtensionMove<T: ?Sized>(T);
+pub struct ExtensionMove<T: ?Sized>(pub T);
 
 impl<T: ?Sized> Deref for ExtensionMove<T> {
     type Target = T;

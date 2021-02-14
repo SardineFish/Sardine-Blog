@@ -141,6 +141,10 @@ var ApiBuilder = /** @class */ (function () {
             throw new Error("HTTP Method " + this.method + " should not have body.");
         }
     };
+    ApiBuilder.prototype.redirect = function (redirect) {
+        this.redirectOption = redirect;
+        return this;
+    };
     ApiBuilder.prototype.response = function () {
         var builder = new ApiBuilder(this.method, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
         return builder.send.bind(builder);
@@ -171,7 +175,8 @@ var ApiBuilder = /** @class */ (function () {
                             else if (value !== undefined)
                                 queryParams.push(key + "=" + encodeURIComponent(this.queryInfo[key].validator(key, value).toString()));
                         }
-                        url = url + "?" + queryParams.join("&");
+                        if (queryParams.length > 0)
+                            url = url + "?" + queryParams.join("&");
                         if (this.dataInfo !== undefined) {
                             for (key in this.dataInfo) {
                                 dataInfo = this.dataInfo[key];
@@ -190,6 +195,7 @@ var ApiBuilder = /** @class */ (function () {
                                 headers: {
                                     "Content-Type": "application/json",
                                 },
+                                redirect: this.redirectOption,
                                 body: this.dataInfo === undefined ? undefined : JSON.stringify(data),
                             })];
                     case 2:
@@ -204,10 +210,15 @@ var ApiBuilder = /** @class */ (function () {
                         return [4 /*yield*/, this.parseBody(response)];
                     case 5:
                         body = _a.sent();
+                        console.warn("Server response error: " + body.code.toString(16) + ": " + body.msg);
                         throw new Error("Error: " + body.code.toString(16) + ": " + body.msg);
                     case 6: return [4 /*yield*/, this.parseBody(response)];
                     case 7:
                         responseBody = _a.sent();
+                        if (responseBody.status == ">_<") {
+                            console.warn("Server response error: " + responseBody.code.toString(16) + ": " + responseBody.msg);
+                            throw new Error(responseBody.msg);
+                        }
                         return [2 /*return*/, responseBody.data];
                 }
             });
@@ -273,6 +284,8 @@ var DocType;
 })(DocType = exports.DocType || (exports.DocType = {}));
 var SardineFishAPI = {
     User: {
+        checkAuth: api("GET", "/api/user")
+            .response(),
         getChallenge: api("GET", "/api/user/{uid}/challenge")
             .path({ uid: Uid })
             .response(),
@@ -292,6 +305,10 @@ var SardineFishAPI = {
         })
             .response(),
         signout: api("DELETE", "/api/user/session")
+            .response(),
+        getAvatar: api("GET", "/api/user/{uid}/avatar")
+            .path({ uid: Uid })
+            .redirect("manual")
             .response(),
     },
     Blog: {

@@ -107,6 +107,7 @@ export interface MiscellaneousPostContent {
 }
 declare const SardineFishAPI: {
     User: {
+        checkAuth: (params: ValueType<{}>) => Promise<string>;
         getChallenge: (params: Required<RequiredParams<FullParamsDeclare<{
             uid: {
                 type: "string";
@@ -151,6 +152,17 @@ declare const SardineFishAPI: {
             };
         }> & ParamsDeclare>) => Promise<SessionToken>;
         signout: (params: ValueType<{}>) => Promise<null>;
+        getAvatar: (params: Required<RequiredParams<FullParamsDeclare<{
+            uid: {
+                type: "string";
+                validator: typeof validateUid;
+            };
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            uid: {
+                type: "string";
+                validator: typeof validateUid;
+            };
+        }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<string>;
     };
     Blog: {
         getList: (params: Required<RequiredParams<{}>> & Partial<OptionalParams<{}>> & Required<RequiredParams<FullParamsDeclare<{
