@@ -32,6 +32,7 @@ declare function validateUid(key: string, uid: string): string;
 declare function validateName(key: string, name: string): string;
 declare function validateUrl(key: string, url: string): string;
 declare function validateNonEmpty(key: string, text: string): string;
+declare function formatDateTime(time: Date): string;
 export declare enum HashMethod {
     SHA256 = "SHA256"
 }
@@ -54,6 +55,9 @@ interface PubUserInfo {
     name: string;
     avatar: string;
     url: string | null;
+}
+interface UserInfo extends PubUserInfo {
+    email: string | null;
 }
 interface PostStats {
     views: number;
@@ -163,6 +167,7 @@ declare const SardineFishAPI: {
                 validator: typeof validateUid;
             };
         }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<string>;
+        getInfo: (params: ValueType<{}>) => Promise<UserInfo>;
     };
     Blog: {
         getList: (params: Required<RequiredParams<{}>> & Partial<OptionalParams<{}>> & Required<RequiredParams<FullParamsDeclare<{
@@ -328,6 +333,11 @@ declare const SardineFishAPI: {
                 validator: typeof validateUrl;
             };
         }> & ParamsDeclare>) => Promise<number>;
+    };
+    DocType: typeof DocType;
+    HashMethod: typeof HashMethod;
+    Utils: {
+        formatDateTime: typeof formatDateTime;
     };
 };
 declare global {

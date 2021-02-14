@@ -118,21 +118,21 @@ function validateEmail(key: string, email: string): string
 {
     if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email))
         return email;
-    throw new Error(`Invalid email address in '${key}'`);
+    throw new APIError(ClientErrorCode.InvalidParameter, `Invalid email address in '${key}'`);
 }
 
 function validateUid(key: string, uid: string): string
 {
     if (/[_A-Za-z0-9]{6,32}/.test(uid))
         return uid;
-    throw new Error(`Invalid username in field '${key}'`);
+    throw new APIError(ClientErrorCode.InvalidParameter, `Invalid username in field '${key}'`);
 }
 
 function validateName(key: string, name: string): string
 {
     if (/^([^\s][^\t\r\n\f]{0,30}[^\s])|([^\s])$/.test(name))
         return name;
-    throw new Error(`Invalid name in '${key}'`);
+    throw new APIError(ClientErrorCode.InvalidParameter, `Invalid name in '${key}'`);
 }
 
 function validateUrl(key: string, url: string): string
@@ -143,8 +143,26 @@ function validateUrl(key: string, url: string): string
 function validateNonEmpty(key: string, text: string): string
 {
     if (/^\s*$/.test(text))
-        throw new Error(`'${key}' cannot be empty`);
+        throw new APIError(ClientErrorCode.InvalidParameter, `'${key}' cannot be empty`);
     return text;
+}
+
+enum ClientErrorCode
+{
+    Error = -1,
+    InvalidParameter = -2,
+    NetworkFailure = -3,
+    ParseError = -4,
+}
+
+class APIError extends Error
+{
+    code: number;
+    constructor(code: number, message: string)
+    {
+        super(message);
+        this.code = code;
+    }
 }
 
 class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | undefined, Response>
@@ -181,7 +199,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         }
         else
         {
-            throw new Error(`HTTP Method ${this.method} should not have body.`);
+            throw new APIError(ClientErrorCode.Error, `HTTP Method ${this.method} should not have body.`);
         }
     }
     redirect(redirect: "follow" | "error" | "manual")
@@ -207,7 +225,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
                     url = url.replace(`{${key}}`, "");
                     continue;
                 }
-                throw new Error(`Missing path '${key}'`);
+                throw new APIError(ClientErrorCode.InvalidParameter, `Missing path '${key}'`);
             }
             url = url.replace(`{${key}}`, this.pathInfo[key].validator(key, value as never).toString());
         }
@@ -216,7 +234,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         {
             const value = (params as Partial<ValueType<Query>> as any)[key];
             if (value === undefined && !this.queryInfo[key].optional)
-                throw new Error(`Missing query param '${key}'`);
+                throw new APIError(ClientErrorCode.InvalidParameter, `Missing query param '${key}'`);
             else if (value !== undefined)
                 queryParams.push(`${key}=${encodeURIComponent(this.queryInfo[key].validator(key, value as never).toString())}`);
         }
@@ -230,7 +248,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
                 const dataInfo = this.dataInfo[key];
                 const value = (data as any)[key];
                 if (value === undefined && !dataInfo.optional)
-                    throw new Error(`Missing field '${key} in request body'`);
+                    throw new APIError(ClientErrorCode.InvalidParameter, `Missing field '${key} in request body'`);
                 else if (value !== undefined)
                     (data as any)[key] = dataInfo.validator(key, value as never);
             }
@@ -251,21 +269,21 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         catch (err)
         {
             console.exception(err);
-            throw new Error("Failed to send request.");
+            throw new APIError(ClientErrorCode.NetworkFailure, "Failed to send request.");
         }
 
         if (response.status >= 400)
         {
             const body = await this.parseBody<ErrorResponse>(response);
             console.warn(`Server response error: ${body.code.toString(16)}: ${body.msg}`);
-            throw new Error(`Error: ${body.code.toString(16)}: ${body.msg}`);
+            throw new APIError(body.code, body.msg);
         }
 
         const responseBody = await this.parseBody<SuccessResponse<Response> | ErrorResponse>(response);
         if (responseBody.status == ">_<")
         {
             console.warn(`Server response error: ${responseBody.code.toString(16)}: ${responseBody.msg}`);
-            throw new Error(responseBody.msg);
+            throw new APIError(responseBody.code, responseBody.msg);
         }
         return responseBody.data;
     }
@@ -279,7 +297,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         catch (err)
         {
             console.exception(err);
-            throw new Error("Failed to parse response body.");
+            throw new APIError(ClientErrorCode.ParseError, "Failed to parse response body.");
         }
     }
 }
@@ -297,6 +315,17 @@ function api<Method extends HTTPMethods>(method: Method, url: string): ApiBuilde
         default:
             return new ApiBuilder<Method, {}, {}, undefined, null>(method, url, {}, {}, undefined);
     }
+}
+
+function formatDateTime(time: Date)
+{
+    const year = time.getFullYear();
+    const month = time.getMonth() + 1;
+    const day = time.getDay();
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    const second = time.getSeconds();
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
 const Uid = {
@@ -346,6 +375,11 @@ interface PubUserInfo
     name: string,
     avatar: string,
     url: string | null,
+}
+
+interface UserInfo extends PubUserInfo
+{
+    email: string | null,
 }
 
 interface PostStats
@@ -440,6 +474,8 @@ const SardineFishAPI = {
             .path({ uid: Uid })
             .redirect("manual")
             .response<string>(),
+        getInfo: api("GET", "/api/user/info")
+            .response<UserInfo>(),
     },
     Blog: {
         getList: api("GET", "/api/blog")
@@ -573,6 +609,11 @@ const SardineFishAPI = {
                 url: Url,
             })
             .response<number>(),
+    },
+    DocType,
+    HashMethod,
+    Utils: {
+        formatDateTime: formatDateTime,
     }
 }
 

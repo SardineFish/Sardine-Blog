@@ -138,6 +138,14 @@ async fn get_avatar(service: extractor::Service, Path(uid): Path<String>) -> Res
     }).await
 }
 
+#[get("/info", wrap = "middleware::authentication(Access::Registered)")]
+async fn get_info(service: extractor::Service, auth: extractor::Auth) -> Response<UserInfo> {
+    execute(async move {
+        let user = service.user().get_user(&auth.uid).await.map_contoller_result()?;
+        Ok(user.info)
+    }).await
+}
+
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/user")
         .service(login)
@@ -148,5 +156,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(grant_access)
         .service(get_avatar)
         .service(check_auth)
+        .service(get_info)
     );
 }

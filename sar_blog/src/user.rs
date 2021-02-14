@@ -1,7 +1,7 @@
 use std::{cell::RefMut};
 
 use chrono::{Utc};
-use model::{Access, AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, User, UserInfo};
+use model::{Access, AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, PubUserInfo, User, UserInfo};
 use model::{SessionAuthInfo, Model, RedisCache, SessionID};
 use rand::{RngCore, prelude::StdRng};
 use sha2::{Digest, Sha256};
@@ -189,6 +189,10 @@ impl<'m> UserService<'m> {
             Err(model::Error::UserNotFound(_)) => Ok(self.service.option.default_avatar.clone()),
             Err(err) => Err(err)?
         }
+    }
+
+    pub async fn get_user(&self, uid: &str) -> Result<User> {
+        Ok(self.model.user.get_by_uid(uid).await?)
     }
 
     async fn grant_token(&self, session_id: &SessionID, uid: &str) -> Result<AuthToken> {

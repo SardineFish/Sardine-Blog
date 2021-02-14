@@ -14,9 +14,9 @@ pub enum Error {
 impl Error {
     pub fn code(&self) -> u64 {
         match self {
-            Error::SerializeError => 0x0100_0000,
-            Error::WebError(_) => 0x0200_0000,
-            Error::ServiceError(err) => 0x0300_0000 | err.code(),
+            Error::SerializeError => 0x0001_0000,
+            Error::WebError(_) => 0x0002_0000,
+            Error::ServiceError(err) => 0x0003_0000 | err.code(),
         }
     }
     pub fn status_code(&self) -> StatusCode {

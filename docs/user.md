@@ -145,3 +145,22 @@ No additional request and response data if succed.
 
 ### Response
 Response data is the url of the user avatar and redirect to avatar url with status code `303`.
+
+
+--------
+
+
+## Get user info
+`Get /api/user/info`
+
+`Auth >= Registered`
+
+### Response
+```json
+{
+    "name": "Name of Test",
+    "email": "(optional) user@example.com",
+    "url": "(optional) Your website url",
+    "avatar": "http://example.com/avatar.png"
+}
+```
