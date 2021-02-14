@@ -125,3 +125,13 @@ No additional request and response data if succed.
 
 ### Error
 - `403` Operation not permitted.
+
+
+--------
+
+
+## Get user avatar
+`GET /api/user/{uid:string}/avatar`
+
+### Response
+Response data is the url of the user avatar and redirect to avatar url with status code `303`.

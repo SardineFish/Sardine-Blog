@@ -154,6 +154,8 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
     private pathInfo: Path;
     private queryInfo: Query;
     private dataInfo: Data;
+    private redirectOption?: "follow" | "error" | "manual";
+
     constructor(method: Method, url: string, path: Path, query: Query, data: Data)
     {
         this.method = method;
@@ -181,6 +183,11 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         {
             throw new Error(`HTTP Method ${this.method} should not have body.`);
         }
+    }
+    redirect(redirect: "follow" | "error" | "manual")
+    {
+        this.redirectOption = redirect;
+        return this;
     }
     response<Response>(): ApiFunction<Path, Query, Data, Response>
     {
@@ -236,6 +243,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
                 headers: {
                     "Content-Type": "application/json",
                 },
+                redirect: this.redirectOption,
                 body: this.dataInfo === undefined ? undefined : JSON.stringify(data as any),
             });
         }
@@ -419,6 +427,10 @@ const SardineFishAPI = {
             .response<SessionToken>(),
         signout: api("DELETE", "/api/user/session")
             .response<null>(),
+        getAvatar: api("GET", "/api/user/{uid}/avatar")
+            .path({ uid: Uid })
+            .redirect("manual")
+            .response<string>(),
     },
     Blog: {
         getList: api("GET", "/api/blog")

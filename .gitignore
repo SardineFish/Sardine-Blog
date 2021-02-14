@@ -1,3 +1,6 @@
 /target
 /data/*
 node_modules
+
+# Fucking stupid VS Code
+debug.log

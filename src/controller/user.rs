@@ -4,7 +4,7 @@ use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}}
 use sar_blog::{AuthChallenge, AuthToken, model::{Access, AuthenticationInfo, HashMethod, User, UserInfo}};
 use serde::{Serialize, Deserialize};
 
-use crate::{middleware, misc::{cookie::gen_token_cookies, error::MapControllerError, response::{Response, WithCookie}}};
+use crate::{middleware, misc::{cookie::gen_token_cookies, error::MapControllerError, response::{Redirect, Response, WithCookie}}};
 
 use super::{executor::execute, extractor};
 
@@ -122,6 +122,14 @@ async fn grant_access(service: extractor::Service, session: extractor::Session, 
     }).await
 }
 
+#[get("/{uid}/avatar")]
+async fn get_avatar(service: extractor::Service, Path(uid): Path<String>) -> Response<Redirect> {
+    execute(async move {
+        let avatar = service.user().get_avatar(&uid).await.map_contoller_result()?;
+        Ok(Redirect::SeeOther(avatar))
+    }).await
+} 
+
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/user")
         .service(login)
@@ -130,5 +138,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(sign_out_self)
         .service(sign_out_session)
         .service(grant_access)
+        .service(get_avatar)
     );
 }

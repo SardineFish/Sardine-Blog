@@ -43,6 +43,9 @@ impl From<Error> for ErrorResponseData {
 }
 
 pub trait BuildResponse {
+    fn status_code(&self) -> StatusCode {
+        StatusCode::OK
+    }
     fn build_response(self, builder: ResponseBuilder) -> Result<HttpResponse, Error>;
 }
 
@@ -64,6 +67,43 @@ impl<'c, T : Serialize> BuildResponse for WithCookie<'c, T> {
             builder.cookie(cookie.clone());
         }
         data.build_response(builder)
+    }
+}
+
+#[allow(dead_code)]
+pub enum Redirect
+{
+    MovedPermanently(String),
+    PermanentRedirect(String),
+    SeeOther(String),
+    TemporaryRedirect(String),
+}
+
+impl BuildResponse for Redirect {
+    fn status_code(&self) -> StatusCode {
+        match self {
+            Self::MovedPermanently(_) => StatusCode::MOVED_PERMANENTLY,
+            Self::PermanentRedirect(_) => StatusCode::PERMANENT_REDIRECT,
+            Self::SeeOther(_) => StatusCode::SEE_OTHER,
+            Self::TemporaryRedirect(_) => StatusCode::TEMPORARY_REDIRECT,
+        }
+    }
+    fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
+        match self {
+            Self::MovedPermanently(url) |
+            Self::PermanentRedirect(url) |
+            Self::SeeOther(url) |
+            Self::TemporaryRedirect(url) 
+                => {
+                    let data = SuccessResponseData::with_data(&url);
+                    let body = serde_json::to_string(&data)
+                        .map_err(|_| Error::SerializeError)?;
+                    Ok(builder
+                        .set_header("Location", url)
+                        .content_type("application/json")
+                        .body(body))
+                },
+        }
     }
 }
 
@@ -116,7 +156,8 @@ impl<T: BuildResponse> Responder for Response<T> {
 
         let error_response = match self {
             Response::Ok(data) => {
-                let result = data.build_response(HttpResponse::build(StatusCode::OK));
+                let status_code = data.status_code();
+                let result = data.build_response(HttpResponse::build(status_code));
                 match result {
                     Ok(http_response) => return ready(Ok(http_response)),
                     Err(err) => Response::ServerError(err)

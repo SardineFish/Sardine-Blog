@@ -182,6 +182,15 @@ impl<'m> UserService<'m> {
         Ok(user)
     }
 
+    pub async fn get_avatar(&self, uid: &str) -> Result<String> {
+        let result = self.model.user.get_by_uid(uid).await;
+        match result {
+            Ok(user) => Ok(user.info.avatar),
+            Err(model::Error::UserNotFound(_)) => Ok(self.service.option.default_avatar.clone()),
+            Err(err) => Err(err)?
+        }
+    }
+
     async fn grant_token(&self, session_id: &SessionID, uid: &str) -> Result<AuthToken> {
         let token = gen_token(self.service.rng.borrow_mut());
 
