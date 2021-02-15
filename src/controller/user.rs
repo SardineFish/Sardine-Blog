@@ -1,4 +1,4 @@
-use std::{ops::Deref, vec};
+use std::{vec};
 
 use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}};
 use sar_blog::{AuthChallenge, AuthToken, model::{Access, AuthenticationInfo, HashMethod, User, UserInfo}};

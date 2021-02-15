@@ -7,6 +7,7 @@ mod error;
 mod service;
 mod validate;
 mod session;
+mod storage;
 
 #[allow(dead_code)]
 pub mod utils;

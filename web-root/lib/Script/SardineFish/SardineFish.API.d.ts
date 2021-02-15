@@ -1,3 +1,6 @@
+declare type HTTPMethodsWithoutBody = "GET" | "HEAD" | "CONNECT" | "DELETE" | "OPTIONS";
+declare type HTTPMethodsWithBody = "POST" | "PUT" | "PATCH";
+declare type HTTPMethods = HTTPMethodsWithBody | HTTPMethodsWithoutBody;
 declare type TypeNames = "number" | "string" | "boolean" | "string[]";
 declare type TypeOfName<T> = T extends "number" ? number : T extends "string" ? string : T extends "boolean" ? boolean : T extends "string[]" ? string[] : never;
 declare type Validator<T> = (key: string, value: T) => T;
@@ -33,6 +36,21 @@ declare function validateName(key: string, name: string): string;
 declare function validateUrl(key: string, url: string): string;
 declare function validateNonEmpty(key: string, text: string): string;
 declare function formatDateTime(time: Date): string;
+export interface ProgressRequestOptions {
+    method?: HTTPMethods;
+    headers?: {
+        [key: string]: string;
+    };
+    onUploadProgress?: (sentBytes: number, totalBytes: number) => void;
+    body?: string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams | ReadableStream<Uint8Array> | null | undefined;
+}
+interface RequestProgressResponse {
+    status: number;
+    statusText: string;
+    json: () => Promise<any>;
+    text: () => Promise<string>;
+}
+declare function requestWithProgress(url: string, options?: ProgressRequestOptions): Promise<RequestProgressResponse>;
 export declare enum HashMethod {
     SHA256 = "SHA256",
     SHA1 = "SHA1",
@@ -111,6 +129,11 @@ export interface Comment {
 export interface MiscellaneousPostContent {
     description: string;
     url: string;
+}
+export interface OSSUploadInfo {
+    key: string;
+    token: string;
+    upload: string;
 }
 declare const SardineFishAPI: {
     User: {
@@ -336,10 +359,14 @@ declare const SardineFishAPI: {
             };
         }> & ParamsDeclare>) => Promise<number>;
     };
+    Storage: {
+        getUploadInfo: (params: ValueType<{}>, body: ValueType<ParamsDeclare>) => Promise<OSSUploadInfo>;
+    };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;
     Utils: {
         formatDateTime: typeof formatDateTime;
+        requestProgress: typeof requestWithProgress;
     };
 };
 declare global {

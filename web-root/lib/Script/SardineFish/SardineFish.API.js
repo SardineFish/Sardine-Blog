@@ -205,6 +205,36 @@ function formatDateTime(time) {
     const second = time.getSeconds();
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
+function requestWithProgress(url, options) {
+    return new Promise((resolve, reject) => {
+        try {
+            const xhr = new XMLHttpRequest();
+            xhr.open(options?.method ?? "GET", url, true);
+            if (options?.headers) {
+                for (const key in options.headers) {
+                    xhr.setRequestHeader(key, options.headers[key]);
+                }
+            }
+            xhr.upload.onprogress = (ev) => {
+                options?.onUploadProgress?.(ev.loaded, ev.total);
+            };
+            xhr.onreadystatechange = (ev) => {
+                if (xhr.readyState !== 4)
+                    return;
+                resolve({
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    json: async () => JSON.parse(xhr.responseText),
+                    text: async () => xhr.responseText,
+                });
+            };
+            xhr.send(options?.body);
+        }
+        catch (err) {
+            reject(err);
+        }
+    });
+}
 const Uid = {
     type: "string",
     validator: validateUid,
@@ -393,10 +423,15 @@ const SardineFishAPI = {
         })
             .response(),
     },
+    Storage: {
+        getUploadInfo: api("POST", "/api/oss/new")
+            .response(),
+    },
     DocType,
     HashMethod,
     Utils: {
         formatDateTime: formatDateTime,
+        requestProgress: requestWithProgress,
     }
 };
 const SardineFish = window.SardineFish || {};

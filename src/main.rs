@@ -19,7 +19,6 @@ async fn main() -> std::io::Result<()> {
         .version("0.1.0")
         .arg("--init 'Initialize database.'")
         .get_matches();
-
     let opts = options::ServiceOptions::default();
     let opts_moved = opts.clone();
     let service = sar_blog::Service::open(opts.clone()).await.unwrap();

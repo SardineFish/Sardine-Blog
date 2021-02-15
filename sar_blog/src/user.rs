@@ -1,7 +1,7 @@
 use std::{cell::RefMut};
 
 use chrono::{Utc};
-use model::{Access, AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, PubUserInfo, User, UserInfo};
+use model::{Access, AnonymousUserInfo, AuthenticationInfo, HashMethod, HistoryData, User, UserInfo};
 use model::{SessionAuthInfo, Model, RedisCache, SessionID};
 use rand::{RngCore, prelude::StdRng};
 use sha2::{Digest, Sha256};

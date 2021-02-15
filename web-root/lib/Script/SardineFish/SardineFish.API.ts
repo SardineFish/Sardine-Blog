@@ -328,6 +328,61 @@ function formatDateTime(time: Date)
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
+export interface ProgressRequestOptions
+{
+    method?: HTTPMethods,
+    headers?: { [key: string]: string },
+    onUploadProgress?: (sentBytes: number, totalBytes: number) => void,
+    body?: string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams | ReadableStream<Uint8Array> | null | undefined;
+}
+interface RequestProgressResponse
+{
+    status: number,
+    statusText: string,
+    json: () => Promise<any>,
+    text: () => Promise<string>,
+
+}
+function requestWithProgress(url: string, options?: ProgressRequestOptions)
+{
+    return new Promise<RequestProgressResponse>((resolve, reject) =>
+    {
+        try
+        {
+            const xhr = new XMLHttpRequest();
+            xhr.open(options?.method ?? "GET", url, true);
+            if (options?.headers)
+            {
+                for (const key in options.headers)
+                {
+                    xhr.setRequestHeader(key, options.headers[key]);
+                }
+            }
+            xhr.upload.onprogress = (ev) =>
+            {
+                options?.onUploadProgress?.(ev.loaded, ev.total);
+            }
+            xhr.onreadystatechange = (ev) =>
+            {
+                if (xhr.readyState !== 4)
+                    return;
+                
+                resolve({
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    json: async () => JSON.parse(xhr.responseText),
+                    text: async () => xhr.responseText,
+                });
+            };
+            xhr.send(options?.body);
+        }
+        catch (err)
+        {
+            reject(err);
+        }
+    });
+}
+
 const Uid = {
     type: "string" as "string",
     validator: validateUid,
@@ -447,6 +502,13 @@ export interface MiscellaneousPostContent
 {
     description: string,
     url: string,
+}
+
+export interface OSSUploadInfo
+{
+    key: string,
+    token: string,
+    upload: string,
 }
 
 const SardineFishAPI = {
@@ -612,10 +674,15 @@ const SardineFishAPI = {
             })
             .response<number>(),
     },
+    Storage: {
+        getUploadInfo: api("POST", "/api/oss/new")
+            .response<OSSUploadInfo>(),
+    },
     DocType,
     HashMethod,
     Utils: {
         formatDateTime: formatDateTime,
+        requestProgress: requestWithProgress,
     }
 }
 

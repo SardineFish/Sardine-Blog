@@ -6,6 +6,7 @@
 - [Blog](./blog.md)
 - [Comment](./comment.md)
 - [Post Data](./post-data.md)
+- [Object Storage Service](./storage.md)
 
 
 ## Authorization

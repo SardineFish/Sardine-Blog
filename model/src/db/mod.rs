@@ -6,3 +6,4 @@ pub mod comment;
 pub mod note;
 pub mod history;
 pub mod post;
+pub mod storage;

@@ -3,13 +3,12 @@ use options::ServiceOptions;
 use rand::{RngCore, SeedableRng, prelude::StdRng};
 use sha2::{Digest, Sha256};
 
-use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, user::UserService};
+use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, storage::StorageService, user::UserService};
 
 use crate::error::*;
 use std::{cell::RefCell};
 
 
-#[derive(Clone)]
 pub struct Service {
     pub(crate) model: Model,
     pub(crate) redis: RedisCache,
@@ -51,6 +50,10 @@ impl Service {
         SessionService::new(self)
     }
 
+    pub fn storage(&self) -> StorageService {
+        StorageService::new(&self)
+    }
+
     pub async fn init_database(&self) -> Result<()> {
         log::warn!("Init database...");
         log::warn!("Will rewrite some metadata in database which is very important!");
@@ -74,5 +77,16 @@ impl Service {
         log::warn!("Init completed.");
         
         Ok(())
+    }
+}
+
+impl Clone for Service {
+    fn clone(&self) -> Self {
+        Self {
+            model: self.model.clone(),
+            option: self.option.clone(),
+            redis: self.redis.clone(),
+            rng: RefCell::new(StdRng::from_entropy()),
+        }
     }
 }
