@@ -348,6 +348,9 @@ const Url = {
 export enum HashMethod
 {
     SHA256 = "SHA256",
+    SHA1 = "SHA1",
+    MD5 = "MD5",
+    NoLogin = "NoLogin",
 }
 export enum DocType
 {

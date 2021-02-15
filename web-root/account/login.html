@@ -4,6 +4,9 @@
     <title>Sign in</title>
     <script src="../resource.js"></script>
     <script src="../lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"
+        integrity="sha512-nOQuvD9nKirvxDdvQ9OMqe2dgapbPB7vYAMrzJihw5m+aNcf0dX53m6YxM4LgA9u8e9eg9QX+/+mPu8kCNpV2A=="
+        crossorigin="anonymous"></script>
     <script >
         document.write(toScriptHTMLTag(lib.jQueryMinJs));
         document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
@@ -46,7 +49,13 @@
             padding: 0px;
             margin: 0px;
             font-family: "Microsoft YaHei UI", 'Microsoft YaHei';
+            user-select: none;
         }
+        input {
+            user-select: initial;
+            outline: none;
+        }
+
         .title {
             font-weight: 100;
             color: #009688;
@@ -240,48 +249,6 @@
         </div>
         <img id="bgImg" src="https://cdn-static.sardinefish.com/img/decoration/Login.jpg" ondragstart="return false;" onselectstart="return false;"/>
     </div>
-    <script>
-        
-        function buttonLoginClick(sender)
-        {
-            $("#loginRing").stop();
-            $("#loginInputArea").stop();
-            $("#loginInputArea").animate({ opacity: 0 }, 150, function ()
-            {
-                $("#loginRing").animate({ opacity: 1 }, 300);
-            });
-            $("#warningText").html("&nbsp;");
-            var uid = document.getElementById("uidText").value;
-            var pwd = document.getElementById("pwdText").value;
-            SardineFish.API.Account.Login(uid, pwd, function (succeed, msg)
-            {
-                if (!succeed)
-                {
-                    $("#loginRing").stop();
-                    $("#loginInputArea").stop();
-                    $("#loginRing").animate({ opacity: 0 }, 300, function ()
-                    {
-                        $("#loginInputArea").animate({ opacity: 1 }, 100);
-                        $("#warningText").text(msg);
-                    });
-                    return;
-                }
-                var url = $.cookie("ref");
-                if (!url || url == "")
-                    url = "/";
-                window.location = url;
-            });
-        }
-        function loginAreaKeyPress(e)
-        {
-            if (!e)
-                return;
-            if (e.char == '\n')
-                buttonLoginClick(null);
-        }
-        SardineFish.Web.UI.setButton($("#buttonLogin"), ButtonStyle.ColorTransit);
-        SardineFish.Web.UI.setButton($("#buttonRegister"), ButtonStyle.ColorTransit);
-        document.getElementById("loginArea").onkeypress = loginAreaKeyPress;
-    </script>
+    <script src="./login.js"></script>
 </body>
 </html>

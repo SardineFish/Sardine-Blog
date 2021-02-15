@@ -224,6 +224,9 @@ const Url = {
 var HashMethod;
 (function (HashMethod) {
     HashMethod["SHA256"] = "SHA256";
+    HashMethod["SHA1"] = "SHA1";
+    HashMethod["MD5"] = "MD5";
+    HashMethod["NoLogin"] = "NoLogin";
 })(HashMethod = exports.HashMethod || (exports.HashMethod = {}));
 var DocType;
 (function (DocType) {

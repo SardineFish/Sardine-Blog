@@ -34,7 +34,10 @@ declare function validateUrl(key: string, url: string): string;
 declare function validateNonEmpty(key: string, text: string): string;
 declare function formatDateTime(time: Date): string;
 export declare enum HashMethod {
-    SHA256 = "SHA256"
+    SHA256 = "SHA256",
+    SHA1 = "SHA1",
+    MD5 = "MD5",
+    NoLogin = "NoLogin"
 }
 export declare enum DocType {
     PlainText = "PlainText",

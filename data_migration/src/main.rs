@@ -28,7 +28,7 @@ async fn main() {
     let opts = ServiceOptions::default();
     let model = Model::open(&opts).await.unwrap();
 
-    let users = conn.query_map(r"SELECT uid, name, pwd, encryption, email, url, level, icon, operation, time FROM `user_data` WHERE `ignore` = 0 ORDER BY time DESC LIMIT 1", 
+    let users = conn.query_map(r"SELECT uid, name, pwd, encryption, email, url, level, icon, operation, time FROM `user_data` WHERE `ignore` = 0 ORDER BY time", 
     |(uid, name, pwd, encryption, email, url, level, icon, operation, time ):
      (String, String, String, String, String, String, String, Option<String>, String, String)| {
         log::info!("Get uid '{:?}'", &uid);
@@ -47,8 +47,8 @@ async fn main() {
             },
             auth_info: AuthenticationInfo {
                 method: match encryption.as_str() {
-                    "sha1" => HashMethod::SHA1,
-                    "md5" => HashMethod::MD5,
+                    "SHA1" => HashMethod::SHA1,
+                    "MD5" => HashMethod::MD5,
                     _ => HashMethod::NoLogin,
                 },
                 password_hash: pwd,
@@ -70,12 +70,12 @@ async fn main() {
         if let Err(err) = result {
             log::warn!("{}", err);
         }
-        let localTime = Local.from_local_datetime(&time).unwrap();
-        let utcTime: DateTime<Utc> = DateTime::from(localTime);
+        let local_time = Local.from_local_datetime(&time).unwrap();
+        let utc_time: DateTime<Utc> = DateTime::from(local_time);
         
-        log::info!("{} -> {}", time, utcTime);
+        log::info!("{} -> {}", time, utc_time);
 
-        model.history.record_with_time("root", model::Operation::Snapshot, HistoryData::User(user), utcTime)
+        model.history.record_with_time("root", model::Operation::Snapshot, HistoryData::User(user), utc_time)
             .await
             .unwrap();
     }

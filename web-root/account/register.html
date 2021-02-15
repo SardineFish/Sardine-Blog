@@ -4,6 +4,9 @@
     <title>Sign up</title>
     <script src="/resource.js"></script>
     <script src="../lib/Script/SardineFish/SardineFish.API.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"
+        integrity="sha512-nOQuvD9nKirvxDdvQ9OMqe2dgapbPB7vYAMrzJihw5m+aNcf0dX53m6YxM4LgA9u8e9eg9QX+/+mPu8kCNpV2A=="
+        crossorigin="anonymous"></script>
     <script>
         document.write(toScriptHTMLTag(lib.jQueryMinJs));
         document.write(toScriptHTMLTag(lib.jQueryCookieMinJs));
@@ -51,6 +54,10 @@
             padding: 0px;
             margin: 0px;
             font-family: "Microsoft YaHei UI", "Microsoft YaHei";
+            user-select: none;
+        }
+        input {
+            outline: none;
         }
 
 
@@ -164,6 +171,18 @@
             bottom: 0px;
             z-index: -1;
         }
+
+        #registerInputArea {
+            display: none;
+        }
+
+        #notice {
+            margin-top: 3em;
+            font-size: 1.4em;
+            font-weight: lighter;
+            color: rgba(63, 150, 207, 1.00);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -172,6 +191,14 @@
             <div id="registerArea">
                 <div id="registerContent">
                     <p id="registerTitle" class="title">Sign up</p>
+                    <div id="notice">
+                        <p>
+                            Sign up UI is currently unavailable.
+                        </p>
+                        <p>
+                            Press F12 to call API directly :)
+                        </p>
+                    </div>
                     <div id="registerInputArea">
                         <div id="uidInputArea">
                             <p class="title">Username</p>
@@ -219,6 +246,27 @@
         </script>
     </div>
     <script>
+        console.log("See: https://github.com/SardineFish/Sardine-Blog/blob/ng/docs/user.md#sign-up");
+        console.log("To sign up, call: SardineFish.API.User.signup");
+        console.log("Use CryptoJS for hashing.");
+        console.log(`
+example:
+var buf = new Uint8Array(3);
+window.crypto.getRandomValues(buf);
+var salt = btoa(buf);
+var password = 'your password';
+var pwdHash = CryptoJS.SHA256(password).toString();
+pwdHash = CryptoJS.SHA256(pwdHash + salt).toString();
+await SardineFish.API.User.signup({}, {
+    uid: "username",
+    pwd_hash: pwdHash,
+    salt: btoa(salt),
+    method: "SHA256",
+    name: "<UTF-8 Text within 32 chars>",
+    avatar: "https://example.com/user.png",
+    email: "user@example.com",
+    url: "https://example.com/",
+})`);
         function checkUid()
         {
             var uid = document.getElementById("uidText").value;

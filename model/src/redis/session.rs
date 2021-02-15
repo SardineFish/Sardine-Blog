@@ -112,9 +112,8 @@ impl<'s> Session<'s> {
 
     pub async fn delete(&mut self) -> Result<()> {
         pipe()
-            .atomic()
-            .del(&self.key_data)
-            .del(&self.key_visit)
+            .del(&self.key_data).ignore()
+            .del(&self.key_visit).ignore()
             .query_async(&mut self.redis)
             .await
             .map_model_result()
