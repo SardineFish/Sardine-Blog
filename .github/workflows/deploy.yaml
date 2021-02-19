@@ -29,8 +29,12 @@ jobs:
             -o LogLevel=ERROR \
             -i ssh_key \
             "cd $WORK_DIR && \
-            git fetch --depth=1 origin $GITHUB_HASH && \
-            git checkout $GITHUB_HASH"
+            echo 'Checkout $GITHUB_SHA' && \
+            git fetch origin $GITHUB_SHA && \
+            git checkout $GITHUB_SHA && \
+            git log -1 --format='%H'"
+
+
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
