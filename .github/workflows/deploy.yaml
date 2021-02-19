@@ -19,26 +19,46 @@ jobs:
       #   with: 
       #     command: build
       #     args: --release
-
-      - name: Deploy binary
-        env: 
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
-          WORK_DIR: ${{ secrets.PROJECT_DIR }}
+      - name: Prepare Identity
         run: echo "${{ secrets.SSH_KEY }}" > ssh_key && chmod 400 ssh_key
-      - name: Deploy binary
+
+      - name: Checkout Remote
         run: >
           ssh $SSH_USER@$SSH_HOSTNAME \
             -o StrictHostKeyChecking=no \
             -o LogLevel=ERROR \
-            -I "$SSH_KEY" \
-            cd $WORK_DIR && \
+            -i ssh_key \
+            "cd $WORK_DIR && \
             git fetch --depth=1 origin $GITHUB_HASH && \
-            git checkout $GITHUB_HASH
-        
+            git checkout $GITHUB_HASH"
         env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
+          WORK_DIR: ${{ secrets.PROJECT_DIR }}
+
+
+      - name: Deploy binary
+        run: >
+          scp \
+            -i ssh_key \
+            -o LogLevel=ERROR \
+            -o StrictHostKeyChecking=no \
+            config-example.json $SSH_USER@$SSH_HOSTNAME:$WORK_DIR/bin/sar-blog
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
+          WORK_DIR: ${{ secrets.PROJECT_DIR }}
+
+      - name: Restart Service
+        run: >
+          ssh $SSH_USER@$SSH_HOSTNAME \
+            -o StrictHostKeyChecking=no \
+            -o LogLevel=ERROR \
+            -i ssh_key \
+            "cd $WORK_DIR && \
+            ls -l ./bin && \
+            cat ./bin/sar-blog"
+        env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
           WORK_DIR: ${{ secrets.PROJECT_DIR }}

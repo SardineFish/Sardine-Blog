@@ -1,0 +1,21 @@
+{
+    "listen": "localhost:3000",
+    "db_addr": "mongodb://localhost",
+    "db_name": "sar-blog",
+    "db_timeout": 100,
+    "redis_addr": "redis://localhost",
+    "site_url": "http://localhost:3000",
+    "default_avatar": "/img/decoration/unknown-user.png",
+    "visit_expire_time": 86400,
+    "session_expire": 604800,
+    "challenge_expire": 3600,
+    "web_root": "./web-root",
+    "qiniu_accesskey": "XXXXXXXX",
+    "qiniu_secretkey": "XXXXXXXX",
+    "sar_push_url": "http://localhost:5000",
+    "sar_push_uid": "602d2f910036e412005537f4",
+    "sar_push_secret": "b6/GP8IAuMVU3u2FxPHz9YPKvTcPRIU8K1NrHFq35Yo=",
+    "message_board_notify": "test@sardinefish.com",
+    "report_address": "test@sardinefish.com",
+    "report_interval": 300
+}

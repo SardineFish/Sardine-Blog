@@ -20,8 +20,16 @@ async fn main() -> std::io::Result<()> {
         .about("SardineFish's personal website backend server.")
         .version("0.1.0")
         .arg("--init 'Initialize database.'")
+        .arg("-c --config=[CONFIG_FILE] 'Service configure JSON file.'")
         .get_matches();
-    let opts = options::ServiceOptions::default();
+
+    let opts = if let Some(path) = matches.value_of("config") {
+        let json = std::fs::read_to_string(path).expect("Failed to open config file");
+        serde_json::de::from_str(&json).unwrap()
+    } else {
+        options::ServiceOptions::default()
+    };
+
     let opts_moved = opts.clone();
     let service = sar_blog::Service::open(opts.clone()).await.unwrap();
 
