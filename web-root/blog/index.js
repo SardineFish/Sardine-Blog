@@ -195,6 +195,7 @@ function initTopMenu()
 
 function checkLogin()
 {
+    $("#login").attr("href", "/account/login?redirect=" + encodeURIComponent(window.location));
     SardineFish.API.User.checkAuth({})
         .then(uid =>
         {

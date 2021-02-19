@@ -78,6 +78,7 @@ function scrollToTop(time)
 
 function checkLogin()
 {
+    $("#login").href = "/account/login?redirect=" + encodeURIComponent(window.location);
     SardineFish.API.User.checkAuth({}).then(uid =>
     {
         document.querySelector("#account-area").className = "login";

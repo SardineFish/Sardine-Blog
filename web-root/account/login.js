@@ -37,10 +37,15 @@ function buttonLoginClick(sender)
             });
         }).then(token =>
         {
-            var url = $.cookie("ref");
-            if (!url || url == "")
-                url = "/";
-            window.location = url;
+            let queies = window.location.search
+                .substr(1)
+                .split("&")
+                .map(item => item.split("="));
+            let redirect = queies.find(item => item[0] === "redirect");
+            if (redirect && redirect[1])
+            {
+                window.location = decodeURIComponent(redirect[1]);
+            }
         }).catch(err =>
         {
             $("#loginRing").stop();
@@ -56,7 +61,7 @@ function loginAreaKeyPress(e)
 {
     if (!e)
         return;
-    if (e.char == '\n')
+    if (e.key == 'Enter')
         buttonLoginClick(null);
 }
 SardineFish.Web.UI.setButton($("#buttonLogin"), ButtonStyle.ColorTransit);

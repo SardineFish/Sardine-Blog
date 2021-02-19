@@ -43,13 +43,14 @@ impl AccessCache {
             .map_model_result()
     }
 
-    pub async fn delete_session_token(&mut self, uid: &str, session_id: &str, token: &str) -> Result<Option<String>> {
+    pub async fn delete_session_token(&mut self, uid: &str, session_id: &str, token: &str) -> Result<()> {
         pipe()
             .del(namespace_key(NAMESPACE_TOKEN, token))
             .srem(namespace_key(NAMESPACE_USER_SESSION, uid), session_id)
             .query_async(&mut self.redis)
             .await
-            .map_model_result()
+            .map_model_result()?;
+        Ok(())
     }
 
     pub async fn get_fake_salt(&mut self, uid: &str) -> Result<Option<String>> {
