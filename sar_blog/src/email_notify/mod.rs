@@ -1,5 +1,7 @@
 mod comment;
+mod note;
 
+use note::{format_note_email};
 use serde::{ Serialize, Deserialize };
 use actix_web::{client};
 use comment::{ format_comment_email};
@@ -9,6 +11,7 @@ use crate::error::*;
 use crate::Service;
 
 pub use comment::CommentNotifyInfo;
+pub use note::NoteNotifyInfo;
 
 #[derive(Serialize)]
 struct EmailNotify<'s> {
@@ -38,7 +41,17 @@ impl<'s> EmailNotifyService<'s> {
         let body = format_comment_email(&info);
         self.send(EmailNotify {
             to,
-            subject: &format!("[Reply] A New Reply from {}", &info.receiver_name),
+            subject: &format!("[Reply] A New Reply from {}", &info.author_name),
+            content_type: "text/html",
+            body: &body,
+        }).await
+    }
+
+    pub async fn send_note_notify(&self, to: &str, info: NoteNotifyInfo) -> Result<()> {
+        let body = format_note_email(&info);
+        self.send(EmailNotify {
+            to,
+            subject: &format!("[Message] A New Message from {}", &info.author_name),
             content_type: "text/html",
             body: &body,
         }).await

@@ -1,15 +1,13 @@
-pub struct CommentNotifyInfo {
-    pub receiver_name: String,
+pub struct NoteNotifyInfo {
     pub author_name: String,
     pub author_avatar: String,
     pub author_url: String,
     pub url: String,
-    pub unsubscribe_url: String,
     pub time: String,
-    pub comment_text: String,
+    pub content_text: String,
 }
 
-pub fn format_comment_email(info: &CommentNotifyInfo) -> String {
+pub fn format_note_email(info: &NoteNotifyInfo) -> String {
     return format!(r#"
 <!DOCTYPE html>
 <html lang="en">
@@ -43,8 +41,7 @@ pub fn format_comment_email(info: &CommentNotifyInfo) -> String {
                                                 <td>
                                                     <h1
                                                         style="width:800px; text-align:left; color:#6bdae9; font-weight:normal; margin:0; margin-bottom: 30px">
-                                                        A New Reply to Your
-                                                        Comment
+                                                        A New Message to you
                                                     </h1>
                                                 </td>
                                             </tr>
@@ -141,14 +138,11 @@ pub fn format_comment_email(info: &CommentNotifyInfo) -> String {
                                             <tr>
                                                 <td>
                                                     <div style="text-align:left; margin-top: 40px">
-                                                        <p>This is a new reply to you from {author_name}</p>
-                                                        <p>You are receiving this because you commented on this website and
-                                                            agree to receive
-                                                            email notify.</p>
+                                                        <p>This is a new message to you from {author_name}</p>
+                                                        <p>You are receiving this because this site is configured to send you email notify.</p>
                                                         <p>You can <a href="{url}"
                                                                 style="color:#26c5da">View the
-                                                                comment</a>, or <a href="{unsubscribe_url}"
-                                                                style="color:#26c5da">unsubscribe</a></p>
+                                                                message</a></p>
                                                         <p style="margin-top:60px; color:#aaa">Sent by SardineFish
                                                             Push Service, source code available on
                                                                 <a
@@ -177,7 +171,6 @@ pub fn format_comment_email(info: &CommentNotifyInfo) -> String {
     author_url = info.author_url,
     author_avatar = info.author_avatar,
     url = info.url,
-    unsubscribe_url = info.unsubscribe_url,
     time = info.time,
-    comment_text = info.comment_text)
+    comment_text = info.content_text)
 }

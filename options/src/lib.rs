@@ -23,6 +23,8 @@ pub struct ServiceOptions {
     pub sar_push_url: String,
     pub sar_push_uid: String,
     pub sar_push_secret: String,
+    pub message_board_notify: String,
+    pub report_address: String,
 }
 
 impl Default for ServiceOptions {
@@ -44,6 +46,8 @@ impl Default for ServiceOptions {
             sar_push_url: "http://localhost:5000".to_owned(),
             sar_push_uid: "602d2f910036e412005537f4".to_owned(),
             sar_push_secret: "b6/GP8IAuMVU3u2FxPHz9YPKvTcPRIU8K1NrHFq35Yo=".to_owned(),
+            message_board_notify: "me@sardinefish.com".to_owned(),
+            report_address: "me@sardinefish.com".to_owned(),
         }
     }
 }
