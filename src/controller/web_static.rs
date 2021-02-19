@@ -1,10 +1,15 @@
 use std::path::PathBuf;
 
-use actix_web::web::{ ServiceConfig};
+use actix_http::http::{StatusCode, header};
+use actix_web::{HttpRequest, web::{Query, ServiceConfig, HttpResponse}};
 use actix_web::{get};
 use fs::{ NamedFile};
 use options::ServiceOptions;
 use actix_files as fs;
+use sar_blog::model::PidType;
+use serde::Deserialize;
+
+use crate::misc::response::{BuildResponse, Redirect};
 
 use super::extractor;
 
@@ -29,9 +34,31 @@ async fn login_index(options: extractor::Options) -> actix_web::Result<NamedFile
 static_file!(register, "/account/register", "account/register.html");
 static_file!(signup, "/account/signup", "account/register.html");
 
+#[derive(Deserialize)]
+struct PidQuery {
+    pid: Option<PidType>,
+}
 
-static_file!(blog_index, "/blog/", "blog/blog.html");
+// static_file!(blog_index, "/blog/", "blog/blog.html");
 static_file!(blog_view, r"/blog/{pid:\d+}", "blog/blogView.html");
+static_file!(note_view, r"/note/{pid:\d+}", "note/index.html");
+
+#[get("/blog/")]
+async fn blog_index(
+    service: extractor::Service, 
+    options: extractor::Options, 
+    query: Query<PidQuery>,
+    request: HttpRequest)
+ -> actix_web::Result<HttpResponse> {
+    if let Some(pid) = query.pid {
+        Ok(HttpResponse::build(StatusCode::PERMANENT_REDIRECT)
+            .header(header::LOCATION, service.url().blog(pid))
+            .body(""))
+    } else {
+        Ok(NamedFile::open(concat_path(&[&options.web_root, "blog/blog.html"]))?.into_response(&request)?)
+    }
+}
+
 
 
 static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,40}}", "notification/unsubscribe/index.html");
@@ -44,6 +71,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .service(signup)
             .service(blog_view)
             .service(blog_index)
+            .service(note_view)
             .service(unsubscribe_notification)
         .service(fs::Files::new("/", &opts.web_root).index_file("index.html"))
             ;
