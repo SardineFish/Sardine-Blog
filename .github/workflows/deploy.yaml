@@ -8,17 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # - name: Install rust nightly toolchain
-      #   uses: actions-rs/toolchain@v1
-      #   with:
-      #     toolchain: nightly
-      #     override: true
+      - name: Install rust nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
 
-      # - name: Build rust project
-      #   uses: actions-rs/cargo@v1
-      #   with: 
-      #     command: build
-      #     args: --release
+      - name: Build rust project
+        uses: actions-rs/cargo@v1
+        with: 
+          command: build
+          args: --release --target=x86_64-unknown-linux-gnu
+
       - name: Prepare Identity
         run: echo "${{ secrets.SSH_KEY }}" > ssh_key && chmod 400 ssh_key
 
@@ -33,13 +34,10 @@ jobs:
             git fetch origin $GITHUB_SHA && \
             git checkout $GITHUB_SHA && \
             git log -1 --format='%H'"
-
-
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
           WORK_DIR: ${{ secrets.PROJECT_DIR }}
-
 
       - name: Deploy binary
         run: >
@@ -47,7 +45,7 @@ jobs:
             -i ssh_key \
             -o LogLevel=ERROR \
             -o StrictHostKeyChecking=no \
-            config-example.json $SSH_USER@$SSH_HOSTNAME:$WORK_DIR/bin/sar-blog
+            target/x86_64-unknown-linux-gnu/release/sar-blog $SSH_USER@$SSH_HOSTNAME:$WORK_DIR/bin/sar-blog
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
@@ -60,8 +58,8 @@ jobs:
             -o LogLevel=ERROR \
             -i ssh_key \
             "cd $WORK_DIR && \
-            ls -l ./bin && \
-            cat ./bin/sar-blog"
+            docker-compose down --rmi local && \
+            docker-compose up -d"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
