@@ -6,12 +6,14 @@ use actix_web::{self, App, HttpServer, middleware::Logger};
 mod controller;
 mod middleware;
 mod misc;
+
 use misc::error;
 use misc::utils;
+use misc::error_report::ServiceMornitor;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("debug")).init();
+    // env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("debug")).init();
 
     let matches = clap::App::new("Sardine Blog NG")
         .author("SardineFish")
@@ -22,6 +24,9 @@ async fn main() -> std::io::Result<()> {
     let opts = options::ServiceOptions::default();
     let opts_moved = opts.clone();
     let service = sar_blog::Service::open(opts.clone()).await.unwrap();
+
+    ServiceMornitor::init(&opts, service.clone());
+    
     if matches.is_present("init") {
         service.init_database().await.unwrap();
     }

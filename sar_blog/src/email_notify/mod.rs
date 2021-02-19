@@ -1,6 +1,8 @@
 mod comment;
 mod note;
+mod error_report;
 
+use error_report::format_error_report_email;
 use note::{format_note_email};
 use serde::{ Serialize, Deserialize };
 use actix_web::{client};
@@ -12,6 +14,7 @@ use crate::Service;
 
 pub use comment::CommentNotifyInfo;
 pub use note::NoteNotifyInfo;
+pub use error_report::ErrorRecord;
 
 #[derive(Serialize)]
 struct EmailNotify<'s> {
@@ -52,6 +55,17 @@ impl<'s> EmailNotifyService<'s> {
         self.send(EmailNotify {
             to,
             subject: &format!("[Message] A New Message from {}", &info.author_name),
+            content_type: "text/html",
+            body: &body,
+        }).await
+    }
+
+    pub async fn send_error_report(&self, to: &str, records: Vec<ErrorRecord>) -> Result<()> {
+        let count = records.len();
+        let body = format_error_report_email(records);
+        self.send(EmailNotify {
+            to,
+            subject: &format!("[Error] {} Error(s) Since Last Report", count),
             content_type: "text/html",
             body: &body,
         }).await

@@ -2426,6 +2426,7 @@ dependencies = [
  "serde",
  "serde_json",
  "time 0.2.25",
+ "tokio",
 ]
 
 [[package]]
