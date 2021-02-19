@@ -4,7 +4,7 @@ use std::rc::Rc;
 use chrono::{DateTime, Utc};
 use model::{Comment, CommentContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache};
 use serde::{ Serialize, Serializer};
-use crate::{service::Service, user::Author, utils::json_datetime_format};
+use crate::{email_notify::CommentNotifyInfo, service::Service, user::Author, utils::json_datetime_format};
 
 use crate::{error::*};
 
@@ -114,21 +114,45 @@ impl<'m> CommentService<'m> {
             text: text.to_owned(),
             notified: false,
         });
-        let post = self.model.post.new_post(comment, &user.uid)
+        let comment_post = self.model.post.new_post(comment, &user.uid)
             .await
             .map_service_err()?;
         
-        self.model.post.insert(&post).await.map_service_err()?;
+        self.model.post.insert(&comment_post).await.map_service_err()?;
         self.model.post.add_comment(comment_to).await?;
         if comment_to != comment_root {
             self.model.post.add_comment(comment_root).await?;
         }
  
-        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(post.data))
+        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(comment_post.data))
             .await
             .map_service_err()?;
 
-        Ok(post.pid)
+        { // Try send notification email
+            let receiver = self.model.user.get_by_uid(&post.uid).await?;
+            if let Some(email) = &receiver.info.email {
+                let url = self.service.url().comment_root(&post).await?;
+
+                let result = self.service.push_service().send_comment_notify(&email, CommentNotifyInfo {
+                    author_avatar: user.info.avatar,
+                    author_name: user.info.name,
+                    author_url: user.info.url.unwrap_or(self.service.url().homepage()),
+                    url,
+                    time: Utc::now().format("%Y-%m-%d %H-%M-%S").to_string(),
+                    comment_text: text.to_owned(),
+                    receiver_name: receiver.info.name,
+                    unsubscribe_url: self.service.url().unsubscribe_notification(&receiver.uid),
+                }).await;
+
+                if let Err(err) = result {
+                    log::error!("Failed to send email notification:{:?}", err);
+                } else {
+                    self.model.comment.update_notify_state(comment_post.pid, true).await?;
+                }
+            }
+        }
+
+        Ok(comment_post.pid)
     }
 
     pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<CommentContent>> {

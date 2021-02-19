@@ -1,8 +1,7 @@
 
 
-use bson::DateTime;
 use chrono::Utc;
-use mongodb::{Collection, Database, bson::{self, doc}, options::{FindOneAndUpdateOptions, UpdateOptions}};
+use mongodb::{Collection, Database, bson::{self, doc}, options::{UpdateOptions}};
 use serde::{Serialize};
 
 use crate::error::*;

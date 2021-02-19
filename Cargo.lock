@@ -2432,6 +2432,7 @@ dependencies = [
 name = "sar_blog"
 version = "0.1.0"
 dependencies = [
+ "actix-web",
  "base64 0.13.0",
  "chrono",
  "email-address-parser",

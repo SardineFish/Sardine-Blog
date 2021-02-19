@@ -3,7 +3,7 @@ use options::ServiceOptions;
 use rand::{RngCore, SeedableRng, prelude::StdRng};
 use sha2::{Digest, Sha256};
 
-use crate::{blog::BlogService, comment::CommentService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, storage::StorageService, user::UserService};
+use crate::{blog::BlogService, comment::CommentService, email_notify::EmailNotifyService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, storage::StorageService, url::UrlService, user::UserService};
 
 use crate::error::*;
 use std::{cell::RefCell};
@@ -52,6 +52,14 @@ impl Service {
 
     pub fn storage(&self) -> StorageService {
         StorageService::new(&self)
+    }
+
+    pub fn push_service(&self) -> EmailNotifyService {
+        EmailNotifyService::new(self)
+    }
+
+    pub fn url(&self) -> UrlService {
+        UrlService::new(self)
     }
 
     pub async fn init_database(&self) -> Result<()> {

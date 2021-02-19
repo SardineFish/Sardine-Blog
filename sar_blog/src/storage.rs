@@ -1,6 +1,5 @@
 use std::cmp::max;
 
-use base64::encode_config;
 use chrono::{Duration, Utc};
 use model::Model;
 use options::ServiceOptions;

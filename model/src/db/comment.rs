@@ -114,4 +114,22 @@ impl CommentModel {
         Ok(result)
             
     }
+
+    pub async fn update_notify_state(&self, pid: PidType, notified: bool) -> Result<()> {
+        let query = doc! {
+            "pid": pid,
+            "data.type": "Comment",
+        };
+        let update = doc! {
+            "$set": {
+                "data.content.notified": notified,
+            }
+        };
+        let result = self.collection.update_one(query, update, None).await?;
+        if result.matched_count <= 0 {
+            Err(Error::PostNotFound(pid))
+        } else {
+            Ok(())
+        }
+    }
 }

@@ -8,6 +8,8 @@ mod service;
 mod validate;
 mod session;
 mod storage;
+mod email_notify;
+mod url;
 
 #[allow(dead_code)]
 pub mod utils;

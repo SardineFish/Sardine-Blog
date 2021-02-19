@@ -1,0 +1,175 @@
+body {
+    margin: 0;
+    background-color: #eee;
+    font-family: "Titillium Web", 'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
+.font-ui {
+    font-family: "Titillium Web";
+}
+
+#header {
+    background-color: #6ed8d8;
+    height: 3em;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    color: white;
+    justify-content: center;
+}
+
+#header .nav-links {
+    width: 1440px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 100%;
+}
+
+#header .nav-links li {
+    height: 100%;
+    border-bottom: solid 4px transparent;
+    box-sizing: border-box;
+
+    transition: border-color .3s;
+}
+
+#header .nav-links li:hover {
+    border-color: white;
+}
+
+#header .nav-links a {
+    text-decoration: none;
+    color: inherit;
+    padding: 0 1.5em;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#root {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    min-height: calc(100vh - 13em);
+}
+
+.content-block {
+    background-color: white;
+    margin-top: 5em;
+    width: 40%;
+    padding: 2em;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.content-block main {
+    min-height: 8em;
+}
+
+.content-block .header {
+    font-size: 2em;
+    text-align: center;
+}
+
+.content-block .action {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2em;
+    height: 3em;
+}
+
+#unsubscribe .icon-loading {
+    display: none;
+}
+
+#unsubscribe .state-pending .button {
+    display: none;
+}
+#unsubscribe .state-pending .icon-loading {
+    display: unset;
+}
+
+.icon-loading {
+    fill: #6ed8d8;
+    width: 2em;
+    height: 2em;
+    animation-name: rotate;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+@keyframes rotate {
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+
+.button {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button {
+    align-self: center;
+    background-color: #6ed8d8;
+    color: white;
+    padding: .3em 3em;
+    font-size: 1.4em;
+}
+
+.state-unsubscribe #unsubscribe {
+    display: flex;
+}
+.state-unsubscribe #error {
+    display: none;
+}
+.state-unsubscribe #success {
+    display: none;
+}
+
+.state-error #unsubscribe {
+    display: none;
+}
+.state-error #error {
+    display: flex;
+}
+.state-error #success {
+    display: none;
+}
+
+.state-success #unsubscribe {
+    display: none;
+}
+.state-success #error {
+    display: none;
+}
+.state-success #success {
+    display: flex;
+}
+
+#footer {
+    background-color: #ccc;
+    height: 10em;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}

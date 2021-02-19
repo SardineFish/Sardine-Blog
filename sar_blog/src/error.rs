@@ -8,6 +8,7 @@ pub enum Error {
     DataNotFound(ModelError),
     InternalModelError(ModelError),
     InternalServiceError(&'static str),
+    ExternalServiceError(String),
     Unauthorized,
     PasswordIncorrect,
     DataConflict(ModelError),
@@ -27,6 +28,7 @@ impl Error {
             Error::DataConflict(_) => 0x0700,
             Error::InvalidChallenge => 0x0800,
             Error::AccessDenied => 0x0900,
+            Error::ExternalServiceError(_) => 0x0a00,
         }
     }
     pub fn post_not_found(pid: PidType) -> Self {

@@ -2,7 +2,7 @@ use std::{ usize};
 
 use bson::{Document, doc, DateTime};
 use chrono::Utc;
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, ReturnDocument, UpdateOptions}};
+use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, FindOneOptions, ReturnDocument, UpdateOptions}};
 use tokio::stream::StreamExt;
 
 use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, error::*, model::PidType};
@@ -47,6 +47,14 @@ pub struct PostStats {
 pub struct MiscellaneousPostContent {
     pub description: String,
     pub url: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum PostTypeName {
+    Note,
+    Blog,
+    Comment,
+    Miscellaneous,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -359,6 +367,23 @@ impl PostModel {
             .map_model_result()?;
 
         Ok(())
+    }
+
+    pub async fn get_type(&self, pid: PidType) -> Result<PostTypeName> {
+        let query = doc! {
+            "pid": pid,
+        };
+        let mut opts = FindOneOptions::default();
+        opts.projection = Some(doc! {
+            "data.type": 1
+        });
+        let result = self.collection.find_one(query, opts)
+            .await?
+            .ok_or(Error::PostNotFound(pid))?
+            .get_document_mut("data")?
+            .remove("type")
+            .ok_or(Error::InternalError("Missing field 'type'"))?;
+        bson::from_bson(result).map_model_result()
     }
 
     async fn increase_stats(&self, pid: PidType, key: &str) -> Result<Post> {
