@@ -1,0 +1,45 @@
+name: Deploy
+
+on: push
+
+jobs:
+  build:
+    name: "Build Project"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # - name: Install rust nightly toolchain
+      #   uses: actions-rs/toolchain@v1
+      #   with:
+      #     toolchain: nightly
+      #     override: true
+
+      # - name: Build rust project
+      #   uses: actions-rs/cargo@v1
+      #   with: 
+      #     command: build
+      #     args: --release
+
+      - name: Deploy binary
+        env: 
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
+          WORK_DIR: ${{ secrets.PROJECT_DIR }}
+        run: echo "${{ secrets.SSH_KEY }}" > ssh_key && chmod 400 ssh_key
+      - name: Deploy binary
+        run: >
+          ssh $SSH_USER@$SSH_HOSTNAME \
+            -o StrictHostKeyChecking=no \
+            -o LogLevel=ERROR \
+            -I "$SSH_KEY" \
+            cd $WORK_DIR && \
+            git fetch --depth=1 origin $GITHUB_HASH && \
+            git checkout $GITHUB_HASH
+        
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
+          WORK_DIR: ${{ secrets.PROJECT_DIR }}
+

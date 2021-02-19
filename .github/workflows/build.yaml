@@ -1,10 +1,10 @@
-name: Build
+name: Check
 
 on: push
 
 jobs:
   build:
-    name: "Build Project"
+    name: "Check Project"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,4 +17,4 @@ jobs:
       - name: Build rust project
         uses: actions-rs/cargo@v1
         with: 
-          command: build
+          command: check
