@@ -1,2 +1,5 @@
 ./*
-!web-root
+!./web-root
+!./config.json
+!./bin/
+!/config

@@ -1,6 +1,10 @@
 /target
 /data/*
 node_modules
+/bin
+/config
+config.json
+docker-compose.yml
 
 # Fucking stupid VS Code
 debug.log

@@ -9,7 +9,7 @@ use tokio::macros;
 
 #[derive(Deserialize)]
 struct Config {
-    url: String,
+    mysql_url: String,
 }
 
 #[tokio::main]
@@ -22,10 +22,10 @@ async fn main() {
     let config: Config = serde_json::from_str(&json).unwrap();
 
 
-    let pool = Pool::new(&config.url).unwrap();
+    let pool = Pool::new(&config.mysql_url).unwrap();
     let mut conn = pool.get_conn().unwrap();
 
-    let opts = ServiceOptions::default();
+    let opts: ServiceOptions = serde_json::from_str(&json).unwrap();
     let model = Model::open(&opts).await.unwrap();
 
     let users = conn.query_map(r"SELECT uid, name, pwd, encryption, email, url, level, icon, operation, time FROM `user_data` WHERE `ignore` = 0 ORDER BY time", 
