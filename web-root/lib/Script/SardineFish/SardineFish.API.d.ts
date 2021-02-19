@@ -194,6 +194,17 @@ declare const SardineFishAPI: {
             };
         }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<string>;
         getInfo: (params: ValueType<{}>) => Promise<UserInfo>;
+        deleteEmail: (params: Required<RequiredParams<FullParamsDeclare<{
+            uid: {
+                type: "string";
+                validator: typeof validateUid;
+            };
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            uid: {
+                type: "string";
+                validator: typeof validateUid;
+            };
+        }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<null>;
     };
     Blog: {
         getList: (params: Required<RequiredParams<{}>> & Partial<OptionalParams<{}>> & Required<RequiredParams<FullParamsDeclare<{

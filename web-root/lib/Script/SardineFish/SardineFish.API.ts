@@ -541,6 +541,9 @@ const SardineFishAPI = {
             .response<string>(),
         getInfo: api("GET", "/api/user/info")
             .response<UserInfo>(),
+        deleteEmail: api("DELETE", "/api/user/{uid}/info/email")
+            .path({ uid: Uid })
+            .response<null>(),
     },
     Blog: {
         getList: api("GET", "/api/blog")

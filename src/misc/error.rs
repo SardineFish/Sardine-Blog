@@ -9,6 +9,7 @@ pub enum Error {
     ServiceError(sar_blog::Error),
     WebError(actix_web::Error),
     SerializeError,
+    UncaughtError(String),
 }
 
 impl Error {
@@ -17,6 +18,7 @@ impl Error {
             Error::SerializeError => 0x0001_0000,
             Error::WebError(_) => 0x0002_0000,
             Error::ServiceError(err) => 0x0003_0000 | err.code(),
+            Error::UncaughtError(_) => 0x0004_0000,
         }
     }
     pub fn status_code(&self) -> StatusCode {
@@ -28,8 +30,10 @@ impl Error {
             Error::ServiceError(ServiceError::InvalidParams(_)) => StatusCode::BAD_REQUEST,
             Error::ServiceError(ServiceError::InvalidChallenge) => StatusCode::BAD_REQUEST,
             Error::ServiceError(ServiceError::Unauthorized) => StatusCode::FORBIDDEN,
+            Error::ServiceError(ServiceError::AccessDenied) => StatusCode::FORBIDDEN,
             Error::ServiceError(ServiceError::PasswordIncorrect) => StatusCode::FORBIDDEN,
             Error::ServiceError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
     pub fn invalid_params(msg: &str) -> Error {
@@ -42,6 +46,7 @@ impl fmt::Display for Error {
         match self {
             Error::ServiceError(err) => fmt::Display::fmt(&err, f),
             Error::SerializeError | Error::WebError(_) => write!(f, "Internal Error"),
+             Error::UncaughtError(err) => fmt::Display::fmt(err, f),
         }
     }
 }

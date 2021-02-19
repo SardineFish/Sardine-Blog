@@ -172,6 +172,24 @@ impl UserModel {
         self.update_and_query(uid, "access", access).await
     }
 
+    pub async fn delete_email(&self, uid: &str) -> Result<User> {
+        // let query = doc! {
+        //     "uid": uid,
+        // };
+        // let update = doc! {
+        //     "$unset": {
+        //         "info.email": ""
+        //     }
+        // };
+        // let result = self.collection.update_one(query, update, None).await?;
+        // if result.matched_count <= 0 {
+        //     Err(Error::UserNotFound(uid.to_owned()))
+        // } else {
+        //     Ok(())
+        // }
+        self.update_and_query(uid, "info.email", Option::<String>::None).await
+    }
+
     async fn query_user(&self, query: Document) -> Result<Option<User>> {
         let doc = self.collection.find_one(query, None)
             .await

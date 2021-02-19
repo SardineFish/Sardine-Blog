@@ -151,7 +151,7 @@ Response data is the url of the user avatar and redirect to avatar url with stat
 
 
 ## Get user info
-`Get /api/user/info`
+`GET /api/user/info`
 
 `Auth >= Registered`
 
@@ -164,3 +164,15 @@ Response data is the url of the user avatar and redirect to avatar url with stat
     "avatar": "http://example.com/avatar.png"
 }
 ```
+
+--------
+
+
+## Delete user email
+`DELETE /api/user/{uid:string}/info/email`
+
+### Response
+`null`
+
+### Error
+- `403` if unauthorized or use not found

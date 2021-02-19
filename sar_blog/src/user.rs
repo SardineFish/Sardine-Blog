@@ -195,6 +195,10 @@ impl<'m> UserService<'m> {
         Ok(self.model.user.get_by_uid(uid).await?)
     }
 
+    pub async fn unsubscribe_notification(&self, uid: &str) -> Result<User> {
+        Ok(self.model.user.delete_email(uid).await?)
+    }
+
     async fn grant_token(&self, session_id: &SessionID, uid: &str) -> Result<AuthToken> {
         let token = gen_token(self.service.rng.borrow_mut());
 

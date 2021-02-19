@@ -1,35 +1,14 @@
-use actix_http::{body::{Body, ResponseBody}, http::header};
+use actix_http::{body::{Body, ResponseBody}, http::{HeaderValue, header}};
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::{web::Bytes, Result};
 use futures::{future::Ready, task, Future};
 use futures_util::future::ok;
 use log::{warn};
 
-use std::pin::Pin;
+use std::{pin::Pin};
 
-use serde::{Serialize};
+use crate::misc::{error::Error, response::ErrorResponseData};
 
-#[derive(Serialize, Debug)]
-struct ErrorMessage {
-    error: String,
-}
-
-impl ErrorMessage {
-    pub fn from_string<T: Into<String>>(str: T) -> Self {
-        ErrorMessage {
-            error: str.into()
-        }
-    }
-    pub fn from_bytes(bytes: Bytes)-> Self {
-        let msg = std::str::from_utf8(&bytes).unwrap();
-        ErrorMessage {
-            error: msg.to_string(),
-        }
-    }
-    pub fn into_json(&self) -> String {
-        serde_json::ser::to_string(self).unwrap()
-    }
-}
 
 pub struct ErrorFormatter {}
 
@@ -85,21 +64,30 @@ where
                     return Ok(result);
                 }
 
-                let result = result.map_body(|_, body| match body {
+                let mut result = result.map_body(|_, body| match body {
                     ResponseBody::Body(Body::Bytes(bytes)) => {
-                        let json = ErrorMessage::from_bytes(bytes).into_json();
+                        let json = ErrorResponseData::from(
+                                Error::UncaughtError(
+                                    std::str::from_utf8(&bytes).unwrap().to_owned()))
+                            .into_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     },
                     ResponseBody::Other(Body::Bytes(bytes)) => {
-                        let json = ErrorMessage::from_bytes(bytes).into_json();
+                        let json = ErrorResponseData::from(
+                                Error::UncaughtError(
+                                    std::str::from_utf8(&bytes).unwrap().to_owned()))
+                            .into_json();
                         ResponseBody::Other(Body::Bytes(Bytes::from(json)))
                     }
                     _ => {
                         warn!("Unkown error response body");
-                        let json = ErrorMessage::from_string(status.to_string()).into_json();
+                        let json = ErrorResponseData::from(
+                                Error::UncaughtError(status.to_string().to_owned()))
+                            .into_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     }
                 });
+                result.headers_mut().append(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
                 Ok(result)
             } else {
                 Ok(result)

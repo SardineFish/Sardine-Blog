@@ -34,7 +34,7 @@ static_file!(blog_index, "/blog/", "blog/blog.html");
 static_file!(blog_view, r"/blog/{pid:\d+}", "blog/blogView.html");
 
 
-static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,32}}", "notification/unsubscribe/index.html");
+static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,40}}", "notification/unsubscribe/index.html");
 
 
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {

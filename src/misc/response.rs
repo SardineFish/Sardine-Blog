@@ -24,11 +24,17 @@ impl<T: Serialize> SuccessResponseData<T> {
     }
 }
 #[derive(Serialize)]
-struct ErrorResponseData {
+pub struct ErrorResponseData {
     status: &'static str,
     timestamp: i64,
     code: u64,
     msg: String,
+}
+
+impl ErrorResponseData {
+    pub fn into_json(&self) -> String {
+        serde_json::ser::to_string(&self).unwrap()
+    }
 }
 
 impl From<Error> for ErrorResponseData {

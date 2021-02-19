@@ -1,6 +1,6 @@
 use std::{vec};
 
-use actix_web::{delete, get, post, put, web::{Json, Path, ServiceConfig, scope}};
+use actix_web::{HttpRequest, delete, get, post, put, web::{Json, Path, ServiceConfig, scope}};
 use sar_blog::{AuthChallenge, AuthToken, model::{Access, AuthenticationInfo, HashMethod, User, UserInfo}};
 use serde::{Serialize, Deserialize};
 
@@ -146,6 +146,33 @@ async fn get_info(service: extractor::Service, auth: extractor::Auth) -> Respons
     }).await
 }
 
+#[delete("/{uid}/info/email")]
+async fn delete_email(service: extractor::Service, Path(uid): Path<String>, request: HttpRequest) -> Response<()> {
+    execute(async move {
+        match service.user().get_user(&uid).await {
+            Ok(user) => {
+                if user.access <= Access::Anonymous {
+                    service.user().unsubscribe_notification(&uid).await.map_contoller_result()?;
+                    Ok(())
+                } else {
+                    let auth = middleware::auth_from_request(&service, &request)
+                        .await?
+                        .ok_or(sar_blog::Error::AccessDenied)
+                        .map_contoller_result()?;
+                    if auth.uid == user.uid {
+                        service.user().unsubscribe_notification(&uid).await.map_contoller_result()?;
+                        Ok(())
+                    } else {
+                        Err(sar_blog::Error::AccessDenied).map_contoller_result()
+                    }
+                }
+            },
+            Err(sar_blog::Error::DataNotFound(_)) => Err(sar_blog::Error::AccessDenied).map_contoller_result(),
+            Err(err) => Err(err).map_contoller_result(),
+        }
+    }).await
+}
+
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/user")
         .service(login)
@@ -157,5 +184,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(get_avatar)
         .service(check_auth)
         .service(get_info)
+        .service(delete_email)
     );
 }
