@@ -20,6 +20,9 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
+            model/target
+            options/target
+            sar_blog/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build rust project
