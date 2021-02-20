@@ -78,7 +78,8 @@ impl<'s> EmailNotifyService<'s> {
             .basic_auth(&self.options.sar_push_uid, Some(&self.options.sar_push_secret))
             .send_json(&notify)
             .await
-            .map_err(|_| Error::InternalServiceError("Failed to send email notify: {}"))?;
+            .map_err(|err| 
+                Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err)))?;
         
         match response.status() {
             status if status.is_success() => Ok(()),
