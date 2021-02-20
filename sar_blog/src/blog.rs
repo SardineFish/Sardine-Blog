@@ -55,7 +55,7 @@ impl<'m> BlogService<'m> {
             .map_service_err()?;
         
         let list = list.into_iter()
-            .map(|blog| BlogPreview::from_blog(blog, 200))
+            .map(|blog| BlogPreview::from_blog(blog, 300))
             .collect();
         
         Ok(list)

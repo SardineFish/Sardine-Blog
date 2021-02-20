@@ -11,7 +11,7 @@ fn slice_utf8(input: &str, len: usize) -> &str {
         0
     };
 
-    for i in len..=min {
+    for i in (min..=len).rev() {
         if i <= 0 {
             return "";
         } else if input.is_char_boundary(i) {
@@ -30,7 +30,7 @@ pub fn write_plaintext<'s>(parser: pulldown_cmark::Parser<'s>, limit: usize) -> 
                 let slice = text.unwrap_str();
                 if slice.len() + builder.len() >= limit {
                     
-                    builder.push(slice_utf8(slice, limit-builder.len()));
+                    builder.push(slice_utf8(slice, limit - builder.len()));
                     break;
                 }
                 builder.push(slice);
