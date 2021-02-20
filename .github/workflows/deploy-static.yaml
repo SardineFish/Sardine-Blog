@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: "Build Project"
+    name: "Deploy Static Resources"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

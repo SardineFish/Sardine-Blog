@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx esbuild src/index.js --bundle --outfile=dist/markdown-it-katex-bundle.js"
+    "build": "npx esbuild src/index.js --bundle --minify --outfile=dist/markdown-it-katex-bundle.js"
   },
   "author": "SardineFish",
   "license": "MIT",
@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^4.0.1",
-    "katex": "^0.10.1"
+    "katex": "^0.12.0"
   }
 }
