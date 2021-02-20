@@ -10,6 +10,7 @@ use tokio::macros;
 #[derive(Deserialize)]
 struct Config {
     mysql_url: String,
+    reset_pid: bool,
 }
 
 #[tokio::main]
@@ -326,11 +327,13 @@ LEFT JOIN post_data `likes` on `likes`.pid = comment.pid and `likes`.key = 'like
         log::warn!("Failed to create misc post for about page: {}", err);
     }
 
-    let result = conn.query_map(r"SELECT pid from posts ORDER BY pid DESC LIMIT 1", |pid: i32| {
-        pid
-    }).unwrap();
-    log::info!("Reset base pid to {}", result[0]);
-    model.post.reset_pid_base(result[0]).await.unwrap();
+    if config.reset_pid {
+        let result = conn.query_map(r"SELECT pid from posts ORDER BY pid DESC LIMIT 1", |pid: i32| {
+            pid
+        }).unwrap();
+        log::info!("Reset base pid to {}", result[0]);
+        model.post.reset_pid_base(result[0]).await.unwrap();
+    }
     
 }
 
