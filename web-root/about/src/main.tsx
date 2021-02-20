@@ -90,7 +90,7 @@ class App extends React.Component
                         </li>
                         <li id="osu">
                             <a href="https://osu.ppy.sh/users/11342845" target="_blank">
-                                <img src="/img/decoration/Osu-240.png" alt="osu-logo" />
+                                <img src="https://cdn-static.sardinefish.com/img/decoration/Osu-240.png" alt="osu-logo" />
                             </a>
                         </li>
                         <li>

@@ -283,7 +283,7 @@ export class Banner extends React.Component<{},{x:number,y:number, animate:boole
     }
     render()
     {
-        const resource = window.location.protocol === "https:" ? "//cdn-static.sardinefish.com" : "//static.sardinefish.com";
+        const resource = "https://cdn-static.sardinefish.com";
         return (
             <div className={["wrapper",this.state.show?"show":""].join(" ")}>
                 <div className="ground" ref="gound"></div>
@@ -760,7 +760,7 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
             comments: [],
             replyID: this.props.pageID,
             replyName: "",
-            userAvatar: "/img/decoration/unknown-user.png",
+            userAvatar: "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png",
             errorMsg: " ",
             sending: false
         };
@@ -918,7 +918,7 @@ export class Comment extends React.Component<CommentProps>
 {
     onAvatarFailed(e: React.SyntheticEvent<HTMLElement, Event>)
     {
-        (e.target as HTMLImageElement).src = "/img/decoration/unknown-user.png";   
+        (e.target as HTMLImageElement).src = "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png";   
     }
     onReplyBubble(cid: number, name:string)
     {
