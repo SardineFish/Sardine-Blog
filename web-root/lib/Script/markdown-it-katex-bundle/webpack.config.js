@@ -59,6 +59,8 @@ module.exports = {
 
 	mode: 'development',
 
+	devtool: false,
+
 	optimization: {
 		splitChunks: {
 			cacheGroups: {

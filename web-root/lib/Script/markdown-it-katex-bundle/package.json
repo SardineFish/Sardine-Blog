@@ -1,0 +1,18 @@
+{
+  "name": "markdown-it-katex-bundle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx esbuild src/index.js --bundle --outfile=dist/markdown-it-katex-bundle.js"
+  },
+  "author": "SardineFish",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.8.49"
+  },
+  "dependencies": {
+    "@iktakahiro/markdown-it-katex": "^4.0.1",
+    "katex": "^0.10.1"
+  }
+}

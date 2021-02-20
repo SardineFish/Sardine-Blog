@@ -160,9 +160,9 @@ function codeMirror()
 codeMirror.lib = function () { };
 codeMirror.mode = function () { };
 codeMirror.addon = function () { };
-codeMirror.domain = "//cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.2/";
-codeMirror.lib.css = codeMirror.domain + "codemirror.css";
-codeMirror.lib.script = codeMirror.domain + "codemirror.min.js";
+codeMirror.domain = "//cdn.jsdelivr.net/npm/codemirror@5.59.2/";
+codeMirror.lib.css = codeMirror.domain + "lib/codemirror.css";
+codeMirror.lib.script = codeMirror.domain + "lib/codemirror.min.js";
 codeMirror.mode.clike = codeMirror.domain + "mode/clike/clike.js";
 codeMirror.mode.css = codeMirror.domain + "mode/css/css.js";
 codeMirror.mode.htmlembedded = codeMirror.domain + "mode/htmlembedded/htmlembedded.js";
