@@ -1,8 +1,8 @@
-name: Build & Deploy
+name: Deploy Static Resources
 
 on:
   push:
-    paths:
+    paths-ignore:
       - "**/Cargo.lock"
       - "**/*.rs"
 
@@ -17,25 +17,8 @@ jobs:
         with:
           toolchain: nightly
           override: true
-      
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-            model/target
-            options/target
-            sar_blog/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Build rust project
-        uses: actions-rs/cargo@v1
-        with: 
-          command: build
-          args: --release --target=x86_64-unknown-linux-gnu
-
-      - name: Prepare Identity
+      - name: Prepare Identity File
         run: echo "${{ secrets.SSH_KEY }}" > ssh_key && chmod 400 ssh_key
 
       - name: Checkout Remote
@@ -49,18 +32,6 @@ jobs:
             git fetch origin $GITHUB_SHA && \
             git checkout $GITHUB_SHA && \
             git log -1 --format='%H'"
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
-          WORK_DIR: ${{ secrets.PROJECT_DIR }}
-
-      - name: Deploy binary
-        run: >
-          scp \
-            -i ssh_key \
-            -o LogLevel=ERROR \
-            -o StrictHostKeyChecking=no \
-            target/x86_64-unknown-linux-gnu/release/sar-blog $SSH_USER@$SSH_HOSTNAME:$WORK_DIR/bin/sar-blog
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}

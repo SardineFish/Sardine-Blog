@@ -81,7 +81,9 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .service(unsubscribe_notification)
             .service(fs::Files::new("/", &opts.web_root)
                 .index_file("index.html")
-                .default_handler(web::route().to(notfound_page)))
+                .default_handler(web::route().to(notfound_page))
+                .redirect_to_slash_directory()
+            )
         );
     }
 }
