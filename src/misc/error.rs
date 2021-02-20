@@ -46,7 +46,7 @@ impl fmt::Display for Error {
         match self {
             Error::ServiceError(err) => fmt::Display::fmt(&err, f),
             Error::SerializeError | Error::WebError(_) => write!(f, "Internal Error"),
-             Error::UncaughtError(err) => fmt::Display::fmt(err, f),
+            Error::UncaughtError(err) => fmt::Display::fmt(err, f),
         }
     }
 }

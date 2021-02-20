@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use actix_http::http::{StatusCode, header};
-use actix_web::{HttpRequest, web::{Query, ServiceConfig, HttpResponse}};
+use actix_http::http::{HeaderValue, StatusCode, header};
+use actix_web::{HttpRequest, middleware::errhandlers::{ErrorHandlerResponse, ErrorHandlers}, web::{self, HttpResponse, Query, ServiceConfig, scope}};
 use actix_web::{get};
 use fs::{ NamedFile};
 use options::ServiceOptions;
@@ -11,7 +11,7 @@ use serde::Deserialize;
 
 use super::extractor;
 
-fn concat_path(paths: &[&str]) -> PathBuf {
+pub fn concat_path(paths: &[&str]) -> PathBuf {
     let path: PathBuf = paths.into_iter().collect();
     path
 }
@@ -62,16 +62,26 @@ async fn blog_index(
 static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,40}}", "notification/unsubscribe/index.html");
 
 
+
+
+async fn notfound_page(options: extractor::Options) -> actix_web::Result<NamedFile> {
+    Ok(NamedFile::open(concat_path(&[&options.web_root, "404.html"]))?)
+}
+
+
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
     move |cfg: &mut ServiceConfig| {
-        cfg.service(login_index)
+        cfg.service(scope("")
+            .service(login_index)
             .service(register)
             .service(signup)
             .service(blog_view)
             .service(blog_index)
             .service(note_view)
             .service(unsubscribe_notification)
-        .service(fs::Files::new("/", &opts.web_root).index_file("index.html"))
-            ;
+            .service(fs::Files::new("/", &opts.web_root)
+                .index_file("index.html")
+                .default_handler(web::route().to(notfound_page)))
+        );
     }
 }

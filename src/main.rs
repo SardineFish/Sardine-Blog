@@ -43,7 +43,6 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(opts_moved.clone())
             .data(service.clone())
-            .wrap(middleware::error_formatter())
             .wrap(Logger::default())
             .configure(controller::config(opts_moved.clone()))
     })
