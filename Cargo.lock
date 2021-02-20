@@ -31,8 +31,11 @@ dependencies = [
  "futures-util",
  "http",
  "log",
+ "rustls 0.18.1",
+ "tokio-rustls 0.14.1",
  "trust-dns-proto",
  "trust-dns-resolver",
+ "webpki",
 ]
 
 [[package]]
@@ -66,6 +69,7 @@ dependencies = [
  "actix-rt",
  "actix-service",
  "actix-threadpool",
+ "actix-tls",
  "actix-utils",
  "base64 0.13.0",
  "bitflags",
@@ -209,6 +213,10 @@ dependencies = [
  "actix-service",
  "actix-utils",
  "futures-util",
+ "rustls 0.18.1",
+ "tokio-rustls 0.14.1",
+ "webpki",
+ "webpki-roots 0.20.0",
 ]
 
 [[package]]
@@ -261,6 +269,7 @@ dependencies = [
  "mime",
  "pin-project 1.0.4",
  "regex",
+ "rustls 0.18.1",
  "serde",
  "serde_json",
  "serde_urlencoded",
@@ -476,6 +485,7 @@ dependencies = [
  "mime",
  "percent-encoding",
  "rand 0.7.3",
+ "rustls 0.18.1",
  "serde",
  "serde_json",
  "serde_urlencoded",

@@ -86,7 +86,8 @@ impl<'s> EmailNotifyService<'s> {
             _ => {
                 let msg: SarPushErrorResponse = response.json()
                     .await
-                    .map_err(|_| Error::InternalServiceError("Faied to parse error response from Sar Push Service"))?;
+                    .map_err(|err| 
+                        Error::InternalServiceErrorOwned(format!("Faied to parse error response from Sar Push Service: {:?}", err)))?;
                 Err(Error::ExternalServiceError(msg.error))
             }
         }

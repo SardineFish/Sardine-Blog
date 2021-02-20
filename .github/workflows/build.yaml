@@ -14,11 +14,21 @@ jobs:
           toolchain: nightly
           override: true
 
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
       - name: Build rust project
         uses: actions-rs/cargo@v1
         with: 
           command: check
-  web-note:
+
+
+  front-end:
     name: "Build Message Board"
     runs-on: ubuntu-latest
     steps:
@@ -34,3 +44,5 @@ jobs:
             ${{ runner.os }}-node-
       - run: cd web-root/note && npm install
       - run: cd web-root/note && npm run build
+      - run: cd web-root/about && npm install
+      - run: cd web-root/about && npm run build
