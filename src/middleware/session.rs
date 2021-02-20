@@ -28,7 +28,7 @@ fn map_internal_error(err: sar_blog::Error) -> actix_web::Error {
     actix_web::error::ErrorInternalServerError(err)
 }
 
-async fn session_middleware<S>(request: ServiceRequest, srv: Rc<RefCell<S>>) -> Result<ServiceResponse, actix_web::Error> 
+async fn session_middleware<S>(request: ServiceRequest, srv: SyncService<S>) -> Result<ServiceResponse, actix_web::Error> 
 where
     S: ServiceT<Body>,
     S::Future: 'static,
@@ -53,7 +53,7 @@ where
 
     request.extensions_mut().insert(Session::new(session_id.clone()));
 
-    let mut response = srv.borrow_mut().call(request).await?;
+    let mut response = srv.lock().await.call(request).await?;
 
     let service = response.request().app_data::<web::Data<Service>>().unwrap();
     if set_session {

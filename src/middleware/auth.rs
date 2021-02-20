@@ -26,7 +26,7 @@ pub async fn auth_from_request<T : HttpMessage>(service: &sar_blog::Service, req
     }
 }
 
-async fn auth_middleware<S>(request: ServiceRequest, srv: Rc<RefCell<S>>, access: Access) -> Result<ServiceResponse, actix_web::Error> 
+async fn auth_middleware<S>(request: ServiceRequest, srv: SyncService<S>, access: Access) -> Result<ServiceResponse, actix_web::Error> 
 where
     S: ServiceT<Body>,
     S::Future: 'static,
@@ -49,7 +49,7 @@ where
         Err(response) => return response.to_service_response(request).await,
     }
     
-    srv.borrow_mut().call(request).await
+    srv.lock().await.call(request).await
 }
 
 // async_middleware!(pub authentication, auth_middleware);
