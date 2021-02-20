@@ -53,7 +53,7 @@ pub type AnonymousUserInfo = UserInfo;
 pub enum Access {
     Root = 32,
     Owner = 16,
-    Trusted = 18,
+    Trusted = 8,
     Registered = 4,
     Anonymous = 2,
     Visitor = 1,

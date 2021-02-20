@@ -1,4 +1,9 @@
-window.onload = function () {
+/**
+ * @typedef {import("../../lib/Script/SardineFish/SardineFish.API")}
+ */
+
+window.onload = function ()
+{
     HTMLTemplate.Init();
     checkLogin();
     pid = parseSearch()["pid"];
@@ -24,13 +29,10 @@ function $$(selector)
 }
 function checkLogin()
 {
-    SardineFish.API.Account.CheckLogin(function (data)
+    SardineFish.API.User.checkAuth({}).then(uid =>
     {
-        if (data)
-        {
-            $("#account-area").className = "login";
-            $("#user-avatar").src = "/account/user/face/getFace.php?uid=" + data.uid;
-        }
+        $("#account-area").className = "login";
+        $("#user-avatar").src = SardineFish.API.User.avatarUrl(uid);
     });
 }
 
@@ -60,49 +62,47 @@ function initEditor(pid)
     });
     if (pid)
     {
-        SardineFish.API.Article.Get(pid, function (data)
+        SardineFish.API.Blog.getByPid({ pid }).then(blog =>
         {
-            $("#title").value = data.title;
-            tags.addRange(data.tags);
-            $("#editor").contentWindow.setCode(data.document);
-        }, function (msg, code)
-        {
-            console.error(msg);
+            $("#title").value = blog.title;
+            tags.addRange(blog.tags);
+            $("#editor").contentWindow.setCode(blog.doc);
         });
     }    
     $("#publish").addEventListener("click", function ()
     {
-        var article = {
-            pid: pid,
-            type: SardineFish.API.Article.Type.Blog,
-            title: $("#title").value,
-            tags: ArrayList(),
-            docType: $("#doc-types > .item.selected").dataset["docType"],
-            document: $("#editor").contentWindow.getCode()
-        };
+        const tags = [];
         $$(".tag").forEach(function (element)
         {
             var text = element.innerText.replace(/^\s+/g, "").replace(/\s+$/g, "");
             if (text != "")
-                article.tags.add(text);
+                tags.push(text);
         });
+        const blog = {
+            title: $("#title").value,
+            tags: tags,
+            doc_type: $("#doc-types > .item.selected").dataset["docType"],
+            doc: $("#editor").contentWindow.getCode()
+        };
+
         if (pid)
         {
-            SardineFish.API.Article.Edit(article, function (data)
+            SardineFish.API.Blog.update({ pid }, blog).then(pid =>
             {
-                document.location = "/blog/?pid=" + pid;
+                document.location = "/blog/" + pid;
+            }).catch(err =>
+            {
+                alert(`${err.code}: ${err.message}`);
             });
         }
         else
         {
-            SardineFish.API.Article.Post(article, function (succeed, data)
+            SardineFish.API.Blog.post({}, blog).then(pid =>
             {
-                if (!succeed)
-                {
-                    console.warn(data);
-                    return;
-                }
-                document.location = "/blog/?pid=" + data;
+                document.location = "/blog/" + pid;
+            }).catch(err =>
+            {
+                alert(`${err.code}: ${err.message}`);
             });
         }
     });

@@ -83,7 +83,6 @@ function checkLogin()
     {
         document.querySelector("#account-area").className = "login";
         document.querySelector("#user-avatar").src = `/api/user/${uid}/avatar`;
-        var uid = data.uid;
         SardineFish.API.User.getInfo({}).then(info =>
         {
             $("#sender-avatar").src = info.avatar;

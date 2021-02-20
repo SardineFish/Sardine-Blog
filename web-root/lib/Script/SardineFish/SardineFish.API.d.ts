@@ -193,6 +193,7 @@ declare const SardineFishAPI: {
                 validator: typeof validateUid;
             };
         }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>) => Promise<string>;
+        avatarUrl: (uid: String) => string;
         getInfo: (params: ValueType<{}>) => Promise<UserInfo>;
         deleteEmail: (params: Required<RequiredParams<FullParamsDeclare<{
             uid: {

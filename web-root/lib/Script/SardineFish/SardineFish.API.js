@@ -160,7 +160,7 @@ class ApiBuilder {
             });
         }
         catch (err) {
-            console.exception(err);
+            console.error(err);
             throw new APIError(ClientErrorCode.NetworkFailure, "Failed to send request.");
         }
         if (response.status >= 400) {
@@ -181,7 +181,7 @@ class ApiBuilder {
             return body;
         }
         catch (err) {
-            console.exception(err);
+            console.error(err);
             throw new APIError(ClientErrorCode.ParseError, "Failed to parse response body.");
         }
     }
@@ -292,6 +292,7 @@ const SardineFishAPI = {
             .path({ uid: Uid })
             .redirect("manual")
             .response(),
+        avatarUrl: (uid) => `/api/user/${uid}/avatar`,
         getInfo: api("GET", "/api/user/info")
             .response(),
         deleteEmail: api("DELETE", "/api/user/{uid}/info/email")

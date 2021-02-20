@@ -268,7 +268,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         }
         catch (err)
         {
-            console.exception(err);
+            console.error(err);
             throw new APIError(ClientErrorCode.NetworkFailure, "Failed to send request.");
         }
 
@@ -296,7 +296,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         }
         catch (err)
         {
-            console.exception(err);
+            console.error(err);
             throw new APIError(ClientErrorCode.ParseError, "Failed to parse response body.");
         }
     }
@@ -539,6 +539,7 @@ const SardineFishAPI = {
             .path({ uid: Uid })
             .redirect("manual")
             .response<string>(),
+        avatarUrl: (uid: String) => `/api/user/${uid}/avatar`,
         getInfo: api("GET", "/api/user/info")
             .response<UserInfo>(),
         deleteEmail: api("DELETE", "/api/user/{uid}/info/email")
