@@ -38,22 +38,6 @@ jobs:
       - name: Prepare Identity
         run: echo "${{ secrets.SSH_KEY }}" > ssh_key && chmod 400 ssh_key
 
-      - name: Checkout Remote
-        run: >
-          ssh $SSH_USER@$SSH_HOSTNAME \
-            -o StrictHostKeyChecking=no \
-            -o LogLevel=ERROR \
-            -i ssh_key \
-            "cd $WORK_DIR && \
-            echo 'Checkout $GITHUB_SHA' && \
-            git fetch origin $GITHUB_SHA && \
-            git checkout $GITHUB_SHA && \
-            git log -1 --format='%H'"
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
-          WORK_DIR: ${{ secrets.PROJECT_DIR }}
-
       - name: Deploy binary
         run: >
           scp \
