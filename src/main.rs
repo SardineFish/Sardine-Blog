@@ -43,7 +43,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(opts_moved.clone())
             .data(service.clone())
-            .wrap(Logger::default())
+            .wrap(Logger::new("%s - %r %Dms"))
             .configure(controller::config(opts_moved.clone()))
     })
     .bind(&opts.listen)?

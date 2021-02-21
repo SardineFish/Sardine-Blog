@@ -41,7 +41,7 @@ impl ServiceMornitor {
                 records: Default::default(),
             }),
             report_sender: sender,
-            logger: env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("debug")).build(),
+            logger: env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).build(),
         }
     }
     pub fn init(options: &ServiceOptions, service: Service) {
