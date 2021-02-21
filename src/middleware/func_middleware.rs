@@ -4,14 +4,12 @@ use actix_web::{
 };
 use futures_util::future::{ok, Ready, Future};
 use tokio::sync::Mutex;
-use core::panic;
 use std::{marker::PhantomData, task::{
     self,
     Poll
 }};
 use std::pin::Pin;
 use std::rc::Rc;
-use std::cell::{RefCell};
 
 pub trait ServiceT<B> = Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error = actix_web::Error>;
 // pub trait MiddlewareClosure = FnMut<>

@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use actix_http::http::{HeaderValue, StatusCode, header};
-use actix_web::{HttpRequest, middleware::errhandlers::{ErrorHandlerResponse, ErrorHandlers}, web::{self, HttpResponse, Query, ServiceConfig, scope}};
+use actix_http::http::{ StatusCode, header};
+use actix_web::{HttpRequest, web::{self, HttpResponse, Query, ServiceConfig, scope}};
 use actix_web::{get};
 use fs::{ NamedFile};
 use options::ServiceOptions;
