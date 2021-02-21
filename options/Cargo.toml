@@ -1,6 +1,6 @@
 [package]
 name = "options"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["SardineFish <Sardine@live.cn>"]
 edition = "2018"
 

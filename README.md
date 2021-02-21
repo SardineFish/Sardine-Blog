@@ -2,10 +2,11 @@
 
 [![Check](https://github.com/SardineFish/Sardine-Blog/actions/workflows/build.yaml/badge.svg?branch=ng)](https://github.com/SardineFish/Sardine-Blog/actions/workflows/build.yaml) [![Deploy](https://github.com/SardineFish/Sardine-Blog/actions/workflows/deploy.yaml/badge.svg?branch=ng)](https://github.com/SardineFish/Sardine-Blog/actions/workflows/deploy.yaml) 
 
-Next generation of my own blog backend written in rust.
+New generation of my own blog backend server written in Rust.
 
-Still in development.
+View it: <https://www.sardinefish.com>
+
 
 ## Documentation
 
-[Documentation](./docs/README.md)
+[API Documentation](./docs/README.md)
