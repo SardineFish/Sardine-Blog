@@ -11,7 +11,7 @@ jobs:
         uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
-          
+
       - uses: actions/checkout@v2
       - name: Install rust nightly toolchain
         uses: actions-rs/toolchain@v1
@@ -37,7 +37,7 @@ jobs:
 
 
   front-end:
-    name: "Build Message Board"
+    name: "Build Frontend"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,7 +50,4 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - run: cd web-root/note && npm install
-      - run: cd web-root/note && npm run build
-      - run: cd web-root/about && npm install
-      - run: cd web-root/about && npm run build
+      - run: cd web-root && node build.js
