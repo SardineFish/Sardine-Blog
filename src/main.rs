@@ -1,7 +1,9 @@
 #![feature(trait_alias)]
 #![feature(or_patterns)]
 
-use actix_web::{self, App, HttpServer, middleware::Logger};
+use std::process::exit;
+
+use actix_web::{self, App, HttpServer, dev::Server, middleware::Logger};
 
 mod controller;
 mod middleware;
@@ -10,6 +12,9 @@ mod misc;
 use misc::error;
 use misc::utils;
 use misc::error_report::ServiceMornitor;
+use options::ServiceOptions;
+use sar_blog::{MessageMail, Service};
+use misc::error::OkOrLog;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -30,25 +35,45 @@ async fn main() -> std::io::Result<()> {
         options::ServiceOptions::default()
     };
 
-    let opts_moved = opts.clone();
-    let service = sar_blog::Service::open(opts.clone()).await.unwrap();
+    let service = sar_blog::Service::open(opts.clone()).await
+        .expect("Failed to start service");
 
     ServiceMornitor::init(&opts, service.clone());
     
     if matches.is_present("init") {
         service.init_database().await.unwrap();
+        exit(0);
     }
 
-    HttpServer::new( move || {
-        App::new()
-            .data(opts_moved.clone())
-            .data(service.clone())
-            .wrap(Logger::new("%s - %r %Dms"))
-            .configure(controller::config(opts_moved.clone()))
-    })
-    .bind(&opts.listen)?
-    .run()
-    .await?;
+    service.push_service().send_message(&opts.report_address, MessageMail {
+        title: "Server Start Running".to_owned(),
+        content: format!("Server was started at {}", chrono::Utc::now().to_rfc3339())
+    }).await.ok_or_error("Failed to send startup message");
+
+
+    let server = config_server(opts.clone(), service.clone())?;
+    server.await?;
+
+
+    service.push_service().send_message(&opts.report_address, MessageMail {
+        title: "Server Shutdown".to_owned(),
+        content: format!("Server was shutdown at {}", chrono::Utc::now().to_rfc3339())
+    }).await.ok_or_error("Failed to send shutdown message");
 
     Ok(())
+}
+
+fn config_server(options: ServiceOptions, service: Service) -> std::io::Result<Server> {
+    let opt_moved = options.clone();
+    let server = HttpServer::new(move  || {
+        App::new()
+            .data(opt_moved.clone())
+            .data(service.clone())
+            .wrap(Logger::new("%s - %r %Dms"))
+            .configure(controller::config(opt_moved.clone()))
+    })
+    .workers(options.workers)
+    .bind(&options.listen)?
+    .run();
+    Ok(server)
 }

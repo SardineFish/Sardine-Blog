@@ -1,6 +1,7 @@
 use std::fmt;
 
 use actix_http::http::StatusCode;
+use fmt::{Debug, Display};
 use sar_blog::Error as ServiceError;
 
 
@@ -63,6 +64,52 @@ impl<T> MapControllerError<T> for std::result::Result<T, ServiceError> {
         match self {
             Ok(x) => Ok(x),
             Err(err) => Err(Error::ServiceError(err))
+        }
+    }
+}
+
+pub trait OkOrLog<T> {
+    fn ok_or_log_error(self) -> Option<T>;
+    fn ok_or_error<M: Display>(self, msg: M) -> Option<T>;
+    fn ok_or_warn<M: Display>(self, msg: M) -> Option<T>;
+    fn ok_or_info<M: Display>(self, msg: M) -> Option<T>;
+}
+
+impl<T, E: Debug> OkOrLog<T> for std::result::Result<T, E> {
+    fn ok_or_log_error(self) -> Option<T> {
+        match self {
+            Ok(val) => Some(val),
+            Err(err) => {
+                log::error!("{:?}", err);
+                None
+            }
+        }
+    }
+    fn ok_or_error<M: Display>(self, msg: M) -> Option<T> {
+        match self {
+            Ok(val) => Some(val),
+            Err(_) => {
+                log::error!("{}", msg);
+                None
+            }
+        }
+    }
+    fn ok_or_warn<M: Display>(self, msg: M) -> Option<T> {
+        match self {
+            Ok(val) => Some(val),
+            Err(_) => {
+                log::warn!("{}", msg);
+                None
+            }
+        }
+    }
+    fn ok_or_info<M: Display>(self, msg: M) -> Option<T> {
+        match self {
+            Ok(val) => Some(val),
+            Err(_) => {
+                log::info!("{}", msg);
+                None
+            }
         }
     }
 }

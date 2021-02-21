@@ -20,4 +20,4 @@ pub use model;
 pub use blog::BlogPreview;
 pub use comment::NestedCommentRef;
 pub use user::{AuthToken, AuthChallenge, Author};
-pub use email_notify::ErrorRecord;
+pub use email_notify::{ErrorRecord, MessageMail};

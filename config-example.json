@@ -1,5 +1,6 @@
 {
     "listen": "localhost:3000",
+    "workers": 4,
     "db_addr": "mongodb://localhost",
     "db_name": "sar-blog",
     "db_timeout": 100,

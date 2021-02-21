@@ -5,6 +5,7 @@ use chrono::Duration;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceOptions {
     pub listen: String,
+    pub workers: usize,
     pub db_addr: String,
     pub db_name: String,
     pub db_timeout: u64,
@@ -33,6 +34,7 @@ impl Default for ServiceOptions {
     fn default() -> Self {
         Self {
             listen: "localhost:3000".to_string(),
+            workers: 8,
             db_addr: "mongodb://localhost".to_string(),
             db_name: "sar_blog".to_string(),
             db_timeout: 100,

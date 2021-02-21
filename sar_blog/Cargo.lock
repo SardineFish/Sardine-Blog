@@ -1620,7 +1620,7 @@ dependencies = [
 
 [[package]]
 name = "model"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "futures-util",
@@ -1756,7 +1756,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 
 [[package]]
 name = "options"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "serde",
@@ -2322,7 +2322,7 @@ checksum = "71d301d4193d031abdd79ff7e3dd721168a9572ef3fe51a1517aba235bd8f86e"
 
 [[package]]
 name = "sar_blog"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "actix-web",
  "base64 0.13.0",

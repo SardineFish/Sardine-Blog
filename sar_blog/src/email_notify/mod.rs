@@ -1,8 +1,10 @@
 mod comment;
 mod note;
 mod error_report;
+mod message;
 
 use error_report::format_error_report_email;
+use message::{format_message_mail};
 use note::{format_note_email};
 use serde::{ Serialize, Deserialize };
 use actix_web::{client};
@@ -15,6 +17,7 @@ use crate::Service;
 pub use comment::CommentNotifyInfo;
 pub use note::NoteNotifyInfo;
 pub use error_report::ErrorRecord;
+pub use message::MessageMail;
 
 #[derive(Serialize)]
 struct EmailNotify<'s> {
@@ -68,6 +71,16 @@ impl<'s> EmailNotifyService<'s> {
             subject: &format!("[Error] {} Error(s) Since Last Report", count),
             content_type: "text/html",
             body: &body,
+        }).await
+    }
+
+    pub async fn send_message(&self, to: &str, message: MessageMail) -> Result<()> {
+        let body = format_message_mail(&message);
+        self.send(EmailNotify {
+            to,
+            subject: &message.title,
+            content_type: "text/html",
+            body: &body
         }).await
     }
 
