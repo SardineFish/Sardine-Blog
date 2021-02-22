@@ -8,21 +8,25 @@ function getVisited(callback)
 {
     SardineFish.API.PostData.getStatsByPid({ pid: 0 }).then(stats =>
     {
-        var visited;
-        switch (stats.views % 10)
-        {
-            case 1:
-                visited = stats.views.toString() + "st";
-                break;
-            case 2:
-                visited = stats.views.toString() + "nd";
-                break;
-            case 3:
-                visited = stats.views.toString() + "rd";
-                break;
-            default:
-                visited = stats.views.toString() + "th";
-        }
+        var visited = stats.views.toString() +
+            { [11]: 'th', [12]: 'th', [13]: 'th' }[stats.views % 100]
+            || { [1]: 'st', [2]: 'nd', [3]: 'rd' }[stats.views % 10]
+            || 'th';
+        
+        // switch (stats.views % 10)
+        // {
+        //     case 1:
+        //         visited = stats.views.toString() + "st";
+        //         break;
+        //     case 2:
+        //         visited = stats.views.toString() + "nd";
+        //         break;
+        //     case 3:
+        //         visited = stats.views.toString() + "rd";
+        //         break;
+        //     default:
+        //         visited = stats.views.toString() + "th";
+        // }
         var text = "You are the " + visited + " visitor.";
         $("#welcomeVisitor").text(text);
         if (callback)

@@ -223,22 +223,10 @@ export class Banner extends React.Component<{},{x:number,y:number, animate:boole
         try
         {
             const stats = await SardineFish.PostData.getStatsByPid({ pid: 0 });
-            const visitCount = stats.views;
-            let visitText = "";
-            switch (visitCount % 10)
-            {
-                case 1:
-                    visitText = `${visitCount}st`;
-                    break;
-                case 2:
-                    visitText = `${visitCount}nd`;
-                    break;
-                case 3:
-                    visitText = `${visitCount}rd`;
-                    break;
-                default:
-                    visitText = `${visitCount}th`;
-            };
+            
+            let visitText = stats.views.toString() + ({ [11]: 'th', [12]: 'th', [13]: 'th' } as any)[stats.views % 100]
+                || ({ [1]: 'st', [2]: 'nd', [3]: 'rd' } as any)[stats.views % 10] || 'th';
+            
             (this.refs["visit"] as HTMLElement).innerText = visitText;
             await waitLoad(this.refs["img"] as HTMLImageElement);
         }
