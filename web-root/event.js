@@ -12,9 +12,9 @@ function getVisited(callback)
     SardineFish.API.PostData.getStatsByPid({ pid: 0 }).then(stats =>
     {
         var visited = stats.views.toString() +
-            { [11]: 'th', [12]: 'th', [13]: 'th' }[stats.views % 100]
+            ({ [11]: 'th', [12]: 'th', [13]: 'th' }[stats.views % 100]
             || { [1]: 'st', [2]: 'nd', [3]: 'rd' }[stats.views % 10]
-            || 'th';
+            || 'th');
         
         // switch (stats.views % 10)
         // {
