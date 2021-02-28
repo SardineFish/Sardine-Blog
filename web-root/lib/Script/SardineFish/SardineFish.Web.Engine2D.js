@@ -563,6 +563,9 @@ console.warn(ex.message);
         this.onTouchStart = null;
         this.onTouchMove = null;
         this.onTouchEnd = null;
+
+        this._frameComplete = null;
+
         this._objList.add = function (node)
         {
             this[this.n] = node;
@@ -679,6 +682,8 @@ try{
         //this.render(dt);
         this.physicalSimulate(dt);
         this.render(dt);
+        if (this._frameComplete)
+            this._frameComplete();
     }
     Scene.prototype.initEvents = function ()
     {
@@ -955,6 +960,7 @@ try{
         this.zoom = z;
         this.rotate = 0;
         this.graphics = null;
+        this._clearColor = "rgba(0, 0, 0, 0)";
     }
     Camera.prototype.copy = function ()
     {
@@ -1006,7 +1012,9 @@ try{
         if (!this.graphics || !this.graphics.ctx)
             return;
         this.resetTransform();
-        this.graphics.ctx.clearRect(0,0,this.graphics.canvas.width,this.graphics.canvas.height);
+        this.graphics.ctx.clearRect(0, 0, this.graphics.canvas.width, this.graphics.canvas.height);
+        this.graphics.ctx.fillStyle = this._clearColor;
+        this.graphics.ctx.fillRect(0, 0, this.graphics.canvas.width, this.graphics.canvas.height);
         this.applyTransform();
     }
     Camera.prototype.applyTransform=function ()
@@ -1632,6 +1640,7 @@ try{
     engine.Image.prototype.loadFromUrl = function (url, width, height, callback)
     {
         this.img = new window.Image();
+        this.img.crossOrigin = "Anonymous";
         var me = this;
         this.img.onload = function (e)
         {

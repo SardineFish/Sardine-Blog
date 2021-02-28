@@ -1,6 +1,9 @@
 ﻿/**
 * @typedef {import("./lib/Script/SardineFish/SardineFish.API")}
 */
+/**
+ * @typedef {import("./lib/Script/RaindropFX/index")}
+ */
 
 var pageCodeEditor;
 HTMLTemplate.Init();
@@ -33,7 +36,7 @@ function getVisited(callback)
             callback();
     });
 }
-function loadTopArea(callback)
+async function loadTopArea(callback)
 {
     var width = $("#topImgArea").width();
     var height = 500;
@@ -53,6 +56,7 @@ function loadTopArea(callback)
     canvas.width = width;
     canvas.height = height;
     camera.moveTo(width / 2, height / 2);
+    camera._clearColor = "#beefff";
 
     var left = 50;
     var right = 200;
@@ -112,7 +116,41 @@ function loadTopArea(callback)
         })
     });
     //seedling
-
+    const raindropCanvas = $("#raindrop").get(0);
+    raindropCanvas.width = width;
+    raindropCanvas.height = height;
+    const fx = new RaindropFX({
+        canvas: raindropCanvas,
+        background: canvas,
+        mistColor: [0.02, 0.02, 0.02, 1],
+        raindropSpecularLight: [1, 1, 1],
+        raindropSpecularShininess: 128,
+        raindropLightPos: [-1, 1, 2, 0],
+        raindropShadowOffset: 0.8,
+        raindropDiffuseLight: [0.5, 0.5, 0.5],
+        raindropLightBump: 0.3,
+        refractBase: 0.6,
+        refractScale: 0.8,
+        smoothRaindrop: [0.97, 0.99],
+    });
+    let fxEnable = false;
+    $("#topImgArea").click(() =>
+    {
+        if (fxEnable)
+            return;
+        fxEnable = true;
+        fx.start();
+        setTimeout(() =>
+        {
+            $("#raindrop").get(0).classList.add("active");
+        }, 10)
+    });
+    scene._frameComplete = () =>
+    {
+        if (!fxEnable)
+            return;
+        fx.setBackground(canvas);
+    };
 }
 function evalCode(code)
 {
