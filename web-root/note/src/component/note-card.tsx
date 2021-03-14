@@ -38,7 +38,7 @@ export function NoteCard(props: {note: Note})
                     </div>
                     <div className="info">
                         <a className="name" href={urlDefault(props.note.author.url || "")}>{props.note.author.name}</a>
-                        <span className="time">{props.note.time}</span>
+                        <span className="time">{new Date(props.note.time).toLocaleString()}</span>
                     </div>
                 </header>
                 <main className="note-content">

@@ -88,7 +88,7 @@ export interface PostStats {
 export interface BlogPreview {
     pid: number;
     title: string;
-    time: string;
+    time: number;
     tags: string[];
     author: PubUserInfo;
     preview: string;
@@ -97,7 +97,7 @@ export interface Blog {
     pid: number;
     title: string;
     author: PubUserInfo;
-    time: string;
+    time: number;
     tags: string[];
     doc_type: DocType;
     doc: string;
@@ -112,7 +112,7 @@ export interface BlogContent {
 export interface Note {
     pid: number;
     author: PubUserInfo;
-    time: string;
+    time: number;
     doc_type: DocType;
     doc: string;
     stats: PostStats;
@@ -121,7 +121,7 @@ export interface Comment {
     pid: number;
     comment_to: number;
     author: PubUserInfo;
-    time: string;
+    time: number;
     text: string;
     comments: Comment[];
     depth: number;

@@ -147,6 +147,7 @@ function LoadArticle(count)
     {
         for (var i = 0; i < data.length; i++)
         {
+            data[i].time = new Date(data[i].time).toLocaleString();
             articleList.add(data[i]);
         }
         viewIndex = articleList.length;

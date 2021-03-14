@@ -182,6 +182,7 @@ function loadLatest()
         for (var i = 0; i < data.length; i++)
         {
             data[i].url = `/blog/${data[i].pid}`;
+            data[i].time = new Date(data[i].time).toLocaleString();
             // data[i].url = "/" + data[i].type + "/" + "?pid=" + data[i].pid;
         }
 

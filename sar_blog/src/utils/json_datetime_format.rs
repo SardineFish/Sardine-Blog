@@ -5,7 +5,7 @@ pub fn serialize<S>(time: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Err
 where
     S: Serializer,
 {
-    serializer.serialize_str(&time.to_rfc2822())
+    serializer.serialize_i64(time.timestamp_millis())
 }
 
 pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
