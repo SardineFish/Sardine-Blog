@@ -37,7 +37,7 @@ window.onload = function ()
     const caps = /\d+$/.exec(window.location.pathname);
     if (!caps)
         throw new Error("Invalid url");
-    pid = parseInt(caps[0]);
+    cid = pid = parseInt(caps[0]);
 
     loadBlog(pid);
     loadComment(pid);
