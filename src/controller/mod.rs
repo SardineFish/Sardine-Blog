@@ -3,7 +3,6 @@ mod note;
 mod blog;
 mod comment;
 mod user;
-mod executor;
 mod web_static;
 mod post_data;
 mod storage;

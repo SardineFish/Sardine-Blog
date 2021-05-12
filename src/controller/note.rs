@@ -9,7 +9,8 @@ use crate::utils::EmptyAsNone;
 use crate::error::*;
 use crate::{middleware, misc::response::Response};
 
-use super::{executor::execute, extractor::{self}};
+use super::extractor;
+use Response::Ok;
 
 #[derive(Serialize)]
 struct PubNote {
@@ -62,50 +63,45 @@ struct NoteUpload {
 
 #[get("")]
 async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>) -> Response<Vec<PubNote>>{
-    execute(async move {
-        let list = service.note().get_list(params.from, params.count)
-            .await
-            .map_contoller_result()?;
-        let list = list.into_iter()
-            .map(PubNote::from)
-            .collect();
-        Ok(list)
-    }).await
+    let list = service.note().get_list(params.from, params.count)
+        .await
+        .map_contoller_result()?;
+    let list = list.into_iter()
+        .map(PubNote::from)
+        .collect();
+    Ok(list)
 }
 
 #[post("")]
 async fn post(service: extractor::Service, data: Json<NoteUpload>, request: HttpRequest) -> Response<PidType> {
-    execute(async move {
+    let auth = middleware::auth_from_request(&service, &request)
+        .await?;
+    let author = match auth {
+        Some(auth) => Author::Authorized(auth),
+        None => Author::Anonymous(AnonymousUserInfo {
+            name: data.name.as_ref()
+                .empty_as_none()
+                .ok_or(Error::invalid_params("Missing 'name'"))?
+                .clone(),
+            avatar: data.avatar.as_ref()
+                .empty_as_none()
+                .ok_or(Error::invalid_params("Missing 'avatar'"))?
+                .clone(),
+            email: data.email.clone().empty_as_none(),
+            url: data.url.clone().empty_as_none(),
+        })
+    };
 
-        let auth = middleware::auth_from_request(&service, &request)
-            .await?;
-        let author = match auth {
-            Some(auth) => Author::Authorized(auth),
-            None => Author::Anonymous(AnonymousUserInfo {
-                name: data.name.as_ref()
-                    .empty_as_none()
-                    .ok_or(Error::invalid_params("Missing 'name'"))?
-                    .clone(),
-                avatar: data.avatar.as_ref()
-                    .empty_as_none()
-                    .ok_or(Error::invalid_params("Missing 'avatar'"))?
-                    .clone(),
-                email: data.email.clone().empty_as_none(),
-                url: data.url.clone().empty_as_none(),
-            })
-        };
+    let content = NoteContent {
+        doc_type: data.doc_type,
+        doc: data.doc.clone()
+    };
 
-        let content = NoteContent {
-            doc_type: data.doc_type,
-            doc: data.doc.clone()
-        };
-
-        let pid = service.note().post(author, content)
-            .await
-            .map_contoller_result()?;
-        Ok(pid)
-
-    }).await
+    let pid = service.note().post(author, content)
+        .await
+        .map_contoller_result()?;
+    
+    Ok(pid)
 }
 
 pub fn config(cfg: &mut ServiceConfig) {

@@ -5,8 +5,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::{error::Error, middleware, misc::{error::MapControllerError, response::Response, utils::EmptyAsNone}};
 
-use super::{executor::execute, extractor};
+use super::{extractor};
 use sar_blog::utils::json_datetime_format;
+
+use Response::Ok;
 
 #[derive(Deserialize)]
 struct QueryParams {
@@ -54,14 +56,12 @@ async fn get_nested_comments(
     Path(pid): Path<PidType>,
     Query(params): Query<QueryParams>,
 ) -> Response<Vec<NestedCommentRef>> {
-    execute(async move {
-        service
-            .comment()
-            .get_comments_of_pid(pid, params.depth)
-            .await
-            .map_contoller_result()
-    })
-    .await
+    service
+        .comment()
+        .get_comments_of_pid(pid, params.depth)
+        .await
+        .map_contoller_result()
+        .into()
 }
 
 #[post("/{pid}")]
@@ -71,32 +71,30 @@ async fn post(
     data: Json<CommentUpload>,
     request: HttpRequest,
 ) -> Response<PidType> {
-    execute(async move {
-        let auth = middleware::auth_from_request(&service, &request)
-            .await?;
-        let author = match auth {
-            Some(auth) => Author::Authorized(auth),
-            None => Author::Anonymous(AnonymousUserInfo {
-                name: data.name.as_ref()
-                    .empty_as_none()
-                    .ok_or(Error::invalid_params("Missing 'name'"))?
-                    .clone(),
-                avatar: data.avatar.as_ref()
-                    .empty_as_none()
-                    .ok_or(Error::invalid_params("Missing 'avatar'"))?
-                    .clone(),
-                email: data.email.clone().empty_as_none(),
-                url: data.url.clone().empty_as_none(),
-            })
-        };
+    let auth = middleware::auth_from_request(&service, &request)
+        .await?;
+    let author = match auth {
+        Some(auth) => Author::Authorized(auth),
+        None => Author::Anonymous(AnonymousUserInfo {
+            name: data.name.as_ref()
+                .empty_as_none()
+                .ok_or(Error::invalid_params("Missing 'name'"))?
+                .clone(),
+            avatar: data.avatar.as_ref()
+                .empty_as_none()
+                .ok_or(Error::invalid_params("Missing 'avatar'"))?
+                .clone(),
+            email: data.email.clone().empty_as_none(),
+            url: data.url.clone().empty_as_none(),
+        })
+    };
 
-        service
-            .comment()
-            .post(pid, &data.text, author)
-            .await
-            .map_contoller_result()
-    })
-    .await
+    service
+        .comment()
+        .post(pid, &data.text, author)
+        .await
+        .map_contoller_result()
+        .into()
 }
 
 #[delete("/{pid}", wrap = "middleware::authentication(Access::Trusted)")]
@@ -105,11 +103,8 @@ async fn delete(
     auth: extractor::Auth,
     Path(pid): Path<PidType>,
 ) -> Response<Option<CommentContent>> {
-    execute(async move {
-        let comment = service.comment().delete(&auth.uid, pid).await.map_contoller_result()?;
-        Ok(comment)
-    })
-    .await
+    let comment = service.comment().delete(&auth.uid, pid).await.map_contoller_result()?;
+    Ok(comment)
 }
 
 pub fn config(cfg: &mut ServiceConfig) {

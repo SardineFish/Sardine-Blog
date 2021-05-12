@@ -8,7 +8,7 @@ use web::{Query, ServiceConfig, scope};
 use crate::{error::*, middleware, misc::response::Response};
 use sar_blog::utils::json_datetime_format;
 
-use super::{executor::execute, extractor};
+use super::{extractor};
 
 #[derive(Deserialize)]
 struct QueryParams {
@@ -55,47 +55,40 @@ impl From<Blog> for PubBlog {
 
 #[get("")]
 async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>) -> Response<Vec<BlogPreview>> {
-    execute(async move {
-        service.blog().get_preview_list(params.from, params.count).await.map_contoller_result()
-    }).await
+    service.blog().get_preview_list(params.from, params.count)
+        .await
+        .map_contoller_result()
+        .into()
 }
 
 #[get("/{pid}")]
 async fn get_by_pid(service: extractor::Service, Path(pid): Path<PidType>, session: extractor::Session) -> Response<PubBlog> {
-    execute(async move {
-        let blog = service.blog().get_by_pid(session.id(), pid).await.map_contoller_result()?;
-        Ok(PubBlog::from(blog))
-    }).await
+    let blog = service.blog().get_by_pid(session.id(), pid).await.map_contoller_result()?;
+    Ok(PubBlog::from(blog)).into()
 }
 
 #[post("", wrap="middleware::authentication(Access::Trusted)")]
 async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>) -> Response<PidType> {
-    execute(async move {
-        let pid = service.blog().post(&auth.uid, data.to_owned()).await.map_contoller_result()?;
-        Ok(pid)
-    }).await
+    let pid = service.blog().post(&auth.uid, data.to_owned()).await.map_contoller_result()?;
+    Ok(pid).into()
 }
 
 
 #[put("/{pid}", wrap="middleware::authentication(Access::Trusted)")]
 async fn update(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>, Path(pid): Path<PidType>) -> Response<PidType> {
-    execute(async move {
-        service.blog().update(pid, &auth.uid, data.to_owned())
-            .await
-            .map_contoller_result()?;
-        Ok(pid)
-    }).await
+    service.blog().update(pid, &auth.uid, data.to_owned())
+        .await
+        .map_contoller_result()?;
+    Ok(pid).into()
 }
 
 #[delete("/{pid}", wrap="middleware::authentication(Access::Trusted)")]
 async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<BlogContent>> {
-    execute(async move {
-        let blog = service.blog().delete(&auth.uid, pid)
-            .await
-            .map_contoller_result()?;
-        
-        Ok(blog)
-    }).await
+    let blog = service.blog().delete(&auth.uid, pid)
+        .await
+        .map_contoller_result()?;
+    
+    Ok(blog).into()
 }
 
 pub fn config(cfg: &mut ServiceConfig) {

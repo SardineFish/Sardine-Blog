@@ -1,4 +1,6 @@
 
+use std::ops::Try;
+
 use actix_http::{ResponseBuilder, cookie::Cookie, http::StatusCode};
 use futures::{Future, future::{Ready, ready}};
 use serde::{Serialize};
@@ -117,6 +119,27 @@ pub enum Response<T : BuildResponse = ()> {
     Ok(T),
     ClientError(Error),
     ServerError(Error),
+}
+
+impl<T> Try for Response<T> where T: BuildResponse {
+    type Ok = T;
+    type Error = Error;
+    fn from_ok(v: T) -> Self {
+        Self::Ok(v)
+    }
+    fn from_error(err: Error) -> Self {
+        match err.status_code() {
+            StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
+            _ => Response::ClientError(err)
+        }
+    }
+    fn into_result(self) -> Result<T, Error> {
+        match self {
+            Response::Ok(v) => Ok(v),
+            Response::ClientError(err) => Err(err),
+            Response::ServerError(err) => Err(err),
+        }
+    }
 }
 
 impl<T: Serialize> Response<T> {

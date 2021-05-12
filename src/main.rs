@@ -1,5 +1,5 @@
 #![feature(trait_alias)]
-#![feature(or_patterns)]
+#![feature(try_trait)]
 
 use std::process::exit;
 
