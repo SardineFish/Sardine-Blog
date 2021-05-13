@@ -11,6 +11,7 @@ pub enum Error {
     WebError(actix_web::Error),
     SerializeError,
     UncaughtError(String),
+    Misc(StatusCode, &'static str),
 }
 
 impl Error {
@@ -20,6 +21,7 @@ impl Error {
             Error::WebError(_) => 0x0002_0000,
             Error::ServiceError(err) => 0x0003_0000 | err.code(),
             Error::UncaughtError(_) => 0x0004_0000,
+            Error::Misc(_, _) => 0x0005_0000,
         }
     }
     pub fn status_code(&self) -> StatusCode {
@@ -33,8 +35,10 @@ impl Error {
             Error::ServiceError(ServiceError::Unauthorized) => StatusCode::FORBIDDEN,
             Error::ServiceError(ServiceError::AccessDenied) => StatusCode::FORBIDDEN,
             Error::ServiceError(ServiceError::PasswordIncorrect) => StatusCode::FORBIDDEN,
+            Error::ServiceError(ServiceError::InvalidScore) => StatusCode::BAD_REQUEST,
             Error::ServiceError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Misc(code, _) => code.to_owned(),
         }
     }
     pub fn invalid_params(msg: &str) -> Error {
@@ -48,6 +52,7 @@ impl fmt::Display for Error {
             Error::ServiceError(err) => fmt::Display::fmt(&err, f),
             Error::SerializeError | Error::WebError(_) => write!(f, "Internal Error"),
             Error::UncaughtError(err) => fmt::Display::fmt(err, f),
+            Error::Misc(_, msg) => fmt::Display::fmt(msg, f),
         }
     }
 }
@@ -65,6 +70,12 @@ impl<T> MapControllerError<T> for std::result::Result<T, ServiceError> {
             Ok(x) => Ok(x),
             Err(err) => Err(Error::ServiceError(err))
         }
+    }
+}
+
+impl From<ServiceError> for Error {
+    fn from(err: ServiceError) -> Self {
+        Error::ServiceError(err)
     }
 }
 

@@ -7,3 +7,4 @@ pub mod note;
 pub mod history;
 pub mod post;
 pub mod storage;
+pub mod rank;

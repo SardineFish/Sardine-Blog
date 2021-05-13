@@ -7,6 +7,7 @@ mod web_static;
 mod post_data;
 mod storage;
 mod test;
+mod rank;
 
 use actix_web::{ web::{ ServiceConfig, scope}};
 use options::ServiceOptions;
@@ -24,6 +25,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .configure(post_data::config)
             .configure(storage::config)
             .configure(test::config)
+            .configure(rank::config)
             .wrap(middleware::session())
             .wrap(middleware::error_formatter())
         ).service(scope("")

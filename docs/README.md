@@ -7,6 +7,7 @@
 - [Comment](./comment.md)
 - [Post Data](./post-data.md)
 - [Object Storage Service](./storage.md)
+- [Score Ranking](./rank.md)
 
 
 ## Authorization

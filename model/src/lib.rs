@@ -15,3 +15,4 @@ pub use note::{Note, NoteContent};
 pub use post::{PostStats, PostType, Post, PostData, MiscellaneousPostContent, PostTypeName};
 pub use history::{History, HistoryData, Operation};
 pub use self::redis::{RedisCache, SessionID, session::SessionAuthInfo};
+pub use rank::{RankedScore};

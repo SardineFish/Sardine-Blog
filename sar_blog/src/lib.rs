@@ -10,6 +10,7 @@ mod session;
 mod storage;
 mod email_notify;
 mod url;
+mod rank;
 
 #[allow(dead_code)]
 pub mod utils;
@@ -21,3 +22,4 @@ pub use blog::BlogPreview;
 pub use comment::NestedCommentRef;
 pub use user::{AuthToken, AuthChallenge, Author};
 pub use email_notify::{ErrorRecord, MessageMail};
+pub use rank::{RankService, SimpleScore, SnakeRemakeRank, SnakeRemakeScore};

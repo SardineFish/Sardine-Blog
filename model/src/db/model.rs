@@ -4,7 +4,7 @@ use mongodb::{self, Database, options::ClientOptions};
 use options::ServiceOptions;
 use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostModel, user::UserModel};
 
-use super::storage::StorageModel;
+use super::{rank::{RankModel}, storage::StorageModel};
 
 pub type PidType = i32;
 
@@ -16,6 +16,7 @@ pub struct Model
     pub comment: CommentModel,
     pub post: PostModel,
     pub history: HistoryModel,
+    pub rank: RankModel,
 }
 
 impl Model 
@@ -37,12 +38,16 @@ impl Model
             post: PostModel::new(&db),
             comment: CommentModel::new(&db),
             history: HistoryModel::new(&db),
+            rank: RankModel::new(&db),
             db,
         })
     }
 
-    pub async fn init(&self) -> Result<()> {
-        self.post.init_meta().await?;
+    pub async fn init(&self, init_meta: bool) -> Result<()> {
+        if init_meta {
+            self.post.init_meta().await?;
+        }
+        self.rank.init_collection(&self.db).await?;
         Ok(())
     }
     pub fn storage(&self) -> StorageModel {

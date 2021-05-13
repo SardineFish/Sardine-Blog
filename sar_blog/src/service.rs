@@ -3,7 +3,7 @@ use options::ServiceOptions;
 use rand::{RngCore, SeedableRng, prelude::StdRng};
 use sha2::{Digest, Sha256};
 
-use crate::{blog::BlogService, comment::CommentService, email_notify::EmailNotifyService, error::MapServiceError, note::NoteService, post_data::PostDataService, session::SessionService, storage::StorageService, url::UrlService, user::UserService};
+use crate::{blog::BlogService, comment::CommentService, email_notify::EmailNotifyService, error::MapServiceError, note::NoteService, post_data::PostDataService, rank::{RankServiceSelector}, session::SessionService, storage::StorageService, url::UrlService, user::UserService};
 
 use crate::error::*;
 use std::{cell::RefCell};
@@ -54,6 +54,10 @@ impl Service {
         StorageService::new(&self)
     }
 
+    pub fn rank(&self) -> RankServiceSelector {
+        RankServiceSelector::new(&self)
+    }
+
     pub fn push_service(&self) -> EmailNotifyService {
         EmailNotifyService::new(self)
     }
@@ -65,7 +69,7 @@ impl Service {
     pub async fn init_database(&self) -> Result<()> {
         log::warn!("Init database...");
         log::warn!("Will rewrite some metadata in database which is very important!");
-        self.model.init().await.map_service_err()?;
+        self.model.init(true).await.map_service_err()?;
 
         log::warn!("Secrete of root user will be generated randomly, please make sure to change it.");
         let mut secret: [u8; 16] = [0; 16];
