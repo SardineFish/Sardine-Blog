@@ -47,10 +47,11 @@ type FullParamsDeclare<T extends SimpleParamsDeclare> = {
     [key in keyof T]: ParamInfo<TypeNames> & (T[key] extends TypeNames ? ParamInfo<T[key]> : T[key]);
 }
 
-type ApiFunction<Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | undefined, Response>
+type ApiFunction<Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | any | undefined, Response>
     = Data extends undefined
     ? (params: ValueType<Path> & ValueType<Query>) => Promise<Response>
-    : (params: ValueType<Path> & ValueType<Query>, body: ValueType<Data & ParamsDeclare>) => Promise<Response>;
+    : Data extends ParamsDeclare ? (params: ValueType<Path> & ValueType<Query>, body: ValueType<Data & ParamsDeclare>) => Promise<Response>
+    : (params: ValueType<Path> & ValueType<Query>, body: Data) => Promise<Response>
 
 
 interface ErrorResponse
@@ -147,6 +148,11 @@ function validateNonEmpty(key: string, text: string): string
     return text;
 }
 
+function noValidate<T>(key: string, value: T): T
+{
+    return value;
+}
+
 enum ClientErrorCode
 {
     Error = -1,
@@ -165,7 +171,7 @@ class APIError extends Error
     }
 }
 
-class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | undefined, Response>
+class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | any | undefined, Response>
 {
     private method: Method;
     private url: string;
@@ -191,11 +197,15 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
     {
         return new ApiBuilder<Method, Path, FullParamsDeclare<NewQuery>, Data, Response>(this.method, this.url, this.pathInfo, simpleParam(query), this.dataInfo);
     }
-    body<NewData extends SimpleParamsDeclare>(data: NewData)
+    body<T>(): ApiBuilder<Method, Path, Query, T, Response>
+    body<NewData extends SimpleParamsDeclare>(data: NewData): ApiBuilder<Method, Path, Query, FullParamsDeclare<NewData>, Response>
+    body<NewData extends SimpleParamsDeclare | any>(data?: NewData): ApiBuilder<Method, Path, Query, NewData extends SimpleParamsDeclare ? FullParamsDeclare<NewData> : NewData, Response>
     {
         if (this.method === "POST" || this.method === "PATCH" || this.method === "PUT")
         {
-            return new ApiBuilder<Method, Path, Query, FullParamsDeclare<NewData>, Response>(this.method, this.url, this.pathInfo, this.queryInfo, simpleParam(data));
+            if (!data)
+                return new ApiBuilder(this.method, this.url, this.pathInfo, this.queryInfo, null as any) as any;
+            return new ApiBuilder(this.method, this.url, this.pathInfo, this.queryInfo, simpleParam(data as SimpleParamsDeclare)) as any;
         }
         else
         {
@@ -212,7 +222,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         const builder = new ApiBuilder<Method, Path, Query, Data, Response>(this.method, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
         return builder.send.bind(builder) as ApiFunction<Path, Query, Data, Response>;
     }
-    private async send(params: ValueType<Path> | ValueType<Query>, data: ValueType<Data & ParamsDeclare>): Promise<Response>
+    private async send(params: ValueType<Path> | ValueType<Query>, data: ValueType<Data & ParamsDeclare> | Data): Promise<Response>
     {
         let url = this.url;
         for (const key in this.pathInfo)
@@ -241,11 +251,11 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         if (queryParams.length > 0)
             url = url + "?" + queryParams.join("&");
 
-        if (this.dataInfo !== undefined)
+        if (this.dataInfo !== undefined && this.dataInfo !== null)
         {
             for (const key in this.dataInfo)
             {
-                const dataInfo = this.dataInfo[key];
+                const dataInfo = (this.dataInfo as ParamsDeclare)[key];
                 const value = (data as any)[key];
                 if (value === undefined && !dataInfo.optional)
                     throw new APIError(ClientErrorCode.InvalidParameter, `Missing field '${key} in request body'`);
@@ -511,6 +521,13 @@ export interface OSSUploadInfo
     upload: string,
 }
 
+export interface RankedScore
+{
+    name: String,
+    score: number,
+    time: number,
+}
+
 const SardineFishAPI = {
     User: {
         checkAuth: api("GET", "/api/user")
@@ -681,6 +698,31 @@ const SardineFishAPI = {
     Storage: {
         getUploadInfo: api("POST", "/api/oss/new")
             .response<OSSUploadInfo>(),
+    },
+    Rank: {
+        getRankedScores: api("GET", "/api/rank/{key}")
+            .path({ key: "string" })
+            .query({
+                skip: {
+                    type: "number",
+                    optional: true,
+                    validator: noValidate,
+                },
+                count: {
+                    type: "number",
+                    optional: true,
+                    validator: noValidate,
+                }
+            })
+            .response<RankedScore[]>(),
+        postScore: api("POST", "/api/rank/{key}")
+            .path({ key: "string" })
+            .body<{
+                name: string,
+                score: string,
+                data?: any,
+            }>()
+            .response<number>(),
     },
     DocType,
     HashMethod,

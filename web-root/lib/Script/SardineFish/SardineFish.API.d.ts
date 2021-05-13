@@ -35,6 +35,7 @@ declare function validateUid(key: string, uid: string): string;
 declare function validateName(key: string, name: string): string;
 declare function validateUrl(key: string, url: string): string;
 declare function validateNonEmpty(key: string, text: string): string;
+declare function noValidate<T>(key: string, value: T): T;
 declare function formatDateTime(time: Date): string;
 export interface ProgressRequestOptions {
     method?: HTTPMethods;
@@ -134,6 +135,11 @@ export interface OSSUploadInfo {
     key: string;
     token: string;
     upload: string;
+}
+export interface RankedScore {
+    name: String;
+    score: number;
+    time: number;
 }
 declare const SardineFishAPI: {
     User: {
@@ -373,6 +379,44 @@ declare const SardineFishAPI: {
     };
     Storage: {
         getUploadInfo: (params: ValueType<{}>, body: ValueType<ParamsDeclare>) => Promise<OSSUploadInfo>;
+    };
+    Rank: {
+        getRankedScores: (params: Required<RequiredParams<FullParamsDeclare<{
+            key: "string";
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            key: "string";
+        }>>> & Required<RequiredParams<FullParamsDeclare<{
+            skip: {
+                type: "number";
+                optional: true;
+                validator: typeof noValidate;
+            };
+            count: {
+                type: "number";
+                optional: true;
+                validator: typeof noValidate;
+            };
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            skip: {
+                type: "number";
+                optional: true;
+                validator: typeof noValidate;
+            };
+            count: {
+                type: "number";
+                optional: true;
+                validator: typeof noValidate;
+            };
+        }>>>) => Promise<RankedScore[]>;
+        postScore: (params: Required<RequiredParams<FullParamsDeclare<{
+            key: "string";
+        }>>> & Partial<OptionalParams<FullParamsDeclare<{
+            key: "string";
+        }>>> & Required<RequiredParams<{}>> & Partial<OptionalParams<{}>>, body: {
+            name: string;
+            score: string;
+            data?: any;
+        }) => Promise<number>;
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;

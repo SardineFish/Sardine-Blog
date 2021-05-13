@@ -4,13 +4,14 @@
   "description": "",
   "main": "SardineFish.js",
   "scripts": {
-    "build": "npx webpack"
+    "build": "npm run build:bundle && npm run build:declare",
+    "build:bundle": "npx esbuild --bundle --outfile=SardineFish.API.js SardineFish.API.ts",
+    "build:declare": "npx tsc"
   },
   "author": "SardineFish",
   "license": "MIT",
   "devDependencies": {
-    "ts-loader": "^8.0.17",
-    "webpack": "^5.21.2",
-    "webpack-cli": "^4.5.0"
+    "esbuild": "^0.11.20",
+    "ts-loader": "^8.0.17"
   }
 }
