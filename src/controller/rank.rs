@@ -44,7 +44,7 @@ struct QueryParams {
     count: usize,
 }
 
-const THROTTLE: usize = 5;
+const THROTTLE: usize = 3;
 
 #[get("/{key}", wrap="middleware::access_control(AccessControl::AnyGet)")]
 async fn get_score(service: extractor::Service, key: Path<String>, query: Query<QueryParams>)
