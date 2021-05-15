@@ -1,7 +1,7 @@
 
-use std::ops::Try;
+use std::{collections::HashMap, ops::Try, str};
 
-use actix_http::{ResponseBuilder, cookie::Cookie, http::StatusCode};
+use actix_http::{ResponseBuilder, cookie::Cookie, http::{HeaderName, Method, StatusCode, header}};
 use futures::{Future, future::{Ready, ready}};
 use serde::{Serialize};
 use actix_web::{ HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}};
@@ -75,6 +75,74 @@ impl<'c, T : Serialize> BuildResponse for WithCookie<'c, T> {
             builder.cookie(cookie.clone());
         }
         data.build_response(builder)
+    }
+}
+
+pub struct WithHeaders<T: BuildResponse>(pub T, pub HashMap<HeaderName, &'static str>);
+
+impl<T: BuildResponse> BuildResponse for WithHeaders<T> {
+    fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
+        let Self(data, headers) = self;
+        for (k, v) in headers {
+            builder.set_header(k, v);
+        }
+        data.build_response(builder)
+    }
+}
+
+pub struct NoContent();
+impl BuildResponse for NoContent {
+    fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
+        Ok(builder.status(StatusCode::NO_CONTENT).finish())
+    }
+}
+
+pub struct CORSPolicy {
+    pub origin: Option<String>,
+    pub methods: Option<Vec<Method>>,
+    pub headers: Option<Vec<HeaderName>>,
+}
+
+pub trait CORSAccessControl {
+    fn allow_origin(&self) -> Option<&str>{
+        None
+    }
+    fn allow_methods(&self) -> Option<Vec<Method>> {
+        None
+    }
+    fn allow_headers(&self) -> Option<Vec<HeaderName>> {
+        None
+    }
+}
+
+impl CORSAccessControl for CORSPolicy {
+    fn allow_origin(&self) -> Option<&str> {
+        self.origin.as_ref().map(|s|s.as_str())
+    }
+    fn allow_methods(&self) -> Option<Vec<Method>> {
+        self.methods.clone()
+    }
+    fn allow_headers(&self) -> Option<Vec<HeaderName>> {
+        self.headers.clone()
+    }
+}
+
+pub struct WithCORS<U: CORSAccessControl, T: BuildResponse>(pub U, pub T);
+
+impl<U: CORSAccessControl, T: BuildResponse> BuildResponse for WithCORS<U, T> {
+    fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
+        let WithCORS(access_control, content) = self;
+        if let Some(origin) = access_control.allow_origin() {
+            builder.set_header(header::ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+        }
+        if let Some(methods) = access_control.allow_methods() {
+            builder.set_header(header::ACCESS_CONTROL_ALLOW_METHODS, 
+                methods.iter().map(|m|m.as_str()).collect::<Vec<&str>>().join(","));
+        }
+        if let Some(headers) = access_control.allow_headers() {
+            builder.set_header(header::ACCESS_CONTROL_ALLOW_HEADERS, headers.join(","));
+        }
+        content.build_response(builder)
     }
 }
 

@@ -17,7 +17,7 @@ pub use self::snake_remake::{SnakeRemakeRank, SnakeRemakeScore};
 
 pub trait Score {
     fn name(&self) -> &str;
-    fn validate(&self) -> Option<i64>;
+    fn validate(&self) -> Result<i64, &'static str>;
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -39,8 +39,17 @@ impl Score for SimpleScore {
     fn name(&self) -> &str {
         &self.name
     }
-    fn validate(&self) -> Option<i64> {
-        Some(self.score)
+    fn validate(&self) -> Result<i64, &'static str> {
+        match self.name.as_str() {
+            "" => Err("Name should not be empty")?,
+            name if name.len() > 32 => Err("Name too long")?,
+            _ => (),
+        }
+        match self.score {
+            x if x < 0 => Err("Invalid score")?,
+            _ => (),
+        }
+        Ok(self.score)
     }
 }
 
@@ -80,8 +89,8 @@ impl<'s, Provider, ScoreT> RankService<ScoreT> for RankServiceWrapper<'s, Provid
 
     async fn post_score(&self, score_data: ScoreT) -> Result<usize, Error> {
         let rank = match score_data.validate() {
-            Some(score) => self.model.rank.add_ranked_score(Provider::rank_key(), score_data.name(), score, Utc::now()).await?,
-            None => return Err(Error::InvalidScore)
+            Ok(score) => self.model.rank.add_ranked_score(Provider::rank_key(), score_data.name(), score, Utc::now()).await?,
+            Err(msg) => return Err(Error::InvalidScore(msg))
         };
         Ok(rank)
     }

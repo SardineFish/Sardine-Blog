@@ -21,7 +21,7 @@ struct Eat {
 #[derive(Deserialize)]
 struct InitialData {
     length: i32,
-    seed: u64,
+    seed: u32,
 }
 
 #[derive(Deserialize)]
@@ -42,8 +42,8 @@ struct Block {
 
 #[derive(Deserialize)]
 pub struct SnakeRemakeScore {
-    name: String,
-    score: i64,
+    pub name: String,
+    pub score: i64,
     data: Vec<Block>,
 }
 
@@ -51,21 +51,30 @@ impl Score for SnakeRemakeScore {
     fn name(&self) -> &str {
         &self.name
     }
-    fn validate(&self) -> Option<i64> {
+    fn validate(&self) -> Result<i64, &'static str> {
+        match self.name.as_str() {
+            "" => Err("Name should not be empty")?,
+            name if name.len() > 32 => Err("Name too long")?,
+            _ => (),
+        }
+        match self.score {
+            x if x < 0 => Err("Invalid score")?,
+            _ => (),
+        }
         let mut blocks = HashMap::new();
-        let mut total_score: i64;
+        let mut total_score: i64 = 0;
         if self.data.len() <= 0 {
-            return None;
+            Err("Invalid score")?
         }
         match &self.data[0].data {
             GameEvent::Init(data) => total_score = data.length as i64,
-            _ => return None,
+            _ => Err("Invalid score")?,
         }
         blocks.insert(self.data[0].hash.clone(), &self.data[0]);
 
         for block in self.data.iter().skip(1) {
             if !blocks.contains_key(&block.prev) {
-                return None;
+                Err("Invalid score")?;
             }
             blocks.insert(block.hash.clone(), block);
 
@@ -74,9 +83,9 @@ impl Score for SnakeRemakeScore {
                     let score = match blocks.get(&data.food) {
                         Some(food) => match &food.data {
                             GameEvent::GenFood(food) => food.score,
-                            _ => return None,
+                            _ => Err("Invalid score")?,
                         },
-                        _ => return None,
+                        _ => Err("Invalid score")?,
                     };
                     total_score += score as i64;
                 }
@@ -85,10 +94,10 @@ impl Score for SnakeRemakeScore {
         }
 
         if total_score != self.score {
-            return None;
+            Err("Invalid score")?;
         }
 
-        Some(total_score)
+        Ok(total_score)
     }
 }
 

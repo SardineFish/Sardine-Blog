@@ -5,7 +5,7 @@
   "main": "SardineFish.js",
   "scripts": {
     "build": "npm run build:bundle && npm run build:declare",
-    "build:bundle": "npx esbuild --bundle --outfile=SardineFish.API.js SardineFish.API.ts",
+    "build:bundle": "npx esbuild --bundle --outdir=. SardineFish.API.ts SardineFish.Games.ts",
     "build:declare": "npx tsc"
   },
   "author": "SardineFish",

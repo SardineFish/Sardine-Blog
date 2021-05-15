@@ -1,8 +1,5 @@
 (() => {
-  // SardineFish.API.ts
-  function validateByPass(_, value) {
-    return value;
-  }
+  // api-builder.ts
   function simpleParam(info) {
     const params = {};
     for (const key in info) {
@@ -61,9 +58,25 @@
       throw new APIError(ClientErrorCode.InvalidParameter, `'${key}' cannot be empty`);
     return text;
   }
-  function noValidate(key, value) {
+  function validateByPass(_, value) {
     return value;
   }
+  function validatePositive(key, value) {
+    if (typeof value !== "number")
+      throw new APIError(ClientErrorCode.InvalidParameter, `'${key}' should be number`);
+    if (value < 0)
+      throw new APIError(ClientErrorCode.InvalidParameter, `Invalid value of '${key}'.`);
+    return value;
+  }
+  var Validators = {
+    name: validateName,
+    email: validateEmail,
+    uid: validateUid,
+    url: validateUrl,
+    nonEmpty: validateNonEmpty,
+    bypass: validateByPass,
+    positive: validatePositive
+  };
   var ClientErrorCode;
   (function(ClientErrorCode2) {
     ClientErrorCode2[ClientErrorCode2["Error"] = -1] = "Error";
@@ -78,24 +91,31 @@
     }
   };
   var ApiBuilder = class {
-    constructor(method, url, path, query, data) {
+    constructor(method, mode, url, path, query, data) {
       this.method = method;
       this.url = url;
       this.pathInfo = path;
       this.queryInfo = query;
       this.dataInfo = data;
+      this.requestMode = mode;
+    }
+    base(baseUrl) {
+      return new ApiBuilder(this.method, this.requestMode, baseUrl + this.url, this.pathInfo, this.queryInfo, this.dataInfo);
     }
     path(path) {
-      return new ApiBuilder(this.method, this.url, simpleParam(path), this.queryInfo, this.dataInfo);
+      return new ApiBuilder(this.method, this.requestMode, this.url, simpleParam(path), this.queryInfo, this.dataInfo);
+    }
+    mode(mode) {
+      return new ApiBuilder(this.method, mode, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
     }
     query(query) {
-      return new ApiBuilder(this.method, this.url, this.pathInfo, simpleParam(query), this.dataInfo);
+      return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, simpleParam(query), this.dataInfo);
     }
     body(data) {
       if (this.method === "POST" || this.method === "PATCH" || this.method === "PUT") {
         if (!data)
-          return new ApiBuilder(this.method, this.url, this.pathInfo, this.queryInfo, null);
-        return new ApiBuilder(this.method, this.url, this.pathInfo, this.queryInfo, simpleParam(data));
+          return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, null);
+        return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, simpleParam(data));
       } else {
         throw new APIError(-1, `HTTP Method ${this.method} should not have body.`);
       }
@@ -105,7 +125,7 @@
       return this;
     }
     response() {
-      const builder = new ApiBuilder(this.method, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
+      const builder = new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
       return builder.send.bind(builder);
     }
     async send(params, data) {
@@ -143,11 +163,13 @@
       }
       let response;
       try {
+        const headers = {};
+        if (this.method === "POST" || this.method === "PUT" || this.method === "OPTIONS")
+          headers["Content-Type"] = "application/json";
         response = await fetch(url, {
           method: this.method,
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers,
+          mode: this.requestMode,
           redirect: this.redirectOption,
           body: this.dataInfo === void 0 ? void 0 : JSON.stringify(data)
         });
@@ -182,11 +204,13 @@
       case "POST":
       case "PUT":
       case "PATCH":
-        return new ApiBuilder(method, url, {}, {}, {});
+        return new ApiBuilder(method, "cors", url, {}, {}, {});
       default:
-        return new ApiBuilder(method, url, {}, {}, void 0);
+        return new ApiBuilder(method, "cors", url, {}, {}, void 0);
     }
   }
+
+  // SardineFish.API.ts
   function formatDateTime(time) {
     const year = time.getFullYear();
     const month = time.getMonth() + 1;
@@ -227,19 +251,19 @@
   }
   var Uid = {
     type: "string",
-    validator: validateUid
+    validator: Validators.uid
   };
   var Name = {
     type: "string",
-    validator: validateName
+    validator: Validators.name
   };
   var Email = {
     type: "string",
-    validator: validateEmail
+    validator: Validators.email
   };
   var Url = {
     type: "string",
-    validator: validateUrl
+    validator: Validators.url
   };
   var HashMethod;
   (function(HashMethod2) {
@@ -284,25 +308,25 @@
       post: api("POST", "/api/blog").body({
         title: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         },
         tags: "string[]",
         doc_type: "string",
         doc: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         }
       }).response(),
       update: api("PUT", "/api/blog/{pid}").path({pid: "number"}).body({
         title: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         },
         tags: "string[]",
         doc_type: "string",
         doc: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         }
       }).response(),
       delete: api("DELETE", "/api/blog/{pid}").path({pid: "number"}).response()
@@ -316,19 +340,19 @@
         name: Name,
         email: {
           type: "string",
-          validator: validateEmail,
+          validator: Validators.email,
           optional: true
         },
         url: {
           type: "string",
-          validator: validateUrl,
+          validator: Validators.url,
           optional: true
         },
         avatar: Url,
         doc_type: "string",
         doc: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         }
       }).response()
     },
@@ -336,7 +360,7 @@
       getByPid: api("GET", "/api/comment/{pid}").path({pid: "number"}).query({
         depth: {
           type: "number",
-          validator: validateByPass,
+          validator: Validators.bypass,
           optional: true
         }
       }).response(),
@@ -344,18 +368,18 @@
         name: Name,
         email: {
           type: "string",
-          validator: validateEmail,
+          validator: Validators.email,
           optional: true
         },
         url: {
           type: "string",
-          validator: validateUrl,
+          validator: Validators.url,
           optional: true
         },
         avatar: Url,
         text: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         }
       }).response(),
       delete: api("DELETE", "/api/comment/{pid}").path({pid: "number"}).response()
@@ -367,7 +391,7 @@
       postMisc: api("POST", "/api/post/misc_post").body({
         description: {
           type: "string",
-          validator: validateNonEmpty
+          validator: Validators.nonEmpty
         },
         url: Url
       }).response()
@@ -380,12 +404,12 @@
         skip: {
           type: "number",
           optional: true,
-          validator: noValidate
+          validator: Validators.bypass
         },
         count: {
           type: "number",
           optional: true,
-          validator: noValidate
+          validator: Validators.bypass
         }
       }).response(),
       postScore: api("POST", "/api/rank/{key}").path({key: "string"}).body().response()

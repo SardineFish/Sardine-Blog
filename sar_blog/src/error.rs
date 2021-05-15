@@ -15,7 +15,7 @@ pub enum Error {
     DataConflict(ModelError),
     InvalidChallenge,
     AccessDenied,
-    InvalidScore,
+    InvalidScore(&'static str),
 }
 
 impl Error {
@@ -31,7 +31,7 @@ impl Error {
             Error::InvalidChallenge => 0x0800,
             Error::AccessDenied => 0x0900,
             Error::ExternalServiceError(_) => 0x0a00,
-            Error::InvalidScore => 0x0b00,
+            Error::InvalidScore(_) => 0x0b00,
         }
     }
     pub fn post_not_found(pid: PidType) -> Self {
@@ -49,7 +49,7 @@ impl fmt::Display for Error {
             Error::InvalidChallenge => write!(f, "Invalid challenge"),
             Error::InternalModelError(err) => fmt::Display::fmt(err, f),
             Error::AccessDenied => fmt::Display::fmt("Access Denied", f),
-            Error::InvalidScore => write!(f, "Invalid score"),
+            Error::InvalidScore(msg) => fmt::Display::fmt(msg, f),
             _ => write!(f, "Internal Server Error"),
         }
     }

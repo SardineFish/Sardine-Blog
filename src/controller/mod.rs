@@ -8,6 +8,7 @@ mod post_data;
 mod storage;
 mod test;
 mod rank;
+mod cors;
 
 use actix_web::{ web::{ ServiceConfig, scope}};
 use options::ServiceOptions;

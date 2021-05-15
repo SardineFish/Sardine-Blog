@@ -35,7 +35,7 @@ impl Error {
             Error::ServiceError(ServiceError::Unauthorized) => StatusCode::FORBIDDEN,
             Error::ServiceError(ServiceError::AccessDenied) => StatusCode::FORBIDDEN,
             Error::ServiceError(ServiceError::PasswordIncorrect) => StatusCode::FORBIDDEN,
-            Error::ServiceError(ServiceError::InvalidScore) => StatusCode::BAD_REQUEST,
+            Error::ServiceError(ServiceError::InvalidScore(_)) => StatusCode::BAD_REQUEST,
             Error::ServiceError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Misc(code, _) => code.to_owned(),
