@@ -1,6 +1,6 @@
 use options::ServiceOptions;
 
-use super::{access_cache::AccessCache, session::{Session}};
+use super::{access_cache::AccessCache, generic_cache::GenericCache, session::{Session}};
 use crate::error::*;
 
 #[derive(Clone)]
@@ -28,6 +28,9 @@ impl RedisCache {
     }
     pub fn session<'s>(&self, session_id: &'s str) -> Session<'s> {
         Session::with_session_id(session_id, self.redis.clone())
+    }
+    pub fn cache(&self, namespace: &'static str) -> GenericCache {
+        GenericCache::new(self.redis.clone(), namespace)
     }
 }
 

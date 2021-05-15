@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use serde::{Serialize, Deserialize};
 use chrono::Utc;
-use model::{Model, RankedScore};
+use model::{Model, RankedScore, RedisCache};
 use async_trait::async_trait;
 
 #[allow(dead_code)]
@@ -15,9 +15,10 @@ use self::{snake_web::SnakeWebRank};
 
 pub use self::snake_remake::{SnakeRemakeRank, SnakeRemakeScore};
 
+#[async_trait]
 pub trait Score {
     fn name(&self) -> &str;
-    fn validate(&self) -> Result<i64, &'static str>;
+    async fn validate(&self, redis: &RedisCache) -> Result<i64, &'static str>;
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,11 +36,12 @@ impl SimpleScore {
     }
 }
 
+#[async_trait]
 impl Score for SimpleScore {
     fn name(&self) -> &str {
         &self.name
     }
-    fn validate(&self) -> Result<i64, &'static str> {
+    async fn validate(&self, _: &RedisCache) -> Result<i64, &'static str> {
         match self.name.as_str() {
             "" => Err("Name should not be empty")?,
             name if name.len() > 32 => Err("Name too long")?,
@@ -65,6 +67,7 @@ pub trait RankService<Score> {
 
 pub struct RankServiceWrapper<'s, T> {
     model: &'s Model,
+    redis: &'s RedisCache,
     _phantom: PhantomData<T>,
 }
 
@@ -72,6 +75,7 @@ impl<'s, T> RankServiceWrapper<'s, T> {
     fn new(service: &'s Service) -> Self {
         Self {
             model: &service.model,
+            redis: &service.redis,
             _phantom: PhantomData::default(),
         }
     }
@@ -88,7 +92,7 @@ impl<'s, Provider, ScoreT> RankService<ScoreT> for RankServiceWrapper<'s, Provid
     }
 
     async fn post_score(&self, score_data: ScoreT) -> Result<usize, Error> {
-        let rank = match score_data.validate() {
+        let rank = match score_data.validate(&self.redis).await {
             Ok(score) => self.model.rank.add_ranked_score(Provider::rank_key(), score_data.name(), score, Utc::now()).await?,
             Err(msg) => return Err(Error::InvalidScore(msg))
         };

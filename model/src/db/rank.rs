@@ -52,7 +52,7 @@ impl RankModel {
             "key": key,
         };
         let opts = FindOptions::builder()
-            .sort(Some(doc!{"score": -1}))
+            .sort(Some(doc!{"score": -1, "time": -1}))
             .skip(Some(skip as i64))
             .limit(Some(count as i64))
             .build();

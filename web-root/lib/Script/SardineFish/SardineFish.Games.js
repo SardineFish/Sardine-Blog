@@ -174,7 +174,6 @@
           body: this.dataInfo === void 0 ? void 0 : JSON.stringify(data)
         });
       } catch (err) {
-        console.error(err);
         throw new APIError(-3, "Failed to send request.");
       }
       if (response.status >= 400) {
@@ -194,7 +193,6 @@
         const body = await response.json();
         return body;
       } catch (err) {
-        console.error(err);
         throw new APIError(-4, "Failed to parse response body.");
       }
     }

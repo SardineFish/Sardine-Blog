@@ -2,27 +2,35 @@ use actix_http::http::{HeaderName, Method, header};
 
 use crate::misc::response::CORSAccessControl;
 
-pub enum CORS {
-    AnyPostJson,
-    AnyGet,
+pub struct AnyGet;
+impl CORSAccessControl for AnyGet {
+    fn allow_origin_default() -> Option<&'static str> {
+        Some("*")
+    }
+    fn allow_methods_default() -> Option<Vec<Method>> {
+        Some(vec![Method::GET])
+    }
+}
+impl Default for AnyGet {
+    fn default() -> Self {
+        AnyGet
+    }
 }
 
-impl CORSAccessControl for CORS {
-    fn allow_origin(&self) -> Option<&str> {
-        match self {
-            CORS::AnyGet | CORS::AnyPostJson => Some("*"),
-        }
+pub struct AnyPostJson;
+impl CORSAccessControl for AnyPostJson {
+    fn allow_origin_default() -> Option<&'static str> {
+        Some("*")
     }
-    fn allow_methods(&self) -> Option<Vec<Method>> {
-        match self {
-            CORS::AnyGet => Some(vec![Method::GET]),
-            CORS::AnyPostJson => Some(vec![Method::POST])
-        }
+    fn allow_methods_default() -> Option<Vec<Method>> {
+        Some(vec![Method::POST])
     }
-    fn allow_headers(&self) -> Option<Vec<HeaderName>> {
-        match self {
-            CORS::AnyPostJson => Some(vec![header::CONTENT_TYPE]),
-            _ => None,
-        }
+    fn allow_headers_default() -> Option<Vec<HeaderName>> {
+        Some(vec![header::CONTENT_TYPE])
+    }
+}
+impl Default for AnyPostJson{
+    fn default() -> Self {
+        AnyPostJson
     }
 }

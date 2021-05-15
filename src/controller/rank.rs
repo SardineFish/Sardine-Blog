@@ -4,10 +4,11 @@ use sar_blog::{SimpleScore, SnakeRemakeScore, model::{RankedScore}};
 use sar_blog::RankService;
 use serde::{Serialize, Deserialize};
 
-use crate::{misc::{response::{NoContent, Response, WithCORS}}};
+use crate::{middleware, misc::{response::{NoContent, Response}}};
 use crate::misc::error::*;
 
-use super::{cors::CORS, extractor};
+use super::{extractor};
+use middleware::AccessControl;
 
 use Response::Ok;
 
@@ -43,36 +44,47 @@ struct QueryParams {
     count: usize,
 }
 
-#[get("/{key}")]
-async fn get_score(service: extractor::Service, key: Path<String>, query: Query<QueryParams>) -> Response<WithCORS<CORS, Vec<Score>>> {
+const THROTTLE: usize = 5;
+
+#[get("/{key}", wrap="middleware::access_control(AccessControl::AnyGet)")]
+async fn get_score(service: extractor::Service, key: Path<String>, query: Query<QueryParams>)
+    -> Response<Vec<Score>>
+{
     let scores = match key.as_str() {
         "snakeWeb" => service.rank().snake_web().get_ranked_scores(query.skip, query.count).await?,
         "snake-remake" => service.rank().snake_remake().get_ranked_scores(query.skip, query.count).await?,
         _ => Err(Error::Misc(StatusCode::NOT_FOUND, "Not supported"))?,
     };
-    Ok(WithCORS(CORS::AnyGet, scores.into_iter().map(Score::from).collect()))
+    Ok(scores.into_iter().map(Score::from).collect())
 }
 
-#[post("/snakeWeb")]
-async fn post_snake_web(service: extractor::Service, data: Json<SimpleScore>) -> Response<WithCORS<CORS, usize>> {
+#[post("/snakeWeb", wrap="middleware::access_control(AccessControl::AnyPostJson)")]
+async fn post_snake_web(service: extractor::Service, data: Json<SimpleScore>) 
+    -> Response<usize> 
+{
     let rank = service.rank().snake_web().post_score(data.into_inner()).await?;
-    Ok(WithCORS(CORS::AnyPostJson, rank))
+    Ok(rank)
 }
 
-#[post("/snake-remake")]
-async fn post_snake_remake(service: extractor::Service, data: Json<SnakeRemakeScore>) -> Response<WithCORS<CORS, usize>> {
+
+#[post("/snake-remake", wrap="middleware::throttle(THROTTLE)", wrap="middleware::access_control(AccessControl::AnyPostJson)")]
+async fn post_snake_remake(service: extractor::Service, data: Json<SnakeRemakeScore>) 
+    -> Response<usize>
+{
     let score = data.into_inner();
     let rank = service.rank().snake_remake().post_score(score).await?;
-    Ok(WithCORS(CORS::AnyPostJson, rank))
+    Ok(rank)
 }
 
-#[options("/{key}")]
-async fn cross_origin_request(path: Path<String>) -> Response<WithCORS<CORS, NoContent>> {
+#[options("/{key}", wrap="middleware::access_control(AccessControl::AnyPostJson)")]
+async fn cross_origin_request(path: Path<String>) 
+    -> Response<NoContent>
+{
     match path.as_str() {
         "snakeWeb" | "snake-remake" => (),
         _ => Err(Error::Misc(StatusCode::NOT_FOUND, "Not supported"))?,
     }
-    Ok(WithCORS(CORS::AnyPostJson, NoContent()))
+    Ok(NoContent)
 }
 
 

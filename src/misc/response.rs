@@ -57,6 +57,7 @@ pub trait BuildResponse {
     fn build_response(self, builder: ResponseBuilder) -> Result<HttpResponse, Error>;
 }
 
+
 impl<T> BuildResponse for T where T : Serialize {
     fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
         let response = SuccessResponseData::with_data(self);
@@ -90,7 +91,7 @@ impl<T: BuildResponse> BuildResponse for WithHeaders<T> {
     }
 }
 
-pub struct NoContent();
+pub struct NoContent;
 impl BuildResponse for NoContent {
     fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
         Ok(builder.status(StatusCode::NO_CONTENT).finish())
@@ -104,14 +105,23 @@ pub struct CORSPolicy {
 }
 
 pub trait CORSAccessControl {
-    fn allow_origin(&self) -> Option<&str>{
+    fn allow_origin_default() -> Option<&'static str>{
         None
+    }
+    fn allow_methods_default() -> Option<Vec<Method>> {
+        None
+    }
+    fn allow_headers_default() -> Option<Vec<HeaderName>> {
+        None
+    } 
+    fn allow_origin(&self) -> Option<&str>{
+        <Self as CORSAccessControl>::allow_origin_default()
     }
     fn allow_methods(&self) -> Option<Vec<Method>> {
-        None
+        <Self as CORSAccessControl>::allow_methods_default()
     }
     fn allow_headers(&self) -> Option<Vec<HeaderName>> {
-        None
+        <Self as CORSAccessControl>::allow_headers_default()
     }
 }
 
@@ -127,7 +137,7 @@ impl CORSAccessControl for CORSPolicy {
     }
 }
 
-pub struct WithCORS<U: CORSAccessControl, T: BuildResponse>(pub U, pub T);
+pub struct WithCORS<U: CORSAccessControl, T>(pub U, pub T);
 
 impl<U: CORSAccessControl, T: BuildResponse> BuildResponse for WithCORS<U, T> {
     fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
@@ -143,6 +153,35 @@ impl<U: CORSAccessControl, T: BuildResponse> BuildResponse for WithCORS<U, T> {
             builder.set_header(header::ACCESS_CONTROL_ALLOW_HEADERS, headers.join(","));
         }
         content.build_response(builder)
+    }
+}
+
+impl<U: CORSAccessControl + Default, E: Into<Error>> From<E> for WithCORS<U, Error> {
+    fn from(err: E) -> Self {
+        Self(U::default(), err.into())
+    }
+}
+
+impl<U: CORSAccessControl, E: BuildError> BuildError for WithCORS<U, E> {
+    fn status_code(&self) -> StatusCode {
+        self.1.status_code()
+    }
+    fn error_response(self) -> ErrorResponseData {
+        self.1.error_response()
+    }
+    fn build_response(self, mut builder: ResponseBuilder) -> HttpResponse {
+        let WithCORS(access_control, err) = self;
+        if let Some(origin) = access_control.allow_origin() {
+            builder.set_header(header::ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+        }
+        if let Some(methods) = access_control.allow_methods() {
+            builder.set_header(header::ACCESS_CONTROL_ALLOW_METHODS, 
+                methods.iter().map(|m|m.as_str()).collect::<Vec<&str>>().join(","));
+        }
+        if let Some(headers) = access_control.allow_headers() {
+            builder.set_header(header::ACCESS_CONTROL_ALLOW_HEADERS, headers.join(","));
+        }
+        err.build_response(builder)
     }
 }
 
@@ -183,25 +222,45 @@ impl BuildResponse for Redirect {
     }
 }
 
-pub enum Response<T : BuildResponse = ()> {
-    Ok(T),
-    ClientError(Error),
-    ServerError(Error),
+pub trait BuildError {
+    fn status_code(&self) -> StatusCode;
+    fn error_response(self) -> ErrorResponseData;
+    fn build_response(self, builder: ResponseBuilder) -> HttpResponse;
 }
 
-impl<T> Try for Response<T> where T: BuildResponse {
+impl BuildError for Error {
+    fn status_code(&self) -> StatusCode {
+        Error::status_code(self)
+    }
+    fn error_response(self) -> ErrorResponseData {
+        self.into()
+    }
+    fn build_response(self, mut builder: ResponseBuilder) -> HttpResponse {
+        let status = self.status_code();
+        let data = self.error_response();
+        builder.status(status).json(&data)
+    }
+}
+
+pub enum Response<T : BuildResponse = (), E: BuildError = Error> {
+    Ok(T),
+    ClientError(E),
+    ServerError(E),
+}
+
+impl<T, E> Try for Response<T, E> where T: BuildResponse, E: BuildError {
     type Ok = T;
-    type Error = Error;
+    type Error = E;
     fn from_ok(v: T) -> Self {
         Self::Ok(v)
     }
-    fn from_error(err: Error) -> Self {
+    fn from_error(err: Self::Error) -> Self {
         match err.status_code() {
             StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
             _ => Response::ClientError(err)
         }
     }
-    fn into_result(self) -> Result<T, Error> {
+    fn into_result(self) -> Result<T, Self::Error> {
         match self {
             Response::Ok(v) => Ok(v),
             Response::ClientError(err) => Err(err),
@@ -246,12 +305,12 @@ async fn get_foo() -> Response<Option<u32>> {
     }).await
 }
 
-impl<T: BuildResponse> Responder for Response<T> {
+impl<T: BuildResponse, E: BuildError> Responder for Response<T, E> {
     type Error = actix_web::Error;
     type Future = Ready<Result<HttpResponse, Self::Error>>;
-    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+    fn respond_to(self, req: &HttpRequest) -> Self::Future {
 
-        let error_response = match self {
+        let error_response: Response<T, _> = match self {
             Response::Ok(data) => {
                 let status_code = data.status_code();
                 let result = data.build_response(HttpResponse::build(status_code));
@@ -259,22 +318,18 @@ impl<T: BuildResponse> Responder for Response<T> {
                     Ok(http_response) => return ready(Ok(http_response)),
                     Err(err) => Response::ServerError(err)
                 }
+            },
+            Response::ClientError(err) => {
+                let status_code = err.status_code();
+                let result = err.build_response(HttpResponse::build(status_code));
+                return ready(Ok(result));
+            },
+            Response::ServerError(err) => {
+                let result = err.build_response(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR));
+                return ready(Ok(result));
             }
-            others => others
         };
 
-        let (status_code, body) = match error_response {
-            Response::ClientError(err) => (err.status_code(), 
-                serde_json::to_string(&ErrorResponseData::from(err)).map_err(|_|Error::SerializeError)),
-            Response::ServerError(err) => (err.status_code(), Err(err)),
-            _ => unreachable!(),
-        };
-        
-        match body {
-            Ok(body) => ready(Ok(HttpResponse::build(status_code)
-                .content_type("application/json")
-                .body(body))),
-            Err(err) => ready(Err(actix_web::error::ErrorInternalServerError(err)))
-        }
+        error_response.respond_to(req)
     }
 }

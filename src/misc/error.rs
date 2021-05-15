@@ -26,17 +26,20 @@ impl Error {
     }
     pub fn status_code(&self) -> StatusCode {
         match self {
+            Error::ServiceError(err) => match err {
+                ServiceError::DataNotFound(_) => StatusCode::NOT_FOUND,
+                ServiceError::DataConflict(_) => StatusCode::BAD_REQUEST,
+                ServiceError::InvalidParams(_) => StatusCode::BAD_REQUEST,
+                ServiceError::InvalidChallenge => StatusCode::BAD_REQUEST,
+                ServiceError::Unauthorized => StatusCode::FORBIDDEN,
+                ServiceError::AccessDenied => StatusCode::FORBIDDEN,
+                ServiceError::PasswordIncorrect => StatusCode::FORBIDDEN,
+                ServiceError::InvalidScore(_) => StatusCode::BAD_REQUEST,
+                ServiceError::RateLimit => StatusCode::IM_A_TEAPOT,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            }
             Error::SerializeError => StatusCode::INTERNAL_SERVER_ERROR,
             Error::WebError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::ServiceError(ServiceError::DataNotFound(_)) => StatusCode::NOT_FOUND,
-            Error::ServiceError(ServiceError::DataConflict(_)) => StatusCode::BAD_REQUEST,
-            Error::ServiceError(ServiceError::InvalidParams(_)) => StatusCode::BAD_REQUEST,
-            Error::ServiceError(ServiceError::InvalidChallenge) => StatusCode::BAD_REQUEST,
-            Error::ServiceError(ServiceError::Unauthorized) => StatusCode::FORBIDDEN,
-            Error::ServiceError(ServiceError::AccessDenied) => StatusCode::FORBIDDEN,
-            Error::ServiceError(ServiceError::PasswordIncorrect) => StatusCode::FORBIDDEN,
-            Error::ServiceError(ServiceError::InvalidScore(_)) => StatusCode::BAD_REQUEST,
-            Error::ServiceError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Misc(code, _) => code.to_owned(),
         }

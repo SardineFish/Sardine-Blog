@@ -1,6 +1,8 @@
+use async_trait::async_trait;
 
 use std::collections::HashMap;
 
+use model::{RedisCache};
 use serde::{Deserialize};
 use super::{RankProvider, Score};
 
@@ -47,11 +49,12 @@ pub struct SnakeRemakeScore {
     data: Vec<Block>,
 }
 
+#[async_trait]
 impl Score for SnakeRemakeScore {
     fn name(&self) -> &str {
         &self.name
     }
-    fn validate(&self) -> Result<i64, &'static str> {
+    async fn validate(&self, redis: &RedisCache) -> Result<i64, &'static str> {
         match self.name.as_str() {
             "" => Err("Name should not be empty")?,
             name if name.len() > 32 => Err("Name too long")?,
@@ -61,6 +64,7 @@ impl Score for SnakeRemakeScore {
             x if x < 0 => Err("Invalid score")?,
             _ => (),
         }
+
         let mut blocks = HashMap::new();
         let mut total_score: i64 = 0;
         if self.data.len() <= 0 {
@@ -69,6 +73,15 @@ impl Score for SnakeRemakeScore {
         match &self.data[0].data {
             GameEvent::Init(data) => total_score = data.length as i64,
             _ => Err("Invalid score")?,
+        }
+        
+        let mut cache = redis.cache("rank");
+        if let Some(_) = cache.get::<Option<i32>>(&self.data[0].hash).await.map_err(|_| "Internal error")? {
+            Err("Invalid score")?
+        } else {
+            cache.set_expire(&self.data[0].hash, 1, 86400)
+                .await
+                .map_err(|_| "Internal error")?;
         }
         blocks.insert(self.data[0].hash.clone(), &self.data[0]);
 

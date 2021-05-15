@@ -16,6 +16,7 @@ pub enum Error {
     InvalidChallenge,
     AccessDenied,
     InvalidScore(&'static str),
+    RateLimit,
 }
 
 impl Error {
@@ -32,6 +33,7 @@ impl Error {
             Error::AccessDenied => 0x0900,
             Error::ExternalServiceError(_) => 0x0a00,
             Error::InvalidScore(_) => 0x0b00,
+            Error::RateLimit => 0x0c00,
         }
     }
     pub fn post_not_found(pid: PidType) -> Self {
@@ -50,6 +52,7 @@ impl fmt::Display for Error {
             Error::InternalModelError(err) => fmt::Display::fmt(err, f),
             Error::AccessDenied => fmt::Display::fmt("Access Denied", f),
             Error::InvalidScore(msg) => fmt::Display::fmt(msg, f),
+            Error::RateLimit => write!(f, "Request too frequently"),
             _ => write!(f, "Internal Server Error"),
         }
     }

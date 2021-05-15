@@ -34,5 +34,13 @@ impl<'s> SessionService<'s> {
 
         Err(Error::InternalServiceError("Failed to generate Session ID"))
     }
+    pub async fn throttle(&self, remote_id: &str, interval_seconds: usize) -> Result<()> {
+        let mut cache = self.redis.cache("throttle");
+        if let Some(_) =  cache.get::<Option<i32>>(remote_id).await? {
+            Err(Error::RateLimit)?
+        }
+        cache.set_expire(remote_id, 1, interval_seconds).await?;
 
+        Ok(())
+    }
 }
