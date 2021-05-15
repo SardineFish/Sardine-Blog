@@ -95,7 +95,10 @@ impl Score for SnakeRemakeScore {
                 GameEvent::Eat(data) => {
                     let score = match blocks.get(&data.food) {
                         Some(food) => match &food.data {
-                            GameEvent::GenFood(food) => food.score,
+                            GameEvent::GenFood(food) => match food.score {
+                                0 | 1 | 3 => food.score,
+                                _ => Err("Invalid score")?,
+                            },
                             _ => Err("Invalid score")?,
                         },
                         _ => Err("Invalid score")?,
