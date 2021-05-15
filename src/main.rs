@@ -3,7 +3,7 @@
 
 use std::process::exit;
 
-use actix_web::{self, App, HttpServer, dev::Server, middleware::Logger};
+use actix_web::{self, App, HttpServer, dev::Server, middleware::Logger, web::{self, JsonConfig}};
 
 mod controller;
 mod middleware;
@@ -69,6 +69,8 @@ fn config_server(options: ServiceOptions, service: Service) -> std::io::Result<S
         App::new()
             .data(opt_moved.clone())
             .data(service.clone())
+            .data(web::PayloadConfig::new(3 * 1024 * 1024))
+            .data(JsonConfig::default().limit(1 * 1024 * 1024))
             .wrap(Logger::new("%s - %r %Dms"))
             .configure(controller::config(opt_moved.clone()))
     })
