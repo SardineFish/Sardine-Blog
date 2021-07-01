@@ -31,6 +31,15 @@ a {
     cursor: default;
 }
 
+.button {
+    padding: .5em 2em;
+    font-family: "Raleway", sans-serif;
+    user-select: none;
+    color: white;
+    background-color: #4DD0E1;
+    cursor: pointer;
+    letter-spacing: .2em;
+}
 
 #space {
     background-color: transparent;
@@ -933,7 +942,7 @@ textarea {
     line-height: 1.8em;
 }
 #content-nav a:hover{
-    text-decoration: underline
+    text-decoration: underline;
     color: black;
     font-weight: bold;
 }
@@ -955,6 +964,7 @@ textarea {
     height: 60px;
     overflow: hidden;
     transition: height .5s ease, width .1s ease .5s, opacity .3s;
+    z-index: 1000;
     /*background: #EEE;*/
 }
 #side-float:hover{
@@ -1037,6 +1047,7 @@ textarea {
     right: 60px;
     bottom: 80px;
     user-select: none;
+    z-index: 1000;
 }
 #root.darken #float-buttons{
     opacity: 0;
@@ -1117,4 +1128,110 @@ textarea {
 
 .hover-trigger:hover .hover {
     display: initial;
+}
+
+app {
+    display: block;
+}
+.app {
+    position: relative;
+    overflow: hidden;
+    background-color: #eee;
+}
+.app-wrapper .cover {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Raleway",
+    sans-serif;
+}
+.app-wrapper header {
+    font-size: 1.6em;
+    margin: 1em 0;
+    letter-spacing: .05em;
+}
+.app-wrapper .button {
+    box-shadow: 0 0 20px #4dd0e15e;
+}
+.app .external {
+    display: block;
+    border: none 0;
+    opacity: 0;
+    pointer-events: none;
+}
+body.full-window {
+    overflow: hidden;
+}
+.app.full-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000000;
+}
+.app-wrapper .panel {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6em;
+}
+.app-wrapper .panel > * {
+    margin: .2em;
+    padding: .2em;
+    cursor: pointer;
+    user-select: none;
+    color: #777;
+}
+.app.load .cover {
+    display: none;
+}
+.app.load .external {
+    opacity: 1;
+    pointer-events: unset;
+}
+
+.app-wrapper .icon-button {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    position: relative;
+}
+.app-wrapper a.icon-button:hover {
+    text-decoration: none;
+}
+.app-wrapper .icon-button:hover::after {
+    opacity: 1;
+    transition: opacity .3s;
+}
+.app-wrapper .icon-button::after {
+    opacity: 0;
+    position: absolute;
+    bottom: -1em;
+    white-space: nowrap;
+    font-size: .8rem;
+    color: #aaa;
+    font-family: "Raleway",
+    sans-serif;
+}
+.button-new-tab::after {
+    content: "Open in new tab";
+}
+.button-reload::after {
+    content: "Reload";
+}
+.button-full-window::after {
+    content: "Full window";
+}
+.button-full-screen::after {
+    content: "Full screen";
 }

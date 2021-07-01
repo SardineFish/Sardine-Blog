@@ -210,6 +210,10 @@ function loadBlog(pid) {
         $("#loading").style.display = "none";
         $$(".hide-loading").forEach(el => el.className = el.className.replace("hide-loading", ""));
         document.head.title = document.title = data.title;
+        Promise.resolve().then(() =>
+        {
+            document.querySelectorAll("app").forEach(loadApp);
+        });
     }).catch(err =>
     {
         switch (err.code)
@@ -232,6 +236,102 @@ function loadBlog(pid) {
         }
         loadPuzzle();
     });
+}
+
+/** 
+ * @param {HTMLDivElement} element
+*/
+function loadApp(element)
+{
+    const src = element.getAttribute("src");
+    const name = element.getAttribute("name");
+
+    const iframe = document.createElement("iframe");
+
+    const wrapper = document.createElement("div");
+    {
+        wrapper.className = "app-wrapper";
+
+
+        const app = document.createElement("div");
+        {
+            app.className = "app";
+
+            const cover = document.createElement("div");
+            {
+                cover.className = "cover";
+
+                const header = document.createElement("header");
+                header.innerText = name;
+                cover.appendChild(header);
+
+                const button = document.createElement("div");
+                button.className = "button";
+                button.innerText = "CLICK TO LOAD";
+                button.onclick = () =>
+                {
+                    button.onclick = null;
+
+                    iframe.src = src;
+
+                    app.classList.add("load");
+                }
+                cover.appendChild(button);
+            }
+            app.appendChild(cover);
+
+            {
+                iframe.className = "external";
+                const bound = element.getBoundingClientRect();
+                console.log(bound);
+                iframe.width = bound.width;
+                iframe.height = window.innerWidth > window.innerHeight
+                    ? Math.floor(iframe.width * 9 / 16)
+                    : Math.floor(iframe.width * 16 / 9);
+            }
+            app.appendChild(iframe);
+
+
+            
+        }
+        wrapper.appendChild(app);
+
+
+        const panel = document.createElement("div");
+        {
+            panel.className = "panel";
+            panel.innerHTML = `
+<div class="icon-button button-reload">refresh</div>
+<a class="icon-button button-new-tab" href="${src}" target="_blank">open_in_new</a>
+<div class="icon-button button-full-window">aspect_ratio</div>
+<div class="icon-button button-full-screen">fullscreen</div>
+`;
+            panel.querySelector(".button-reload").onclick = () => iframe.src = src;
+            panel.querySelector(".button-full-window").onclick = () =>
+            {
+                document.body.classList.add("full-window");
+                app.classList.add("full-window");
+                Promise.resolve().then(() => resize());
+            }
+            panel.querySelector(".button-full-screen").onclick = () => app.requestFullscreen({ navigationUI: "hide" }); 
+        }
+        wrapper.appendChild(panel);
+
+        const resize = () =>
+        {
+            const bound = app.getBoundingClientRect();
+            console.log(bound);
+            iframe.width = bound.width;
+            iframe.height = window.innerWidth > window.innerHeight
+                ? Math.floor(iframe.width * 9 / 16)
+                : Math.floor(iframe.width * 16 / 9);
+        };
+
+        window.addEventListener("resize", resize);
+        app.addEventListener("fullscreenchange", resize);
+    }
+    element.appendChild(wrapper);
+
 }
 
 function loadContentNav()
