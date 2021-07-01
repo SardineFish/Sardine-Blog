@@ -20,7 +20,7 @@ jobs:
       - name: Install rust nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: nightly-2021-03-19
           override: true
       
       - uses: actions/cache@v2
