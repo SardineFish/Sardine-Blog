@@ -482,11 +482,16 @@
 }
 
 .block {
+    position: relative;
     background-color: white;
     padding: 30px;
 }
 
-#friend-links > .title {
+#rightArea > .block {
+    margin-top: 40px;
+}
+
+#rightArea > .block > .title {
     background-color: #6ED8D8;
     padding: 8px 20px;
     color: white;

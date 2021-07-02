@@ -805,6 +805,63 @@ h3.pIntroduction {
     visibility: collapse;
 }
 
+#recently .list {
+    margin-top: 80px;
+    color: #666;
+    font-size: 15px;
+}
+#recently .item {
+    flex: 1 0;
+    display: flex;
+    flex-flow: row nowrap;
+}
+#recently .content {
+    margin: .5em 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#recently .time {
+    font-size: 14px;
+    color: #aaa;
+}
+#recently .name {
+    color: black;
+    font-weight: normal;
+}
+#recently .ref {
+    color: #6ED8D8;
+}
+#recently .decoration {
+    margin-right: .5em;
+    display: flex;
+    width: 10px;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#recently .decoration::before {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 100%;
+    background: #eee;
+    position: absolute;
+}
+
+#recently .decoration::after {
+    content: "";
+    /* content: ""; */
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    position: absolute;
+    border-radius: 100%;
+}
+
 @media screen and (max-width:1280px) {
     #rightArea {
         width: 360px;
