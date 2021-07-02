@@ -55,6 +55,7 @@ impl<'s> PostDataService<'s> {
                     match self.service.model.post.get_raw_by_pid(comment.comment_root).await?.data {
                         PostType::Blog(blog) => (self.service.url().blog(act.pid), PubActivity::PostComment(Some(blog.title))),
                         PostType::Note(_) => (self.service.url().note(act.pid), PubActivity::PostComment(None)),
+                        PostType::Miscellaneous(content) => (content.url, PubActivity::PostComment(Some(content.name))),
                         _ => continue,
                     },
                 _ => continue,

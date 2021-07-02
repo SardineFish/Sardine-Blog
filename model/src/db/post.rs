@@ -46,6 +46,7 @@ pub struct PostStats {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct MiscellaneousPostContent {
+    pub name: String,
     pub description: String,
     pub url: String,
 }
