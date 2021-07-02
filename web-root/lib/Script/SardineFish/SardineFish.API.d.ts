@@ -104,6 +104,13 @@ export interface RankedScore {
     score: number;
     time: number;
 }
+export interface RecentActivity {
+    action: "PostNote" | "PostComment" | "PostBlog" | "UpdateBlog";
+    name: string;
+    url: string;
+    time: number;
+    title?: string;
+}
 declare const SardineFishAPI: {
     User: {
         checkAuth: (params: Required<{}> & Partial<{}>) => Promise<string>;
@@ -222,6 +229,10 @@ declare const SardineFishAPI: {
             description: string;
             url: string;
         }> & Partial<{}>) => Promise<number>;
+        recentActivities: (params: Required<{}> & Partial<{}> & Required<{
+            skip: number;
+            count: number;
+        }> & Partial<{}>) => Promise<RecentActivity[]>;
     };
     Storage: {
         getUploadInfo: (params: Required<{}> & Partial<{}>, body: Required<{

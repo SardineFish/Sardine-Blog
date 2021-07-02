@@ -1,9 +1,28 @@
-use model::{HistoryData, MiscellaneousPostContent, Operation, PidType, PostData, PostStats, PostType, SessionID};
+use model::{MiscellaneousPostContent, Operation, PidType, PostData, PostStats, PostType, SessionID};
+use serde::{Serialize};
 
 use crate::{Service, error::*};
 
 pub struct PostDataService<'s> {
     service: &'s Service,
+}
+
+#[derive(Serialize)]
+pub struct RecentActivity {
+    #[serde(flatten)]
+    pub action: PubActivity,
+    pub name: String,
+    pub url: String,
+    pub time: i64,
+}
+
+#[derive(Serialize)]
+#[serde(tag="action", content="title")]
+pub enum PubActivity {
+    PostComment(Option<String>),
+    PostNote,
+    PostBlog(String),
+    UpdateBlog(String),
 }
 
 impl<'s> PostDataService<'s> {
@@ -19,9 +38,36 @@ impl<'s> PostDataService<'s> {
         self.service.model.post.insert(&post)
             .await?;
         let pid = post.pid;
-        self.service.model.history.record(uid, Operation::Create, HistoryData::Post(post.data))
+        self.service.model.history.record(uid, Operation::Create, (post.pid, post.data))
             .await?;
         Ok(pid)
+    }
+
+    pub async fn get_post_activities(&self, skip: usize, count: usize) -> Result<Vec<RecentActivity>> {
+        let activities = self.service.model.history.get_post_activities(skip, count).await?;
+        let mut results = Vec::with_capacity(count);
+        for act in activities {
+            let (url, action) = match (act.op, act.data) {
+                (Operation::Create, PostType::Blog(blog)) => (self.service.url().blog(act.pid), PubActivity::PostBlog(blog.title)),
+                (Operation::Update, PostType::Blog(blog)) => (self.service.url().blog(act.pid), PubActivity::UpdateBlog(blog.title)),
+                (Operation::Create, PostType::Note(_)) => (self.service.url().note(act.pid), PubActivity::PostNote),
+                (Operation::Create, PostType::Comment(comment)) => 
+                    match self.service.model.post.get_raw_by_pid(comment.comment_root).await?.data {
+                        PostType::Blog(blog) => (self.service.url().blog(act.pid), PubActivity::PostComment(Some(blog.title))),
+                        PostType::Note(_) => (self.service.url().note(act.pid), PubActivity::PostComment(None)),
+                        _ => continue,
+                    },
+                _ => continue,
+            };
+            results.push(RecentActivity {
+                name: act.user_name,
+                action,
+                url,
+                time: act.time.timestamp_millis(),
+            });
+        }
+
+        Ok(results)
     }
 
     pub async fn visit<P: PostData>(&self, post: &P, session_id: &SessionID) -> Result<usize> {

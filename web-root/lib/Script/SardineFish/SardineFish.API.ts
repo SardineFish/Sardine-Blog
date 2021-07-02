@@ -201,6 +201,15 @@ export interface RankedScore
     time: number,
 }
 
+export interface RecentActivity
+{
+    action: "PostNote" | "PostComment" | "PostBlog" | "UpdateBlog",
+    name: string,
+    url: string,
+    time: number,
+    title?: string,
+}
+
 const SardineFishAPI = {
     User: {
         checkAuth: api("GET", "/api/user")
@@ -367,6 +376,12 @@ const SardineFishAPI = {
                 url: Url,
             })
             .response<number>(),
+        recentActivities: api("GET", "/api/post/recently")
+            .query({
+                skip: "number",
+                count: "number",
+            })
+            .response<RecentActivity[]>(),
     },
     Storage: {
         getUploadInfo: api("POST", "/api/oss/new")

@@ -392,6 +392,10 @@
           validator: Validators.nonEmpty
         },
         url: Url
+      }).response(),
+      recentActivities: api("GET", "/api/post/recently").query({
+        skip: "number",
+        count: "number"
       }).response()
     },
     Storage: {

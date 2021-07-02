@@ -1,5 +1,6 @@
 ﻿window.HTMLTemplate = (function (HTMLTemplate)
 {
+    ObserveList = window.ObserveList || function () { };
     HTMLTemplate = HTMLTemplate || function (dom)
     {
 

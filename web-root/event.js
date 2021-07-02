@@ -204,6 +204,28 @@ function loadWorks()
 function loadArticle()
 {
 }
+function loadRecently()
+{
+    SardineFish.API.PostData.recentActivities({
+        skip: 0,
+        count: 5,
+    }).then(r =>
+    {
+        const data = r.map(act => ({
+            time: new Date(act.time).toLocaleString(),
+            name: act.name,
+            action: {
+                "PostBlog": "wrote",
+                "PostNote": "wrote",
+                "PostComment": "commented on",
+                "UpdateBlog": "edited"
+            }[act.action],
+            ref: act.title || "a message",
+            url: act.url,
+        }));
+        document.querySelector("#recently template").dataSource = data;
+    })
+}
 function addLike(id, type, numberObject)
 {
     /*SardineFish.API.PostData.Like.Add(id, type, function (succeed, data, id)
@@ -289,6 +311,7 @@ function loaded()
     var codeMirror = $("#pageCodeInputBorder div:first");
     codeMirror.css("height", "278px");
     loadLatest();
+    loadRecently();
     loadTopArea();
     //animate();
     setTimeout(animateFirst, 500);

@@ -64,3 +64,26 @@ Current `likes` of this post.
 
 ### Response
 Responsed data is just the `pid` of the miscellanous post.
+
+
+--------
+
+## Get Recent Post Activities
+`GET /api/post/recently`
+
+### Query String
+```
+skip: number
+count: number
+```
+
+### Response
+```json
+{
+    "action": "PostBlog",
+    "title": "Title of the Blog",
+    "name": "User Name",
+    "time": 0,
+    "url": "http://sardinefish.com/path/to/post"
+}
+```

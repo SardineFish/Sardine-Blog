@@ -50,7 +50,7 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
     <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
     <script src="/lib/Script/SardineFish/SardineFish.Web.Engine2D.js"></script>
     <script src="/lib/Script/SardineFish/SardineFish.Web.Engine2D.GUI.js"></script>
-    <script src="/lib/Script/HTMLTemplate/v0.1.0/HTMLTemplate.js"></script>
+    <script src="/lib/Script/HTMLTemplate/v0.3.2/HTMLTemplate.js"></script>
     <script src="/lib/Script/jQuery/jquery-3.2.1.min.js"></script>
     <script>
         function loadScripts() {
@@ -192,18 +192,22 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
                         <div>
                             <div id="latestArea">
                                 <template class="latestItem" id="latestItemTemplate" style="display:none; background-color: rgb(255, 255, 255);" onselectstart="return false">
-                                    <div>
-                                        <a class="latestTitle font-UI" id="newsPieceTest" href="{url}">{title}</a>
-                                        <h6 class="latestTime font-UI" id="newsPieceTest"><i class="material-icons">access_time</i>{time}</h6>
-                                        <h6 class="latestText" id="newsPieceTest">{preview}</h6>
-                                    </div>
-                                    <div class="latestBottom">
-                                        <a class="textWithIcon">
-                                            <i class="iconBrowse"></i>浏览(0)</a>
-                                        <a class="textWithIcon">
-                                            <i class="iconComment"></i>评论(0)</a>
-                                        <a class="textWithIcon">
-                                            <i class="iconLike"></i>赞(0)</a>
+                                    <div class="latestItem">
+                                        <div>
+                                            <a class="latestTitle font-UI" id="newsPieceTest"
+                                                href="{{url}}">{{title}}</a>
+                                            <h6 class="latestTime font-UI" id="newsPieceTest"><i
+                                                    class="material-icons">access_time</i>{{time}}</h6>
+                                            <h6 class="latestText" id="newsPieceTest">{{preview}}</h6>
+                                        </div>
+                                        <div class="latestBottom">
+                                            <a class="textWithIcon">
+                                                <i class="iconBrowse"></i>浏览(0)</a>
+                                            <a class="textWithIcon">
+                                                <i class="iconComment"></i>评论(0)</a>
+                                            <a class="textWithIcon">
+                                                <i class="iconLike"></i>赞(0)</a>
+                                        </div>
                                     </div>
                                 </template>
                                 <div id="more-blogs" class="font-UI hide">
@@ -340,36 +344,18 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
                     <section id="recently" class="block font-UI">
                         <header class="title">Recent Activities</header>
                         <ul class="list">
-                            <li class="item">
-                                <div class="decoration"></div>
-                                <div class="content">
-                                    <span class="time">2021-7-2 13:54</span>
-                                    <br>
-                                    <span class="name">SardineFish</span>
-                                    <span class="action">commented on </span>
-                                    <a href="#" class="ref">SQL 注入攻击（另一种意义上的）</a>
-                                </div>
-                            </li>
-                            <li class="item">
-                                <div class="decoration"></div>
-                                <div class="content">
-                                    <span class="time">2021-4-21 04:02</span>
-                                    <br>
-                                    <span class="name">Dwdscdv3</span>
-                                    <span class="action">posted</span>
-                                    <a href="#" class="ref">让WebGL的暴雨拍打你的屏幕（雾）</a>
-                                </div>
-                            </li>
-                            <li class="item">
-                                <div class="decoration"></div>
-                                <div class="content">
-                                    <span class="time">2015-8-13 00:00</span>
-                                    <br>
-                                    <span class="name">God</span>
-                                    <span class="action">posted</span>
-                                    <a href="#" class="ref">a message</a>
-                                </div>
-                            </li>
+                            <template class="template">
+                                <li class="item">
+                                    <div class="decoration"></div>
+                                    <div class="content">
+                                        <span class="time">{{time}}</span>
+                                        <br>
+                                        <span class="name">{{name}}</span>
+                                        <span class="action">{{action}}</span>
+                                        <a href="{{url}}" class="ref">{{ref}}</a>
+                                    </div>
+                                </li>
+                            </template>
                         </ul>
                     </section>
                     <section id="friend-links" class="block font-UI">

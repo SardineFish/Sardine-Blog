@@ -1,5 +1,5 @@
-use actix_web::{delete, get, post, web::{Json, Path, ServiceConfig, scope}};
-use sar_blog::model::{Access, MiscellaneousPostContent, PidType, PostStats};
+use actix_web::{delete, get, post, web::{Json, Path, Query, ServiceConfig, scope}};
+use sar_blog::{RecentActivity, model::{Access, MiscellaneousPostContent, PidType, PostStats}};
 
 use crate::misc::{error::MapControllerError, response::Response};
 use crate::middleware;
@@ -40,11 +40,26 @@ async fn post_miscellaneous(service: extractor::Service, auth: extractor::Auth, 
         .into()
 }
 
+#[derive(serde::Deserialize)]
+struct QueryParams {
+    skip: usize,
+    count: usize,
+}
+
+#[get("/recently")]
+async fn get_recent_activities(service: extractor::Service, query: Query<QueryParams>) -> Response<Vec<RecentActivity>> {
+    service.post_data().get_post_activities(query.skip, query.count)
+        .await
+        .map_contoller_result()
+        .into()
+}
+
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/post")
         .service(get_stats)
         .service(like)
         .service(dislike)
         .service(post_miscellaneous)
+        .service(get_recent_activities)
     );
 }

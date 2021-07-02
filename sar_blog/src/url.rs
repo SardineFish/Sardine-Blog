@@ -33,7 +33,12 @@ impl<'s> UrlService<'s> {
         format!("{}/notification/unsubscribe/{}", self.options.site_url, uid)
     }
 
-    pub async fn comment_root(&self, post: &Post) -> Result<String> {
+    pub async fn from_pid(&self, pid: PidType) -> Result<String> {
+        let post = self.service.model.post.get_raw_by_pid(pid).await?;
+        self.from_post(&post).await
+    }
+
+    pub async fn from_post(&self, post: &Post) -> Result<String> {
         match &post.data {
             PostType::Blog(_) => Ok(self.blog(post.pid)),
             PostType::Note(_) => Ok(self.note(post.pid)),
