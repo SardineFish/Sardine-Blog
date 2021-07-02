@@ -816,6 +816,7 @@ h3.pIntroduction {
     flex-flow: row nowrap;
 }
 #recently .content {
+    flex: 1 0;
     margin: .5em 0;
     white-space: nowrap;
     text-overflow: ellipsis;
