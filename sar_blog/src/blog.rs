@@ -1,6 +1,6 @@
 
 use chrono::{DateTime, Utc};
-use model::{Blog, BlogContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache, SessionID};
+use model::{Blog, BlogContent, Model, PidType, PostType, PubUserInfo, RedisCache, SessionID};
 use serde::{Serialize};
 
 use crate::{Service, error::*, utils};
@@ -81,12 +81,13 @@ impl<'m> BlogService<'m> {
             .map_service_err()?;
         
         self.model.post.insert(&post).await.map_service_err()?;
+        let pid = post.pid;
 
-        self.model.history.record(uid, model::Operation::Create, HistoryData::Post(post.data))
+        self.model.history.record(uid, model::Operation::Create, post)
             .await
             .map_service_err()?;
 
-        Ok(post.pid)
+        Ok(pid)
     }
 
     pub async fn update(&self, pid: PidType, uid: &str, blog_content: BlogContent) -> Result<()> {
@@ -94,7 +95,7 @@ impl<'m> BlogService<'m> {
             .await
             .map_service_err()?;
         
-        self.model.history.record(uid, model::Operation::Update, HistoryData::Post(PostType::Blog(blog_content)))
+        self.model.history.record(uid, model::Operation::Update, (pid, PostType::Blog(blog_content)))
             .await
             .map_service_err()?;
 
@@ -105,7 +106,7 @@ impl<'m> BlogService<'m> {
 
         let post: Option<BlogContent> = self.model.post.delete(pid).await.map_service_err()?;
         if let Some(content) = post {
-            self.model.history.record(uid, model::Operation::Delete, HistoryData::Post(PostType::Blog(content.clone())))
+            self.model.history.record(uid, model::Operation::Delete, (pid, PostType::Blog(content.clone())))
                 .await
                 .map_service_err()?;
             Ok(Some(content))

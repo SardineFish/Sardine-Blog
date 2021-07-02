@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use mongodb::{self, Database, options::ClientOptions};
 use options::ServiceOptions;
-use crate::{comment::CommentModel, error::*, history::HistoryModel, post::PostModel, user::UserModel};
+use crate::{comment::CommentModel, error::*, history::{HistoryModel}, post::PostModel, user::UserModel};
 
 use super::{rank::{RankModel}, storage::StorageModel};
 

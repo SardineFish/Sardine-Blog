@@ -23,3 +23,4 @@ pub use comment::NestedCommentRef;
 pub use user::{AuthToken, AuthChallenge, Author};
 pub use email_notify::{ErrorRecord, MessageMail};
 pub use rank::{RankService, SimpleScore, SnakeRemakeRank, SnakeRemakeScore};
+pub use post_data::RecentActivity;

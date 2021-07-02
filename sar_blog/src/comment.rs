@@ -2,7 +2,7 @@ use std::{ cell::{Ref, RefCell, RefMut}, collections::{HashMap}};
 use std::rc::Rc;
 
 use chrono::{DateTime, Utc};
-use model::{Comment, CommentContent, HistoryData, Model, PidType, PostType, PubUserInfo, RedisCache};
+use model::{Comment, CommentContent, Model, PidType, PostType, PubUserInfo, RedisCache};
 use serde::{ Serialize, Serializer};
 use crate::{email_notify::CommentNotifyInfo, service::Service, user::Author, utils::json_datetime_format};
 
@@ -124,14 +124,14 @@ impl<'m> CommentService<'m> {
             self.model.post.add_comment(comment_root).await?;
         }
  
-        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(comment_post.data))
+        self.model.history.record(&user.uid, model::Operation::Create, (comment_post.pid, comment_post.data))
             .await
             .map_service_err()?;
 
         { // Try send notification email
             let receiver = self.model.user.get_by_uid(&post.uid).await?;
             if let Some(email) = &receiver.info.email {
-                let url = self.service.url().comment_root(&post).await?;
+                let url = self.service.url().from_post(&post).await?;
 
                 let result = self.service.push_service().send_comment_notify(&email, CommentNotifyInfo {
                     author_avatar: user.info.avatar,
@@ -161,7 +161,7 @@ impl<'m> CommentService<'m> {
             .map_service_err()?;
         
         if let Some(content) = result {
-            self.model.history.record(uid, model::Operation::Delete, HistoryData::Post(PostType::Comment(content.clone())))
+            self.model.history.record(uid, model::Operation::Delete, (pid, PostType::Comment(content.clone())))
                 .await
                 .map_service_err()?;
             Ok(Some(content))

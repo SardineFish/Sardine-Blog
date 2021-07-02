@@ -1,4 +1,4 @@
-use model::{HistoryData, Model, Note, NoteContent, PidType, PostType, RedisCache};
+use model::{Model, Note, NoteContent, PidType, PostType, RedisCache};
 
 use crate::{email_notify::NoteNotifyInfo, error::*, user::Author, validate::Validate};
 use crate::service::Service;
@@ -40,7 +40,7 @@ impl<'m> NoteService<'m> {
         
         self.model.post.insert(&post).await.map_service_err()?;
 
-        self.model.history.record(&user.uid, model::Operation::Create, HistoryData::Post(post.data))
+        self.model.history.record(&user.uid, model::Operation::Create, (post.pid, post.data))
             .await
             .map_service_err()?;
 

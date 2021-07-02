@@ -209,9 +209,31 @@ impl PostModel {
                 {
                     "key": {
                         "data.type": 1,
+                        "time": -1,
+                    },
+                    "name": "idx_type_time",
+                },
+            ],
+        }, None).await.log_warn_consume("init-db-post");
+        db.run_command(doc! {
+            "createIndexes": COLLECTION_POST,
+            "indexes": [
+                {
+                    "key": {
                         "data.content.comment_root": 1,
                     },
-                    "name": "idx_type_comment_root",
+                    "name": "idx_comment_root",
+                },
+            ],
+        }, None).await.log_warn_consume("init-db-post");
+        db.run_command(doc! {
+            "createIndexes": COLLECTION_POST,
+            "indexes": [
+                {
+                    "key": {
+                        "time": -1,
+                    },
+                    "name": "idx_time",
                 },
             ],
         }, None).await.log_warn_consume("init-db-post");
