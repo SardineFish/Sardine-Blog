@@ -1,6 +1,7 @@
 use bson::Document;
 use mongodb::{Collection, Database, bson::{self, doc}, options::{FindOneAndUpdateOptions, UpdateOptions}};
 use serde::{Serialize, Deserialize};
+use utils::error::LogError;
 
 use crate::error::*;
 
@@ -124,6 +125,21 @@ impl UserModel {
         Self{
             collection: db.collection(COLLECTION_USER),
         }
+    }
+
+    pub async fn init_collection(db: &Database) {
+        db.run_command(doc! {
+            "createIndexes": COLLECTION_USER,
+            "indexes": [
+                {
+                    "key": {
+                        "uid": 1,
+                    },
+                    "name": "idx_uid",
+                    "unique": true,
+                },
+            ],
+        }, None).await.log_warn_consume("init-db-user");
     }
 
     pub async fn get_by_uid(&self, uid: &str) -> Result<User> {

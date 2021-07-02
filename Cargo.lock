@@ -1725,6 +1725,7 @@ dependencies = [
  "redis",
  "serde",
  "tokio",
+ "utils",
 ]
 
 [[package]]
@@ -3165,6 +3166,13 @@ dependencies = [
  "idna",
  "matches",
  "percent-encoding",
+]
+
+[[package]]
+name = "utils"
+version = "0.1.0"
+dependencies = [
+ "log",
 ]
 
 [[package]]

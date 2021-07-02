@@ -3,6 +3,7 @@ use mongodb::{Collection, Database, bson::doc, options::FindOptions};
 use mongodb::bson;
 use futures_util::{StreamExt, future::ready};
 use serde::{Deserialize};
+use utils::error::LogError;
 
 use crate::Error;
 
@@ -25,7 +26,7 @@ impl RankModel {
         }
     }
 
-    pub async fn init_collection(&self, db: &Database) -> Result<(), Error> {
+    pub async fn init_collection(&self, db: &Database) {
         db.run_command(doc! {
             "createIndexes": "rank",
             "indexes": [
@@ -42,9 +43,7 @@ impl RankModel {
                     "name": "idx_key",
                 },
             ],
-        }, None).await?;
-
-        Ok(())
+        }, None).await.log_warn_consume("init-db-rank");
     }
 
     pub async fn get_ranked_score(&self, key: &str, skip: usize, count: usize) -> Result<Vec<RankedScore>, Error> {

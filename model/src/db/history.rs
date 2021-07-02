@@ -1,9 +1,11 @@
 use chrono::{DateTime, Utc};
+use mongodb::bson::doc;
 use mongodb::{Collection, Database, bson};
 use serde::{Serialize, Deserialize};
 
 use crate::{ PostType, user::User};
 use crate::error::*;
+use utils::error::LogError;
 
 const COLLECTION_HISTORY: &str = "history";
 
@@ -49,6 +51,21 @@ impl HistoryModel {
         Self{
             collection: db.collection(COLLECTION_HISTORY)
         }
+    }
+
+    pub async fn init_collection(db: &Database) {
+        db.run_command(doc! {
+            "createIndexes": COLLECTION_HISTORY,
+            "indexes": [
+                {
+                    "key": {
+                        "op": 1,
+                        "data.post.type": 1,
+                    },
+                    "name": "idx_type",
+                },
+            ],
+        }, None).await.log_warn_consume("init-db-history");
     }
 
     pub async fn record(&self, uid: &str, op: Operation, data: HistoryData) -> Result<()> {

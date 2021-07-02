@@ -4,6 +4,7 @@
     "db_addr": "mongodb://localhost",
     "db_name": "sar-blog",
     "db_timeout": 100,
+    "db_init": true,
     "redis_addr": "redis://localhost",
     "site_url": "http://localhost:3000",
     "default_avatar": "/img/decoration/unknown-user.png",

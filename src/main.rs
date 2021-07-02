@@ -1,8 +1,6 @@
 #![feature(trait_alias)]
 #![feature(try_trait)]
 
-use std::process::exit;
-
 use actix_web::{self, App, HttpServer, dev::Server, middleware::Logger, web::{self, JsonConfig}};
 
 mod controller;
@@ -40,9 +38,9 @@ async fn main() -> std::io::Result<()> {
 
     ServiceMornitor::init(&opts, service.clone());
     
-    if matches.is_present("init") {
-        service.init_database().await.unwrap();
-        exit(0);
+    if matches.is_present("init") || opts.db_init {
+        service.init_database(true).await.unwrap();
+        // exit(0);
     }
 
     service.push_service().send_message(&opts.report_address, MessageMail {

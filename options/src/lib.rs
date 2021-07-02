@@ -10,6 +10,7 @@ pub struct ServiceOptions {
     pub db_name: String,
     pub db_timeout: u64,
     pub redis_addr: String,
+    pub db_init: bool,
     pub site_url: String,
     pub default_avatar: String,
     #[serde(with="json_duration_format")]
@@ -38,6 +39,7 @@ impl Default for ServiceOptions {
             db_addr: "mongodb://localhost".to_string(),
             db_name: "sar_blog".to_string(),
             db_timeout: 100,
+            db_init: false,
             redis_addr: "redis://localhost".to_string(),
             site_url: "http://localhost:3000".to_owned(),
             default_avatar: "/img/decoration/unknown-user.png".to_string(),

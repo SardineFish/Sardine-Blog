@@ -1,8 +1,9 @@
 
 
 use chrono::Utc;
-use mongodb::{Collection, Database, bson::{self, doc}, options::{UpdateOptions}};
+use mongodb::{Collection, Database, bson::{self, doc}, error::{ErrorKind}};
 use serde::{Serialize};
+use utils::error::LogError;
 
 use crate::error::*;
 
@@ -23,6 +24,20 @@ impl StorageModel {
         }
     }
 
+    pub async fn init_collection(db: &Database) {
+        db.run_command(doc! {
+            "createIndexes": "storage",
+            "indexes": [
+                {
+                    "key": {
+                        "name": 1,
+                    },
+                    "name": "idx_name",
+                },
+            ],
+        }, None).await.log_warn_consume("init-db");
+    }
+
     pub async fn name_existed(&self, name: &str) -> Result<bool> {
         let query = doc! {
             "name": name
@@ -32,23 +47,16 @@ impl StorageModel {
     }
     
     pub async fn add_new_key(&self, name: &str) -> Result<bool> {
-        let query = doc! {
-            "name": name
-        };
-        let update = doc! {
-            "$setOnInsert": bson::to_bson(&ObjectInfo {
-                name: name.to_owned(),
-                time: Utc::now().into(),
-            })?
-        };
-        let mut opts = UpdateOptions::default();
-        opts.upsert = Some(true);
-        let result = self.collection.update_one(query, update, Some(opts))
-            .await?;
-        if let Some(_) = result.upserted_id {
-            Ok(true)
-        } else {
-            Ok(false)
+        let doc = bson::to_document(& ObjectInfo {
+            name: name.to_owned(),
+            time: Utc::now().into()
+        })?;
+        match self.collection.insert_one(doc, None).await {
+            Ok(_) => Ok(true),
+            Err(err) => match err.kind.as_ref() {
+                ErrorKind::CommandError(cmd_err) if cmd_err.code == 11000 => Ok(false),
+                _ => Err(err)?
+            }
         }
     }
 

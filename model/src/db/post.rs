@@ -9,6 +9,7 @@ use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, error
 use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
+use utils::error::LogError;
 
 const COLLECTION_POST: &str = "post";
 const COLLECTION_META: &str = "meta";
@@ -187,6 +188,33 @@ impl PostModel {
             .map_model_result()?;
 
         Ok(())
+    }
+
+    pub async fn init_collection(db: &Database) {
+        db.run_command(doc! {
+            "createIndexes": COLLECTION_POST,
+            "indexes": [
+                {
+                    "key": {
+                        "pid": 1,
+                    },
+                    "name": "idx_pid",
+                    "unique": true,
+                },
+            ],
+        }, None).await.log_warn_consume("init-db-post");
+        db.run_command(doc! {
+            "createIndexes": COLLECTION_POST,
+            "indexes": [
+                {
+                    "key": {
+                        "data.type": 1,
+                        "data.content.comment_root": 1,
+                    },
+                    "name": "idx_type_comment_root",
+                },
+            ],
+        }, None).await.log_warn_consume("init-db-post");
     }
 
     pub async fn reset_pid_base(&self, pid: PidType) -> Result<()> {

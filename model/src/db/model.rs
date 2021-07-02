@@ -47,7 +47,11 @@ impl Model
         if init_meta {
             self.post.init_meta().await?;
         }
-        self.rank.init_collection(&self.db).await?;
+        UserModel::init_collection(&self.db).await;
+        PostModel::init_collection(&self.db).await;
+        StorageModel::init_collection(&self.db).await;
+        HistoryModel::init_collection(&self.db).await;
+        self.rank.init_collection(&self.db).await;
         Ok(())
     }
     pub fn storage(&self) -> StorageModel {

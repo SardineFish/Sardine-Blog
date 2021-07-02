@@ -66,27 +66,31 @@ impl Service {
         UrlService::new(self)
     }
 
-    pub async fn init_database(&self) -> Result<()> {
-        log::warn!("Init database...");
-        log::warn!("Will rewrite some metadata in database which is very important!");
-        self.model.init(true).await.map_service_err()?;
-
-        log::warn!("Secrete of root user will be generated randomly, please make sure to change it.");
-        let mut secret: [u8; 16] = [0; 16];
-        self.rng.borrow_mut().fill_bytes(&mut secret);
-        let hash = format!("{:x}", Sha256::digest(&secret));
+    pub async fn init_database(&self, index_only: bool) -> Result<()> {
+        if index_only {
+            self.model.init(false).await?;
+        } else {
+            log::warn!("Init database...");
+            log::warn!("Will rewrite some metadata in database which is very important!");
+            self.model.init(true).await.map_service_err()?;
+            
+            log::warn!("Secrete of root user will be generated randomly, please make sure to change it.");
+            let mut secret: [u8; 16] = [0; 16];
+            self.rng.borrow_mut().fill_bytes(&mut secret);
+            let hash = format!("{:x}", Sha256::digest(&secret));
+            
+            let user = User::root(AuthenticationInfo{
+                method: model::HashMethod::SHA256,
+                password_hash: hash.clone(),
+                salt: "".to_string()
+            });
         
-        let user = User::root(AuthenticationInfo{
-            method: model::HashMethod::SHA256,
-            password_hash: hash.clone(),
-            salt: "".to_string()
-        });
-
-        self.model.user.add(&user).await.map_service_err()?;
-
-        log::warn!("The secrete of root is '{}'", hash);
-
-        log::warn!("Init completed.");
+            self.model.user.add(&user).await.map_service_err()?;
+        
+            log::warn!("The secrete of root is '{}'", hash);
+        
+            log::warn!("Init completed.");
+        }
         
         Ok(())
     }
