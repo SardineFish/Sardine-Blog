@@ -7,7 +7,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::{ PostType, user::User};
 use crate::{PidType, Post, error::*};
-use utils::error::LogError;
+use shared::error::LogError;
 
 const COLLECTION_HISTORY: &str = "history";
 

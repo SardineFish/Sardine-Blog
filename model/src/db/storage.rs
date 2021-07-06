@@ -3,7 +3,7 @@
 use chrono::Utc;
 use mongodb::{Collection, Database, bson::{self, doc}, error::{ErrorKind}};
 use serde::{Serialize};
-use utils::error::LogError;
+use shared::error::LogError;
 
 use crate::error::*;
 

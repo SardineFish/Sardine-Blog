@@ -1,5 +1,5 @@
 use model::{PidType, Post, PostType, PostTypeName};
-use options::ServiceOptions;
+use shared::ServiceOptions;
 
 use crate::Service;
 use crate::error::*;

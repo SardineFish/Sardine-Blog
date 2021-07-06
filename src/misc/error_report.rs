@@ -2,7 +2,7 @@ use std::{mem::{replace}, sync::{Mutex, mpsc::{Receiver, SyncSender, sync_channe
 
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 use log::{Level, Metadata, Record};
-use options::ServiceOptions;
+use shared::ServiceOptions;
 use sar_blog::{Service, ErrorRecord};
 
 

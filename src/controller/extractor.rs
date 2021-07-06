@@ -3,7 +3,7 @@ use futures_util::future::{ok, err};
 
 use actix_web::{FromRequest, HttpRequest, dev::Payload, web};
 use futures::future::Ready;
-use options::ServiceOptions;
+use shared::ServiceOptions;
 use sar_blog::model::SessionAuthInfo;
 
 use crate::middleware;

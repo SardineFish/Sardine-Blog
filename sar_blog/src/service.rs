@@ -1,5 +1,5 @@
 use model::{AuthenticationInfo, Model, RedisCache, User};
-use options::ServiceOptions;
+use shared::ServiceOptions;
 use rand::{RngCore, SeedableRng, prelude::StdRng};
 use sha2::{Digest, Sha256};
 

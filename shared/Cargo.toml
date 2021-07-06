@@ -1,6 +1,6 @@
 [package]
-name = "options"
-version = "1.0.0"
+name = "shared"
+version = "0.1.0"
 authors = ["SardineFish <Sardine@live.cn>"]
 edition = "2018"
 
@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 serde = {version = "1.0.123",  features = ["derive"]}
 chrono = "0.4.19"
+log = "0.4.14"

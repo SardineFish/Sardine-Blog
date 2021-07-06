@@ -7,9 +7,8 @@ use error_report::format_error_report_email;
 use message::{format_message_mail};
 use note::{format_note_email};
 use serde::{ Serialize, Deserialize };
-use actix_web::{client};
 use comment::{ format_comment_email};
-use options::ServiceOptions;
+use shared::ServiceOptions;
 
 use crate::error::*;
 use crate::Service;
@@ -85,11 +84,13 @@ impl<'s> EmailNotifyService<'s> {
     }
 
     async fn send(&self, notify: EmailNotify<'_>) ->Result<()> {
-        let mut response = client::Client::default()
-            .post(format!("{}/notify/queue", &self.options.sar_push_url))
-            .content_type("application/json")
+        let response = reqwest::Client::builder().build()
+            .map_err(|err| 
+                Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err)))?
+            .post(&format!("{}/notify/queue", &self.options.sar_push_url))
+            .json(&notify)
             .basic_auth(&self.options.sar_push_uid, Some(&self.options.sar_push_secret))
-            .send_json(&notify)
+            .send()
             .await
             .map_err(|err| 
                 Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err)))?;

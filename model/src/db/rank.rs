@@ -3,7 +3,7 @@ use mongodb::{Collection, Database, bson::doc, options::FindOptions};
 use mongodb::bson;
 use futures_util::{StreamExt, future::ready};
 use serde::{Deserialize};
-use utils::error::LogError;
+use shared::error::LogError;
 
 use crate::Error;
 

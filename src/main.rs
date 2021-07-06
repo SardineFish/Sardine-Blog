@@ -10,7 +10,7 @@ mod misc;
 use misc::error;
 use misc::utils;
 use misc::error_report::ServiceMornitor;
-use options::ServiceOptions;
+use shared::ServiceOptions;
 use sar_blog::{MessageMail, Service};
 use misc::error::OkOrLog;
 
@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
         let json = std::fs::read_to_string(path).expect("Failed to open config file");
         serde_json::de::from_str(&json).unwrap()
     } else {
-        options::ServiceOptions::default()
+        shared::ServiceOptions::default()
     };
 
     let service = sar_blog::Service::open(opts.clone()).await

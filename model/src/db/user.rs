@@ -1,7 +1,7 @@
 use bson::Document;
 use mongodb::{Collection, Database, bson::{self, doc}, options::{FindOneAndUpdateOptions, UpdateOptions}};
 use serde::{Serialize, Deserialize};
-use utils::error::LogError;
+use shared::error::LogError;
 
 use crate::error::*;
 

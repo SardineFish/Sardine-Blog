@@ -9,7 +9,7 @@ use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, error
 use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
-use utils::error::LogError;
+use shared::error::LogError;
 
 const COLLECTION_POST: &str = "post";
 const COLLECTION_META: &str = "meta";

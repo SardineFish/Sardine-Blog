@@ -8,3 +8,4 @@ pub mod history;
 pub mod post;
 pub mod storage;
 pub mod rank;
+pub mod search;

@@ -2,7 +2,7 @@ use std::cmp::max;
 
 use chrono::{Duration, Utc};
 use model::Model;
-use options::ServiceOptions;
+use shared::ServiceOptions;
 use rand::Rng;
 use serde::{Serialize};
 

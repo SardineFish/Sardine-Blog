@@ -1,4 +1,4 @@
-use options::ServiceOptions;
+use shared::ServiceOptions;
 
 use super::{access_cache::AccessCache, generic_cache::GenericCache, session::{Session}};
 use crate::error::*;

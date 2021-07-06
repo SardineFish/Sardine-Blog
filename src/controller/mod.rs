@@ -11,7 +11,7 @@ mod rank;
 mod cors;
 
 use actix_web::{ web::{ ServiceConfig, scope}};
-use options::ServiceOptions;
+use shared::ServiceOptions;
 
 use crate::middleware;
 
