@@ -1,4 +1,4 @@
-use std::fmt;
+use std::fmt::{self, Display};
 
 use mongodb::{bson, error::Error as MongoError};
 use redis::RedisError;
@@ -20,6 +20,7 @@ pub enum Error
     PostTypeMissmatch,
     BSONAccessError(bson::document::ValueAccessError),
     InternalError(&'static str),
+    InternalErrorOwned(String),
 }
 
 impl Error {
@@ -36,7 +37,7 @@ impl Error {
             Error::PostExisted(_) => 0x09,
             Error::PostTypeMissmatch => 0x0a,
             Error::BSONAccessError(_) => 0x0b,
-            Error::InternalError(_) => 0xff,
+            Error::InternalError(_) | Error::InternalErrorOwned(_) => 0xff,
         }
     }
 }
@@ -52,7 +53,6 @@ impl fmt::Display for Error {
         }
     }
 }
-
 
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -97,5 +97,19 @@ impl<E, T> MapError<T> for std::result::Result<T, E> where E: Into<Error>
 {
     fn map_model_result(self) -> Result<T> {
         self.map_err(E::into)
+    }
+}
+
+pub trait MapInternalError<T> {
+    fn map_internal_err(self) -> Result<T>;
+}
+
+impl<E, T> MapInternalError<T> for std::result::Result<T, E> where E: Display {
+    fn map_internal_err(self) -> Result<T> {
+        match self {
+            Ok(result) => Ok(result),
+            Err(err) => Err(Error::InternalErrorOwned(format!("Internal Error: {}", err))),
+        }
+        
     }
 }

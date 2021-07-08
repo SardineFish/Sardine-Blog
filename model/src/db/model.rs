@@ -4,7 +4,7 @@ use mongodb::{self, Database, options::ClientOptions};
 use shared::ServiceOptions;
 use crate::{comment::CommentModel, error::*, history::{HistoryModel}, post::PostModel, user::UserModel};
 
-use super::{rank::{RankModel}, storage::StorageModel};
+use super::{rank::{RankModel}, search::ElasticSerachModel, storage::StorageModel};
 
 pub type PidType = i32;
 
@@ -17,6 +17,7 @@ pub struct Model
     pub post: PostModel,
     pub history: HistoryModel,
     pub rank: RankModel,
+    pub search: ElasticSerachModel,
 }
 
 impl Model 
@@ -39,6 +40,7 @@ impl Model
             comment: CommentModel::new(&db),
             history: HistoryModel::new(&db),
             rank: RankModel::new(&db),
+            search: ElasticSerachModel::new(options.elastic_url.clone())?,
             db,
         })
     }

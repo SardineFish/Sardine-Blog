@@ -18,3 +18,4 @@ paste = "1.0"
 futures-util = "0.3.12"
 log = "0.4.14"
 reqwest = { version = "0.10.10", features = ["rustls", "json"] }
+url = "2.2.2"
