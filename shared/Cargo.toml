@@ -10,3 +10,5 @@ edition = "2018"
 serde = {version = "1.0.123",  features = ["derive"]}
 chrono = "0.4.19"
 log = "0.4.14"
+pulldown-cmark = "0.8.0"
+html2text = { git = "https://github.com/SardineFish/rust-html2text.git" }
