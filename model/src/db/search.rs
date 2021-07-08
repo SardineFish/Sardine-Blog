@@ -1,4 +1,5 @@
 use chrono::Utc;
+use serde::{Serialize, Deserialize};
 use serde_json::json;
 use url::Url;
 
@@ -7,17 +8,19 @@ use crate::{
     DocType, PidType, Post, PostType,
 };
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 struct IndexedDoc {
     pub pid: PidType,
     pub author: String,
     pub tags: Vec<String>,
     pub content: String,
     pub time: i64,
+    pub doc_type: &'static str,
 }
 
-const INDEX_NAME: &str = "post/";
-const TYPE_NAME: &str = "_doc/";
+const URL_INDEX: &str = "/post";
+const URL_RESOURCE: &str = "/post/_doc/";
+const URL_SEARCH: &str = "/post/_search";
 
 #[derive(Clone)]
 pub struct ElasticSerachModel {
@@ -39,7 +42,7 @@ impl ElasticSerachModel {
     pub async fn init_index(&self) -> Result<()> {
         // Create index
         self.client
-            .put(self.base_url.join(INDEX_NAME).map_internal_err()?)
+            .put(self.base_url.join(URL_INDEX).map_internal_err()?)
             .json(&json!({
               "settings": {
                 "analysis": {
@@ -66,6 +69,10 @@ impl ElasticSerachModel {
                   "time": {
                     "type": "long",
                     "index": false
+                  },
+                  "doc_type": {
+                    "type": "keyword",
+                    "index": false
                   }
                 }
               }
@@ -87,14 +94,14 @@ impl ElasticSerachModel {
             pid: post.pid,
             author,
             tags,
+            doc_type: post.data.type_name(),
             content,
             time: Utc::now().timestamp_millis(),
         };
 
-        let url = self.base_url
-            .join(INDEX_NAME)
-            .map_internal_err()?
-            .join(TYPE_NAME)
+        let url = self
+            .base_url
+            .join(URL_RESOURCE)
             .map_internal_err()?
             .join(&post.pid.to_string())
             .map_internal_err()?;
@@ -121,6 +128,73 @@ impl ElasticSerachModel {
         Ok(())
     }
 
+    pub async fn search(&self, query: &str, skip: usize, count: usize) -> Result<SearchResult> {
+        let data = json!({
+          "query": {
+            "bool": {
+              "should": [
+                {
+                  "match": {
+                    "content": query
+                  }
+                },
+                {
+                  "match": {
+                    "tags": query
+                  }
+                },
+                {
+                  "match": {
+                    "author": query
+                  }
+                }
+              ]
+            }
+          },
+          "fields": [
+            "pid",
+            "author",
+            "tags",
+            "time",
+            "doc_type"
+          ],
+          "_source": false,
+          "from": skip,
+          "size": count,
+          "highlight": {
+            "fields": {
+              "tags": {},
+              "author": {},
+              "content": {}
+            }
+          },
+          "sort": [
+            "_score",
+            { "time": "desc" }
+          ]
+        });
+
+        let url = self.base_url.join(URL_SEARCH).map_internal_err()?;
+
+        let response = self.client.post(url)
+            .json(&data)
+            .send()
+            .await
+            .map_internal_err()?;
+        
+        match response.status() {
+            status if status.is_success() => {
+                let result = response.json::<ElasticSearchResult>().await.map_internal_err()?;
+                Ok(result.into())
+            },
+            status => {
+                let body = response.text().await.map_internal_err()?;
+                log::error!("Failed to call search api with search '{}': Status: {} \r\n Response: {}", query, status, body);
+                Err(format!("Failed to call search api with search '{}': {}", query, status)).map_internal_err()
+            }
+        }
+    }
+
     fn parse_doc(doc: &str, doc_type: DocType) -> String {
         match doc_type {
             DocType::PlainText => doc.to_owned(),
@@ -128,4 +202,94 @@ impl ElasticSerachModel {
             DocType::Markdown => shared::md2plain::md2plain(doc, usize::MAX),
         }
     }
+}
+
+#[derive(serde::Serialize)]
+pub struct SearchResult {
+    time: i64,
+    timeout: bool,
+    total_hits: usize,
+    results: Vec<HitInfo>,
+}
+
+#[derive(serde::Serialize)]
+pub struct HitInfo {
+    pid: PidType,
+    time: i64,
+    author: String,
+    doc_type: String,
+    tags: Vec<String>,
+    highlight: SearchHighlight,
+}
+
+#[derive(serde::Serialize)]
+pub struct SearchHighlight {
+    tags: Option<Vec<String>>,
+    author: Option<String>,
+    content: Option<Vec<String>>,
+}
+
+impl From<ElasticSearchResult> for SearchResult {
+    fn from(result: ElasticSearchResult) -> Self {
+        Self {
+            total_hits: result.hits.total.value,
+            time: result.took,
+            timeout: result.timed_out,
+            results: result.hits.hits.into_iter().map(HitInfo::from).collect(),
+        }
+    }
+}
+
+impl From<ElasticHitInfo> for HitInfo {
+    fn from(mut hit: ElasticHitInfo) -> Self {
+        Self {
+            author: hit.fields.author.swap_remove(0),
+            doc_type: hit.fields.doc_type.swap_remove(0),
+            pid: hit.fields.pid[0],
+            time: hit.fields.time[0],
+            tags: hit.fields.tags,
+            highlight: SearchHighlight {
+                author: hit.highlight.author.map(|mut t| t.swap_remove(0)),
+                tags: hit.highlight.tags,
+                content: hit.highlight.content,
+            }
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct ElasticSearchResult {
+    took: i64,
+    timed_out: bool,
+    hits: ElasticSearchHits,
+}
+
+#[derive(Deserialize)]
+struct ElasticSearchHits {
+    total: TotalHits,
+    hits: Vec<ElasticHitInfo>,
+}
+
+#[derive(Deserialize)]
+struct TotalHits {
+    value: usize,
+}
+#[derive(Deserialize)]
+struct ElasticHitInfo {
+    fields: DocFields,
+    highlight: DocHighlight,
+}
+#[derive(Deserialize)]
+struct DocFields {
+    author: Vec<String>,
+    pid: Vec<PidType>,
+    time: Vec<i64>,
+    doc_type: Vec<String>,
+    tags: Vec<String>,
+}
+#[derive(Deserialize)]
+struct DocHighlight {
+    author: Option<Vec<String>>,
+    tags: Option<Vec<String>>,
+    content: Option<Vec<String>>,
 }

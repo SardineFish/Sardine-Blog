@@ -68,6 +68,17 @@ pub enum PostType {
     Miscellaneous(MiscellaneousPostContent),
 }
 
+impl PostType {
+    pub fn type_name(&self) -> &'static str {
+        match self {
+            PostType::Blog(_) => "Blog",
+            PostType::Note(_) => "Note",
+            PostType::Comment(_) => "Comment",
+            PostType::Miscellaneous(_) => "Miscellaneous",
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Post {
     pub(crate) _id: ObjectId,

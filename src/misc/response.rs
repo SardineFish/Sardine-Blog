@@ -237,6 +237,9 @@ impl BuildError for Error {
     }
     fn build_response(self, mut builder: ResponseBuilder) -> HttpResponse {
         let status = self.status_code();
+        if status.is_server_error() {
+            log::error!("{:?}", self);
+        }
         let data = self.error_response();
         builder.status(status).json(&data)
     }

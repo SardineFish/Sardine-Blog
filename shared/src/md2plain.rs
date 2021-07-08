@@ -22,7 +22,7 @@ fn round_char_boundary(input: &str, len: usize) -> usize {
     return 0;
 }
 
-fn slice_utf8(input: &str, len: usize) -> &str {
+pub fn slice_utf8(input: &str, len: usize) -> &str {
     &input[..round_char_boundary(input, len)]
 }
 

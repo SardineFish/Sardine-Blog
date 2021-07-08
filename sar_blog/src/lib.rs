@@ -11,6 +11,7 @@ mod storage;
 mod email_notify;
 mod url;
 mod rank;
+mod search;
 
 #[allow(dead_code)]
 pub mod utils;

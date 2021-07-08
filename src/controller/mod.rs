@@ -6,6 +6,7 @@ mod user;
 mod web_static;
 mod post_data;
 mod storage;
+mod search;
 mod test;
 mod rank;
 mod cors;
@@ -26,6 +27,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .configure(post_data::config)
             .configure(storage::config)
             .configure(test::config)
+            .configure(search::config)
             .wrap(middleware::session())
             .configure(rank::config)
             .wrap(middleware::error_formatter())

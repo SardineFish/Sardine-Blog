@@ -2,6 +2,7 @@
 use chrono::{DateTime, Utc};
 use model::{Blog, BlogContent, Model, PidType, PostType, PubUserInfo, RedisCache, SessionID};
 use serde::{Serialize};
+use shared::md2plain::{html2plain, md2plain, slice_utf8};
 
 use crate::{Service, error::*, utils};
 use utils::json_datetime_format;
@@ -25,9 +26,12 @@ pub struct BlogPreview {
 
 impl BlogPreview {
     pub fn from_blog(blog: Blog, words_limit: usize) -> BlogPreview {
-        let parser = pulldown_cmark::Parser::new(&blog.doc);
         
-        let preview = utils::write_plaintext(parser, words_limit);
+        let preview = match blog.doc_type {
+            model::DocType::PlainText => slice_utf8(&blog.doc, words_limit).to_owned(),
+            model::DocType::Markdown => md2plain(&blog.doc, words_limit),
+            model::DocType::HTML => slice_utf8(&html2plain(&blog.doc), words_limit).to_owned(),
+        };
 
         BlogPreview {
             pid: blog.pid,
