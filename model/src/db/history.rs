@@ -136,8 +136,8 @@ impl HistoryModel {
         Ok(())
     }
 
-    pub async fn record_with_time(&self, uid: &str, op: Operation, data: HistoryData, time: DateTime<Utc>) -> Result<()> {
-        let mut history = History::new(uid.to_string(), op, data);
+    pub async fn record_with_time<T: Into<HistoryData>>(&self, uid: &str, op: Operation, data: T, time: DateTime<Utc>) -> Result<()> {
+        let mut history = History::new(uid.to_string(), op, Into::<HistoryData>::into(data));
         history.time = time.into();
         self.collection.insert_one(bson::to_document(&history).unwrap(), None)
             .await

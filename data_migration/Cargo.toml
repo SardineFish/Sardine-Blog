@@ -12,9 +12,11 @@ model = { path = "../model" }
 env_logger = "0.8.2"
 log = "0.4.14"
 serde = "1.0.123"
-options = { path = "../options" }
+shared = { path = "../shared" }
 url = "2.2.0"
 tokio = { version = "0.2.24", features = ["stream", "full"] }
 email-address-parser = "1.0.0"
 regex = "1.4.3"
 chrono-tz = "0.5.3"
+mongodb = "1.1.0"
+futures-util = "0.3.12"

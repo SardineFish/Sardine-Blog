@@ -1,5 +1,4 @@
-use core::panic;
-use std::{borrow::Cow, marker::PhantomData, mem};
+use std::{borrow::Cow, mem};
 
 use html2text::render::text_renderer::{TrivialDecorator};
 use pulldown_cmark::{CowStr, Event, Tag};
@@ -27,16 +26,15 @@ fn slice_utf8(input: &str, len: usize) -> &str {
     &input[..round_char_boundary(input, len)]
 }
 
-struct MarkdownToPlaintext<'s, Filter> {
+struct MarkdownToPlaintext<'s> {
     input: &'s str,
     len_limit: usize,
     text_builder: StringBuilder<Cow<'s, str>>,
-    html_builder: StringBuilder<&'s str>,
+    html_builder: StringBuilder<CowStr<'s>>,
     prev_event: Option<Event<'s>>,
-    _filter: PhantomData<Filter>,
 }
 
-impl<'s, Filter: ParseEventFilter> MarkdownToPlaintext<'s, Filter> {
+impl<'s> MarkdownToPlaintext<'s> {
 
     fn new(input: &'s str, limit: usize) -> Self {
         Self {
@@ -45,7 +43,6 @@ impl<'s, Filter: ParseEventFilter> MarkdownToPlaintext<'s, Filter> {
             text_builder: StringBuilder::new(),
             html_builder: StringBuilder::new(),
             prev_event: None,
-            _filter: Default::default(),
         }
     }
 
@@ -53,13 +50,9 @@ impl<'s, Filter: ParseEventFilter> MarkdownToPlaintext<'s, Filter> {
         let parser = pulldown_cmark::Parser::new(self.input);
 
         for event in parser {
-            println!("{:?}", event);
-            if !Filter::filter(&event) {
-                continue;
-            }
             match &event {
                 Event::Html(html) => {
-                    self.html_builder.push(html.to_owned().unwrap_str());
+                    self.html_builder.push(html.to_owned());
                 },
                 non_html => {
                     self.build_html();
@@ -97,12 +90,7 @@ impl<'s, Filter: ParseEventFilter> MarkdownToPlaintext<'s, Filter> {
     fn parse_non_html_event(&mut self, event: &Event<'s>) {
         match event {
             Event::Text(text) | Event::Code(text) => {
-                let slice = text.clone().unwrap_str();
-                if slice.len() + self.text_builder.len() >= self.len_limit {
-                    self.text_builder.push(Cow::Borrowed(slice_utf8(slice, self.rest_len())));
-                    return;
-                }
-                self.text_builder.push(Cow::Borrowed(slice));
+                self.text_builder.push(self.clip_text(text.to_owned()));
             }
             Event::SoftBreak => {
                 self.text_builder.push(Cow::Borrowed(" "));
@@ -138,51 +126,31 @@ impl<'s, Filter: ParseEventFilter> MarkdownToPlaintext<'s, Filter> {
             _ => ()
         }
     }
-}
 
-pub trait ParseEventFilter {
-    fn filter(event: &Event) -> bool;
-}
-
-struct DefaultFilter;
-
-impl ParseEventFilter for DefaultFilter {
-    fn filter(_vent: &Event) -> bool {
-        true
-    }
-}
-
-struct HtmlOnlyFilter;
-
-impl ParseEventFilter for HtmlOnlyFilter {
-    fn filter(event: &Event) -> bool {
-        match event {
-            Event::Html(_) => true,
-            _ => false,
+    fn clip_text(&self, text: CowStr<'s>) -> Cow<'s, str> {
+        if text.len() + self.text_builder.len() >= self.len_limit {
+            match text {
+                CowStr::Borrowed(text) => Cow::Borrowed(slice_utf8(text, self.rest_len())),
+                CowStr::Boxed(text) => Cow::Owned(slice_utf8(&text[..], self.rest_len()).to_owned()),
+                CowStr::Inlined(text) => Cow::Owned(slice_utf8(&text[..], self.rest_len()).to_owned()),
+            }
+        } else {
+            match text {
+                CowStr::Borrowed(text) => Cow::Borrowed(text),
+                CowStr::Boxed(text) => Cow::Owned((&text[..]).to_owned()),
+                CowStr::Inlined(text) => Cow::Owned((&text[..]).to_owned()),
+            }
         }
     }
 }
 
 
 pub fn md2plain(markdown: &str, limit: usize) -> String {
-    MarkdownToPlaintext::<DefaultFilter>::new(markdown, limit).to_plaintext()
+    MarkdownToPlaintext::new(markdown, limit).to_plaintext()
 }
 
-pub fn html2plain(html: &str, limit: usize) -> String {
-    MarkdownToPlaintext::<HtmlOnlyFilter>::new(html, limit).to_plaintext()
-}
-
-trait UnwrapCowStr<'s> {
-    fn unwrap_str(self) -> &'s str;
-}
-
-impl<'s> UnwrapCowStr<'s> for CowStr<'s> {
-    fn unwrap_str(self) -> &'s str {
-        match self {
-            CowStr::Borrowed(text) => text,
-            _ => panic!()
-        }
-    }
+pub fn html2plain(html: &str) -> String {
+    html2text::from_read_with_decorator(html.as_bytes(), usize::MAX, TrivialDecorator{})
 }
 
 #[cfg(test)]
@@ -291,7 +259,7 @@ This text will be italic This text will be bold You can combine them
 This is an div block.
 This is an link with span
 "#;
-        let plaintext = html2plain(input, usize::MAX);
+        let plaintext = html2plain(input);
         println!("{}", plaintext);
 
         assert_eq!(plaintext, expected);

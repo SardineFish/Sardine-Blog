@@ -1,7 +1,11 @@
 use chrono::Utc;
+use serde_json::json;
 use url::Url;
 
-use crate::{DocType, PidType, Post, PostType, error::{MapInternalError, Result}};
+use crate::{
+    error::{MapInternalError, Result},
+    DocType, PidType, Post, PostType,
+};
 
 #[derive(serde::Serialize)]
 struct IndexedDoc {
@@ -12,24 +16,65 @@ struct IndexedDoc {
     pub time: i64,
 }
 
-const INDEX_NAME: &str = "post";
-const TYPE_NAME: &str = "indexed_doc";
+const INDEX_NAME: &str = "post/";
+const TYPE_NAME: &str = "_doc/";
 
 #[derive(Clone)]
 pub struct ElasticSerachModel {
-    base_url: String,
+    base_url: Url,
     client: reqwest::Client,
 }
 
 impl ElasticSerachModel {
     pub fn new(base_url: String) -> Result<Self> {
         Ok(Self {
-            base_url,
+            base_url: Url::parse(&base_url).map_internal_err()?,
             client: reqwest::Client::builder()
                 .timeout(tokio::time::Duration::from_secs(3))
                 .build()
                 .map_internal_err()?,
         })
+    }
+
+    pub async fn init_index(&self) -> Result<()> {
+        // Create index
+        self.client
+            .put(self.base_url.join(INDEX_NAME).map_internal_err()?)
+            .json(&json!({
+              "settings": {
+                "analysis": {
+                  "analyzer": {
+                    "default": {
+                      "type": "ik_max_word"
+                    },
+                    "default_search": {
+                      "type": "ik_max_word"
+                    }
+                  }
+                }
+              },
+              "mappings": {
+                "dynamic": false,
+                "properties": {
+                  "pid": {
+                    "type": "long",
+                    "index": false
+                  },
+                  "author": { "type": "text" },
+                  "tags": { "type": "text" },
+                  "content": { "type": "text" },
+                  "time": {
+                    "type": "long",
+                    "index": false
+                  }
+                }
+              }
+            }))
+            .send()
+            .await
+            .map_internal_err()?;
+
+        Ok(())
     }
 
     pub async fn insert_post(&self, post: &Post, author: String) -> Result<()> {
@@ -46,8 +91,7 @@ impl ElasticSerachModel {
             time: Utc::now().timestamp_millis(),
         };
 
-        let url = Url::parse(&self.base_url)
-            .map_internal_err()?
+        let url = self.base_url
             .join(INDEX_NAME)
             .map_internal_err()?
             .join(TYPE_NAME)
@@ -55,23 +99,32 @@ impl ElasticSerachModel {
             .join(&post.pid.to_string())
             .map_internal_err()?;
 
-        let response = self.client.post(url)
+        log::info!("{}", url);
+
+        let response = self
+            .client
+            .put(url)
             .json(&doc)
             .send()
             .await
             .map_internal_err()?;
 
         if !response.status().is_success() {
-            Err(format!("Failed to index post {}: {}", post.pid, response.status())).map_internal_err()?;
+            Err(format!(
+                "Failed to index post {}: {}",
+                post.pid,
+                response.status()
+            ))
+            .map_internal_err()?;
         }
-        
+
         Ok(())
     }
 
     fn parse_doc(doc: &str, doc_type: DocType) -> String {
         match doc_type {
             DocType::PlainText => doc.to_owned(),
-            DocType::HTML => shared::md2plain::html2plain(doc, usize::MAX),
+            DocType::HTML => shared::md2plain::html2plain(doc),
             DocType::Markdown => shared::md2plain::md2plain(doc, usize::MAX),
         }
     }
