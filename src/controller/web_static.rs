@@ -68,6 +68,14 @@ async fn notfound_page(options: extractor::Options) -> actix_web::Result<NamedFi
     Ok(NamedFile::open(concat_path(&[&options.web_root, "404.html"]))?)
 }
 
+static_file!(search, "/search", "search/dist/index.html");
+
+fn serve_folder(opts: &ServiceOptions, mount_path: &str, serve_from: &str) -> fs::Files {
+    fs::Files::new(mount_path, concat_path(&[&opts.web_root, serve_from]))
+        .index_file("index.html")
+        .default_handler(web::route().to(notfound_page))
+        .redirect_to_slash_directory()
+}
 
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
     move |cfg: &mut ServiceConfig| {
@@ -79,11 +87,9 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .service(blog_index)
             .service(note_view)
             .service(unsubscribe_notification)
-            .service(fs::Files::new("/", &opts.web_root)
-                .index_file("index.html")
-                .default_handler(web::route().to(notfound_page))
-                .redirect_to_slash_directory()
-            )
+            .service(search)
+            .service(serve_folder(&opts, "/search/", "search/dist/"))
+            .service(serve_folder(&opts, "/", ""))
         );
     }
 }
