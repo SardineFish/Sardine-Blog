@@ -118,4 +118,4 @@ out
 .pnp.*
 
 
-.js.map
+*.js.map

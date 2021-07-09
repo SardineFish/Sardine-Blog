@@ -1,27 +1,33 @@
-import "webpack";
+import webpack from "webpack";
 import path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import devServer from "webpack-dev-server";
 
 /**
  * @type {webpack.Configuration}
  */
-export default {
+const config = {
     // mode:"production",
     entry: {
         index: "./src/page/index",
     },
     output: {
         path: path.resolve("./dist"),
-        filename: "static/script/[name].js"
+        filename: "static/script/[name].js",
+        publicPath: "/search",
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js"]
+        extensions: [".ts", ".tsx", ".js"],
     },
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
                 loader: "ts-loader"
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
             },
             {
                 test: /\.s[ac]ss$/i,
@@ -34,17 +40,17 @@ export default {
                         loader: "file-loader",
                         options: {
                             name: "[name].[ext]",
-                            context: "src/assets",
                             outputPath: "static/fonts",
-                            publicPath: "dist/static/fonts"
+                            publicPath: "/search/static/fonts"
                         }
                     }
                 ],
             }
-        ]
+        ],
     },
     mode: "development",
     devtool: "source-map",
+    /** @type {devServer.Configuration} */
     devServer: {
         contentBase: "./dist",
         writeToDisk: false,
@@ -52,15 +58,20 @@ export default {
         host: "localhost",
         port: 5000,
         proxy: {
-            "/api/**": {
-                target: "http://localhost:3000/",
-            },
-            "/search": {
-                bypass: () =>
+            "**": {
+                target: "http://localhost:3000",
+                bypass: (req, res, proxyOptions) =>
                 {
-                    return "/index.html";
-                }
-            }
+                    if (/^\/search\/static/.test(req.url))
+                    {
+                        return req.url.replace(/^\/search\/static/, "/static");
+                    }
+                    if (/^\/search/.test(req.url))
+                    {
+                        return "/index.html";
+                    }
+                },
+            },
         },
     },
     plugins: [
@@ -73,3 +84,5 @@ export default {
         }),
     ]
 };
+
+export default config;
