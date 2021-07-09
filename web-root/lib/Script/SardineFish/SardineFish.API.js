@@ -416,6 +416,13 @@
       }).response(),
       postScore: api("POST", "/api/rank/{key}").path({key: "string"}).body().response()
     },
+    Search: {
+      search: api("GET", "/api/search").query({
+        q: "string",
+        skip: "number",
+        count: "number"
+      }).response()
+    },
     DocType,
     HashMethod,
     Utils: {

@@ -210,6 +210,34 @@ export interface RecentActivity
     title?: string,
 }
 
+export interface SearchResult
+{
+    time: number,
+    timeout: boolean,
+    total_hits: number,
+    results: SearchHitInfo[],
+}
+
+export interface SearchHitInfo
+{
+    pid: number,
+    time: number,
+    author: string,
+    title: string,
+    preview: string,
+    doc_type: string,
+    tags: string[],
+    highlight: SearchHighlight,
+}
+
+export interface SearchHighlight
+{
+    title?: string,
+    tags?: string[],
+    author?: string,
+    content?: string,
+}
+
 const SardineFishAPI = {
     User: {
         checkAuth: api("GET", "/api/user")
@@ -411,6 +439,15 @@ const SardineFishAPI = {
                 data?: any,
             }>()
             .response<number>(),
+    },
+    Search: {
+        search: api("GET", "/api/search")
+            .query({
+                q: "string",
+                skip: "number",
+                count: "number",
+            })
+            .response<SearchResult>()
     },
     DocType,
     HashMethod,

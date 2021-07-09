@@ -111,6 +111,28 @@ export interface RecentActivity {
     time: number;
     title?: string;
 }
+export interface SearchResult {
+    time: number;
+    timeout: boolean;
+    total_hits: number;
+    results: SearchHitInfo[];
+}
+export interface SearchHitInfo {
+    pid: number;
+    time: number;
+    author: string;
+    title: string;
+    preview: string;
+    doc_type: string;
+    tags: string[];
+    highlight: SearchHighlight;
+}
+export interface SearchHighlight {
+    title?: string;
+    tags?: string[];
+    author?: string;
+    content?: string;
+}
 declare const SardineFishAPI: {
     User: {
         checkAuth: (params: Required<{}> & Partial<{}>) => Promise<string>;
@@ -253,6 +275,13 @@ declare const SardineFishAPI: {
             score: number;
             data?: any;
         }) => Promise<number>;
+    };
+    Search: {
+        search: (params: Required<{}> & Partial<{}> & Required<{
+            q: string;
+            skip: number;
+            count: number;
+        }> & Partial<{}>) => Promise<SearchResult>;
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;
