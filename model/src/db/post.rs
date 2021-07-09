@@ -4,8 +4,9 @@ use bson::{Document, doc, DateTime};
 use chrono::Utc;
 use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, FindOneOptions, ReturnDocument, UpdateOptions}};
 use tokio::stream::StreamExt;
+use shared::md2plain::{md2plain, html2plain, slice_utf8};
 
-use crate::{Blog, BlogContent, Comment, CommentContent, Note, NoteContent, error::*, model::PidType};
+use crate::{Blog, BlogContent, Comment, CommentContent, DocType, Note, NoteContent, error::*, model::PidType};
 use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
@@ -167,6 +168,13 @@ impl PostContent for BlogContent{}
 impl PostContent for NoteContent{}
 impl PostContent for CommentContent{}
 
+pub fn get_content_preview(doc_type: DocType, content: &str, limit: usize) -> String {
+    match doc_type {
+        DocType::HTML => slice_utf8(&html2plain(content), limit).to_owned(),
+        DocType::Markdown => md2plain(content, limit),
+        DocType::PlainText => slice_utf8(content, limit).to_owned(),
+    }
+}
 
 #[derive(Clone)]
 pub struct PostModel {
