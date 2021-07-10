@@ -1,5 +1,35 @@
-@import "../../../font/Open_Sans/OpenSans.css";
+@import "./font.scss";
 
 body {
-    font-family: 'Open Sans', 'Segoe UI', 'Microsoft YaHei UI', Roboto, Tahoma, Geneva, Verdana, sans-serif;
+    @include font-text;
+    margin: 0;
+    padding: 0;
+    background: #eee;
 }
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.page-content {
+    flex: 1 0;
+    width: 1000px;
+    margin: auto;
+    margin-top: 5em;
+}
+
+.page-footer {
+    @include font-ui;
+    background-color: #ddd;
+    color: #888;
+    height: 10em;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+@import "./top-nav.scss";
+@import "./search.scss";

@@ -1,0 +1,56 @@
+@import "./font.scss";
+@import "./theme.scss";
+
+.search-bar {
+    @include font-ui;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    background-color: white;
+    border-radius: 8em;
+    height: 3em;
+
+    transition: margin-top .3s ease-out;
+
+    &.empty {
+        margin-top: 30vh;
+    }
+
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration {
+        -webkit-appearance: none;
+    }
+
+    .search-input {
+        flex: 1 0;
+        border: none;
+        padding: none;
+        margin: none;
+        outline: none;
+        font: inherit;
+        font-weight: 500;
+        background: none;
+        height: 100%;
+        padding: 0 2em;
+
+        &::placeholder {
+            color: #aaa;
+        }
+    }
+
+    .icon {
+        height: 1.6em;
+        margin-right: 1em;
+        user-select: none;
+        cursor: pointer;
+        transition: all .1s;
+
+        &:hover {
+            fill: $theme-color;
+        }
+    }
+}

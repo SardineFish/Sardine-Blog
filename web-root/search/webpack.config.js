@@ -49,7 +49,7 @@ const config = {
         ],
     },
     mode: "development",
-    devtool: "source-map",
+    devtool: "eval-source-map",
     /** @type {devServer.Configuration} */
     devServer: {
         contentBase: "./dist",

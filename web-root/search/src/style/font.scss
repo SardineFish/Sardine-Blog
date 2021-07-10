@@ -1,0 +1,32 @@
+@import "../../../font/Open_Sans/OpenSans.css";
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Raleway'),
+        local('Raleway-Regular'),
+        url("../../../font/Raleway/Raleway-Medium.ttf") format('truetype');
+}
+
+@mixin font-text {
+    font-family: 'Open Sans',
+    'Segoe UI',
+    'Microsoft YaHei UI',
+    Roboto,
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
+@mixin font-ui {
+    font-family: 'Raleway',
+    'Roboto',
+    'Segoe UI',
+    'Microsoft YaHei UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
