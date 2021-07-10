@@ -123,7 +123,7 @@ export interface SearchHitInfo {
     author: string;
     title: string;
     preview: string;
-    doc_type: string;
+    doc_type: "Blog" | "Note";
     tags: string[];
     highlight: SearchHighlight;
 }
@@ -131,7 +131,7 @@ export interface SearchHighlight {
     title?: string;
     tags?: string[];
     author?: string;
-    content?: string;
+    content?: string[];
 }
 declare const SardineFishAPI: {
     User: {

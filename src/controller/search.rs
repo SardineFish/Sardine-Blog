@@ -11,7 +11,7 @@ use Response::Ok;
 
 #[derive(serde::Deserialize)]
 struct SearchQuery {
-    s: String,
+    q: String,
     skip: usize,
     count: usize,
 }
@@ -20,7 +20,7 @@ const THROTTLE: usize = 1;
 
 #[get("", wrap = "middleware::throttle(THROTTLE)")]
 async fn search(service: extractor::Service, query: Query<SearchQuery>) -> Response<SearchResult> {
-    Ok(service.search().search(&query.s, query.skip, query.count)
+    Ok(service.search().search(&query.q, query.skip, query.count)
         .await?)
 }
 

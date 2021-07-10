@@ -151,69 +151,71 @@ impl ElasticSerachModel {
 
     pub async fn search(&self, query: &str, skip: usize, count: usize) -> Result<SearchResult> {
         let data = json!({
-          "query": {
-            "bool": {
-              "should": [
-                {
-                  "match": {
-                    "title": {
-                      "query": query,
-                      "boost": 3
+            "query": {
+              "bool": {
+                "should": [
+                  {
+                    "match": {
+                      "title": {
+                        "query": query,
+                        "boost": 3
+                      }
+                    }
+                  },
+                  {
+                    "match": {
+                      "tags": {
+                        "query": query,
+                        "boost": 2
+                      }
+                    }
+                  },
+                  {
+                    "match": {
+                      "content": {
+                        "query": query,
+                        "boost": 1
+                      }
+                    }
+                  },
+                  {
+                    "match": {
+                      "author": {
+                        "query": query,
+                        "boost": 0.5
+                      }
                     }
                   }
+                ]
+              }
+            },
+            "fields": [
+              "pid",
+              "author",
+              "tags",
+              "time",
+              "title",
+              "preview",
+              "doc_type"
+            ],
+            "_source": false,
+            "from": skip,
+            "size": count,
+            "highlight": {
+              "fields": {
+                "tags": {},
+                "author": {},
+                "content": {
+                  "number_of_fragments" : 3
                 },
-                {
-                  "match": {
-                    "tags": {
-                      "query": query,
-                      "boost": 2
-                    }
-                  }
-                },
-                {
-                  "match": {
-                    "content": {
-                      "query": query,
-                      "boost": 1
-                    }
-                  }
-                },
-                {
-                  "match": {
-                    "author": {
-                      "query": query,
-                      "boost": 0.5
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "fields": [
-            "pid",
-            "author",
-            "tags",
-            "time",
-            "title",
-            "preview",
-            "doc_type"
-          ],
-          "_source": false,
-          "from": skip,
-          "size": count,
-          "highlight": {
-            "fields": {
-              "tags": {},
-              "author": {},
-              "content": {},
-              "title": {}
-            }
-          },
-          "sort": [
-            "_score",
-            { "time": "desc" }
-          ]
-        });
+                "title": {}
+              }
+            },
+            "sort": [
+              "_score",
+              { "time": "desc" }
+            ]
+          });
 
         let url = self.base_url.join(URL_SEARCH).map_internal_err()?;
 
@@ -305,7 +307,7 @@ impl From<ElasticHitInfo> for HitInfo {
             doc_type: hit.fields.doc_type.swap_remove(0),
             pid: hit.fields.pid[0],
             time: hit.fields.time[0],
-            tags: hit.fields.tags,
+            tags: hit.fields.tags.unwrap_or_default(),
             title: hit.fields.title.swap_remove(0),
             preview: hit.fields.preview.swap_remove(0),
             highlight: SearchHighlight {
@@ -347,7 +349,7 @@ struct DocFields {
     time: Vec<i64>,
     title: Vec<String>,
     doc_type: Vec<String>,
-    tags: Vec<String>,
+    tags: Option<Vec<String>>,
     preview: Vec<String>,
 }
 #[derive(Deserialize)]
