@@ -6,8 +6,10 @@ import { buildQueryString, parseQueryString } from "../misc/utils";
 import { useHistory } from "../misc/use-history";
 import InfiniteScroller from "react-infinite-scroller";
 import { SearchHitInfoBlock } from "../component/result-block";
-import { useThrottle } from "../misc/throttle";
+import { ThrottleReject, useThrottle } from "../misc/throttle";
 import clsx from "clsx";
+import { message } from "../component/message";
+import { APIError } from "../../../lib/Script/SardineFish/api-builder";
 
 interface UrlQuery extends Record<string, string | number>
 {
@@ -22,7 +24,7 @@ export function SearchPage()
     const [hits, setHits] = useState<SearchHitInfo[]>([]);
     const [isLoading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const searchThrottle = useThrottle(1);
+    const searchThrottle = useThrottle(1000, "newer");
 
     const [url, navigate] = useHistory(() =>
     {
@@ -40,12 +42,35 @@ export function SearchPage()
     const loadMore = async () =>
     {
         setLoading(true);
-        const results = await search();
-        setSearchResult(results);
-        setHits([...hits, ...results.results]);
-        if (results.results.length <= 0)
-            setHasMore(false);
-        setLoading(false);
+        try
+        {
+            const results = await search();
+            setSearchResult(results);
+            setHits([...hits, ...results.results]);
+            setHasMore(results.results.length > 0);
+        }
+        catch (err)
+        {
+            if (err === ThrottleReject)
+            {
+                message.warn("服务器要被玩坏啦 >_< ");
+                setHasMore(false);
+                return;
+            }
+            switch ((err as APIError).code)
+            {
+                case 0x30c00:
+                    message.warn("服务器要被玩坏啦 >_< (Request too frequent)");
+                    setHasMore(false);
+                    break;
+                default:
+                    message.error(err.message);
+            }
+        }
+        finally
+        {
+            setLoading(false);
+        }
     }
     const onSearch = async (query: string) =>
     {
