@@ -193,7 +193,7 @@
         const body = await response.json();
         return body;
       } catch (err) {
-        throw new APIError(-4, "Failed to parse response body.");
+        throw new APIError(-3, `${response.status} ${response.statusText}`);
       }
     }
   };

@@ -339,7 +339,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         catch (err)
         {
             // console.error(err);
-            throw new APIError(ClientErrorCode.ParseError, "Failed to parse response body.");
+            throw new APIError(ClientErrorCode.NetworkFailure, `${response.status} ${response.statusText}`);
         }
     }
 }

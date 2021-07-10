@@ -51,17 +51,16 @@ export function SearchPage()
         }
         catch (err)
         {
+            setHasMore(false);
             if (err === ThrottleReject)
             {
                 message.warn("服务器要被玩坏啦 >_< ");
-                setHasMore(false);
                 return;
             }
             switch ((err as APIError).code)
             {
                 case 0x30c00:
                     message.warn("服务器要被玩坏啦 >_< (Request too frequent)");
-                    setHasMore(false);
                     break;
                 default:
                     message.error(err.message);
