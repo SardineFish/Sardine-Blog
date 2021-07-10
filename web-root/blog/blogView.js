@@ -92,6 +92,29 @@ function checkLogin()
     });
 }
 
+function initSearch()
+{
+    let expand = false;
+    $("#search .icon-search").onclick = () =>
+    {
+        const value = $("#search-input").value;
+        if (!expand)
+        {
+            expand = true;
+            $("#search").classList.add("expand");
+        }
+        else if (!value)
+        {
+            expand = false;
+            $("#search").classList.remove("expand");
+        }
+        else
+        {
+            $("#search").submit();
+        }
+    };
+}
+
 function initTopBar()
 {
     var extend = false;
@@ -106,6 +129,7 @@ function initTopBar()
             $("#top").classList.remove("extend-side");
         extend = !extend;
     });
+    initSearch();
 }
 function loadBlog(pid) {
     /*var data = {

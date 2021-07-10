@@ -294,6 +294,25 @@ function addEventHandle()
         $("#searchText").css("border-bottom", "solid 2px rgba(0,0,0,0.2)");
         $("#buttonSearch").css("color", "solid 2px solid 2px rgba(0,0,0,0.6)");
     });
+    let expand = false;
+    $("#search .icon-search").click(() =>
+    {
+        const value = $("#search-input").get(0).value;
+        if (!expand)
+        {
+            expand = true;
+            $("#search").addClass("expand");
+        }
+        else if (!value)
+        {
+            expand = false;
+            $("#search").removeClass("expand");
+        }
+        else
+        {
+            $("#search").submit();
+        }
+    });
 }
 addEventHandle();
 

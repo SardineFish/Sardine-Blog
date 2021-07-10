@@ -668,10 +668,82 @@ textarea {
     align-items:flex-start;
 }
 
-#search::before {
-    content: "search";
+#search {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 2em;
+    font-size: 1rem;
 }
 
+#search .icon-search {
+    height: 24px;
+    margin-right: .5em;
+}
+
+#search-input {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: "Open sans",
+        "Roboto",
+        "Microsoft YaHei",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+    font-size: 16px;
+    border-bottom: solid 2px white;
+    background-color: transparent;
+    padding: 0;
+    width: 0;
+    height: 100%;
+    color: white;
+    user-select: initial;
+    transition: all .3s;
+}
+
+#search-input::placeholder {
+    color: rgba(255, 255, 255, .8);
+}
+
+#search.expand #search-input {
+    width: 16em;
+    padding: 0 .5em;
+}
+
+@media all and (max-width: 850px) {
+    #search.expand {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        background-color: #4DD0E1;
+        z-index: 1000000;
+    }
+
+    #search-input {
+        border: none 0 transparent;
+        background-color: rgba(255, 255, 255, .2);
+        color: white;
+        transition: all .1s;
+    }
+
+    #search-input::placeholder {
+        color: rgba(255, 255, 255, .8);
+    }
+
+    #search.expand #search-input {
+        margin-right: 2em;
+        flex: 1 0;
+        width: auto;
+        min-width: 1em;
+    }
+
+    #search.expand .icon-search {
+        height: 30px;
+        padding: 10px;
+    }
+}
 
 
 .top-icon {
@@ -809,17 +881,17 @@ textarea {
         padding-top: 50px;
         position: relative;
         max-width: 300px;
-        height: 100%;
         color: #888;
         left:-50%;
         transition: all .3s;
+        height: 3.2em;
     }
     .extend-side #top-nav{
         left: 0;
     }
     #top-nav > .item{
         color: inherit;
-        padding: 20px 40px;
+        padding: 1em 1.5em;
     }
     #top-nav > .item:hover{
         background-color: rgba(0,0,0,0.1);

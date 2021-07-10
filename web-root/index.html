@@ -218,10 +218,11 @@ tttttttttttttttttttttttttttttttttttttttttttt@@@@@@@@@@@@@@tttttttttttttt
                     </div>
                 </div>
                 <aside id="rightArea">
-                    <div id="searchArea" class="textbox">
-                        <input id="textboxSearch" placeholder="Search [施工中...]" type="text" />
+                    <form id="searchArea" action="/search" class="textbox">
+                        <input id="textboxSearch" name="q" placeholder="Search" type="text" autocomplete="off"/>
+                        <input type="submit" style="display: none;">
                         <a id="buttonSearch" class="iconButton material-icons">search</a>
-                    </div>
+                    </form>
                     <aside id="infoContainer" class="block">
                         <div id="avatar-wrapper" style="">
                             <img id="avatar" src="/api/user/SardineFish/avatar">

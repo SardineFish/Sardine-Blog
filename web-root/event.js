@@ -507,6 +507,7 @@ function addEventHandle()
         pageCodeIconHold = false;
     }
     $("#userFace").click(userFaceClick);
+    $("#buttonSearch").click(() => $("#searchArea").submit());
     loaded();
 }
 addEventHandle();
