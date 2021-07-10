@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#4DD0E1">
+    <title>501</title>
+    <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="//cdn-static.sardinefish.com/icon/LOGO.ico"
+        media="screen">
+    <link href="/font/Raleway/Raleway.css" rel="stylesheet" type="text/css">
+    
+<style>
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans",
+    "Roboto",
+    "等线",
+    'Segoe UI',
+    "Microsoft YaHei",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.font-UI {
+    font-family: "Raleway",
+    "Open Sans",
+    "Roboto",
+    "等线",
+    'Segoe UI',
+    "Microsoft YaHei",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+    user-select: none;
+    cursor: default;
+}
+
+.button {
+    padding: .5em 2em;
+    font-family: "Raleway", sans-serif;
+    user-select: none;
+    color: white;
+    background-color: #4DD0E1;
+    cursor: pointer;
+    letter-spacing: .2em;
+}
+
+#space {
+    background-color: transparent;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    perspective: 600px;
+    perspective-origin: center;
+}
+
+#solar-system {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(80deg);*/
+}
+
+#sun {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff06b;
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(-80deg);*/
+    z-index: 100;
+}
+
+#root.darken #sun {
+    box-shadow: 0 0 30px #fff06b;
+}
+
+#solar-system svg {
+    perspective: 300px;
+}
+
+#mercury {
+    height: 100px;
+    width: 100px;
+    top: calc(50% - 51px);
+    left: calc(50% - 51px);
+    animation-duration: 1.06s;
+}
+
+#mercury .antiRotate {
+    width: 10px;
+    height: 10px;
+    top: calc(50% - 5px);
+    left: -5px;
+    animation-duration: 1.06s;
+}
+
+#mercury .planet {
+    background-color: #a0a0a0;
+}
+
+#venus {
+    width: 140px;
+    height: 140px;
+    top: calc(50% - 71px);
+    left: calc(50% - 71px);
+    animation-duration: 1.757s;
+}
+
+#venus .antiRotate {
+    width: 14px;
+    height: 14px;
+    top: calc(50% - 7px);
+    left: -7px;
+    animation-duration: 1.757s;
+}
+
+#venus .planet {
+    background-color: #eae5cf;
+}
+
+#earth {
+    width: 200px;
+    height: 200px;
+    top: calc(50% - 101px);
+    left: calc(50% - 101px);
+    animation-duration: 3s;
+}
+
+#earth .antiRotate {
+    width: 20px;
+    height: 20px;
+    top: calc(50% - 10px);
+    left: -10px;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    z-index: -1;
+}
+
+#earth .planet {
+    background-color: #6DB5FF;
+}
+
+#mars {
+    animation-duration: 4.96s;
+    width: 280px;
+    height: 280px;
+    top: calc(50% - 141px);
+    left: calc(50% - 141px);
+}
+
+#mars .planet {
+    background-color: #ffbe6d;
+}
+
+#mars .antiRotate {
+    height: 14px;
+    width: 14px;
+    top: calc(50% - 7px);
+    left: -7px;
+    animation-duration: 4.96s;
+}
+
+.planet {
+    border-radius: 50%;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /*transform: rotateX(-80deg);*/
+    width: 100%;
+    height: 100%;
+}
+
+.orbit {
+    border: solid 1px rgba(128, 128, 128, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 0px;
+    left: auto;
+    animation-name: planetRotate;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transform-style: preserve-3d;
+    transform-origin: center;
+}
+
+.antiRotate {
+    animation-name: planetAntiRotate;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: absolute;
+    transform-origin: center;
+    transform-style: preserve-3d;
+}
+
+#solar-system g {
+    transform-origin: 500px 500px;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    perspective-origin: center;
+    transform-style: preserve-3d;
+    transform: rotateY(45deg);
+}
+
+@keyframes planetRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes planetAntiRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#top-nav>.item {
+    display: inline-block;
+    padding: 20px 30px;
+    cursor: pointer;
+    color: white;
+}
+
+*:focus {
+    outline: none;
+}
+
+#top {
+    background-color: #4DD0E1;
+    z-index: 100;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    height: 5em;
+}
+
+#root.darken #top {
+    opacity: 0;
+}
+
+#top-center {
+    width: 1200px;
+    margin: auto;
+    padding-top: 30px;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+#main {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: stretch;
+    min-height: calc(100vh - 5em - 100px);
+}
+
+#center {
+    width: 1024px;
+}
+
+@media all and (max-width:1440px) {
+    #center {
+        width: 800px;
+    }
+}
+
+.divide-line {
+    flex: auto;
+    height: 0;
+    border: solid 0.5px rgba(0, 0, 0, 0.1);
+}
+
+.divide-name {
+    margin-right: 1em;
+    color: #4DD0E1;
+}
+
+input {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    background-color: transparent;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+#footer {
+    background-color: rgba(0, 0, 0, 0.05);
+    height: 100px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    color: #AAA;
+}
+
+#top-nav .current {
+    display: inline-flex;
+}
+
+.top-right {
+    flex: 1 1;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#login {
+    color: white;
+    font-size: 24px;
+}
+
+.top-icon {
+    font-family: 'Material Icons';
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 1em;
+}
+
+#button-nouse {
+    background-color: white;
+    position: absolute;
+    top: 500px;
+    left: 200px;
+    display: block;
+    width: 2px;
+    height: 2px;
+    color: transparent;
+    cursor: pointer;
+    animation-name: star;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes star {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+#user-avatar {
+    height: 100%;
+    border-radius: 100%;
+}
+
+#user {
+    height: 40px;
+    position: relative;
+}
+
+#account-area.login>#login {
+    display: none;
+}
+
+#account-area.login>#user-login-wrapper {
+    display: flex;
+}
+
+#search {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 2em;
+    font-size: 1rem;
+}
+
+#search .icon-search {
+    height: 24px;
+    margin-right: .5em;
+}
+
+#search-input {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: "Open sans",
+        "Roboto",
+        "Microsoft YaHei",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+    font-size: 16px;
+    border-bottom: solid 2px white;
+    background-color: transparent;
+    padding: 0;
+    width: 0;
+    height: 100%;
+    color: white;
+    user-select: initial;
+    transition: all .3s;
+}
+
+#search-input::placeholder {
+    color: rgba(255, 255, 255, .8);
+}
+
+#search.expand #search-input {
+    width: 16em;
+    padding: 0 .5em;
+}
+
+@media all and (max-width: 850px) {
+    #search.expand {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        background-color: #4DD0E1;
+        z-index: 1000000;
+    }
+
+    #search-input {
+        border: none 0 transparent;
+        background-color: rgba(255, 255, 255, .2);
+        color: white;
+        transition: all .1s;
+    }
+
+    #search-input::placeholder {
+        color: rgba(255, 255, 255, .8);
+    }
+
+    #search.expand #search-input {
+        margin-right: 2em;
+        flex: 1 0;
+        width: auto;
+        min-width: 1em;
+    }
+
+    #search.expand .icon-search {
+        height: 30px;
+        padding: 10px;
+    }
+}
+
+
+.top-icon {
+    color: white;
+    font-size: 24px;
+}
+
+
+.flex-center {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#user-login-wrapper {
+    display: none;
+}
+
+.icon-button {
+    font-family: "Material Icons";
+    line-height: 1;
+
+}
+
+#button-menu {
+    font-size: 30px;
+    padding: 10px;
+    height: 50px;
+    width: 50px;
+    box-sizing: border-box;
+    display: none;
+    z-index: 100000;
+}
+
+#page-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 10px;
+    display: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+@media screen and (max-width:1280px) {
+    #top-center {
+        width: 100%;
+    }
+
+    #center {
+        padding: 0 30px;
+    }
+}
+
+@media screen and (max-width:850px) {
+    #top {
+        height: 50px;
+        position: fixed;
+        width: 100%;
+
+    }
+
+    #top-center {
+        padding: 0 10px 0 0px;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+    }
+
+    .top-icon {
+        margin-right: 10px;
+    }
+
+    #nav-wrapper {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        display: none;
+        opacity: 0;
+        transition: all .3s;
+    }
+
+    .extend-side #nav-wrapper {
+        display: block;
+        opacity: 1;
+    }
+
+    #top-nav {
+        display: flex;
+        flex-flow: column nowrap;
+        background-color: white;
+        width: 50%;
+        box-sizing: border-box;
+        padding-top: 50px;
+        position: relative;
+        max-width: 300px;
+        color: #888;
+        left: -50%;
+        transition: all .3s;
+        height: 3.2em;
+    }
+
+    .extend-side #top-nav {
+        left: 0;
+        height: 100%;
+    }
+
+    #top-nav>.item {
+        color: inherit;
+        padding: 1em 1.5em;
+    }
+
+    #top-nav>.item:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+
+    }
+
+    #button-menu {
+        display: block;
+    }
+
+    .extend-side #button-menu {
+        color: #666;
+    }
+
+    #page-title {
+        display: block;
+    }
+
+    #center {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+@media screen and (max-width:400px) {
+    #center {
+        padding: 0 10px;
+    }
+}
+
+#loading {
+    min-height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    padding-top: 20vh;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+@media all and (max-width:1280px) {
+    #side-area {
+        display: none;
+    }
+}
+
+#load-error {
+    text-align: center;
+    user-select: none;
+    cursor: default;
+}
+
+#root.darken #load-error {
+    opacity: 0;
+}
+
+#root.darken #main>aside {
+    opacity: 0;
+}
+
+#error-code {
+    color: #4DD0E1;
+    font-size: 4em;
+    margin: 0;
+    opacity: 1;
+    transition: opacity .3s linear 0s;
+}
+
+#error-msg {
+    opacity: 1;
+    transition: opacity .5s linear 1s;
+}
+
+#root.darken {
+    background: #222;
+    color: #EEE;
+    transition: background 1s;
+}
+
+
+.hover-trigger .non-hover {
+    display: initial;
+}
+
+.hover-trigger .hover {
+    display: none;
+}
+
+.hover-trigger:hover .non-hover {
+    display: none;
+}
+
+.hover-trigger:hover .hover {
+    display: initial;
+}
+
+app {
+    display: block;
+}
+
+.app {
+    position: relative;
+    overflow: hidden;
+    background-color: #eee;
+}
+
+.app-wrapper .cover {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Raleway",
+        sans-serif;
+}
+
+.app-wrapper header {
+    font-size: 1.6em;
+    margin: 1em 0;
+    letter-spacing: .05em;
+}
+
+.app-wrapper .button {
+    box-shadow: 0 0 20px #4dd0e15e;
+}
+
+.app .external {
+    display: block;
+    border: none 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.full-window {
+    overflow: hidden;
+}
+
+.app.full-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000000;
+}
+
+.app-wrapper .panel {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6em;
+}
+
+.app-wrapper .panel>* {
+    margin: .2em;
+    padding: .2em;
+    cursor: pointer;
+    user-select: none;
+    color: #777;
+}
+
+.app.load .cover {
+    display: none;
+}
+
+.app.load .external {
+    opacity: 1;
+    pointer-events: unset;
+}
+
+.app-wrapper .icon-button {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    position: relative;
+}
+
+.app-wrapper a.icon-button:hover {
+    text-decoration: none;
+}
+
+.app-wrapper .icon-button:hover::after {
+    opacity: 1;
+    transition: opacity .3s;
+}
+
+.app-wrapper .icon-button::after {
+    opacity: 0;
+    position: absolute;
+    bottom: -1em;
+    white-space: nowrap;
+    font-size: .8rem;
+    color: #aaa;
+    font-family: "Raleway",
+        sans-serif;
+}
+
+.button-new-tab::after {
+    content: "Open in new tab";
+}
+
+.button-reload::after {
+    content: "Reload";
+}
+
+.button-full-window::after {
+    content: "Full window";
+}
+
+.button-full-screen::after {
+    content: "Full screen";
+}
+</style>
+</head>
+
+<body>
+    <div id="root" class="">
+        <div id="top" class="font-UI">
+            <div id="top-center">
+                <div id="button-menu" class="icon-button">menu</div>
+                <header id="page-title" class="font-UI">501</header>
+                <div id="nav-wrapper">
+                    <nav id="top-nav">
+                        <a class="item" href="/">HOME</a>
+                        <a class="item" href="/blog/">BLOG</a>
+                        <a class="item" href="/note/">NOTES</a>
+                        <a class="item" href="https://lab.sardinefish.com">LAB</a>
+                        <a class="item" href="https://github.com/SardineFish">GITHUB</a>
+                        <a class="item" href="/about/">ABOUT</a>
+
+                    </nav>
+                </div>
+                <div class="top-right">
+                    <form id="search" class="top-icon" action="/search">
+                        <svg class="icon-search" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+                        </svg>
+                        <input id="search-input" type="search" placeholder="Search" name="q" autocomplete="off">
+                        <input type="submit" style="display: none;">
+                    </form>
+                    <div id="account-area" class="flex-center">
+                        <a id="login" class="top-icon" href="/account/login">person</a>
+                        <div id="user-login-wrapper" class="flex-center">
+                            <a id="write" class="top-icon" href="/blog/write/">edit</a>
+                            <div id="user">
+                                <img id="user-avatar" src="https://cdn-static.sardinefish.com/img/logo/Logo_256.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main id="main">
+            <div id="button-nouse"></div>
+            <div id="center" class="hide-loading">
+                <div id="loading">
+                    <div id="load-error">
+                        <p id="error-code">501</p>
+                        <p id="error-msg">在做了，在做了</p>
+                    </div>
+                    <div id="space">
+                        <div id="solar-system">
+                            <div id="sun"></div>
+                            <div id="mercury" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                            <div id="venus" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                            <div id="earth" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                            <div id="mars" class="orbit">
+                                <div class="antiRotate">
+                                    <div class="planet"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer id="footer" class="font-UI">
+            <p>Copyright © 2015-
+                <span>
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                </span> SardineFish, All Rights Reserved</p>
+            <div id="powered-by">Powered by SardineFish</div>
+        </footer>
+    </div>
+    
+<script>
+const $ = document.querySelector.bind(document);
+
+(() =>
+{
+    let expand = false;
+    $("#search .icon-search").onclick = () =>
+    {
+        const value = $("#search-input").value;
+        if (!expand)
+        {
+            expand = true;
+            $("#search").classList.add("expand");
+        }
+        else if (!value)
+        {
+            expand = false;
+            $("#search").classList.remove("expand");
+        }
+        else
+        {
+            $("#search").submit();
+        }
+    };
+})();
+$("#sun").onclick = () =>
+{
+    $("#root").classList.toggle("darken");
+}
+$("#button-menu").onclick = () =>
+{
+    $("#top").classList.toggle("extend-side");
+};
+</script>
+</body>
+
+</html>

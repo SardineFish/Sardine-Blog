@@ -1,0 +1,20 @@
+{
+  "name": "sar-blog-error",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build.js",
+  "type": "module",
+  "scripts": {
+    "build": "node ./build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SardineFish/Sardine-Blog.git"
+  },
+  "author": "SardineFish",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SardineFish/Sardine-Blog/issues"
+  },
+  "homepage": "https://github.com/SardineFish/Sardine-Blog#readme"
+}
