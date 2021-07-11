@@ -65,7 +65,8 @@ static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z
 
 
 async fn notfound_page(options: extractor::Options) -> actix_web::Result<NamedFile> {
-    Ok(NamedFile::open(concat_path(&[&options.web_root, "404.html"]))?)
+    Ok(NamedFile::open(concat_path(&[&options.web_root, "static/error/404.html"]))?
+        .set_status_code(StatusCode::NOT_FOUND))
 }
 
 static_file!(search, "/search", "search/dist/index.html");
