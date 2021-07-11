@@ -4,7 +4,7 @@
   font-weight: normal;
   src: local('Open Sans'),
        local('OpenSans-Light'),
-       url(/font/Open_Sans/OpenSans-Light.ttf) format('truetype');
+       url(/static/font/Open_Sans/OpenSans-Light.ttf) format('truetype');
 }
 body{
     padding: 0;

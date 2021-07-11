@@ -42,8 +42,8 @@ function imgClass()
 resource.icon = function () { };
 resource.font = function () { };
 resource.domain = "http://static.sardinefish.com/";
-//font/
-resource.font.fontIcons = resource.domain + "font/fontIcons.woff";
+//static/font/
+resource.font.fontIcons = resource.domain + "static/font/fontIcons.woff";
 //Img/
 resource.img = function () { };
 //Img/Logo/

@@ -885,6 +885,7 @@ textarea {
         left:-50%;
         transition: all .3s;
         height: 3.2em;
+        height: 100%;
     }
     .extend-side #top-nav{
         left: 0;
