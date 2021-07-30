@@ -57,12 +57,7 @@ async fn blog_index(
     }
 }
 
-
-
 static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,40}}", "notification/unsubscribe/index.html");
-
-
-
 
 async fn notfound_page(options: extractor::Options) -> actix_web::Result<NamedFile> {
     Ok(NamedFile::open(concat_path(&[&options.web_root, "static/error/404.html"]))?
