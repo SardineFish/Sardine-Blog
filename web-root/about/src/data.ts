@@ -661,7 +661,7 @@ export const friendsData: FriendData[] = [{
     name: "WeAthFolD",
     link: "//weathfold.github.io/",
     avatar: "//github.com/weathfold.png",
-    note: "超厉害的独立游戏 & MC Mod 开发者",
+    note: "最仰慕的独立游戏开发者，天才少年板少 RIP",
 },
 {
     name: "viseator",
