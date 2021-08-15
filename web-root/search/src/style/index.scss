@@ -31,6 +31,19 @@ body {
     justify-content: center;
 }
 
+@media screen and (max-width: 1024px) {
+    .page-content {
+        width: calc(100% - 2em);
+    }
+}
+
+@media all and (max-width: 700px) {
+    .page-content{
+        width: 100%;
+        margin-top: 3em
+    }
+}
+
 @import "./top-nav.scss";
 @import "./search.scss";
 @import "./message.scss";

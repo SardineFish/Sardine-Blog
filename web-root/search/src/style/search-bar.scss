@@ -54,3 +54,43 @@
         }
     }
 }
+
+@media all and (max-width: 700px) {
+    .search-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3em;
+        z-index: 10;
+        background: #f7f7f7;
+        border-radius: 0;
+
+        .search-input {
+            height: 2em;
+            margin-left: 3em;
+            padding-left: 1em;
+            padding-right: 1em;
+            min-width: 5em;
+        }
+
+        .icon {
+            margin-right: 1.3em;
+        }
+
+        .background {
+            position: absolute;
+            left: 3em;
+            right: 1em;
+            top: .5em;
+            height: 2em;
+            border-radius: 1em;
+            background: white;
+            z-index: -1;
+        }
+
+        &.empty {
+            margin-top: unset;
+        }
+    }
+}

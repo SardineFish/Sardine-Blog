@@ -55,7 +55,7 @@ const config = {
         contentBase: "./dist",
         writeToDisk: false,
         open: false,
-        host: "localhost",
+        host: "0.0.0.0",
         port: 5000,
         proxy: {
             "**": {

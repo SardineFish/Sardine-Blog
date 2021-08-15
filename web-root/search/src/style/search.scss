@@ -61,12 +61,14 @@
 
 
     .tags {
+        flex: 1 0;
         list-style: none;
         margin: 0;
         padding: 0;
         display: flex;
         flex-flow: row nowrap;
         align-items: baseline;
+        overflow: hidden;
     }
 
     .tag {
@@ -75,6 +77,7 @@
         color: #888;
         padding: .2em 1em;
         border-radius: 1em;
+        white-space: nowrap;
 
         &.highlight {
             color: $theme-color;
@@ -99,6 +102,42 @@
                 content: "……";
                 color: #888;
             }
+        }
+    }
+}
+
+@media all and (max-width: 700px) {
+    .results-container {
+        margin: 0;
+    }
+
+    .search-hit {
+        padding: 1.5em;
+        margin: 1em 0;
+        border-radius: 0;
+
+        .title {
+            font-size: 1.2em;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .info {
+            margin-top: .2em;
+            font-size: .7em;
+        }
+
+        .tag {
+            margin: 0 .5em;
+        }
+
+        .content {
+            font-size: .9em;
+            margin-bottom: 0;
+            overflow: hidden;
+            white-space: initial;
+            word-break: normal;
         }
     }
 }

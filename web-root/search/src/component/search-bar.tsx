@@ -35,6 +35,7 @@ export function SearchBar(props: SearchBarProps)
             placeholder={placeholder}
         />
         <input type="submit" style={{ display: "none" }}></input>
-        <Icons.Magnify className="icon button search-commit" onClick={search}/>
+        <Icons.Magnify className="icon button search-commit" onClick={search} />
+        <div className="background"></div>
     </form>)
 }
