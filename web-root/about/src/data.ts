@@ -709,4 +709,16 @@ export const friendsData: FriendData[] = [{
     avatar: "https://img.sardinefish.com/OTA0OTA0",
     note: "引擎行业资深前辈",
 },
+{
+    name: "KSKun",
+    link: "https://ksmeow.moe",
+    avatar: "https://github.com/KSkun.png",
+    note: "不会图形学的后端程序员不是好的游戏开发",
+},
+{
+    name: "Maxwell",
+    link: "https://taohongmaxwell.github.io/",
+    avatar: "https://github.com/TaohongMaxwell.png",
+    note: "基友桃子，电子知识产权事务",
+}
 ]
