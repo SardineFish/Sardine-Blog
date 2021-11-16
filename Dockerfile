@@ -1,15 +1,15 @@
 FROM debian:buster-slim
 WORKDIR /app
-RUN echo "deb http://mirrors.cloud.aliyuncs.com/debian/ buster main contrib non-free \
-    deb http://mirrors.cloud.aliyuncs.com/debian/ buster-updates main contrib non-free \
-    deb http://mirrors.cloud.aliyuncs.com/debian/ buster-proposed-updates main non-free contrib \
-    deb http://mirrors.cloud.aliyuncs.com/debian/ buster-backports main non-free contrib \
-    deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster-updates main contrib non-free \
-    deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster main contrib non-free \
-    deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster-proposed-updates main contrib non-free \
-    deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster-backports main contrib non-free \
-    deb http://mirrors.cloud.aliyuncs.com/debian-security/ buster/updates main non-free contrib \
-    deb-src http://mirrors.cloud.aliyuncs.com/debian-security/ buster/updates main non-free contrib" \
+RUN echo "deb http://mirrors.ustc.edu.cn/debian/ buster main contrib non-free \
+    deb http://mirrors.ustc.edu.cn/debian/ buster-updates main contrib non-free \
+    deb http://mirrors.ustc.edu.cn/debian/ buster-proposed-updates main non-free contrib \
+    deb http://mirrors.ustc.edu.cn/debian/ buster-backports main non-free contrib \
+    deb-src http://mirrors.ustc.edu.cn/debian/ buster-updates main contrib non-free \
+    deb-src http://mirrors.ustc.edu.cn/debian/ buster main contrib non-free \
+    deb-src http://mirrors.ustc.edu.cn/debian/ buster-proposed-updates main contrib non-free \
+    deb-src http://mirrors.ustc.edu.cn/debian/ buster-backports main contrib non-free \
+    deb http://mirrors.ustc.edu.cn/debian-security/ buster/updates main non-free contrib \
+    deb-src http://mirrors.ustc.edu.cn/debian-security/ buster/updates main non-free contrib" \
     > /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get install -y libssl-dev ca-certificates
