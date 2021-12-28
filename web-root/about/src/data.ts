@@ -690,7 +690,7 @@ export const friendsData: FriendData[] = [{
     name: "Alisa",
     link: "//alisahhh.github.io/",
     avatar: "//github.com/alisahhh.png",
-    note: "ACM & ICPC 程序媛"
+    note: "ACM & ICPC 天才少女 wls"
 },
 {
     name: "PetnaKanojo",
@@ -701,7 +701,7 @@ export const friendsData: FriendData[] = [{
     name: "Daniel",
     link: "https://hustdanielhu.com/",
     avatar: "https://github.com/Danielmelody.png",
-    note: "Graphics / PL / 开源社区大佬"
+    note: "Graphics / PL / Rust 开源社区大佬"
 },
 {
     name: "逍遥剑客",
@@ -720,5 +720,11 @@ export const friendsData: FriendData[] = [{
     link: "https://taohongmaxwell.github.io/",
     avatar: "https://github.com/TaohongMaxwell.png",
     note: "基友桃子，电子知识产权事务",
+},
+{
+    name: "miyehn",
+    link: "https://miyehn.me/blog/",
+    avatar: "https://github.com/miyehn.png",
+    note: "图形 / TA / 美术 / 独立游戏开发者",
 }
 ]
