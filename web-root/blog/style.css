@@ -1308,3 +1308,12 @@ body.full-window {
 .button-full-screen::after {
     content: "Full screen";
 }
+
+del.black {
+    background: black;
+    color: transparent;
+}
+
+.markdown-body hr {
+    height: 0.1em;
+}

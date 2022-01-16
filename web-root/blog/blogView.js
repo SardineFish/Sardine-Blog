@@ -269,6 +269,7 @@ function loadApp(element)
 {
     const src = element.getAttribute("src");
     const name = element.getAttribute("name");
+    const scale = element.getAttribute("scale") || 1;
 
     const iframe = document.createElement("iframe");
 
@@ -312,6 +313,12 @@ function loadApp(element)
                 iframe.height = window.innerWidth > window.innerHeight
                     ? Math.floor(iframe.width * 9 / 16)
                     : Math.floor(iframe.width * 16 / 9);
+                app.style.width = `${iframe.width}px`;
+                app.style.height = `${iframe.height}px`;
+                iframe.width /= scale;
+                iframe.height /= scale;
+                iframe.style.transform = `scale(${scale})`;
+                iframe.style.transformOrigin = "top left";
             }
             app.appendChild(iframe);
 
@@ -335,6 +342,8 @@ function loadApp(element)
             {
                 document.body.classList.add("full-window");
                 app.classList.add("full-window");
+                app.style.width = "";
+                app.style.height = "";
                 Promise.resolve().then(() => resize());
             }
             panel.querySelector(".button-full-screen").onclick = () => app.requestFullscreen({ navigationUI: "hide" }); 
