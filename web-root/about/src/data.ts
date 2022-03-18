@@ -726,5 +726,11 @@ export const friendsData: FriendData[] = [{
     link: "https://miyehn.me/blog/",
     avatar: "https://github.com/miyehn.png",
     note: "图形 / TA / 美术 / 独立游戏开发者",
+},
+{
+    name: "Ablustrund",
+    link: "https://ablustrund.com/",
+    avatar: "https://github.com/Ablustrund.png",
+    note: "CG | NLPer",
 }
 ]
