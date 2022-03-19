@@ -731,6 +731,6 @@ export const friendsData: FriendData[] = [{
     name: "Ablustrund",
     link: "https://ablustrund.com/",
     avatar: "https://github.com/Ablustrund.png",
-    note: "CG | NLPer",
+    note: "好兄弟 | CG/NLPer 大佬",
 }
 ]
