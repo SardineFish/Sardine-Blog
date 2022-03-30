@@ -64,7 +64,7 @@ impl From<Comment> for NestedComment {
             comment_to: comment.comment_to,
             author: comment.author,
             time: comment.time.into(),
-            text: comment.text,
+            text: comment.content.text,
             comments: Vec::with_capacity(2),
             depth: 0,
         }

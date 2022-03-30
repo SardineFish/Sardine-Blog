@@ -43,12 +43,12 @@ impl From<Blog> for PubBlog {
         Self {
             pid: blog.pid,
             author: blog.author,
-            doc: blog.doc,
-            doc_type: blog.doc_type,
+            doc: blog.content.doc,
+            doc_type: blog.content.doc_type,
             stats: blog.stats,
-            tags: blog.tags,
+            tags: blog.content.tags,
             time: blog.time.into(),
-            title: blog.title,
+            title: blog.content.title,
         }
     }
 }

@@ -42,9 +42,9 @@ impl From<Comment> for PubComment {
     fn from(comment: Comment) -> Self {
         Self {
             author: comment.author,
-            comment_to: comment.comment_to,
+            comment_to: comment.content.comment_to,
             pid: comment.pid,
-            text: comment.text,
+            text: comment.content.text,
             time: comment.time.into(),
         }
     }

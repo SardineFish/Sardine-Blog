@@ -28,8 +28,8 @@ impl From<Note> for PubNote {
         Self{
             pid: note.pid,
             author: note.author,
-            doc: note.doc,
-            doc_type: note.doc_type,
+            doc: note.content.doc,
+            doc_type: note.content.doc_type,
             time: note.time.into(),
             stats: note.stats
         }

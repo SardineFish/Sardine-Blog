@@ -1,4 +1,4 @@
-use std::{ usize};
+use std::{ usize, ops::{Deref, DerefMut}};
 
 use bson::{Document, doc, DateTime};
 use chrono::Utc;
@@ -6,7 +6,7 @@ use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options
 use tokio::stream::StreamExt;
 use shared::md2plain::{md2plain, html2plain, slice_utf8};
 
-use crate::{Blog, BlogContent, Comment, CommentContent, DocType, Note, NoteContent, error::*, model::PidType};
+use crate::{Blog, BlogContent, Comment, CommentContent, DocType, Note, NoteContent, error::*, model::PidType, PubUserInfo};
 use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
@@ -52,6 +52,23 @@ pub struct MiscellaneousPostContent {
     pub url: String,
 }
 
+impl PostData for MiscellaneousPostContent {
+    fn post_type_name() -> &'static str {
+        "Miscellaneous"
+    }
+
+    fn wrap(self) -> PostType {
+        PostType::Miscellaneous(self)
+    }
+
+    fn unwrap(data: PostType) -> Option<Self> {
+        match data {
+            PostType::Miscellaneous(data) => Some(data),
+            _ => None
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub enum PostTypeName {
     Note,
@@ -80,8 +97,63 @@ impl PostType {
     }
 }
 
+#[derive(Deserialize, Clone)]
+pub struct Post<T: PostData> {
+    pub pid: PidType,
+    pub uid: String,
+    pub time: bson::DateTime,
+    pub stats: PostStats,
+    pub author: PubUserInfo,
+
+    #[serde(flatten, bound="T: PostData")]
+    pub content: T,
+}
+
+impl<T: PostData> Deref for Post<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.content
+    }
+}
+
+impl<T: PostData> DerefMut for Post<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.content
+    }
+}
+
+pub trait PostMeta {
+    fn pid(&self) -> PidType;
+    fn stats(&self) -> &PostStats;
+    fn author_uid(&self) -> &str;
+}
+
+pub trait GenericPost: PostMeta + DeserializeOwned + Clone {
+    fn post_type_name() -> &'static str;
+}
+
+impl<T: PostData> PostMeta for Post<T> {
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn author_uid(&self) -> &str {
+        &self.uid
+    }
+}
+
+impl<T: PostData> GenericPost for Post<T>{
+
+    fn post_type_name() -> &'static str {
+        T::post_type_name()
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone)]
-pub struct Post {
+pub struct PostDoc {
     pub(crate) _id: ObjectId,
     pub pid: PidType,
     pub uid: String,
@@ -90,7 +162,7 @@ pub struct Post {
     pub data: PostType,
 }
 
-impl Post {
+impl PostDoc {
     pub fn new(pid: PidType, post: PostType, author: &str) -> Self{
         Self {
             _id: ObjectId::new(),
@@ -103,62 +175,26 @@ impl Post {
     }
 }
 
-pub trait FlatPostData {
-    fn post_type() -> &'static str;
-}
+impl PostMeta for PostDoc {
+    fn pid(&self) -> PidType {
+        self.pid
+    }
 
-impl FlatPostData for Blog{
-    fn post_type() -> &'static str {
-        "Blog"
+    fn stats(&self) -> &PostStats {
+        &self.stats
     }
-}
-impl FlatPostData for Note{
-    fn post_type() -> &'static str {
-        "Note"
-    }
-}
-impl FlatPostData for Comment{
-    fn post_type() -> &'static str {
-        "Comment"
+
+    fn author_uid(&self) -> &str {
+        &self.uid
     }
 }
 
-pub trait PostData {
-    fn stats(&self) -> &PostStats;
-    fn pid(&self) -> PidType;
+pub trait PostData: Serialize + DeserializeOwned + Clone + Sized {
+    fn post_type_name() -> &'static str;
+    fn wrap(self) -> PostType;
+    fn unwrap(data: PostType) -> Option<Self>;
 }
-impl PostData for Post {
-    fn stats(&self) -> &PostStats {
-        &self.stats
-    }
-    fn pid(&self) -> PidType {
-        self.pid
-    }
-}
-impl PostData for Blog {
-    fn stats(&self) -> &PostStats {
-        &self.stats
-    }
-    fn pid(&self) -> PidType {
-        self.pid
-    }
-}
-impl PostData for Note {
-    fn stats(&self) -> &PostStats {
-        &self.stats
-    }
-    fn pid(&self) -> PidType {
-        self.pid
-    }
-}
-impl PostData for Comment {
-    fn stats(&self) -> &PostStats {
-        &self.stats
-    }
-    fn pid(&self) -> PidType {
-        self.pid
-    }
-}
+
 
 pub trait PostContent {
     // fn from_post(post: Post) -> Result<Self>;
@@ -276,7 +312,7 @@ impl PostModel {
         Ok(())
     }
     
-    pub async fn new_post(&self, post_type: PostType, uid: &str) -> Result<Post> {
+    pub async fn new_post(&self, post_type: PostType, uid: &str) -> Result<PostDoc> {
         let query = doc! {
             "_id": &self.meta_id,
         };
@@ -297,10 +333,10 @@ impl PostModel {
 
         let pid = metadata.posts;
 
-        Ok(Post::new(pid, post_type, uid))
+        Ok(PostDoc::new(pid, post_type, uid))
     }
 
-    pub async fn insert(&self, post: &Post) -> Result<()> {
+    pub async fn insert(&self, post: &PostDoc) -> Result<()> {
         let query = doc! {
             "pid": post.pid
         };
@@ -353,7 +389,7 @@ impl PostModel {
         Ok(())
     }
 
-    pub async fn get_raw_by_pid(&self, pid: PidType) -> Result<Post> {
+    pub async fn get_raw_by_pid(&self, pid: PidType) -> Result<PostDoc> {
         let query = doc!{
             "pid": pid
         };
@@ -365,16 +401,16 @@ impl PostModel {
         bson::from_document(doc).map_model_result()
     }
 
-    pub async fn get_list<P: FlatPostData + DeserializeOwned>(&self, skip: usize, limit: usize) -> Result<Vec<P>> {
+    pub async fn get_list<T: GenericPost>(&self, skip: usize, limit: usize) -> Result<Vec<T>> {
         let query = doc!{
-            "data.type": P::post_type()
+            "data.type": T::post_type_name()
         };
-        let result: Vec<P> = Self::get_flat_posts(&self.collection, query, skip, limit, Some(("time", SortOrder::DESC)))
+        let result: Vec<T> = Self::get_flat_posts(&self.collection, query, skip, limit, Some(("time", SortOrder::DESC)))
             .await?
             .filter_map(|d| d.ok().and_then(|doc| {
-                let result = bson::from_document::<P>(doc);
+                let result = bson::from_document::<T>(doc);
                 if let Err(err) = &result {
-                    log::warn!("Error when deserializing a {}: {}", P::post_type(), err);
+                    log::warn!("Error when deserializing a {}: {}", T::post_type_name(), err);
                 }
                 result.ok()
             }))
@@ -383,10 +419,10 @@ impl PostModel {
         Ok(result)
     }
 
-    pub async fn get_post_by_pid<P : FlatPostData + DeserializeOwned>(&self, pid:PidType) -> Result<P> {
+    pub async fn get_post_by_pid<T : GenericPost>(&self, pid:PidType) -> Result<T> {
         let query = doc!{
             "pid": pid,
-            "data.type": P::post_type()
+            "data.type": T::post_type_name()
         };
 
         let doc = Self::get_flat_posts(&self.collection, query, 0, 1, None)
@@ -457,7 +493,7 @@ impl PostModel {
         bson::from_bson(result).map_model_result()
     }
 
-    async fn increase_stats(&self, pid: PidType, key: &str) -> Result<Post> {
+    async fn increase_stats(&self, pid: PidType, key: &str) -> Result<PostDoc> {
         let query = doc! {
             "pid": pid
         };
@@ -476,7 +512,7 @@ impl PostModel {
         bson::from_document(doc).map_model_result()
     }
 
-    async fn decrease_stats(&self, pid: PidType, key: &str) -> Result<Post> {
+    async fn decrease_stats(&self, pid: PidType, key: &str) -> Result<PostDoc> {
         let query = doc! {
             "pid": pid
         };

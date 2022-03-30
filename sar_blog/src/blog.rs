@@ -27,7 +27,7 @@ pub struct BlogPreview {
 impl BlogPreview {
     pub fn from_blog(blog: Blog, words_limit: usize) -> BlogPreview {
         
-        let preview = match blog.doc_type {
+        let preview = match blog.content.doc_type {
             model::DocType::PlainText => slice_utf8(&blog.doc, words_limit).to_owned(),
             model::DocType::Markdown => md2plain(&blog.doc, words_limit),
             model::DocType::HTML => slice_utf8(&html2plain(&blog.doc), words_limit).to_owned(),
@@ -35,9 +35,9 @@ impl BlogPreview {
 
         BlogPreview {
             pid: blog.pid,
-            title: blog.title,
+            title: blog.content.title,
             time: blog.time.into(),
-            tags: blog.tags,
+            tags: blog.content.tags,
             author: blog.author,
             preview,
         }

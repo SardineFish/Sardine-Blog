@@ -6,7 +6,7 @@ use mongodb::{Collection, Database, bson};
 use serde::{Serialize, Deserialize};
 
 use crate::{ PostType, user::User};
-use crate::{PidType, Post, error::*};
+use crate::{PidType, PostDoc, error::*};
 use shared::error::LogError;
 
 const COLLECTION_HISTORY: &str = "history";
@@ -22,8 +22,8 @@ pub enum HistoryData {
     User(User),
 }
 
-impl From<Post> for HistoryData {
-    fn from(post: Post) -> Self {
+impl From<PostDoc> for HistoryData {
+    fn from(post: PostDoc) -> Self {
         Self::Post{ pid: post.pid, data: post.data}
     }
 }

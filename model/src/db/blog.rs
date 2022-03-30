@@ -1,4 +1,4 @@
-use crate::{ model::{PidType}, PostStats};
+use crate::{ model::{PidType}, PostStats, PostData, PostType};
 use mongodb::{bson::doc};
 use mongodb::{
     self,
@@ -6,7 +6,7 @@ use mongodb::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::{ user::PubUserInfo};
+use super::{ user::PubUserInfo, post::Post};
 
 #[derive(Serialize, Deserialize, Clone, Copy)]
 pub enum DocType {
@@ -23,21 +23,21 @@ pub struct BlogContent {
     pub doc: String,
 }
 
+impl PostData for BlogContent {
+    fn post_type_name() -> &'static str {
+        "Blog"
+    }
 
-#[derive(Deserialize, Clone)]
-pub struct Blog {
-    pub title: String,
-    pub tags: Vec<String>,
-    pub doc_type: DocType,
-    pub doc: String,
+    fn wrap(self) -> crate::PostType {
+        PostType::Blog(self)
+    }
 
-    pub pid: PidType,
-    pub uid: String,
-    pub time: bson::DateTime,
-    pub stats: PostStats,
-    pub author: PubUserInfo,
+    fn unwrap(data: crate::PostType) -> Option<Self> {
+        match data {
+            PostType::Blog(data) => Some(data),
+            _ => None,
+        }
+    }
 }
 
-
-impl Blog {
-}
+pub type Blog = Post<BlogContent>;

@@ -3,25 +3,14 @@ use mongodb::{Collection, Database, bson::{self, doc}};
 use serde::{Serialize, Deserialize};
 use tokio::stream::StreamExt;
 
-use crate::{PostStats, model::PidType};
+use crate::{model::PidType, PostData, PostType};
 use crate::error::*;
 
-use super::{post::{PostModel, SortOrder}, user::PubUserInfo};
+use super::{post::{PostModel, SortOrder, Post}};
 
 const COLLECTION_COMMENT: &str = "post";
 
-#[derive(Deserialize, Clone)]
-pub struct Comment {
-    pub comment_to: PidType,
-    pub comment_root: PidType,
-    pub text: String,
-
-    pub pid: PidType,
-    pub uid: String,
-    pub time: bson::DateTime,
-    pub stats: PostStats,
-    pub author: PubUserInfo,
-}
+pub type Comment = Post<CommentContent>;
 
 // impl Comment {
 //     pub fn new(root_pid: PidType, pid: PidType, comment_to: PidType, author: &User) -> Self {
@@ -45,6 +34,23 @@ pub struct CommentContent {
     pub comment_root: PidType,
     pub text: String,
     pub notified: bool,
+}
+
+impl PostData for CommentContent {
+    fn post_type_name() -> &'static str {
+        "Comment"
+    }
+
+    fn wrap(self) -> crate::PostType {
+        PostType::Comment(self)
+    }
+
+    fn unwrap(data: crate::PostType) -> Option<Self> {
+        match data {
+            PostType::Comment(data) => Some(data),
+            _ => None,
+        }
+    }
 }
 
 // impl Post for Comment {

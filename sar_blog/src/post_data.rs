@@ -1,4 +1,4 @@
-use model::{MiscellaneousPostContent, Operation, PidType, PostData, PostStats, PostType, SessionID};
+use model::{MiscellaneousPostContent, Operation, PidType, PostData, PostStats, PostType, SessionID, GenericPost, PostMeta};
 use serde::{Serialize};
 
 use crate::{Service, error::*};
@@ -71,7 +71,7 @@ impl<'s> PostDataService<'s> {
         Ok(results)
     }
 
-    pub async fn visit<P: PostData>(&self, post: &P, session_id: &SessionID) -> Result<usize> {
+    pub async fn visit<P: PostMeta>(&self, post: &P, session_id: &SessionID) -> Result<usize> {
         let not_visited = self.service.redis.session(session_id)
             .add_visit(post.pid(), self.service.option.visit_expire_time.num_seconds() as usize)
             .await?;

@@ -6,7 +6,7 @@ use url::Url;
 use crate::{
     db::post::get_content_preview,
     error::{MapInternalError, Result},
-    DocType, PidType, Post, PostType,
+    DocType, PidType, PostDoc, PostType,
 };
 
 #[derive(Serialize)]
@@ -93,7 +93,7 @@ impl ElasticSerachModel {
         Ok(())
     }
 
-    pub async fn insert_post(&self, post: &Post, author: String) -> Result<()> {
+    pub async fn insert_post(&self, post: &PostDoc, author: String) -> Result<()> {
         let (title, tags, content, preview) = match &post.data {
             PostType::Blog(blog) => (
                 blog.title.clone(),

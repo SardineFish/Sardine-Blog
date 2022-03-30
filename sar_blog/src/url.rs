@@ -1,4 +1,4 @@
-use model::{PidType, Post, PostType, PostTypeName};
+use model::{PidType, PostDoc, PostType, PostTypeName};
 use shared::ServiceOptions;
 
 use crate::Service;
@@ -38,7 +38,7 @@ impl<'s> UrlService<'s> {
         self.from_post(&post).await
     }
 
-    pub async fn from_post(&self, post: &Post) -> Result<String> {
+    pub async fn from_post(&self, post: &PostDoc) -> Result<String> {
         match &post.data {
             PostType::Blog(_) => Ok(self.blog(post.pid)),
             PostType::Note(_) => Ok(self.note(post.pid)),
