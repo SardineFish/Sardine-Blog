@@ -52,7 +52,7 @@ impl<'s, T: PostData> PostService<'s, T> {
     }
 
     pub async fn post(&self, uid: &str, content: T) -> Result<PidType> {
-        let user = self.service.model.user.get_by_uid(&uid).await.map_service_err()?;
+        let user = self.service.model.user.get_by_uid(&uid).await?;
         let post_type = content.wrap();
         let post = self.service.model.post.new_post(post_type, &user.uid)
             .await?;
@@ -73,6 +73,13 @@ impl<'s, T: PostData> PostService<'s, T> {
     pub async fn update(&self, pid: PidType, uid: &str, content: T) -> Result<()> {
         self.service.model.post.update_content(pid, &content)
             .await?;
+
+        if T::ALLOW_SEARCH && self.service.option.enable_indexing {
+            let post = self.service.model.post.get_raw_by_pid(pid).await?;
+            let user = self.service.model.user.get_by_uid(&uid).await?;
+
+            self.service.search().index(&post, &user.info.name).await?;
+        }
         
         self.service.model.history.record(uid, model::Operation::Update, (pid, content.wrap()))
             .await?;
