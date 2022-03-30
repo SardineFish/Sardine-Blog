@@ -23,6 +23,9 @@ pub struct BlogContent {
 }
 
 impl PostData for BlogContent {
+    
+    const ALLOW_SEARCH: bool = true;
+
     fn post_type_name() -> &'static str {
         "Blog"
     }

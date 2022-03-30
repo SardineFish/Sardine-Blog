@@ -32,8 +32,7 @@ impl<'s, T: PostData> PostService<'s, T> {
             .model
             .post
             .get_list::<Post<T>>(skip, limit)
-            .await
-            .map_service_err()?;
+            .await?;
 
         let list = list.into_iter()
             .map(Preview::from)
@@ -44,12 +43,10 @@ impl<'s, T: PostData> PostService<'s, T> {
 
     pub async fn get_by_pid(&self, session_id: &SessionID, pid: PidType) -> Result<Post<T>> {
         let mut post = self.service.model.post.get_post_by_pid::<Post<T>>(pid)
-            .await
-            .map_service_err()?;
+            .await?;
 
         post.stats.views = self.service.post_data().visit(&post, &session_id)
-            .await
-            .map_service_err()?;
+            .await?;
 
         Ok(post)
     }
@@ -58,27 +55,27 @@ impl<'s, T: PostData> PostService<'s, T> {
         let user = self.service.model.user.get_by_uid(&uid).await.map_service_err()?;
         let post_type = content.wrap();
         let post = self.service.model.post.new_post(post_type, &user.uid)
-            .await
-            .map_service_err()?;
+            .await?;
         
-        self.service.model.post.insert(&post).await.map_service_err()?;
+        self.service.model.post.insert(&post).await?;
         let pid = post.pid;
 
+        if T::ALLOW_SEARCH && self.service.option.enable_indexing {
+            self.service.search().index(&post, &user.info.name).await?;
+        }
+
         self.service.model.history.record(uid, model::Operation::Create, post)
-            .await
-            .map_service_err()?;
+            .await?;
 
         Ok(pid)
     }
 
     pub async fn update(&self, pid: PidType, uid: &str, content: T) -> Result<()> {
         self.service.model.post.update_content(pid, &content)
-            .await
-            .map_service_err()?;
+            .await?;
         
         self.service.model.history.record(uid, model::Operation::Update, (pid, content.wrap()))
-            .await
-            .map_service_err()?;
+            .await?;
 
         Ok(())
     }
@@ -87,8 +84,7 @@ impl<'s, T: PostData> PostService<'s, T> {
         let post: Option<T> = self.service.model.post.delete(pid).await.map_service_err()?;
         if let Some(content) = post {
             self.service.model.history.record(uid, model::Operation::Delete, (pid, content.clone().wrap()))
-                .await
-                .map_service_err()?;
+                .await?;
             Ok(Some(content))
         } else {
             Ok(None)

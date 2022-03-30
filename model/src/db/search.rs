@@ -93,7 +93,7 @@ impl ElasticSerachModel {
         Ok(())
     }
 
-    pub async fn insert_post(&self, post: &PostDoc, author: String) -> Result<()> {
+    pub async fn insert_post(&self, post: &PostDoc, author: &str) -> Result<()> {
         let (title, tags, content, preview) = match &post.data {
             PostType::Blog(blog) => (
                 blog.title.clone(),
@@ -111,7 +111,7 @@ impl ElasticSerachModel {
         };
         let doc = IndexedDoc {
             pid: post.pid,
-            author,
+            author: author.to_string(),
             tags,
             title,
             preview,

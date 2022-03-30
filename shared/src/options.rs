@@ -29,6 +29,7 @@ pub struct ServiceOptions {
     pub report_address: String,
     #[serde(with="json_duration_format")]
     pub report_interval: Duration,
+    pub enable_indexing: bool,
     pub elastic_url: String,
 }
 
@@ -56,6 +57,7 @@ impl Default for ServiceOptions {
             message_board_notify: "me@sardinefish.com".to_owned(),
             report_address: "me@sardinefish.com".to_owned(),
             report_interval: Duration::minutes(5),
+            enable_indexing: false,
             elastic_url: "http://localhost:9200".to_owned(),
         }
     }

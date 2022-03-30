@@ -12,6 +12,9 @@ pub struct NoteContent {
 }
 
 impl PostData for NoteContent {
+
+    const ALLOW_SEARCH: bool = true;
+
     fn post_type_name() -> &'static str {
         "Note"
     }

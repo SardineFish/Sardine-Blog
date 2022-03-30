@@ -15,15 +15,14 @@ impl<'m> NoteService<'m> {
         let user = match author {
             Author::Anonymous(info) => self.service().user().get_anonymous(&info).await?,
             Author::Authorized(auth) => 
-                self.service().model.user.get_by_uid(&auth.uid).await.map_service_err()?
+                self.service().model.user.get_by_uid(&auth.uid).await?
         };
 
         content.validate_with_access(user.access)?;
         let content_text = content.doc.clone();
 
         let pid = self.inner().post(&user.uid, content)
-            .await
-            .map_service_err()?;
+            .await?;
 
         let result = self.service().push_service().send_note_notify(
             &self.service().option.message_board_notify,  

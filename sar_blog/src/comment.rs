@@ -77,16 +77,14 @@ impl<'m> CommentService<'m> {
 
     pub async fn get_comments_of_pid(&self, pid: PidType, depth_limit: usize) ->Result<Vec<NestedCommentRef>> {
         let comments = self.inner().service.model.comment.get_by_comment_root(pid)
-            .await
-            .map_service_err()?;
+            .await?;
 
         CommentService::construct_comments(comments, pid, depth_limit)
     }
 
     pub async fn post(&self, comment_to: PidType, text: &str, author: Author) -> Result<PidType> {
         let post = self.service().model.post.get_raw_by_pid(comment_to)
-            .await
-            .map_service_err()?;
+            .await?;
        let user = match author {
             Author::Anonymous(info) => self.service().user().get_anonymous(&info).await?,
             Author::Authorized(auth) => 
@@ -105,8 +103,7 @@ impl<'m> CommentService<'m> {
             comment_to,
             text: text.to_owned(),
             notified: false,
-        }).await
-            .map_service_err()?;
+        }).await?;
 
         { // Try send notification email
             let receiver = self.service().model.user.get_by_uid(&post.uid).await?;

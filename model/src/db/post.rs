@@ -192,6 +192,7 @@ impl PostMeta for PostDoc {
 }
 
 pub trait PostData: Serialize + DeserializeOwned + Clone + Sized {
+    const ALLOW_SEARCH: bool = false;
     fn post_type_name() -> &'static str;
     fn wrap(self) -> PostType;
     fn unwrap(data: PostType) -> Option<Self>;
