@@ -109,6 +109,26 @@ pub struct Post<T: PostData> {
     pub content: T,
 }
 
+impl<T: PostData> PostMeta for Post<T> {
+    fn pid(&self) -> PidType {
+        self.pid
+    }
+    fn stats(&self) -> &PostStats {
+        &self.stats
+    }
+    fn author_uid(&self) -> &str {
+        &self.uid
+    }
+}
+
+impl<T: PostData> GenericPost for Post<T>{
+    type Content = T;
+
+    fn post_type_name() -> &'static str {
+        T::post_type_name()
+    }
+}
+
 impl<T: PostData> Deref for Post<T> {
     type Target = T;
 
@@ -130,26 +150,8 @@ pub trait PostMeta {
 }
 
 pub trait GenericPost: PostMeta + DeserializeOwned + Clone {
+    type Content : PostData;
     fn post_type_name() -> &'static str;
-}
-
-impl<T: PostData> PostMeta for Post<T> {
-    fn pid(&self) -> PidType {
-        self.pid
-    }
-    fn stats(&self) -> &PostStats {
-        &self.stats
-    }
-    fn author_uid(&self) -> &str {
-        &self.uid
-    }
-}
-
-impl<T: PostData> GenericPost for Post<T>{
-
-    fn post_type_name() -> &'static str {
-        T::post_type_name()
-    }
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -194,15 +196,6 @@ pub trait PostData: Serialize + DeserializeOwned + Clone + Sized {
     fn wrap(self) -> PostType;
     fn unwrap(data: PostType) -> Option<Self>;
 }
-
-
-pub trait PostContent {
-    // fn from_post(post: Post) -> Result<Self>;
-}
-
-impl PostContent for BlogContent{}
-impl PostContent for NoteContent{}
-impl PostContent for CommentContent{}
 
 pub fn get_content_preview(doc_type: DocType, content: &str, limit: usize) -> String {
     match doc_type {
@@ -355,7 +348,7 @@ impl PostModel {
         }
     }
 
-    pub async fn delete<T: PostContent + DeserializeOwned>(&self, pid: PidType) -> Result<Option<T>> {
+    pub async fn delete<T: PostData>(&self, pid: PidType) -> Result<Option<T>> {
         let query = doc! {
             "pid": pid
         };
@@ -374,7 +367,7 @@ impl PostModel {
         }
     }
 
-    pub async fn update_content<T: PostContent + Serialize + DeserializeOwned>(&self, pid: PidType, content: &T) -> Result<()> {
+    pub async fn update_content<T: PostData>(&self, pid: PidType, content: &T) -> Result<()> {
         let query = doc! {
             "pid": pid
         };

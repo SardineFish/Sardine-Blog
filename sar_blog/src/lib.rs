@@ -12,6 +12,7 @@ mod email_notify;
 mod url;
 mod rank;
 mod search;
+mod post;
 
 #[allow(dead_code)]
 pub mod utils;

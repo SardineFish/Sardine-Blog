@@ -2,9 +2,9 @@ use std::{ cell::{Ref, RefCell, RefMut}, collections::{HashMap}};
 use std::rc::Rc;
 
 use chrono::{DateTime, Utc};
-use model::{Comment, CommentContent, Model, PidType, PostType, PubUserInfo, RedisCache};
+use model::{Comment, CommentContent, PidType, PostType, PubUserInfo};
 use serde::{ Serialize, Serializer};
-use crate::{email_notify::CommentNotifyInfo, service::Service, user::Author, utils::json_datetime_format};
+use crate::{email_notify::CommentNotifyInfo, user::Author, utils::json_datetime_format, post::PostServiceExtend};
 
 use crate::{error::*};
 
@@ -71,23 +71,12 @@ impl From<Comment> for NestedComment {
     }
 }
 
-pub struct CommentService<'m> {
-    model: &'m Model,
-    _redis: &'m RedisCache,
-    service: &'m Service,
-}
+pub type CommentService<'s> = PostServiceExtend<'s, CommentContent>;
 
 impl<'m> CommentService<'m> {
-    pub fn new(service: &'m Service) -> Self {
-        Self{
-            service: service,
-            model: &service.model,
-            _redis: &service.redis,
-        }
-    }
 
     pub async fn get_comments_of_pid(&self, pid: PidType, depth_limit: usize) ->Result<Vec<NestedCommentRef>> {
-        let comments = self.model.comment.get_by_comment_root(pid)
+        let comments = self.inner().service.model.comment.get_by_comment_root(pid)
             .await
             .map_service_err()?;
 
@@ -95,79 +84,59 @@ impl<'m> CommentService<'m> {
     }
 
     pub async fn post(&self, comment_to: PidType, text: &str, author: Author) -> Result<PidType> {
-        let post = self.model.post.get_raw_by_pid(comment_to)
+        let post = self.service().model.post.get_raw_by_pid(comment_to)
             .await
             .map_service_err()?;
        let user = match author {
-            Author::Anonymous(info) => self.service.user().get_anonymous(&info).await?,
+            Author::Anonymous(info) => self.service().user().get_anonymous(&info).await?,
             Author::Authorized(auth) => 
-                self.model.user.get_by_uid(&auth.uid).await.map_service_err()?
+                self.service().model.user.get_by_uid(&auth.uid).await.map_service_err()?
         };
 
         let comment_root = match &post.data {
             PostType::Blog(_) | PostType::Note(_) | PostType::Miscellaneous(_) => post.pid,
             PostType::Comment(content) => content.comment_root,
         };
-        let comment = PostType::Comment(CommentContent {
+
+        
+
+        let pid = self.inner().post(&user.uid, CommentContent {
             comment_root,
             comment_to,
             text: text.to_owned(),
             notified: false,
-        });
-        let comment_post = self.model.post.new_post(comment, &user.uid)
-            .await
-            .map_service_err()?;
-        
-        self.model.post.insert(&comment_post).await.map_service_err()?;
-        self.model.post.add_comment(comment_to).await?;
-        if comment_to != comment_root {
-            self.model.post.add_comment(comment_root).await?;
-        }
- 
-        self.model.history.record(&user.uid, model::Operation::Create, (comment_post.pid, comment_post.data))
-            .await
+        }).await
             .map_service_err()?;
 
         { // Try send notification email
-            let receiver = self.model.user.get_by_uid(&post.uid).await?;
+            let receiver = self.service().model.user.get_by_uid(&post.uid).await?;
             if let Some(email) = &receiver.info.email {
-                let url = self.service.url().from_post(&post).await?;
+                let url = self.service().url().from_post(&post).await?;
 
-                let result = self.service.push_service().send_comment_notify(&email, CommentNotifyInfo {
+                let result = self.service().push_service().send_comment_notify(&email, CommentNotifyInfo {
                     author_avatar: user.info.avatar,
                     author_name: user.info.name,
-                    author_url: user.info.url.unwrap_or(self.service.url().homepage()),
+                    author_url: user.info.url.unwrap_or(self.service().url().homepage()),
                     url,
                     time: Utc::now().format("%Y-%m-%d %H-%M-%S").to_string(),
                     comment_text: text.to_owned(),
                     receiver_name: receiver.info.name,
-                    unsubscribe_url: self.service.url().unsubscribe_notification(&receiver.uid),
+                    unsubscribe_url: self.service().url().unsubscribe_notification(&receiver.uid),
                 }).await;
 
                 if let Err(err) = result {
                     log::error!("Failed to send email notification:{:?}", err);
                 } else {
-                    self.model.comment.update_notify_state(comment_post.pid, true).await?;
+                    self.service().model.comment.update_notify_state(pid, true).await?;
                 }
             }
         }
 
-        Ok(comment_post.pid)
+        Ok(pid)
     }
 
     pub async fn delete(&self, uid: &str, pid: PidType) -> Result<Option<CommentContent>> {
-        let result = self.model.post.delete::<CommentContent>(pid)
-            .await
-            .map_service_err()?;
-        
-        if let Some(content) = result {
-            self.model.history.record(uid, model::Operation::Delete, (pid, PostType::Comment(content.clone())))
-                .await
-                .map_service_err()?;
-            Ok(Some(content))
-        } else {
-            Ok(None)
-        }
+        self.inner().delete(uid, pid).await
     }
 
     fn construct_comments(comments: Vec<Comment>, root_pid: PidType, depth_limit: usize) -> Result<Vec<NestedCommentRef>> {

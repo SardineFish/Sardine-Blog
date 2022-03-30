@@ -12,22 +12,6 @@ const COLLECTION_COMMENT: &str = "post";
 
 pub type Comment = Post<CommentContent>;
 
-// impl Comment {
-//     pub fn new(root_pid: PidType, pid: PidType, comment_to: PidType, author: &User) -> Self {
-//         Self {
-//             root_pid,
-//             pid,
-//             comment_to,
-//             author: PubUserInfo::from(author),
-//             uid: author.uid.clone(),
-//             time: Utc::now().into(),
-//             notify: false,
-//             _id: Default::default(),
-//             text: Default::default(),
-//         }
-//     }
-// }
-
 #[derive(Serialize, Deserialize, Clone)]
 pub struct CommentContent {
     pub comment_to: PidType,
@@ -52,41 +36,6 @@ impl PostData for CommentContent {
         }
     }
 }
-
-// impl Post for Comment {
-//     fn pid(&self) -> PidType {
-//         self.pid
-//     }
-//     fn author(&self) -> &PubUserInfo {
-//         &self.author
-//     }
-//     fn time(&self) -> chrono::DateTime<Utc> {
-//         self.time.into()
-//     }
-//     fn post_type(&self) -> PostType {
-//         PostType::Comment
-//     }
-//     fn stats(&self) -> &PostStats {
-//         unreachable!()
-//     }
-// }
-
-// #[derive(Serialize, Deserialize)]
-// struct CommentCollection {
-//     pub _id: ObjectId,
-//     pub pid: PidType,
-//     pub comments: Vec<Comment>,
-// }
-
-// impl CommentCollection {
-//     pub fn new(pid: PidType) -> Self {
-//         Self {
-//             _id: ObjectId::new(),
-//             pid,
-//             comments: Default::default(),
-//         }
-//     }
-// }
 
 #[derive(Clone)]
 pub struct CommentModel {
