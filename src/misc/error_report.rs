@@ -1,4 +1,4 @@
-use std::{mem::{replace}, sync::{Mutex, mpsc::{Receiver, SyncSender, sync_channel}}, thread::spawn};
+use std::{sync::{Mutex, mpsc::{Receiver, SyncSender, sync_channel}}, thread::spawn};
 
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 use log::{Level, Metadata, Record};
@@ -15,8 +15,8 @@ struct ErrorReportBuffer {
 impl ErrorReportBuffer {
     pub fn fetch_records(&mut self) -> Vec<ErrorRecord> {
         if Utc::now() - self.last_report_time >= self.buffer_timeout {
-            let buffer = replace(&mut self.records, Vec::new());
-            if buffer.len() > 0 {
+            let buffer = std::mem::take(&mut self.records);
+            if !buffer.is_empty() {
                 self.last_report_time = Utc::now();
             }
             buffer
@@ -83,7 +83,7 @@ impl log::Log for ServiceMornitor {
                 });
                 buffer.fetch_records()
             };
-            if records.len() > 0 {
+            if !records.is_empty() {
                 let result = self.report_sender.send(records);
                 if let Err(err) = result {
                     log::error!("Failed to send error reports through channel: {:?}", err);

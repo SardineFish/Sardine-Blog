@@ -179,6 +179,7 @@ pub fn get_content_preview(doc_type: DocType, content: &str, limit: usize) -> St
 #[derive(Clone)]
 pub struct PostModel {
     collection: Collection,
+    #[allow(unused)]
     coll_meta: Collection,
     update_options: FindOneAndUpdateOptions,
     meta_id: ObjectId,

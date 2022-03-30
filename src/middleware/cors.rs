@@ -40,14 +40,14 @@ where
             if let Some(origin) = access.allow_origin() {
                 response.headers_mut().insert(
                     header::ACCESS_CONTROL_ALLOW_ORIGIN, 
-                    HeaderValue::from_str(origin).unwrap_or(HeaderValue::from_static("null"))
+                    HeaderValue::from_str(origin).unwrap_or_else(|_| HeaderValue::from_static("null"))
                 );
             }
             if let Some(methods) = access.allow_methods() {
                 for m in methods {
                     response.headers_mut().insert(
                         header::ACCESS_CONTROL_ALLOW_METHODS, 
-                        HeaderValue::from_str(m.as_str()).unwrap_or(HeaderValue::from_static("null"))
+                        HeaderValue::from_str(m.as_str()).unwrap_or_else(|_| HeaderValue::from_static("null"))
                     )
                 }
             }

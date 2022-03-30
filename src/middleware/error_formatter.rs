@@ -29,7 +29,7 @@ where
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
-        ok(ErrorFormatterMiddleware { service: service })
+        ok(ErrorFormatterMiddleware { service })
     }
 }
 
@@ -67,14 +67,14 @@ where
                 let mut result = result.map_body(|_, body| match body {
                     ResponseBody::Body(Body::Bytes(bytes)) => {
                         let json = ErrorResponseData::from(
-                                Error::UncaughtError(
+                                Error::Uncaught(
                                     std::str::from_utf8(&bytes).unwrap().to_owned()))
                             .build_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     },
                     ResponseBody::Other(Body::Bytes(bytes)) => {
                         let json = ErrorResponseData::from(
-                                Error::UncaughtError(
+                                Error::Uncaught(
                                     std::str::from_utf8(&bytes).unwrap().to_owned()))
                             .build_json();
                         ResponseBody::Other(Body::Bytes(Bytes::from(json)))
@@ -82,7 +82,7 @@ where
                     _ => {
                         warn!("Unkown error response body");
                         let json = ErrorResponseData::from(
-                                Error::UncaughtError(status.to_string().to_owned()))
+                                Error::Uncaught(status.to_string()))
                             .build_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     }

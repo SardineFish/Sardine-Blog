@@ -33,7 +33,7 @@ where
 {
     pub fn from_func(func: Func) -> Self{
         Self {
-            func: func,
+            func,
             _s: Default::default(),
             _f: Default::default(),
         }

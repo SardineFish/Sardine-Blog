@@ -78,11 +78,11 @@ async fn post(
         None => Author::Anonymous(AnonymousUserInfo {
             name: data.name.as_ref()
                 .empty_as_none()
-                .ok_or(Error::invalid_params("Missing 'name'"))?
+                .ok_or_else(|| Error::invalid_params("Missing 'name'"))?
                 .clone(),
             avatar: data.avatar.as_ref()
                 .empty_as_none()
-                .ok_or(Error::invalid_params("Missing 'avatar'"))?
+                .ok_or_else(|| Error::invalid_params("Missing 'avatar'"))?
                 .clone(),
             email: data.email.clone().empty_as_none(),
             url: data.url.clone().empty_as_none(),

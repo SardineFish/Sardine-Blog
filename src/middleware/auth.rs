@@ -17,7 +17,7 @@ pub async fn auth_from_request<T : HttpMessage>(service: &sar_blog::Service, req
                 Ok(Some(info))
             },
             Err(ServiceError::Unauthorized) => Ok(None),
-            Err(err) => Err(Error::ServiceError(err)),
+            Err(err) => Err(Error::Service(err)),
         }
     } else {
         Ok(None)
@@ -34,12 +34,15 @@ where
     let result = match auth_from_request(service, &request).await {
         Ok(Some(info)) => {
             match service.user().auth_access(&info.uid, access).await {
-                Ok(_) => Ok(request.extensions_mut().insert(info)),
-                Err(ServiceError::AccessDenied) => Err(Response::<()>::ClientError(error::Error::ServiceError(ServiceError::AccessDenied))),
-                Err(err) =>Err(Response::<()>::ServerError(error::Error::ServiceError(err))),
+                Ok(_) => {
+                    request.extensions_mut().insert(info);
+                    Ok(())
+                },
+                Err(ServiceError::AccessDenied) => Err(Response::<()>::ClientError(error::Error::Service(ServiceError::AccessDenied))),
+                Err(err) =>Err(Response::<()>::ServerError(error::Error::Service(err))),
             }
         },
-        Ok(None) => Err(Response::<()>::ClientError(error::Error::ServiceError(ServiceError::Unauthorized))),
+        Ok(None) => Err(Response::<()>::ClientError(error::Error::Service(ServiceError::Unauthorized))),
         Err(err) => Err(Response::<()>::ServerError(err)),
     };
     match result {

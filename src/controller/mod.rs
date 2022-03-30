@@ -17,7 +17,7 @@ use shared::ServiceOptions;
 use crate::middleware;
 
 
-pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
+pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
         cfg.service(scope("/api")
             .configure(blog::config)
@@ -32,7 +32,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
             .configure(rank::config)
             .wrap(middleware::error_formatter())
         ).service(scope("")
-            .configure(web_static::config(opts.clone()))
+            .configure(web_static::config(opts))
         );
     }
 }

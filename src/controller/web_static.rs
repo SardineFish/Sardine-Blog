@@ -12,7 +12,7 @@ use serde::Deserialize;
 use super::extractor;
 
 pub fn concat_path(paths: &[&str]) -> PathBuf {
-    let path: PathBuf = paths.into_iter().collect();
+    let path: PathBuf = paths.iter().collect();
     path
 }
 
@@ -73,7 +73,7 @@ fn serve_folder(opts: &ServiceOptions, mount_path: &str, serve_from: &str) -> fs
         .redirect_to_slash_directory()
 }
 
-pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig)->() {
+pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
         cfg.service(scope("")
             .service(login_index)

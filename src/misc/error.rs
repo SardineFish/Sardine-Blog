@@ -10,17 +10,17 @@ pub(crate) trait ErrorStatusCode {
 
 #[derive(Debug)]
 pub enum Error {
-    ServiceError(sar_blog::Error),
-    WebError(actix_web::Error),
-    SerializeError,
-    UncaughtError(String),
+    Service(sar_blog::Error),
+    Web(actix_web::Error),
+    Serialize,
+    Uncaught(String),
     Misc(StatusCode, &'static str),
 }
 
 impl ErrorStatusCode for Error {
     fn status_code(&self) -> StatusCode {
         match self {
-            Error::ServiceError(err) => match err {
+            Error::Service(err) => match err {
                 ServiceError::DataNotFound(_) => StatusCode::NOT_FOUND,
                 ServiceError::DataConflict(_) => StatusCode::BAD_REQUEST,
                 ServiceError::InvalidParams(_) => StatusCode::BAD_REQUEST,
@@ -32,9 +32,9 @@ impl ErrorStatusCode for Error {
                 ServiceError::RateLimit => StatusCode::IM_A_TEAPOT,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             }
-            Error::SerializeError => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::WebError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Serialize => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Web(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Uncaught(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Misc(code, _) => code.to_owned(),
         }
     }
@@ -43,16 +43,16 @@ impl ErrorStatusCode for Error {
 impl Error {
     pub fn code(&self) -> u64 {
         match self {
-            Error::SerializeError => 0x0001_0000,
-            Error::WebError(_) => 0x0002_0000,
-            Error::ServiceError(err) => 0x0003_0000 | err.code(),
-            Error::UncaughtError(_) => 0x0004_0000,
+            Error::Serialize => 0x0001_0000,
+            Error::Web(_) => 0x0002_0000,
+            Error::Service(err) => 0x0003_0000 | err.code(),
+            Error::Uncaught(_) => 0x0004_0000,
             Error::Misc(_, _) => 0x0005_0000,
         }
     }
     pub fn status_code(&self) -> StatusCode {
         match self {
-            Error::ServiceError(err) => match err {
+            Error::Service(err) => match err {
                 ServiceError::DataNotFound(_) => StatusCode::NOT_FOUND,
                 ServiceError::DataConflict(_) => StatusCode::BAD_REQUEST,
                 ServiceError::InvalidParams(_) => StatusCode::BAD_REQUEST,
@@ -64,23 +64,23 @@ impl Error {
                 ServiceError::RateLimit => StatusCode::IM_A_TEAPOT,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             }
-            Error::SerializeError => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::WebError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Serialize => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Web(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Uncaught(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Misc(code, _) => code.to_owned(),
         }
     }
     pub fn invalid_params(msg: &str) -> Error {
-        Error::ServiceError(ServiceError::InvalidParams(msg.to_string()))
+        Error::Service(ServiceError::InvalidParams(msg.to_string()))
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Error::ServiceError(err) => fmt::Display::fmt(&err, f),
-            Error::SerializeError | Error::WebError(_) => write!(f, "Internal Error"),
-            Error::UncaughtError(err) => fmt::Display::fmt(err, f),
+            Error::Service(err) => fmt::Display::fmt(&err, f),
+            Error::Serialize | Error::Web(_) => write!(f, "Internal Error"),
+            Error::Uncaught(err) => fmt::Display::fmt(err, f),
             Error::Misc(_, msg) => fmt::Display::fmt(msg, f),
         }
     }
@@ -97,14 +97,14 @@ impl<T> MapControllerError<T> for std::result::Result<T, ServiceError> {
     fn map_contoller_result(self) -> Result<T> {
         match self {
             Ok(x) => Ok(x),
-            Err(err) => Err(Error::ServiceError(err))
+            Err(err) => Err(Error::Service(err))
         }
     }
 }
 
 impl From<ServiceError> for Error {
     fn from(err: ServiceError) -> Self {
-        Error::ServiceError(err)
+        Error::Service(err)
     }
 }
 

@@ -69,7 +69,7 @@ fn config_server(options: ServiceOptions, service: Service) -> std::io::Result<S
             .data(opt_moved.clone())
             .data(service.clone())
             .data(web::PayloadConfig::new(3 * 1024 * 1024))
-            .data(JsonConfig::default().limit(1 * 1024 * 1024))
+            .data(JsonConfig::default().limit(2 * 1024 * 1024))
             .wrap(Logger::new("%s - %r %Dms"))
             .configure(controller::config(opt_moved.clone()))
     })

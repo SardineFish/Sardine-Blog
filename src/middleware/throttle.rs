@@ -12,7 +12,7 @@ where
 {
     let remote = match request.headers().get("X-Real-IP") {
         Some(v) => v.to_str().unwrap_or("<unknown>").to_string(),
-        None => request.peer_addr().map(|s|s.ip().to_string()).unwrap_or("<unknown>".to_owned()),
+        None => request.peer_addr().map(|s|s.ip().to_string()).unwrap_or_else(|| "<unknown>".to_owned()),
     };
     
     let service = request.app_data::<web::Data<sar_blog::Service>>().unwrap();

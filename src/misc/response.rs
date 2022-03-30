@@ -62,7 +62,7 @@ impl<T> BuildResponse for T where T : Serialize {
     fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
         let response = SuccessResponseData::with_data(self);
         let body = serde_json::to_string(&response)
-            .map_err(|_| Error::SerializeError)?;
+            .map_err(|_| Error::Serialize)?;
         Ok(builder.content_type("application/json").body(body))
     }
 }
@@ -212,7 +212,7 @@ impl BuildResponse for Redirect {
                 => {
                     let data = SuccessResponseData::with_data(&url);
                     let body = serde_json::to_string(&data)
-                        .map_err(|_| Error::SerializeError)?;
+                        .map_err(|_| Error::Serialize)?;
                     Ok(builder
                         .set_header("Location", url)
                         .content_type("application/json")
@@ -381,8 +381,8 @@ pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: 
 #[actix_web::get("/")]
 async fn get_foo() -> Response<Option<u32>> {
     run(async move {
-        let _t = Err(Error::WebError(actix_web::error::ErrorInternalServerError("")))?;
-        Ok(Some(1 as u32))
+        let _t = Err(Error::Web(actix_web::error::ErrorInternalServerError("")))?;
+        Ok(Some(1_u32))
     }).await
 }
 
