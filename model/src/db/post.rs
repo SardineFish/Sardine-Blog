@@ -6,7 +6,7 @@ use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options
 use tokio::stream::StreamExt;
 use shared::md2plain::{md2plain, html2plain, slice_utf8};
 
-use crate::{Blog, BlogContent, Comment, CommentContent, DocType, Note, NoteContent, error::*, model::PidType, PubUserInfo};
+use crate::{BlogContent, CommentContent, DocType, NoteContent, error::*, model::PidType, PubUserInfo};
 use crate::misc::usize_format;
 
 use serde::{Serialize, Deserialize, de::DeserializeOwned};

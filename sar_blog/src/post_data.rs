@@ -1,4 +1,4 @@
-use model::{MiscellaneousPostContent, Operation, PidType, PostData, PostStats, PostType, SessionID, GenericPost, PostMeta};
+use model::{MiscellaneousPostContent, Operation, PidType, PostStats, PostType, SessionID, PostMeta};
 use serde::{Serialize};
 
 use crate::{Service, error::*};

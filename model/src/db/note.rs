@@ -1,9 +1,9 @@
-use mongodb::{ bson::{DateTime}};
+
 use serde::{Serialize, Deserialize};
 
-use crate::{ blog::DocType, model::PidType, PostStats, PostData, PostType};
+use crate::{ blog::DocType, PostData, PostType};
 
-use super::{ user::PubUserInfo, post::Post};
+use super::{ post::Post};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NoteContent {

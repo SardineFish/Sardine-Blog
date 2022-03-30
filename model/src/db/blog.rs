@@ -1,12 +1,11 @@
-use crate::{ model::{PidType}, PostStats, PostData, PostType};
+use crate::{ PostData, PostType};
 use mongodb::{bson::doc};
 use mongodb::{
     self,
-    bson::{self},
 };
 use serde::{Deserialize, Serialize};
 
-use super::{ user::PubUserInfo, post::Post};
+use super::{ post::Post};
 
 #[derive(Serialize, Deserialize, Clone, Copy)]
 pub enum DocType {
