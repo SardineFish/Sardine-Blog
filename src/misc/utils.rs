@@ -5,7 +5,7 @@ pub trait EmptyAsNone<T> {
 
 impl EmptyAsNone<String> for String {
     fn empty_as_none(self) -> Option<String> {
-        if self.len() <= 0 {
+        if self.is_empty() {
             None
         } else {
             Some(self)
@@ -16,7 +16,7 @@ impl EmptyAsNone<String> for String {
 impl EmptyAsNone<String> for Option<String> {
     fn empty_as_none(self) -> Option<String> {
         match self {
-            Some(str) if str.len() <= 0 => None,
+            Some(str) if str.is_empty() => None,
             Some(str) => Some(str),
             None => None
         }
@@ -26,7 +26,7 @@ impl EmptyAsNone<String> for Option<String> {
 impl<'s> EmptyAsNone<&'s String> for Option<&'s String> {
     fn empty_as_none(self) -> Option<&'s String> {
         match self {
-            Some(str) if str.len() <= 0 => None,
+            Some(str) if str.is_empty() => None,
             Some(str) => Some(str),
             None => None
         }

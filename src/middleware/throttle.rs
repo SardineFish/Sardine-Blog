@@ -17,7 +17,7 @@ where
     
     let service = request.app_data::<web::Data<sar_blog::Service>>().unwrap();
     if let Err(err) =  service.session().throttle(&remote, interval_seconds).await {
-        return Response::<()>::from(Err(Error::from(err))).to_service_response(request).await;
+        return Response::<()>::from(Err(Error::from(err))).into_service_response(request).await;
     }
     srv.lock().await.call(request).await
 }

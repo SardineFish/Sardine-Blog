@@ -1,5 +1,6 @@
 #![feature(trait_alias)]
-#![feature(try_trait)]
+#![feature(try_trait_v2)]
+#![feature(never_type)]
 
 use actix_web::{self, App, HttpServer, dev::Server, middleware::Logger, web::{self, JsonConfig}};
 

@@ -4,6 +4,9 @@ use actix_http::http::StatusCode;
 use fmt::{Debug, Display};
 use sar_blog::Error as ServiceError;
 
+pub(crate) trait ErrorStatusCode {
+    fn status_code(&self) -> StatusCode;
+}
 
 #[derive(Debug)]
 pub enum Error {
@@ -12,6 +15,29 @@ pub enum Error {
     SerializeError,
     UncaughtError(String),
     Misc(StatusCode, &'static str),
+}
+
+impl ErrorStatusCode for Error {
+    fn status_code(&self) -> StatusCode {
+        match self {
+            Error::ServiceError(err) => match err {
+                ServiceError::DataNotFound(_) => StatusCode::NOT_FOUND,
+                ServiceError::DataConflict(_) => StatusCode::BAD_REQUEST,
+                ServiceError::InvalidParams(_) => StatusCode::BAD_REQUEST,
+                ServiceError::InvalidChallenge => StatusCode::BAD_REQUEST,
+                ServiceError::Unauthorized => StatusCode::FORBIDDEN,
+                ServiceError::AccessDenied => StatusCode::FORBIDDEN,
+                ServiceError::PasswordIncorrect => StatusCode::FORBIDDEN,
+                ServiceError::InvalidScore(_) => StatusCode::BAD_REQUEST,
+                ServiceError::RateLimit => StatusCode::IM_A_TEAPOT,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            }
+            Error::SerializeError => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::WebError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::UncaughtError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Misc(code, _) => code.to_owned(),
+        }
+    }
 }
 
 impl Error {

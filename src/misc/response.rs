@@ -1,5 +1,5 @@
 
-use std::{collections::HashMap, ops::Try, str};
+use std::{collections::HashMap, ops::{Try, ControlFlow, FromResidual}, str};
 
 use actix_http::{ResponseBuilder, cookie::Cookie, http::{HeaderName, Method, StatusCode, header}};
 use futures::{Future, future::{Ready, ready}};
@@ -34,7 +34,7 @@ pub struct ErrorResponseData {
 }
 
 impl ErrorResponseData {
-    pub fn into_json(&self) -> String {
+    pub fn build_json(&self) -> String {
         serde_json::ser::to_string(&self).unwrap()
     }
 }
@@ -127,7 +127,7 @@ pub trait CORSAccessControl {
 
 impl CORSAccessControl for CORSPolicy {
     fn allow_origin(&self) -> Option<&str> {
-        self.origin.as_ref().map(|s|s.as_str())
+        self.origin.as_deref()
     }
     fn allow_methods(&self) -> Option<Vec<Method>> {
         self.methods.clone()
@@ -189,26 +189,26 @@ impl<U: CORSAccessControl, E: BuildError> BuildError for WithCORS<U, E> {
 pub enum Redirect
 {
     MovedPermanently(String),
-    PermanentRedirect(String),
+    Permanent(String),
     SeeOther(String),
-    TemporaryRedirect(String),
+    Temporary(String),
 }
 
 impl BuildResponse for Redirect {
     fn status_code(&self) -> StatusCode {
         match self {
             Self::MovedPermanently(_) => StatusCode::MOVED_PERMANENTLY,
-            Self::PermanentRedirect(_) => StatusCode::PERMANENT_REDIRECT,
+            Self::Permanent(_) => StatusCode::PERMANENT_REDIRECT,
             Self::SeeOther(_) => StatusCode::SEE_OTHER,
-            Self::TemporaryRedirect(_) => StatusCode::TEMPORARY_REDIRECT,
+            Self::Temporary(_) => StatusCode::TEMPORARY_REDIRECT,
         }
     }
     fn build_response(self, mut builder: ResponseBuilder) -> Result<HttpResponse, Error> {
         match self {
             Self::MovedPermanently(url) |
-            Self::PermanentRedirect(url) |
+            Self::Permanent(url) |
             Self::SeeOther(url) |
-            Self::TemporaryRedirect(url) 
+            Self::Temporary(url) 
                 => {
                     let data = SuccessResponseData::with_data(&url);
                     let body = serde_json::to_string(&data)
@@ -245,35 +245,113 @@ impl BuildError for Error {
     }
 }
 
-pub enum Response<T : BuildResponse = (), E: BuildError = Error> {
+// impl<T> BuildError for T where T : Into<Error> {
+//     fn status_code(&self) -> StatusCode {
+//         Error::status_code(self.in)
+//     }
+//     fn error_response(self) -> ErrorResponseData {
+//         self.into()
+//     }
+//     fn build_response(self, mut builder: ResponseBuilder) -> HttpResponse {
+//         let status = self.status_code();
+//         if status.is_server_error() {
+//             log::error!("{:?}", self);
+//         }
+//         let data = self.error_response();
+//         builder.status(status).json(&data)
+//     }
+// }
+
+pub enum Response<T, E = Error> {
     Ok(T),
     ClientError(E),
     ServerError(E),
 }
 
-impl<T, E> Try for Response<T, E> where T: BuildResponse, E: BuildError {
-    type Ok = T;
-    type Error = E;
-    fn from_ok(v: T) -> Self {
-        Self::Ok(v)
+impl<T> Try for Response<T, Error> where T : BuildResponse {
+    type Output = T;
+
+    type Residual = Response<!, Error>;
+
+    fn from_output(output: Self::Output) -> Self {
+        Self::Ok(output)
     }
-    fn from_error(err: Self::Error) -> Self {
-        match err.status_code() {
-            StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
-            _ => Response::ClientError(err)
-        }
-    }
-    fn into_result(self) -> Result<T, Self::Error> {
+
+    fn branch(self) -> std::ops::ControlFlow<Self::Residual, Self::Output> {
         match self {
-            Response::Ok(v) => Ok(v),
-            Response::ClientError(err) => Err(err),
-            Response::ServerError(err) => Err(err),
+            Self::Ok(output) => ControlFlow::Continue(output),
+            Self::ClientError(err) => ControlFlow::Break(Response::ClientError(err)),
+            Self::ServerError(err) => ControlFlow::Break(Response::ServerError(err)),
         }
     }
 }
 
-impl<T: Serialize> Response<T> {
-    pub async fn to_service_response(self, request: ServiceRequest) -> actix_web::Result<ServiceResponse> {
+impl<T: BuildResponse, E: Into<Error>> FromResidual<Response<!, E>> for Response<T, Error> {
+    fn from_residual(residual: Response<!, E>) -> Self {
+        match residual {
+            Response::ClientError(err) => Self::ClientError(err.into()),
+            Response::ServerError(err) => Self::ServerError(err.into()),
+            Response::Ok(_) => unreachable!(),
+        }
+    }
+}
+
+impl<T: BuildResponse, E: Into<Error>> FromResidual<Result<std::convert::Infallible, E>> for Response<T, Error> {
+    fn from_residual(residual: Result<std::convert::Infallible, E>) -> Self {
+        match residual {
+            Ok(_) => unreachable!(),
+            Err(err) =>{
+                let err = err.into();
+                match err.status_code() {
+                    StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
+                    _ => Response::ClientError(err)
+                }
+            } 
+        }
+    }
+}
+
+impl<T: BuildResponse, E: BuildError> From<Result<T, E>> for Response<T, E> {
+    fn from(result: Result<T, E>) -> Self {
+        match result {
+            Ok(output) => Self::Ok(output),
+            Err(err) => match err.status_code() {
+                StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
+                _ => Response::ClientError(err)
+            }
+        }
+    }
+}
+
+// impl<T: BuildResponse, E: Into<Error>> FromResidual<Result<std::convert::Infallible, E>> for Response<T, E> {
+//     fn from_residual(residual: Result<std::convert::Infallible, E>) -> Self {
+//         todo!()
+//     }
+// }
+
+// impl<T, E> Try for Response<T, E> where T: BuildResponse, E: BuildError {
+//     type Ok = T;
+//     type Error = E;
+//     fn from_ok(v: T) -> Self {
+//         Self::Ok(v)
+//     }
+//     fn from_error(err: Self::Error) -> Self {
+//         match err.status_code() {
+//             StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
+//             _ => Response::ClientError(err)
+//         }
+//     }
+//     fn into_result(self) -> Result<T, Self::Error> {
+//         match self {
+//             Response::Ok(v) => Ok(v),
+//             Response::ClientError(err) => Err(err),
+//             Response::ServerError(err) => Err(err),
+//         }
+//     }
+// }
+
+impl<T: Serialize> Response<T, Error> {
+    pub async fn into_service_response(self, request: ServiceRequest) -> actix_web::Result<ServiceResponse> {
         let (http_request, payload) = request.into_parts();
         let response = self.respond_to(&http_request).await?;
         match ServiceRequest::from_parts(http_request, payload) {
@@ -283,19 +361,19 @@ impl<T: Serialize> Response<T> {
     }
 }
 
-impl<T : BuildResponse> From<Result<T, Error>> for Response<T> {
-    fn from(result: Result<T, Error>) -> Self {
-        match result {
-            Ok(data) => Response::Ok(data),
-            Err(err) => match err.status_code() {
-                StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
-                _ => Response::ClientError(err)
-            },
-        }
-    }
-}
+// impl<T : BuildResponse> From<Result<T, Error>> for Response<T> {
+//     fn from(result: Result<T, Error>) -> Self {
+//         match result {
+//             Ok(data) => Response::Ok(data),
+//             Err(err) => match err.status_code() {
+//                 StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
+//                 _ => Response::ClientError(err)
+//             },
+//         }
+//     }
+// }
 
-pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R> {
+pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R, Error> {
     let result = func.await;
     Response::<R>::from(result)
 }

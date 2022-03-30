@@ -69,21 +69,21 @@ where
                         let json = ErrorResponseData::from(
                                 Error::UncaughtError(
                                     std::str::from_utf8(&bytes).unwrap().to_owned()))
-                            .into_json();
+                            .build_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     },
                     ResponseBody::Other(Body::Bytes(bytes)) => {
                         let json = ErrorResponseData::from(
                                 Error::UncaughtError(
                                     std::str::from_utf8(&bytes).unwrap().to_owned()))
-                            .into_json();
+                            .build_json();
                         ResponseBody::Other(Body::Bytes(Bytes::from(json)))
                     }
                     _ => {
                         warn!("Unkown error response body");
                         let json = ErrorResponseData::from(
                                 Error::UncaughtError(status.to_string().to_owned()))
-                            .into_json();
+                            .build_json();
                         ResponseBody::Body(Body::Bytes(Bytes::from(json)))
                     }
                 });
