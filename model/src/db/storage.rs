@@ -14,7 +14,7 @@ struct ObjectInfo {
 }
 
 pub struct StorageModel {
-    collection: Collection
+    collection: Collection<ObjectInfo>
 }
 
 impl StorageModel {
@@ -47,14 +47,13 @@ impl StorageModel {
     }
     
     pub async fn add_new_key(&self, name: &str) -> Result<bool> {
-        let doc = bson::to_document(& ObjectInfo {
+        match self.collection.insert_one(&ObjectInfo {
             name: name.to_owned(),
             time: Utc::now().into()
-        })?;
-        match self.collection.insert_one(doc, None).await {
+        }, None).await {
             Ok(_) => Ok(true),
             Err(err) => match err.kind.as_ref() {
-                ErrorKind::CommandError(cmd_err) if cmd_err.code == 11000 => Ok(false),
+                ErrorKind::Command(cmd_err) if cmd_err.code == 11000 => Ok(false),
                 _ => Err(err)?
             }
         }

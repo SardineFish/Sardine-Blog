@@ -1,9 +1,9 @@
 
+use futures::{future::ready, StreamExt};
 use mongodb::{Collection, Database, bson::{self, doc}};
 use serde::{Serialize, Deserialize};
-use tokio::stream::StreamExt;
 
-use crate::{model::PidType, PostData, PostType};
+use crate::{model::PidType, PostData, PostType, PostDoc};
 use crate::error::*;
 
 use super::{post::{PostModel, SortOrder, Post}};
@@ -39,7 +39,7 @@ impl PostData for CommentContent {
 
 #[derive(Clone)]
 pub struct CommentModel {
-    collection: Collection,
+    collection: Collection<PostDoc>,
 }
 
 impl CommentModel {
@@ -56,13 +56,13 @@ impl CommentModel {
         };
         let result: Vec<Comment> = PostModel::get_flat_posts(&self.collection, query, 0, 128, Some(("pid", SortOrder::ASC)))
             .await?
-            .filter_map(|d|d.ok().and_then(|doc| {
+            .filter_map(|d| ready(d.ok().and_then(|doc| {
                 let result = bson::from_document::<Comment>(doc);
                 if let Err(err) = &result {
                     log::warn!("Error when deserializing a Comment: {}", err);
                 }
                 result.ok()
-            }))
+            })))
             .collect()
             .await;
         
@@ -81,7 +81,7 @@ impl CommentModel {
             }
         };
         let result = self.collection.update_one(query, update, None).await?;
-        if result.matched_count <= 0 {
+        if result.matched_count == 0 {
             Err(Error::PostNotFound(pid))
         } else {
             Ok(())

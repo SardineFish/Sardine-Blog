@@ -1,7 +1,8 @@
 use chrono::{DateTime, Utc};
+use futures::future::ready;
 use mongodb::{Collection, Database, bson::doc, options::FindOptions};
-use mongodb::bson;
-use futures_util::{StreamExt, future::ready};
+use mongodb::bson::{self, Document};
+use futures_util::{StreamExt};
 use serde::{Deserialize};
 use shared::error::LogError;
 
@@ -16,7 +17,7 @@ pub struct RankedScore {
 
 #[derive(Clone)]
 pub struct RankModel {
-    pub collection: Collection,
+    pub collection: Collection<RankedScore>,
 }
 
 impl RankModel {
@@ -51,14 +52,13 @@ impl RankModel {
             "key": key,
         };
         let opts = FindOptions::builder()
-            .sort(Some(doc!{"score": -1, "time": -1}))
-            .skip(Some(skip as i64))
+            .sort(Some(doc!{"score": -1i32, "time": -1i32}))
+            .skip(Some(skip as u64))
             .limit(Some(count as i64))
             .build();
         let scores: Vec<RankedScore> = self.collection.find(query, opts)
             .await?
-            .filter_map(|result| ready(result.ok()
-                .and_then(|doc|bson::from_document::<RankedScore>(doc).ok())))
+            .filter_map(|result| ready(result.ok()))
             .collect()
             .await;
         Ok(scores)
@@ -75,7 +75,7 @@ impl RankModel {
             "key": key,
             "score": {"$gt": score}
         };
-        self.collection.insert_one(insert, None).await?;
+        self.collection.clone_with_type::<Document>().insert_one(insert, None).await?;
         let count = self.collection.count_documents(query, None).await?;
         Ok(count as usize)
     }

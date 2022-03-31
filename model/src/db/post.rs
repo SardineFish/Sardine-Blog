@@ -1,9 +1,9 @@
 use std::{ usize, ops::{Deref, DerefMut}};
 
-use bson::{Document, doc, DateTime};
+use bson::{Document, doc};
 use chrono::Utc;
 use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, FindOneOptions, ReturnDocument, UpdateOptions}};
-use tokio::stream::StreamExt;
+use futures::{StreamExt, future::ready};
 use shared::md2plain::{md2plain, html2plain, slice_utf8};
 
 use crate::{BlogContent, CommentContent, DocType, NoteContent, error::*, model::PidType, PubUserInfo};
@@ -13,7 +13,7 @@ use serde::{Serialize, Deserialize, de::DeserializeOwned};
 use shared::error::LogError;
 
 const COLLECTION_POST: &str = "post";
-const COLLECTION_META: &str = "meta";
+// const COLLECTION_META: &str = "meta";
 
 #[derive(Serialize, Deserialize)]
 struct PostMetaData {
@@ -150,7 +150,7 @@ pub trait PostMeta {
     fn author_uid(&self) -> &str;
 }
 
-pub trait GenericPost: PostMeta + DeserializeOwned + Clone {
+pub trait GenericPost: PostMeta + DeserializeOwned + Clone + Unpin + Send + Sync + 'static {
     type Content : PostData;
     fn post_type_name() -> &'static str;
 }
@@ -160,7 +160,7 @@ pub struct PostDoc {
     pub(crate) _id: ObjectId,
     pub pid: PidType,
     pub uid: String,
-    pub time: DateTime,
+    pub time: bson::DateTime,
     pub stats: PostStats,
     pub data: PostType,
 }
@@ -192,7 +192,7 @@ impl PostMeta for PostDoc {
     }
 }
 
-pub trait PostData: Serialize + DeserializeOwned + Clone + Sized {
+pub trait PostData: Serialize + DeserializeOwned + Clone + Sized + Unpin + Send + Sync + 'static {
     const ALLOW_SEARCH: bool = false;
     fn post_type_name() -> &'static str;
     fn wrap(self) -> PostType;
@@ -209,9 +209,9 @@ pub fn get_content_preview(doc_type: DocType, content: &str, limit: usize) -> St
 
 #[derive(Clone)]
 pub struct PostModel {
-    collection: Collection,
+    collection: Collection<PostDoc>,
     #[allow(unused)]
-    coll_meta: Collection,
+    coll_meta: Collection<PostMetaData>,
     update_options: FindOneAndUpdateOptions,
     meta_id: ObjectId,
 }
@@ -224,18 +224,18 @@ impl PostModel {
         Self {
             collection: db.collection(COLLECTION_POST),
             update_options: opts,
-            coll_meta: db.collection(COLLECTION_META),
-            meta_id: ObjectId::with_bytes([0;12]),
+            coll_meta: db.collection(COLLECTION_POST),
+            meta_id: ObjectId::from_bytes([0;12]),
         }
     }
 
     pub async fn init_meta(&self) -> Result<()> {
         let data = PostMetaData {
-            _id: self.meta_id.clone(),
+            _id: self.meta_id,
             posts: 0,
         };
 
-        self.collection.insert_one(bson::to_document(&data).unwrap(), None)
+        self.coll_meta.insert_one(&data, None)
             .await
             .map_model_result()?;
 
@@ -313,18 +313,16 @@ impl PostModel {
         };
         let update = doc!{
             "$inc": {
-                "posts": 1
+                "posts": 1i32
             }
         };
 
         let mut opts = FindOneAndUpdateOptions::default();
         opts.return_document = Some(ReturnDocument::After);
-        let result = self.collection.find_one_and_update(query, update, Some(opts))
+        let metadata = self.coll_meta.find_one_and_update(query, update, Some(opts))
             .await
             .map_model_result()?
             .expect("Missing Metadata");
-
-        let metadata: PostMetaData = bson::from_document(result).expect("Failed to deserialize metadata.");
 
         let pid = metadata.posts;
 
@@ -356,17 +354,10 @@ impl PostModel {
         };
         let doc = self.collection.find_one_and_delete(query, None)
             .await
-            .map_model_result()?;
+            .map_model_result()?
+            .and_then(|doc| T::unwrap(doc.data));
 
-        if let Some(mut doc) = doc {
-            let content_doc= doc.remove("data").ok_or(Error::InternalError("Missing 'data' field in BSON"))?
-                .as_document_mut().ok_or(Error::InternalError("Invalid 'data' field in BSON"))?
-                .remove("content").ok_or(Error::InternalError("Missing 'content' field in BSON"))?;
-            
-            Ok(Some(bson::from_bson(content_doc).map_model_result()?))
-        } else {
-            Ok(None)
-        }
+        Ok(doc)
     }
 
     pub async fn update_content<T: PostData>(&self, pid: PidType, content: &T) -> Result<()> {
@@ -388,12 +379,10 @@ impl PostModel {
         let query = doc!{
             "pid": pid
         };
-        let doc = self.collection.find_one(query, None)
+        self.collection.find_one(query, None)
             .await
             .map_model_result()?
-            .ok_or(Error::PostNotFound(pid))?;
-        
-        bson::from_document(doc).map_model_result()
+            .ok_or(Error::PostNotFound(pid))
     }
 
     pub async fn get_list<T: GenericPost>(&self, skip: usize, limit: usize) -> Result<Vec<T>> {
@@ -402,13 +391,13 @@ impl PostModel {
         };
         let result: Vec<T> = Self::get_flat_posts(&self.collection, query, skip, limit, Some(("time", SortOrder::DESC)))
             .await?
-            .filter_map(|d| d.ok().and_then(|doc| {
+            .filter_map(|d| ready(d.ok().and_then(|doc| {
                 let result = bson::from_document::<T>(doc);
                 if let Err(err) = &result {
                     log::warn!("Error when deserializing a {}: {}", T::post_type_name(), err);
                 }
                 result.ok()
-            }))
+            })))
             .collect()
             .await;
         Ok(result)
@@ -477,9 +466,9 @@ impl PostModel {
         };
         let mut opts = FindOneOptions::default();
         opts.projection = Some(doc! {
-            "data.type": 1
+            "data.type": 1i32
         });
-        let result = self.collection.find_one(query, opts)
+        let result = self.collection.clone_with_type::<Document>().find_one(query, opts)
             .await?
             .ok_or(Error::PostNotFound(pid))?
             .get_document_mut("data")?
@@ -494,17 +483,15 @@ impl PostModel {
         };
         let update = doc! {
             "$inc": {
-                format!("stats.{}", key): 1
+                format!("stats.{}", key): 1i32
             }
         };
         let mut options = FindOneAndUpdateOptions::default();
         options.return_document = Some(mongodb::options::ReturnDocument::After);
-        let doc = self.collection.find_one_and_update(query, update, self.update_options.clone())
+        self.collection.find_one_and_update(query, update, self.update_options.clone())
             .await
             .map_model_result()?
-            .ok_or(Error::PostNotFound(pid))?;
-        
-        bson::from_document(doc).map_model_result()
+            .ok_or(Error::PostNotFound(pid))
     }
 
     async fn decrease_stats(&self, pid: PidType, key: &str) -> Result<PostDoc> {
@@ -513,26 +500,24 @@ impl PostModel {
         };
         let update = doc! {
             "$inc": {
-                format!("stats.{}", key): -1
+                format!("stats.{}", key): -1i32
             }
         };
         let mut options = FindOneAndUpdateOptions::default();
         options.return_document = Some(mongodb::options::ReturnDocument::After);
-        let doc = self.collection.find_one_and_update(query, update, self.update_options.clone())
+        self.collection.find_one_and_update(query, update, self.update_options.clone())
             .await
             .map_model_result()?
-            .ok_or(Error::PostNotFound(pid))?;
-        
-        bson::from_document(doc).map_model_result()
+            .ok_or(Error::PostNotFound(pid))
     }
 
-    pub(crate) async fn get_flat_posts(
-        collection: &Collection, 
+    pub(crate) async fn get_flat_posts<T>(
+        collection: &Collection<T>, 
         filter: bson::Document, 
         skip: usize, 
         limit: usize,
         sort: Option<(&str,SortOrder)>
-    ) -> Result<Cursor> {
+    ) -> Result<Cursor<Document>> {
 
         log::debug!("Get post at {}+{}", skip, limit);
         
@@ -585,7 +570,7 @@ impl PostModel {
                             "time": "$time",
                             "stats": "$stats",
                             "author": {
-                                "$arrayElemAt": ["$user_info.info", 0]
+                                "$arrayElemAt": ["$user_info.info", 0i32]
                             },
                         }
                     ]

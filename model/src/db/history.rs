@@ -80,7 +80,7 @@ impl History {
 
 #[derive(Clone)]
 pub struct HistoryModel {
-    collection: Collection,
+    collection: Collection<History>,
 }
 
 impl HistoryModel {
@@ -130,7 +130,7 @@ impl HistoryModel {
 
     pub async fn record<T: Into<HistoryData>>(&self, uid: &str, op: Operation, data: T) -> Result<()> {
         let history = History::new(uid.to_string(), op, Into::<HistoryData>::into(data));
-        self.collection.insert_one(bson::to_document(&history).unwrap(), None)
+        self.collection.insert_one(&history, None)
             .await
             .map_model_result()?;
         Ok(())
@@ -139,7 +139,7 @@ impl HistoryModel {
     pub async fn record_with_time<T: Into<HistoryData>>(&self, uid: &str, op: Operation, data: T, time: DateTime<Utc>) -> Result<()> {
         let mut history = History::new(uid.to_string(), op, Into::<HistoryData>::into(data));
         history.time = time.into();
-        self.collection.insert_one(bson::to_document(&history).unwrap(), None)
+        self.collection.insert_one(&history, None)
             .await
             .map_model_result()?;
         Ok(())

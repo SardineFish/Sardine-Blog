@@ -117,7 +117,7 @@ impl User {
 
 #[derive(Clone)]
 pub struct UserModel {
-    collection: Collection,
+    collection: Collection<User>,
 }
 
 impl UserModel {
@@ -207,14 +207,9 @@ impl UserModel {
     }
 
     async fn query_user(&self, query: Document) -> Result<Option<User>> {
-        let doc = self.collection.find_one(query, None)
+        self.collection.find_one(query, None)
             .await
-            .map_model_result()?;
-        if let Some(doc) = doc {
-            bson::from_document(doc).map_model_result()
-        }else {
-            Ok(None)
-        }
+            .map_model_result()
     }
 
     async fn update_and_query<T: Serialize>(&self, uid: &str, key: &str, update: T) -> Result<User> {
@@ -228,11 +223,9 @@ impl UserModel {
         };
         let mut options = FindOneAndUpdateOptions::default();
         options.return_document = Some(mongodb::options::ReturnDocument::After);
-        let doc = self.collection.find_one_and_update(query, update, options)
+        self.collection.find_one_and_update(query, update, options)
             .await
             .map_model_result()?
-            .ok_or_else(|| Error::UserNotFound(uid.to_string()))?;
-
-        bson::from_document(doc).map_model_result()
+            .ok_or_else(|| Error::UserNotFound(uid.to_string()))
     }
 }
