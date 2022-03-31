@@ -29,6 +29,7 @@ fn query(pid: PidType) -> Document {
 }
 
 #[allow(dead_code)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum SortOrder{
     ASC = 1,
     DESC = -1,

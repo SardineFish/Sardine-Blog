@@ -31,15 +31,15 @@ impl Service {
     }
 
     pub fn comment(&self) -> CommentService {
-        CommentService::new(&self)
+        CommentService::new(self)
     }
 
     pub fn note(&self) -> NoteService {
-        NoteService::new(&self)
+        NoteService::new(self)
     }
 
     pub fn user(&self) -> UserService {
-        UserService::new(&self)
+        UserService::new(self)
     }
 
     pub fn post_data(&self) -> PostDataService {
@@ -51,15 +51,15 @@ impl Service {
     }
 
     pub fn storage(&self) -> StorageService {
-        StorageService::new(&self)
+        StorageService::new(self)
     }
 
     pub fn rank(&self) -> RankServiceSelector {
-        RankServiceSelector::new(&self)
+        RankServiceSelector::new(self)
     }
 
     pub fn search(&self) -> SearchService {
-        SearchService::new(&self)
+        SearchService::new(self)
     }
 
     pub fn push_service(&self) -> EmailNotifyService {

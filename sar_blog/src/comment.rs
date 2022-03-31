@@ -108,12 +108,12 @@ impl<'m> CommentService<'m> {
         { // Try send notification email
             let receiver = self.service().model.user.get_by_uid(&post.uid).await?;
             if let Some(email) = &receiver.info.email {
-                let url = self.service().url().from_post(&post).await?;
+                let url = self.service().url().url_from_post(&post).await?;
 
-                let result = self.service().push_service().send_comment_notify(&email, CommentNotifyInfo {
+                let result = self.service().push_service().send_comment_notify(email, CommentNotifyInfo {
                     author_avatar: user.info.avatar,
                     author_name: user.info.name,
-                    author_url: user.info.url.unwrap_or(self.service().url().homepage()),
+                    author_url: user.info.url.unwrap_or_else(|| self.service().url().homepage()),
                     url,
                     time: Utc::now().format("%Y-%m-%d %H-%M-%S").to_string(),
                     comment_text: text.to_owned(),
@@ -163,10 +163,10 @@ impl<'m> CommentService<'m> {
                 } else {
                     comment_ref.borrow_mut().depth = parent.depth();
                     let parent_container_pid = *comment_container.get(&parent.pid())
-                        .ok_or(Error::post_not_found(parent.pid()))?;
+                        .ok_or_else(|| Error::post_not_found(parent.pid()))?;
                         
                     let grandparent = nested_comments.get(&parent_container_pid)
-                        .ok_or(Error::post_not_found(parent.comment_to()))?;
+                        .ok_or_else(|| Error::post_not_found(parent.comment_to()))?;
                     comment_container.insert(comment_ref.pid(), parent_container_pid);
                     grandparent.borrow_mut().comments.push(comment_ref);
                 }

@@ -60,8 +60,8 @@ impl<'s> Session<'s> {
     pub fn with_session_id(session_id: &'s str, redis: MultiplexedConnection) -> Self {
         Self{
             redis,
-            key_data: namespace_key(NAMESPACE_DATA, &session_id),
-            key_visit: namespace_key(NAMESPACE_VISITS, &session_id),
+            key_data: namespace_key(NAMESPACE_DATA, session_id),
+            key_visit: namespace_key(NAMESPACE_VISITS, session_id),
             session_id,
         }
     }
@@ -191,7 +191,7 @@ impl<'s> Session<'s> {
     }
 
     pub async fn add_like(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
-        let key = namespace_key(NAMESPACE_LIKED, &self.session_id);
+        let key = namespace_key(NAMESPACE_LIKED, self.session_id);
         let (result,): (bool,) = pipe()
             .sadd(&key, pid)
             .expire(&key, expire_seconds).ignore()
@@ -202,7 +202,7 @@ impl<'s> Session<'s> {
     }
 
     pub async fn remove_like(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
-        let key = namespace_key(NAMESPACE_LIKED, &self.session_id);
+        let key = namespace_key(NAMESPACE_LIKED, self.session_id);
         let (result,): (bool, ) = pipe()
             .srem(&key, pid)
             .expire(&key, expire_seconds).ignore()

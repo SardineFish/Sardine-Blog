@@ -146,14 +146,14 @@ impl UserModel {
         let query = doc! {
             "uid": uid,
         };
-        self.query_user(query).await?.ok_or(Error::UserNotFound(uid.to_string()))
+        self.query_user(query).await?.ok_or_else(|| Error::UserNotFound(uid.to_string()))
     }
 
     pub async fn get_by_email(&self, email: &str) -> Result<User> {
         let query = doc! {
             "email": email,
         };
-        self.query_user(query).await?.ok_or(Error::UserNotFound(email.to_string()))
+        self.query_user(query).await?.ok_or_else(|| Error::UserNotFound(email.to_string()))
     }
 
     pub async fn add(&self, user: &User) -> Result<()> {
@@ -231,7 +231,7 @@ impl UserModel {
         let doc = self.collection.find_one_and_update(query, update, options)
             .await
             .map_model_result()?
-            .ok_or(Error::UserNotFound(uid.to_string()))?;
+            .ok_or_else(|| Error::UserNotFound(uid.to_string()))?;
 
         bson::from_document(doc).map_model_result()
     }

@@ -67,7 +67,7 @@ impl Score for SnakeRemakeScore {
 
         let mut blocks = HashMap::new();
         let mut total_score: i64 = 0;
-        if self.data.len() <= 0 {
+        if self.data.is_empty() {
             Err("Invalid score")?
         }
         match &self.data[0].data {
@@ -76,7 +76,7 @@ impl Score for SnakeRemakeScore {
         }
         
         let mut cache = redis.cache("rank");
-        if let Some(_) = cache.get::<Option<i32>>(&self.data[0].hash).await.map_err(|_| "Internal error")? {
+        if (cache.get::<Option<i32>>(&self.data[0].hash).await.map_err(|_| "Internal error")?).is_some() {
             Err("Invalid score")?
         } else {
             cache.set_expire(&self.data[0].hash, 1, 86400)
@@ -91,21 +91,18 @@ impl Score for SnakeRemakeScore {
             }
             blocks.insert(block.hash.clone(), block);
 
-            match &block.data {
-                GameEvent::Eat(data) => {
-                    let score = match blocks.get(&data.food) {
-                        Some(food) => match &food.data {
-                            GameEvent::GenFood(food) => match food.score {
-                                0 | 1 | 3 => food.score,
-                                _ => Err("Invalid score")?,
-                            },
+            if let GameEvent::Eat(data) = &block.data {
+                let score = match blocks.get(&data.food) {
+                    Some(food) => match &food.data {
+                        GameEvent::GenFood(food) => match food.score {
+                            0 | 1 | 3 => food.score,
                             _ => Err("Invalid score")?,
                         },
                         _ => Err("Invalid score")?,
-                    };
-                    total_score += score as i64;
-                }
-                _ => (),
+                    },
+                    _ => Err("Invalid score")?,
+                };
+                total_score += score as i64;
             }
         }
 

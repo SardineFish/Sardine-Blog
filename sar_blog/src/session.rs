@@ -22,9 +22,11 @@ impl<'s> SessionService<'s> {
     pub async fn new_session(&self) -> Result<SessionID> {
         let mut id: [u8; 16] = [0; 16]; 
 
-        let mut rng = self.service.rng.borrow_mut();
         for _ in 0..5 {
-            rng.fill_bytes(&mut id);
+            {
+                let mut rng = self.service.rng.borrow_mut();
+                rng.fill_bytes(&mut id);
+            }
             let session_id = hex::encode(id);
             let available = self.redis.session(&session_id).try_init().await.map_service_err()?;
             if available {
@@ -36,7 +38,7 @@ impl<'s> SessionService<'s> {
     }
     pub async fn throttle(&self, remote_id: &str, interval_seconds: usize) -> Result<()> {
         let mut cache = self.redis.cache("throttle");
-        if let Some(_) =  cache.get::<Option<i32>>(remote_id).await? {
+        if (cache.get::<Option<i32>>(remote_id).await?).is_some() {
             Err(Error::RateLimit)?
         }
         cache.set_expire(remote_id, 1, interval_seconds).await?;

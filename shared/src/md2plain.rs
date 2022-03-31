@@ -13,13 +13,13 @@ fn round_char_boundary(input: &str, len: usize) -> usize {
     };
 
     for i in (min..=len).rev() {
-        if i <= 0 {
+        if i == 0 {
             return 0;
         } else if input.is_char_boundary(i) {
             return i;
         }
     }
-    return 0;
+    0
 }
 
 pub fn slice_utf8(input: &str, len: usize) -> &str {
@@ -46,7 +46,7 @@ impl<'s> MarkdownToPlaintext<'s> {
         }
     }
 
-    fn to_plaintext(mut self) -> String {
+    fn into_plaintext(mut self) -> String {
         let parser = pulldown_cmark::Parser::new(self.input);
 
         for event in parser {
@@ -75,7 +75,7 @@ impl<'s> MarkdownToPlaintext<'s> {
     }
 
     fn build_html(&mut self) {
-        if self.html_builder.len() != 0 {
+        if !self.html_builder.is_empty() {
             let html = mem::replace(&mut self.html_builder, StringBuilder::new()).to_string();
             let mut text = html2text::from_read_with_decorator(html.as_bytes(), usize::MAX, TrivialDecorator{});
             if text.len() + self.text_builder.len() > self.len_limit {
@@ -98,11 +98,8 @@ impl<'s> MarkdownToPlaintext<'s> {
             Event::HardBreak => {
                 self.text_builder.push(Cow::Borrowed("\r\n"));
             }
-            Event::Start(Tag::List(_)) => match self.prev_event {
-                Some(Event::Text(_)) => {
-                    self.text_builder.push(Cow::Borrowed("\r\n"));
-                },
-                _ => (),
+            Event::Start(Tag::List(_)) => if let Some(Event::Text(_)) = self.prev_event {
+                self.text_builder.push(Cow::Borrowed("\r\n"));
             },
             Event::End(Tag::Item)
             | Event::End(Tag::Paragraph)
@@ -146,7 +143,7 @@ impl<'s> MarkdownToPlaintext<'s> {
 
 
 pub fn md2plain(markdown: &str, limit: usize) -> String {
-    MarkdownToPlaintext::new(markdown, limit).to_plaintext()
+    MarkdownToPlaintext::new(markdown, limit).into_plaintext()
 }
 
 pub fn html2plain(html: &str) -> String {

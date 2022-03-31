@@ -45,14 +45,14 @@ impl<'s, T: PostData> PostService<'s, T> {
         let mut post = self.service.model.post.get_post_by_pid::<Post<T>>(pid)
             .await?;
 
-        post.stats.views = self.service.post_data().visit(&post, &session_id)
+        post.stats.views = self.service.post_data().visit(&post, session_id)
             .await?;
 
         Ok(post)
     }
 
     pub async fn post(&self, uid: &str, content: T) -> Result<PidType> {
-        let user = self.service.model.user.get_by_uid(&uid).await?;
+        let user = self.service.model.user.get_by_uid(uid).await?;
         let post_type = content.wrap();
         let post = self.service.model.post.new_post(post_type, &user.uid)
             .await?;
@@ -76,7 +76,7 @@ impl<'s, T: PostData> PostService<'s, T> {
 
         if T::ALLOW_SEARCH && self.service.option.enable_indexing {
             let post = self.service.model.post.get_raw_by_pid(pid).await?;
-            let user = self.service.model.user.get_by_uid(&uid).await?;
+            let user = self.service.model.user.get_by_uid(uid).await?;
 
             self.service.search().index(&post, &user.info.name).await?;
         }

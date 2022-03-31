@@ -41,7 +41,7 @@ macro_rules! impl_error_log {
 pub trait LogError {
     fn log(self, level: log::Level, target: &str) -> Self;
     fn log_consume(self, level: log::Level, target: &str);
-    fn log_error(self: Self, target: &str) -> Self;
+    fn log_error(self, target: &str) -> Self;
     fn log_error_consume(self, target: &str);
     fn log_warn(self, target: &str) -> Self;
     fn log_warn_consume(self, target: &str);
@@ -53,10 +53,7 @@ pub trait LogError {
 
 impl<T, E> LogError for Result<T, E> where E: Display {
     fn log(self, level: log::Level, target: &str) -> Self {
-        match &self {
-            Err(err) => log::log!(level, "[{}] {}", target, err),
-            _ => (),
-        }
+        if let Err(err) = &self { log::log!(level, "[{}] {}", target, err) }
         self
     }
     impl_error_log!();

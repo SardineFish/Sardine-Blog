@@ -8,6 +8,7 @@ mod controller;
 mod middleware;
 mod misc;
 
+use clap::arg;
 use misc::error;
 use misc::utils;
 use misc::error_report::ServiceMornitor;
@@ -19,12 +20,12 @@ use misc::error::OkOrLog;
 async fn main() -> std::io::Result<()> {
     // env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("debug")).init();
 
-    let matches = clap::App::new("Sardine Blog NG")
+    let matches = clap::Command::new("Sardine Blog NG")
         .author("SardineFish")
         .about("SardineFish's personal website backend server.")
         .version("0.1.0")
-        .arg("--init 'Initialize database.'")
-        .arg("-c --config=[CONFIG_FILE] 'Service configure JSON file.'")
+        .arg(arg!("--init 'Initialize database.'"))
+        .arg(arg!("-c --config=[CONFIG_FILE] 'Service configure JSON file.'"))
         .get_matches();
 
     let opts = if let Some(path) = matches.value_of("config") {

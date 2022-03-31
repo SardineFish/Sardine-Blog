@@ -143,7 +143,7 @@ impl<'m> UserService<'m> {
             let target_uid = self.redis.session(target_session).uid()
                 .await
                 .map_service_err()?
-                .ok_or(Error::DataNotFound(model::Error::SessionNotFound(target_session.to_string())))?;
+                .ok_or_else(|| Error::DataNotFound(model::Error::SessionNotFound(target_session.to_string())))?;
             if self_uid != target_uid {
                 return Err(Error::Unauthorized);
             }
@@ -232,8 +232,10 @@ impl<'m> UserService<'m> {
 
     async fn create_challenge(&self, session_id: &SessionID, salt: &str, method: HashMethod) -> Result<AuthChallenge> {
         let mut challenge: [u8; 16] = [0; 16];
-        let mut rng = self.service.rng.borrow_mut();
-        rng.fill_bytes(&mut challenge);
+        {
+            let mut rng = self.service.rng.borrow_mut();
+            rng.fill_bytes(&mut challenge);   
+        }
 
         let challenge = hex::encode(challenge);
         self.redis.session(session_id)
@@ -242,7 +244,7 @@ impl<'m> UserService<'m> {
             .map_service_err()?;
 
         Ok(AuthChallenge {
-            challenge: challenge,
+            challenge,
             method,
             salt: salt.to_string(),
         })
@@ -256,7 +258,9 @@ fn sha256(input: &str) -> String {
     format!("{:x}", Sha256::digest(input.as_bytes()))
 }
 fn sha1(input: &str) -> String {
-    sha1::Sha1::from(input).digest().to_string()
+    let mut hasher = sha1::Sha1::new();
+    hasher.update(input);
+    String::from_utf8(hasher.finalize().to_ascii_lowercase()).unwrap()
 }
 fn md5(input: &str) -> String {
     format!("{:x}", md5::compute(input))

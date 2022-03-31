@@ -37,7 +37,7 @@ impl RedisCache {
 pub fn namespace_key(namespace: &str, key: &str) -> String {
     let mut output = String::with_capacity(namespace.len() + key.len() + 1);
     output.push_str(namespace);
-    output.push_str(":");
+    output.push(':');
     output.push_str(key);
     output
 }

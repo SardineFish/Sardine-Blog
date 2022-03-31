@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{ops::Deref, fmt::Display};
 
 pub struct StringBuilder<T> where T : Deref<Target = str> {
     slices: Vec<T>,
@@ -26,11 +26,28 @@ impl<T> StringBuilder<T> where T : Deref<Target = str> {
     pub fn len(&self) -> usize {
         self.size
     }
-    pub fn to_string(self) -> String {
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}
+
+impl<T> Default for StringBuilder<T>
+where T : Deref<Target = str>
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<T> Display for StringBuilder<T> where T : Deref<Target = str>
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        
         let mut output = String::with_capacity(self.size);
-        for slice in self.slices {
+        for slice in &self.slices {
             output.push_str(slice.as_ref());
         }
-        output
+        f.write_str(&output)
     }
 }

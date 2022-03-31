@@ -92,7 +92,7 @@ impl<'s, Provider, ScoreT> RankService<ScoreT> for RankServiceWrapper<'s, Provid
     }
 
     async fn post_score(&self, score_data: ScoreT) -> Result<usize, Error> {
-        let rank = match score_data.validate(&self.redis).await {
+        let rank = match score_data.validate(self.redis).await {
             Ok(score) => self.model.rank.add_ranked_score(Provider::rank_key(), score_data.name(), score, Utc::now()).await?,
             Err(msg) => return Err(Error::InvalidScore(msg))
         };
