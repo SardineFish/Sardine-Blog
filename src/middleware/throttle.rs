@@ -1,8 +1,8 @@
 
-use actix_http::body::{MessageBody, BoxBody};
+use actix_http::body::{BoxBody};
 use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 
-use crate::misc::{error::Error, response::Response, body::APIBody};
+use crate::misc::{error::Error, response::Response};
 
 use super::func_middleware::*;
 

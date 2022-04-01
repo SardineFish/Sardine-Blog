@@ -1,12 +1,12 @@
 
-use actix_http::{body::BoxBody};
-use actix_web::{get, post, put, delete, web::{self, Path}, Responder, Route, Resource};
+
+use actix_web::{get, post, put, delete, web::{self, Path}};
 use chrono::DateTime;
 use sar_blog::{BlogPreview, model::{Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo, Access}};
 use serde::{Serialize, Deserialize};
 use web::{Query, ServiceConfig, scope};
 
-use crate::{error::*, middleware, misc::{body::APIBody, response::Response}};
+use crate::{error::*, middleware, misc::{response::Response}};
 use sar_blog::utils::json_datetime_format;
 
 use super::{extractor};
@@ -67,13 +67,13 @@ async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>
 #[get("/{pid}")]
 async fn get_by_pid(service: extractor::Service, pid: Path<PidType>, session: extractor::Session) -> Response<PubBlog> {
     let blog = service.blog().get_by_pid(session.id(), pid.into_inner()).await.map_contoller_result()?;
-    Ok(PubBlog::from(blog)).into()
+    Ok(PubBlog::from(blog))
 }
 
 #[post("", wrap="middleware::authentication(Access::Trusted)")]
 async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>) -> Response<PidType> {
     let pid = service.blog().post(&auth.uid, data.to_owned()).await.map_contoller_result()?;
-    Ok(pid).into()
+    Ok(pid)
 }
 
 
@@ -91,7 +91,7 @@ async fn delete(service: extractor::Service, auth: extractor::Auth, pid: Path<Pi
         .await
         .map_contoller_result()?;
     
-    Ok(blog).into()
+    Ok(blog)
 }
 
 

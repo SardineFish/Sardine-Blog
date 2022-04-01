@@ -2,9 +2,9 @@
 use std::{collections::HashMap, ops::{Try, ControlFlow, FromResidual}, str};
 
 use actix_http::{header::HeaderName, body::BoxBody};
-use futures::{Future, future::{Ready, ready}};
+use futures::{Future};
 use serde::{Serialize};
-use actix_web::{ HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}, cookie::Cookie, http::{Method, StatusCode, header}, web::Bytes, HttpResponseBuilder};
+use actix_web::{ HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}, cookie::Cookie, http::{Method, StatusCode, header}, HttpResponseBuilder};
 
 use super::error::Error;
 
