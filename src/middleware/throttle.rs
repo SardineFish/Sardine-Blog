@@ -1,13 +1,14 @@
-use actix_http::{body::Body};
+
+use actix_http::body::{MessageBody, BoxBody};
 use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 
-use crate::misc::{error::Error, response::Response};
+use crate::misc::{error::Error, response::Response, body::APIBody};
 
 use super::func_middleware::*;
 
-async fn throttle_middleware<S>(request: ServiceRequest, srv: SyncService<S>, interval_seconds: usize) -> Result<ServiceResponse, actix_web::Error> 
+async fn throttle_middleware<S>(request: ServiceRequest, srv: &'static S, interval_seconds: usize) -> Result<ServiceResponse, actix_web::Error> 
 where
-    S: ServiceT<Body>,
+    S: ServiceT<BoxBody>,
     S::Future: 'static,
 {
     let remote = match request.headers().get("X-Real-IP") {
@@ -19,7 +20,7 @@ where
     if let Err(err) =  service.session().throttle(&remote, interval_seconds).await {
         return Response::<()>::from(Err(Error::from(err))).into_service_response(request).await;
     }
-    srv.lock().await.call(request).await
+    srv.call(request).await
 }
 
 // async_middleware!(pub authentication, auth_middleware);

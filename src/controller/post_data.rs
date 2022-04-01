@@ -9,24 +9,24 @@ use super::{extractor};
 use Response::Ok;
 
 #[get("/{pid}/stats")]
-async fn get_stats(service: extractor::Service, session: extractor::Session, Path(pid): Path<PidType>) -> Response<PostStats> {
-    let stats = service.post_data().get_stats_by_pid(pid, session.id())
+async fn get_stats(service: extractor::Service, session: extractor::Session, pid: Path<PidType>) -> Response<PostStats> {
+    let stats = service.post_data().get_stats_by_pid(pid.into_inner(), session.id())
         .await
         .map_contoller_result()?;
     Ok(stats)
 }
 
 #[post("/{pid}/like")]
-async fn like(service: extractor::Service, session: extractor::Session, Path(pid): Path<PidType>) -> Response<usize> {
-    service.post_data().like(pid, session.id())
+async fn like(service: extractor::Service, session: extractor::Session, pid: Path<PidType>) -> Response<usize> {
+    service.post_data().like(pid.into_inner(), session.id())
         .await
         .map_contoller_result()
         .into()
 }
 
 #[delete("/{pid}/like")]
-async fn dislike(service: extractor::Service, session: extractor::Session, Path(pid): Path<PidType>) -> Response<usize> {
-    service.post_data().dislike(pid, session.id())
+async fn dislike(service: extractor::Service, session: extractor::Session, pid: Path<PidType>) -> Response<usize> {
+    service.post_data().dislike(pid.into_inner(), session.id())
         .await
         .map_contoller_result()
         .into()

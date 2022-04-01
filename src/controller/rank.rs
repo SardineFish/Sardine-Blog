@@ -1,4 +1,4 @@
-use actix_http::http::{StatusCode};
+use actix_http::StatusCode;
 use actix_web::{get, post, options, web::{Json, Path, Query, ServiceConfig, scope}};
 use sar_blog::{SimpleScore, SnakeRemakeScore, model::{RankedScore}};
 use sar_blog::RankService;

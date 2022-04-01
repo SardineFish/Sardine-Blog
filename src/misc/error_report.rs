@@ -103,7 +103,7 @@ struct ReportSender {
 
 impl ReportSender {
     fn run(self) {
-        actix_web::rt::System::new("Report thread")
+        actix_web::rt::System::new()
             .block_on(async move {
                 log::info!("Error report sender is running.");
                 loop {

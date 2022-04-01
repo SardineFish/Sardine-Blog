@@ -1,4 +1,4 @@
-use actix_http::http::{HeaderName, Method, header};
+use actix_http::{self, Method, header::{self, HeaderName}};
 
 use crate::misc::response::CORSAccessControl;
 

@@ -53,12 +53,12 @@ impl From<Comment> for PubComment {
 #[get("/{pid}")]
 async fn get_nested_comments(
     service: extractor::Service,
-    Path(pid): Path<PidType>,
+    pid: Path<PidType>,
     Query(params): Query<QueryParams>,
 ) -> Response<Vec<NestedCommentRef>> {
     service
         .comment()
-        .get_comments_of_pid(pid, params.depth)
+        .get_comments_of_pid(pid.into_inner(), params.depth)
         .await
         .map_contoller_result()
         .into()
@@ -67,7 +67,7 @@ async fn get_nested_comments(
 #[post("/{pid}")]
 async fn post(
     service: extractor::Service,
-    Path(pid): Path<PidType>,
+    pid: Path<PidType>,
     data: Json<CommentUpload>,
     request: HttpRequest,
 ) -> Response<PidType> {
@@ -91,7 +91,7 @@ async fn post(
 
     service
         .comment()
-        .post(pid, &data.text, author)
+        .post(*pid, &data.text, author)
         .await
         .map_contoller_result()
         .into()
@@ -101,9 +101,9 @@ async fn post(
 async fn delete(
     service: extractor::Service,
     auth: extractor::Auth,
-    Path(pid): Path<PidType>,
+    pid: Path<PidType>,
 ) -> Response<Option<CommentContent>> {
-    let comment = service.comment().delete(&auth.uid, pid).await.map_contoller_result()?;
+    let comment = service.comment().delete(&auth.uid, pid.into_inner()).await.map_contoller_result()?;
     Ok(comment)
 }
 

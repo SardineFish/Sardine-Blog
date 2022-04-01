@@ -57,7 +57,7 @@ async fn check_auth(auth: extractor::Auth) -> Response<String> {
 }
 
 #[get("/{uid}/challenge")]
-async fn get_challenge(service: extractor::Service, session: extractor::Session, Path(uid): Path<String>) -> Response<AuthChallenge> {
+async fn get_challenge(service: extractor::Service, session: extractor::Session, uid: Path<String>) -> Response<AuthChallenge> {
     service.user().get_auth_challenge(session.id(), &uid)
         .await
         .map_contoller_result()
@@ -106,7 +106,7 @@ async fn sign_out_self(service: extractor::Service, session: extractor::Session)
 }
 
 #[delete("/session/{session_id}", wrap="middleware::authentication(Access::Registered)")]
-async fn sign_out_session(service: extractor::Service, session: extractor::Session, Path(target): Path<String>) -> Response<()> {
+async fn sign_out_session(service: extractor::Service, session: extractor::Session, target: Path<String>) -> Response<()> {
     service.user().sign_out(&target, session.id())
         .await
         .map_contoller_result()
@@ -114,7 +114,7 @@ async fn sign_out_session(service: extractor::Service, session: extractor::Sessi
 }
 
 #[put("/{uid}/access", wrap="middleware::authentication(Access::Trusted)")]
-async fn grant_access(service: extractor::Service, session: extractor::Session, Path(uid): Path<String>, data: Json<GrantAccessData>) -> Response<UserAccessInfo> {
+async fn grant_access(service: extractor::Service, session: extractor::Session, uid: Path<String>, data: Json<GrantAccessData>) -> Response<UserAccessInfo> {
     let user = service.user().grant_access(session.id(), &uid, data.access)
         .await
         .map_contoller_result()?;
@@ -122,7 +122,7 @@ async fn grant_access(service: extractor::Service, session: extractor::Session, 
 }
 
 #[get("/{uid}/avatar")]
-async fn get_avatar(service: extractor::Service, Path(uid): Path<String>) -> Response<Redirect> {
+async fn get_avatar(service: extractor::Service, uid: Path<String>) -> Response<Redirect> {
     let avatar = service.user().get_avatar(&uid).await.map_contoller_result()?;
     Ok(Redirect::SeeOther(avatar))
 }
@@ -134,7 +134,7 @@ async fn get_info(service: extractor::Service, auth: extractor::Auth) -> Respons
 }
 
 #[delete("/{uid}/info/email")]
-async fn delete_email(service: extractor::Service, Path(uid): Path<String>, request: HttpRequest) -> Response<()> {
+async fn delete_email(service: extractor::Service, uid: Path<String>, request: HttpRequest) -> Response<()> {
     match service.user().get_user(&uid).await {
         Result::Ok(user) => {
             if user.access <= Access::Anonymous {

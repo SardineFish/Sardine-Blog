@@ -1,9 +1,11 @@
 use actix_web::{get, web::{ServiceConfig, scope}};
 
+use crate::misc::response::{Response, NoContent};
+
 #[get("/error_report")]
-async fn test_error_report() -> String {
+async fn test_error_report() -> Response<NoContent> {
     log::error!("Nothing error.");
-    "".to_owned()
+    Response::Ok(NoContent)
 }
 
 pub fn config(cfg: &mut ServiceConfig) {

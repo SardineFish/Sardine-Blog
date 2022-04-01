@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use actix_http::http::{ StatusCode, header};
-use actix_web::{HttpRequest, web::{self, HttpResponse, Query, ServiceConfig, scope}};
+use actix_http::{StatusCode, header};
+use actix_web::{HttpRequest, HttpResponse, web::{self, Query, ServiceConfig, scope}};
 use actix_web::{get};
 use fs::{ NamedFile};
 use shared::ServiceOptions;
@@ -50,10 +50,10 @@ async fn blog_index(
  -> actix_web::Result<HttpResponse> {
     if let Some(pid) = query.pid {
         Ok(HttpResponse::build(StatusCode::PERMANENT_REDIRECT)
-            .header(header::LOCATION, service.url().blog(pid))
+            .append_header((header::LOCATION, service.url().blog(pid)))
             .body(""))
     } else {
-        Ok(NamedFile::open(concat_path(&[&options.web_root, "blog/blog.html"]))?.into_response(&request)?)
+        Ok(NamedFile::open(concat_path(&[&options.web_root, "blog/blog.html"]))?.into_response(&request))
     }
 }
 

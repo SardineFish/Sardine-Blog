@@ -1,4 +1,5 @@
 use std::{ops::{Deref, DerefMut}, any::type_name};
+use actix_http::HttpMessage;
 use futures_util::future::{ok, err};
 
 use actix_web::{FromRequest, HttpRequest, dev::Payload, web};
@@ -24,7 +25,6 @@ impl<T: ?Sized> DerefMut for ExtensionMove<T> {
 }
 
 impl<T: Sized + 'static> FromRequest for ExtensionMove<T> {
-    type Config = ();
     type Error = actix_web::Error;
     type Future = Ready<Result<Self, actix_web::Error>>;
 

@@ -1,4 +1,5 @@
-use actix_http::{HttpMessage, body::{Body}};
+
+use actix_http::{body::MessageBody, HttpMessage};
 use actix_web::{dev::{ServiceRequest, ServiceResponse}, web};
 
 use sar_blog::{Service, model::SessionID};
@@ -26,10 +27,11 @@ fn map_internal_error(err: sar_blog::Error) -> actix_web::Error {
     actix_web::error::ErrorInternalServerError(err)
 }
 
-async fn session_middleware<S>(request: ServiceRequest, srv: SyncService<S>) -> Result<ServiceResponse, actix_web::Error> 
+async fn session_middleware<S, B>(request: ServiceRequest, srv: &'static S) -> Result<ServiceResponse<B>, actix_web::Error> 
 where
-    S: ServiceT<Body>,
+    S: ServiceT<B>,
     S::Future: 'static,
+    B: MessageBody
 {
     let service = request.app_data::<web::Data<sar_blog::Service>>().unwrap();
     let mut set_session = false;
@@ -51,7 +53,7 @@ where
 
     request.extensions_mut().insert(Session::new(session_id.clone()));
 
-    let mut response = srv.lock().await.call(request).await?;
+    let mut response = srv.call(request).await?;
 
     let service = response.request().app_data::<web::Data<Service>>().unwrap();
     if set_session {

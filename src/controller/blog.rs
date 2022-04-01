@@ -1,14 +1,17 @@
 
-use actix_web::{get, post, put, delete, web::{self, Path}};
+use actix_http::{body::BoxBody};
+use actix_web::{get, post, put, delete, web::{self, Path}, Responder, Route, Resource};
 use chrono::DateTime;
 use sar_blog::{BlogPreview, model::{Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo, Access}};
 use serde::{Serialize, Deserialize};
 use web::{Query, ServiceConfig, scope};
 
-use crate::{error::*, middleware, misc::response::Response};
+use crate::{error::*, middleware, misc::{body::APIBody, response::Response}};
 use sar_blog::utils::json_datetime_format;
 
 use super::{extractor};
+
+use Response::Ok;
 
 #[derive(Deserialize)]
 struct QueryParams {
@@ -62,8 +65,8 @@ async fn get_list(service: extractor::Service, Query(params): Query<QueryParams>
 }
 
 #[get("/{pid}")]
-async fn get_by_pid(service: extractor::Service, Path(pid): Path<PidType>, session: extractor::Session) -> Response<PubBlog> {
-    let blog = service.blog().get_by_pid(session.id(), pid).await.map_contoller_result()?;
+async fn get_by_pid(service: extractor::Service, pid: Path<PidType>, session: extractor::Session) -> Response<PubBlog> {
+    let blog = service.blog().get_by_pid(session.id(), pid.into_inner()).await.map_contoller_result()?;
     Ok(PubBlog::from(blog)).into()
 }
 
@@ -75,21 +78,23 @@ async fn post(service: extractor::Service, auth: extractor::Auth, data: web::Jso
 
 
 #[put("/{pid}", wrap="middleware::authentication(Access::Trusted)")]
-async fn update(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>, Path(pid): Path<PidType>) -> Response<PidType> {
-    service.blog().update(pid, &auth.uid, data.to_owned())
+async fn update(service: extractor::Service, auth: extractor::Auth, data: web::Json<BlogContent>, pid: Path<PidType>) -> Response<PidType> {
+    service.blog().update(*pid, &auth.uid, data.to_owned())
         .await
         .map_contoller_result()?;
-    Ok(pid).into()
+    Ok(pid.into_inner())
 }
 
 #[delete("/{pid}", wrap="middleware::authentication(Access::Trusted)")]
-async fn delete(service: extractor::Service, auth: extractor::Auth, Path(pid): Path<PidType>) -> Response<Option<BlogContent>> {
-    let blog = service.blog().delete(&auth.uid, pid)
+async fn delete(service: extractor::Service, auth: extractor::Auth, pid: Path<PidType>) -> Response<Option<BlogContent>> {
+    let blog = service.blog().delete(&auth.uid, pid.into_inner())
         .await
         .map_contoller_result()?;
     
     Ok(blog).into()
 }
+
+
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg

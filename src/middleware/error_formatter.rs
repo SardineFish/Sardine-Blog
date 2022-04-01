@@ -1,4 +1,6 @@
-use actix_http::{body::{Body, ResponseBody}, http::{HeaderValue, header}};
+
+use actix_http::body::{BoxBody, MessageBody};
+use actix_http::header::{self, HeaderValue};
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::{web::Bytes, Result};
 use futures::{future::Ready, task, Future};
@@ -16,12 +18,11 @@ pub fn error_formatter() -> ErrorFormatter {
     ErrorFormatter {}
 }
 
-impl<S> Transform<S> for ErrorFormatter
+impl<S> Transform<S, ServiceRequest> for ErrorFormatter
 where
-    S: Service<Request = ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
     S::Future: 'static,
 {
-    type Request = ServiceRequest;
     type Response = ServiceResponse;
     type Error = actix_web::Error;
     type InitError = ();
@@ -37,21 +38,20 @@ pub struct ErrorFormatterMiddleware<S> {
     service: S,
 }
 
-impl<S> Service for ErrorFormatterMiddleware<S>
+impl<S> Service<ServiceRequest> for ErrorFormatterMiddleware<S>
 where
-    S: Service<Request = ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse, Error = actix_web::Error>,
     S::Future: 'static,
 {
-    type Request = ServiceRequest;
     type Response = ServiceResponse;
     type Error = actix_web::Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 
-    fn poll_ready(&mut self, ctx: &mut task::Context<'_>) -> task::Poll<Result<(), Self::Error>> {
+    fn poll_ready(&self, ctx: &mut task::Context<'_>) -> task::Poll<Result<(), Self::Error>> {
         self.service.poll_ready(ctx)
     }
 
-    fn call(&mut self, req: Self::Request) -> Self::Future {
+    fn call(&self, req: ServiceRequest) -> Self::Future {
         let future = self.service.call(req);
         Box::pin(async move {
             let result = future.await?;
@@ -64,30 +64,23 @@ where
                     return Ok(result);
                 }
 
-                let mut result = result.map_body(|_, body| match body {
-                    ResponseBody::Body(Body::Bytes(bytes)) => {
+                let mut is_json_body = false;
+                let mut result = result.map_body(|_, body| match body.try_into_bytes() {
+                    Ok(bytes) => {
                         let json = ErrorResponseData::from(
                                 Error::Uncaught(
                                     std::str::from_utf8(&bytes).unwrap().to_owned()))
                             .build_json();
-                        ResponseBody::Body(Body::Bytes(Bytes::from(json)))
+
+                        is_json_body = true;
+                        MessageBody::boxed(json)
                     },
-                    ResponseBody::Other(Body::Bytes(bytes)) => {
-                        let json = ErrorResponseData::from(
-                                Error::Uncaught(
-                                    std::str::from_utf8(&bytes).unwrap().to_owned()))
-                            .build_json();
-                        ResponseBody::Other(Body::Bytes(Bytes::from(json)))
-                    }
-                    _ => {
-                        warn!("Unkown error response body");
-                        let json = ErrorResponseData::from(
-                                Error::Uncaught(status.to_string()))
-                            .build_json();
-                        ResponseBody::Body(Body::Bytes(Bytes::from(json)))
-                    }
+                    Err(body) => body
                 });
-                result.headers_mut().append(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+                if is_json_body {
+                    result.headers_mut().append(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+                }
+                
                 Ok(result)
             } else {
                 Ok(result)

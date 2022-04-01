@@ -1,4 +1,4 @@
-use actix_http::cookie::{Cookie, CookieBuilder, SameSite};
+use actix_web::cookie::{Cookie, CookieBuilder, SameSite};
 use chrono::Duration;
 use sar_blog::AuthToken;
 
@@ -21,7 +21,7 @@ pub fn gen_session_cookie(session_id: &str, lifetime: Duration) -> Cookie<'stati
     let cookie = CookieBuilder::new("session_id", session_id.to_string())
             .expires(to_expire_time(lifetime))
             .path("/")
-            .same_site(actix_http::cookie::SameSite::Strict)
+            .same_site(actix_web::cookie::SameSite::Strict)
             .finish();
 
     log::debug!("{}", cookie);

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use actix_http::http::StatusCode;
+use actix_http::StatusCode;
 use fmt::{Debug, Display};
 use sar_blog::Error as ServiceError;
 
