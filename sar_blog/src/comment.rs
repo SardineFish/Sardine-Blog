@@ -92,7 +92,7 @@ impl<'m> CommentService<'m> {
         };
 
         let comment_root = match &post.data {
-            PostType::Blog(_) | PostType::Note(_) | PostType::Miscellaneous(_) => post.pid,
+            PostType::Blog(_) | PostType::Note(_) | PostType::Miscellaneous(_) | PostType::Recipe(_) => post.pid,
             PostType::Comment(content) => content.comment_root,
         };
 

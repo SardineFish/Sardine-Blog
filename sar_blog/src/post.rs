@@ -1,9 +1,16 @@
 use std::marker::PhantomData;
 
+use chrono::DateTime;
+use chrono::Utc;
 use model::PidType;
 use model::Post;
 use model::PostData;
+use model::PostStats;
+use model::PubUserInfo;
 use model::SessionID;
+use serde::Serialize;
+
+use crate::utils::json_datetime_format;
 
 use crate::error::*;
 use crate::Service;
@@ -13,6 +20,29 @@ pub struct PostService<'s, T> {
     pub(crate) service: &'s crate::Service,
     _phantom: PhantomData<T>,
 }
+
+#[derive(Serialize)]
+pub struct PubPostData<T: PostData> {
+    pub pid: PidType,
+    #[serde(with="json_datetime_format")]
+    pub time: DateTime<Utc>,
+    pub author: PubUserInfo,
+    pub stats: PostStats,
+    pub content: T,
+}
+
+impl<T: PostData> From<Post<T>> for PubPostData<T> {
+    fn from(post: Post<T>) -> Self {
+        Self {
+            author: post.author,
+            content: post.content,
+            pid: post.pid,
+            stats: post.stats,
+            time: post.time.into()
+        }
+    }
+}
+
 
 impl<'s, T: PostData> PostService<'s, T> {
     pub fn new(service: &'s Service) -> Self {

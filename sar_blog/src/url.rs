@@ -29,6 +29,10 @@ impl<'s> UrlService<'s> {
         format!("{}/note/{}", self.options.site_url, pid)
     }
 
+    pub fn recipe(&self, pid: PidType) -> String {
+        format!("{}/cook/{}", self.options.site_url, pid)
+    }
+
     pub fn unsubscribe_notification(&self, uid: &str) -> String {
         format!("{}/notification/unsubscribe/{}", self.options.site_url, uid)
     }
@@ -42,6 +46,7 @@ impl<'s> UrlService<'s> {
         match &post.data {
             PostType::Blog(_) => Ok(self.blog(post.pid)),
             PostType::Note(_) => Ok(self.note(post.pid)),
+            PostType::Recipe(_) => Ok(self.recipe(post.pid)),
             PostType::Miscellaneous(content) => Ok(content.url.to_owned()),
             PostType::Comment(content) => {
                 let post_type = self.service.model.post.get_type(content.comment_root).await?;

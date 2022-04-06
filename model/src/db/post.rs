@@ -12,6 +12,8 @@ use crate::misc::usize_format;
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
 use shared::error::LogError;
 
+use super::recipe::RecipeContent;
+
 const COLLECTION_POST: &str = "post";
 // const COLLECTION_META: &str = "meta";
 
@@ -84,6 +86,7 @@ pub enum PostType {
     Note(NoteContent),
     Blog(BlogContent),
     Comment(CommentContent),
+    Recipe(RecipeContent),
     Miscellaneous(MiscellaneousPostContent),
 }
 
@@ -93,6 +96,7 @@ impl PostType {
             PostType::Blog(_) => "Blog",
             PostType::Note(_) => "Note",
             PostType::Comment(_) => "Comment",
+            PostType::Recipe(_) => RecipeContent::post_type_name(),
             PostType::Miscellaneous(_) => "Miscellaneous",
         }
     }

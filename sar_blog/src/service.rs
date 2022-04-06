@@ -3,7 +3,7 @@ use shared::ServiceOptions;
 use rand::{RngCore, SeedableRng, prelude::StdRng};
 use sha2::{Digest, Sha256};
 
-use crate::{blog::BlogService, comment::CommentService, email_notify::EmailNotifyService, error::MapServiceError, note::NoteService, post_data::PostDataService, rank::{RankServiceSelector}, search::SearchService, session::SessionService, storage::StorageService, url::UrlService, user::UserService};
+use crate::{blog::BlogService, comment::CommentService, email_notify::EmailNotifyService, error::MapServiceError, note::NoteService, post_data::PostDataService, rank::{RankServiceSelector}, search::SearchService, session::SessionService, storage::StorageService, url::UrlService, user::UserService, cook::CookService};
 
 use crate::error::*;
 use std::{cell::RefCell};
@@ -60,6 +60,10 @@ impl Service {
 
     pub fn search(&self) -> SearchService {
         SearchService::new(self)
+    }
+
+    pub fn cook(&self) -> CookService {
+        CookService::new(self)
     }
 
     pub fn push_service(&self) -> EmailNotifyService {

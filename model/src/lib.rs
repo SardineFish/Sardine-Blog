@@ -16,3 +16,4 @@ pub use history::{History, HistoryData, Operation, PostActivity};
 pub use self::redis::{RedisCache, SessionID, session::SessionAuthInfo};
 pub use rank::{RankedScore};
 pub use search::{SearchResult};
+pub use db::recipe::*;

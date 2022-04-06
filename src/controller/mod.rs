@@ -10,8 +10,10 @@ mod search;
 mod test;
 mod rank;
 mod cors;
+mod cook;
+mod utils;
 
-use actix_web::{ web::{ ServiceConfig, scope}};
+use actix_web::{ web::{ ServiceConfig, scope }};
 use shared::ServiceOptions;
 
 use crate::middleware;
@@ -23,6 +25,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
             .configure(blog::config)
             .configure(comment::config)
             .configure(note::config)
+            .configure(cook::config)
             .configure(user::config)
             .configure(post_data::config)
             .configure(storage::config)
