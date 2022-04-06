@@ -1,3 +1,4 @@
+use actix_web::put;
 use actix_web::web::{scope, Json, Path, ServiceConfig};
 use actix_web::{get, post, web::Query};
 use sar_blog::model::{Access, PidType, RecipeContent};
@@ -28,7 +29,7 @@ async fn post_recipe(service: Service, auth: Auth, data: Json<RecipeContent>) ->
     Ok(service.cook().post(&auth.uid, data.into_inner()).await?)
 }
 
-#[post("/{pid}", wrap = "middleware::authentication(Access::Trusted)")]
+#[put("/{pid}", wrap = "middleware::authentication(Access::Trusted)")]
 async fn update_recipe(
     service: Service,
     auth: Auth,

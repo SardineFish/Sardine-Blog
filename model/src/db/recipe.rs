@@ -5,6 +5,7 @@ use crate::{PostData, PostType};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecipeContent {
     pub title: String,
+    pub description: String,
     pub requirements: Vec<String>,
     pub content: String,
 }
