@@ -73,6 +73,9 @@ fn serve_folder(opts: &ServiceOptions, mount_path: &str, serve_from: &str) -> fs
         .redirect_to_slash_directory()
 }
 
+static_file!(cook_with_pid, r"/cook/{pid:\d+}", "cook/dist/index.html");
+static_file!(cook_page, r"/cook/", "cook/dist/index.html");
+
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
         cfg.service(scope("")
@@ -84,6 +87,9 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
             .service(note_view)
             .service(unsubscribe_notification)
             .service(search)
+            .service(cook_with_pid)
+            .service(cook_page)
+            .service(serve_folder(&opts, "/cook/", "cook/dist/"))
             .service(serve_folder(&opts, "/search/", "search/dist/"))
             .service(serve_folder(&opts, "/", ""))
         );
