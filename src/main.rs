@@ -24,8 +24,8 @@ async fn main() -> std::io::Result<()> {
         .author("SardineFish")
         .about("SardineFish's personal website backend server.")
         .version("0.1.0")
-        .arg(arg!(init: "--init 'Initialize database.'"))
-        .arg(arg!(config: "-c --config=[CONFIG_FILE] 'Service configure JSON file.'"))
+        .arg(arg!(--init))
+        .arg(arg!(-c --config [CONFIG] "Service configure JSON file."))
         .get_matches();
 
     let opts = if let Some(path) = matches.value_of("config") {
