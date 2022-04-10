@@ -2,6 +2,7 @@ name: Deploy Static Resources
 
 on:
   push:
+    branches: [ master ]
     paths-ignore:
       - "**/Cargo.lock"
       - "**/*.rs"
