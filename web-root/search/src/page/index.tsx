@@ -6,6 +6,7 @@ import { SelectGroup } from "../component/select-group";
 import { Footer } from "blog-common";
 import { NavMenu } from "blog-common";
 
+(window as any).react2 = React;
 function App()
 {
     return (<>
@@ -17,3 +18,5 @@ function App()
 }
 
 ReactDOM.render(<App />, document.querySelector("#root"));
+
+ 

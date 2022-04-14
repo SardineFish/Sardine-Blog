@@ -18,6 +18,9 @@ const config = {
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
+        alias: {
+            "react": path.resolve('./node_modules/react'),
+        }
     },
     module: {
         rules: [
@@ -52,8 +55,9 @@ const config = {
     devtool: "eval-source-map",
     /** @type {devServer.Configuration} */
     devServer: {
-        contentBase: "./dist",
-        writeToDisk: false,
+        static: {
+            directory: './dist',
+        },
         open: false,
         host: "0.0.0.0",
         port: 5000,

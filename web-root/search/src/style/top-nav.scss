@@ -61,6 +61,12 @@
         }
 
         .nav-list {
+            display: flex;
+            flex-flow: column nowrap;
+        }
+
+        .menu-content {
+        
             position: fixed;
             top: 0;
             left: -19em;
@@ -72,11 +78,12 @@
             flex-flow: column nowrap;
             z-index: 100;
             transition: left .3s;
-
             &.expand {
                 left: 0;
             }
         }
+
+        
 
         a {
             text-align: left;
