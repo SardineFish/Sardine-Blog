@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { FormEvent, useState } from "react";
-import { Icons } from "../misc/icons";
+import { Icons } from "blog-common";
 
 interface SearchBarProps
 {

@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import { SearchPage } from "../view/search";
 import "../style/index.scss";
 import { SelectGroup } from "../component/select-group";
-import { Footer } from "../component/footer";
-import { NavMenu } from "../component/nav-menu";
+import { Footer } from "blog-common";
+import { NavMenu } from "blog-common";
 
 function App()
 {

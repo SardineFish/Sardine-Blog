@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { SelectGroup } from "../component/select-group";
 import { SearchBar } from "../component/search-bar";
 import SardineFishAPI, { SearchHitInfo, SearchResult } from "sardinefish/SardineFish.API";
-import { buildQueryString, parseQueryString } from "../misc/utils";
-import { useHistory } from "../misc/use-history";
+import { buildQueryString, parseQueryString } from "blog-common";
+import { useHistory } from "blog-common";
 import InfiniteScroller from "react-infinite-scroller";
 import { SearchHitInfoBlock } from "../component/result-block";
-import { ThrottleReject, useThrottle } from "../misc/throttle";
+import { ThrottleReject, useThrottle } from "blog-common";
 import clsx from "clsx";
-import { message } from "../component/message";
+import { message } from "blog-common";
 import { APIError } from "../../../lib/Script/SardineFish/api-builder";
 
 interface UrlQuery extends Record<string, string | number>
@@ -63,7 +63,7 @@ export function SearchPage()
                     message.warn("服务器要被玩坏啦 >_< (Request too frequent)");
                     break;
                 default:
-                    message.error(err.message);
+                    message.error((err as APIError).message);
             }
         }
         finally

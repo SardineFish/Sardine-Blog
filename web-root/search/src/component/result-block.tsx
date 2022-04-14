@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React from "react";
 // import { SearchHitInfo } from "../../../lib/Script/SardineFish/SardineFish.API";
 import { SearchHitInfo } from "sardinefish/SardineFish.API";
-import { match, safeEmphasized } from "../misc/utils";
+import { match, safeEmphasized } from "blog-common";
 
 export function SearchHitInfoBlock(props: { hitInfo: SearchHitInfo })
 {
