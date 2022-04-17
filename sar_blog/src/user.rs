@@ -260,7 +260,7 @@ fn sha256(input: &str) -> String {
 fn sha1(input: &str) -> String {
     let mut hasher = sha1::Sha1::new();
     hasher.update(input);
-    String::from_utf8(hasher.finalize().to_ascii_lowercase()).unwrap()
+    hex::encode(hasher.finalize())
 }
 fn md5(input: &str) -> String {
     format!("{:x}", md5::compute(input))
