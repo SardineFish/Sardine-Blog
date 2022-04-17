@@ -30,6 +30,7 @@ declare type FullParamsDeclare<T extends SimpleParamsDeclare> = {
     [key in keyof T]: ParamInfo<TypeNames> & (T[key] extends TypeNames ? ParamInfo<T[key]> : T[key]);
 };
 declare type ApiFunction<Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | any | undefined, Response> = Data extends undefined ? (params: ValueType<Path> & ValueType<Query>) => Promise<Response> : Data extends ParamsDeclare ? (params: ValueType<Path> & ValueType<Query>, body: ValueType<Data & ParamsDeclare>) => Promise<Response> : (params: ValueType<Path> & ValueType<Query>, body: Data) => Promise<Response>;
+export declare function ParamDescriptor<P extends SimpleParamsDeclare>(p: P): P;
 export declare function simpleParam<T extends SimpleParamsDeclare>(info: T): FullParamsDeclare<T>;
 declare function validateEmail(key: string, email: string): string;
 declare function validateUid(key: string, uid: string): string;

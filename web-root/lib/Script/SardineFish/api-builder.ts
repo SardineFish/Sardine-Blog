@@ -53,6 +53,10 @@ type ApiFunction<Path extends ParamsDeclare, Query extends ParamsDeclare, Data e
     : Data extends ParamsDeclare ? (params: ValueType<Path> & ValueType<Query>, body: ValueType<Data & ParamsDeclare>) => Promise<Response>
     : (params: ValueType<Path> & ValueType<Query>, body: Data) => Promise<Response>
 
+export function ParamDescriptor<P extends SimpleParamsDeclare>(p: P)
+{
+    return p;
+}
 
 interface ErrorResponse
 {

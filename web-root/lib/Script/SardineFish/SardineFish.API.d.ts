@@ -6,7 +6,7 @@ export interface ProgressRequestOptions {
         [key: string]: string;
     };
     onUploadProgress?: (sentBytes: number, totalBytes: number) => void;
-    body?: string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams | ReadableStream<Uint8Array> | null | undefined;
+    body?: Document | Blob | BufferSource | FormData | URLSearchParams | string | null | undefined;
 }
 interface RequestProgressResponse {
     status: number;
@@ -15,6 +15,8 @@ interface RequestProgressResponse {
     text: () => Promise<string>;
 }
 declare function requestWithProgress(url: string, options?: ProgressRequestOptions): Promise<RequestProgressResponse>;
+export declare type PidType = number;
+export declare type ServerTime = string;
 export declare enum HashMethod {
     SHA256 = "SHA256",
     SHA1 = "SHA1",
@@ -132,6 +134,19 @@ export interface SearchHighlight {
     tags?: string[];
     author?: string;
     content?: string[];
+}
+export interface PubPostData<T> {
+    pid: PidType;
+    time: ServerTime;
+    author: PubUserInfo;
+    stats: PostStats;
+    content: T;
+}
+export interface RecipeContent {
+    title: string;
+    description: string;
+    requirements: string[];
+    content: string;
 }
 declare const SardineFishAPI: {
     User: {
@@ -282,6 +297,16 @@ declare const SardineFishAPI: {
             skip: number;
             count: number;
         }> & Partial<{}>) => Promise<SearchResult>;
+    };
+    Cook: {
+        getList: (params: Required<{}> & Partial<{}> & Required<{
+            from: number;
+            count: number;
+        }> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
+        post: (params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        update: (params: Required<{
+            key: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;

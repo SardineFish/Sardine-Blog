@@ -1,5 +1,8 @@
 (() => {
   // api-builder.ts
+  function ParamDescriptor(p) {
+    return p;
+  }
   function simpleParam(info) {
     const params = {};
     for (const key in info) {
@@ -276,6 +279,10 @@
     DocType2["Markdown"] = "Markdown";
     DocType2["HTML"] = "HTML";
   })(DocType || (DocType = {}));
+  var PageQueryParam = ParamDescriptor({
+    from: "number",
+    count: "number"
+  });
   var SardineFishAPI = {
     User: {
       checkAuth: api("GET", "/api/user").response(),
@@ -422,6 +429,11 @@
         skip: "number",
         count: "number"
       }).response()
+    },
+    Cook: {
+      getList: api("GET", "/api/cook").query(PageQueryParam).response(),
+      post: api("POST", "/api/cook").body().response(),
+      update: api("PUT", "/api/cook/{pid}").path({key: "number"}).body().response()
     },
     DocType,
     HashMethod,

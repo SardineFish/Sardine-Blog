@@ -1,4 +1,4 @@
-import { api, HTTPMethods, Validators } from "./api-builder";
+import { api, HTTPMethods, ParamDescriptor, Validators } from "./api-builder";
 
 function formatDateTime(time: Date)
 {
@@ -16,7 +16,7 @@ export interface ProgressRequestOptions
     method?: HTTPMethods,
     headers?: { [key: string]: string },
     onUploadProgress?: (sentBytes: number, totalBytes: number) => void,
-    body?: string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams | ReadableStream<Uint8Array> | null | undefined;
+    body?: Document | Blob | BufferSource | FormData | URLSearchParams | string | null | undefined;
 }
 interface RequestProgressResponse
 {
@@ -82,6 +82,10 @@ const Url = {
     type: "string" as "string",
     validator: Validators.url
 };
+
+export type PidType = number;
+
+export type ServerTime = string;
 
 export enum HashMethod
 {
@@ -237,6 +241,29 @@ export interface SearchHighlight
     author?: string,
     content?: string[],
 }
+
+export interface PubPostData<T>
+{
+    pid: PidType,
+    time: ServerTime,
+    author: PubUserInfo,
+    stats: PostStats,
+    content: T,
+}
+
+export interface RecipeContent
+{
+    title: string,
+    description: string,
+    requirements: string[],
+    content: string,
+}
+
+const PageQueryParam = ParamDescriptor(
+    {
+        from: "number",
+        count: "number",
+    });
 
 const SardineFishAPI = {
     User: {
@@ -448,6 +475,18 @@ const SardineFishAPI = {
                 count: "number",
             })
             .response<SearchResult>()
+    },
+    Cook: {
+        getList: api("GET", "/api/cook")
+            .query(PageQueryParam)
+            .response<PubPostData<RecipeContent>>(),
+        post: api("POST", "/api/cook")
+            .body<RecipeContent>()
+            .response<PidType>(),
+        update: api("PUT", "/api/cook/{pid}")
+            .path({ key: "number" })
+            .body<RecipeContent>()
+            .response<number>()
     },
     DocType,
     HashMethod,

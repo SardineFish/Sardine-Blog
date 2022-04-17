@@ -2,7 +2,7 @@
   "name": "sardinefish",
   "version": "1.0.0",
   "description": "",
-  "main": "SardineFish.js",
+  "main": "SardineFish.API.js",
   "scripts": {
     "build": "npm run build:bundle && npm run build:declare",
     "build:bundle": "npx esbuild --bundle --outdir=. SardineFish.API.ts SardineFish.Games.ts",
