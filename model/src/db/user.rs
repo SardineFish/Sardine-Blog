@@ -1,12 +1,15 @@
 use bson::Document;
-use mongodb::{Collection, Database, bson::{self, doc}, options::{FindOneAndUpdateOptions, UpdateOptions}};
-use serde::{Serialize, Deserialize};
+use mongodb::{
+    bson::{self, doc},
+    options::{FindOneAndUpdateOptions, UpdateOptions},
+    Collection, Database,
+};
+use serde::{Deserialize, Serialize};
 use shared::error::LogError;
 
 use crate::error::*;
 
 const COLLECTION_USER: &str = "user";
-
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum HashMethod {
@@ -24,7 +27,7 @@ pub struct AuthenticationInfo {
     pub method: HashMethod,
 }
 #[derive(Serialize, Deserialize, Clone)]
-pub struct UserInfo{
+pub struct UserInfo {
     pub name: String,
     pub email: Option<String>,
     pub url: Option<String>,
@@ -33,9 +36,9 @@ pub struct UserInfo{
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct PubUserInfo {
-    name: String,
-    avatar: String,
-    url: Option<String>,
+    pub name: String,
+    pub avatar: String,
+    pub url: Option<String>,
 }
 
 impl From<&User> for PubUserInfo {
@@ -69,7 +72,6 @@ pub struct User {
     pub auth_info: AuthenticationInfo,
 }
 
-
 impl User {
     pub fn registered_user(uid: &str, info: &UserInfo, auth: &AuthenticationInfo) -> Self {
         Self {
@@ -90,13 +92,13 @@ impl User {
                 email: None,
                 url: None,
                 avatar: String::default(),
-            }
+            },
         }
     }
 
     pub fn anonymous(info: &AnonymousUserInfo) -> Self {
         let uid: String = if let Some(email) = &info.email {
-            format!("{:x}", md5::compute(email)) 
+            format!("{:x}", md5::compute(email))
         } else {
             format!("{:X}", md5::compute(&info.name))
         };
@@ -112,7 +114,6 @@ impl User {
             },
         }
     }
-
 }
 
 #[derive(Clone)]
@@ -122,38 +123,47 @@ pub struct UserModel {
 
 impl UserModel {
     pub fn new(db: &Database) -> Self {
-        Self{
+        Self {
             collection: db.collection(COLLECTION_USER),
         }
     }
 
     pub async fn init_collection(db: &Database) {
-        db.run_command(doc! {
-            "createIndexes": COLLECTION_USER,
-            "indexes": [
-                {
-                    "key": {
-                        "uid": 1,
+        db.run_command(
+            doc! {
+                "createIndexes": COLLECTION_USER,
+                "indexes": [
+                    {
+                        "key": {
+                            "uid": 1,
+                        },
+                        "name": "idx_uid",
+                        "unique": true,
                     },
-                    "name": "idx_uid",
-                    "unique": true,
-                },
-            ],
-        }, None).await.log_warn_consume("init-db-user");
+                ],
+            },
+            None,
+        )
+        .await
+        .log_warn_consume("init-db-user");
     }
 
     pub async fn get_by_uid(&self, uid: &str) -> Result<User> {
         let query = doc! {
             "uid": uid,
         };
-        self.query_user(query).await?.ok_or_else(|| Error::UserNotFound(uid.to_string()))
+        self.query_user(query)
+            .await?
+            .ok_or_else(|| Error::UserNotFound(uid.to_string()))
     }
 
     pub async fn get_by_email(&self, email: &str) -> Result<User> {
         let query = doc! {
             "email": email,
         };
-        self.query_user(query).await?.ok_or_else(|| Error::UserNotFound(email.to_string()))
+        self.query_user(query)
+            .await?
+            .ok_or_else(|| Error::UserNotFound(email.to_string()))
     }
 
     pub async fn add(&self, user: &User) -> Result<()> {
@@ -165,7 +175,9 @@ impl UserModel {
         };
         let mut opts = UpdateOptions::default();
         opts.upsert = Some(true);
-        let result = self.collection.update_one(query, update, opts)
+        let result = self
+            .collection
+            .update_one(query, update, opts)
             .await
             .map_model_result()?;
 
@@ -203,27 +215,35 @@ impl UserModel {
         // } else {
         //     Ok(())
         // }
-        self.update_and_query(uid, "info.email", Option::<String>::None).await
+        self.update_and_query(uid, "info.email", Option::<String>::None)
+            .await
     }
 
     async fn query_user(&self, query: Document) -> Result<Option<User>> {
-        self.collection.find_one(query, None)
+        self.collection
+            .find_one(query, None)
             .await
             .map_model_result()
     }
 
-    async fn update_and_query<T: Serialize>(&self, uid: &str, key: &str, update: T) -> Result<User> {
+    async fn update_and_query<T: Serialize>(
+        &self,
+        uid: &str,
+        key: &str,
+        update: T,
+    ) -> Result<User> {
         let query = doc! {
             "uid": uid,
         };
-        let update = doc!{
+        let update = doc! {
             "$set": {
                 key: bson::to_bson(&update).unwrap()
             }
         };
         let mut options = FindOneAndUpdateOptions::default();
         options.return_document = Some(mongodb::options::ReturnDocument::After);
-        self.collection.find_one_and_update(query, update, options)
+        self.collection
+            .find_one_and_update(query, update, options)
             .await
             .map_model_result()?
             .ok_or_else(|| Error::UserNotFound(uid.to_string()))

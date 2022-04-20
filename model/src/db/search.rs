@@ -4,9 +4,8 @@ use serde_json::json;
 use url::Url;
 
 use crate::{
-    db::post::get_content_preview,
     error::{MapInternalError, Result},
-    DocType, PidType, PostDoc, PostType,
+    DocType, PidType, Post, PostData,
 };
 
 #[derive(Serialize)]
@@ -24,7 +23,13 @@ struct IndexedDoc {
 const URL_INDEX: &str = "/post";
 const URL_RESOURCE: &str = "/post/_doc/";
 const URL_SEARCH: &str = "/post/_search";
-const PREVIEW_CHARS: usize = 300;
+
+pub struct IndexDoc {
+    pub title: String,
+    pub tags: Vec<String>,
+    pub preview: String,
+    pub content: String,
+}
 
 #[derive(Clone)]
 pub struct ElasticSerachModel {
@@ -97,56 +102,49 @@ impl ElasticSerachModel {
         Ok(())
     }
 
-    pub async fn insert_post(&self, post: &PostDoc, author: &str) -> Result<()> {
-        let (title, tags, content, preview) = match &post.data {
-            PostType::Blog(blog) => (
-                blog.title.clone(),
-                blog.tags.clone(),
-                Self::parse_doc(&blog.doc, blog.doc_type),
-                get_content_preview(blog.doc_type, &blog.doc, PREVIEW_CHARS),
-            ),
-            PostType::Note(note) => (
-                String::new(),
-                vec![],
-                Self::parse_doc(&note.doc, note.doc_type),
-                get_content_preview(note.doc_type, &note.doc, PREVIEW_CHARS),
-            ),
-            _ => Err("Invalid operation").map_search_err("Invalid post to index")?,
-        };
-        let doc = IndexedDoc {
-            pid: post.pid,
-            author: author.to_string(),
-            tags,
+    pub async fn insert_post<T: PostData>(&self, post: &Post<T>) -> Result<()> {
+        if let Some(IndexDoc {
             title,
+            tags,
             preview,
-            doc_type: post.data.type_name(),
             content,
-            time: Utc::now().timestamp_millis(),
-        };
+        }) = post.content.search_index()
+        {
+            let doc = IndexedDoc {
+                pid: post.pid,
+                author: post.author.name.to_string(),
+                tags,
+                title,
+                preview,
+                doc_type: T::post_type_name(),
+                content,
+                time: Utc::now().timestamp_millis(),
+            };
 
-        let url = self
-            .base_url
-            .join(URL_RESOURCE)
-            .map_internal_err()?
-            .join(&post.pid.to_string())
-            .map_search_err("Failed to build API url")?;
+            let url = self
+                .base_url
+                .join(URL_RESOURCE)
+                .map_internal_err()?
+                .join(&post.pid.to_string())
+                .map_search_err("Failed to build API url")?;
 
-        log::info!("{}", url);
+            log::info!("{}", url);
 
-        let response = self
-            .client
-            .put(url)
-            .json(&doc)
-            .send()
-            .await
-            .map_search_err("Failed to send indexing post")?;
+            let response = self
+                .client
+                .put(url)
+                .json(&doc)
+                .send()
+                .await
+                .map_search_err("Failed to send indexing post")?;
 
-        if !response.status().is_success() {
-            Err("Indexing failed").map_search_err(&format!(
-                "Failed to index post {}: {}",
-                post.pid,
-                response.status()
-            ))?;
+            if !response.status().is_success() {
+                Err("Indexing failed").map_search_err(&format!(
+                    "Failed to index post {}: {}",
+                    post.pid,
+                    response.status()
+                ))?;
+            }
         }
 
         Ok(())
@@ -255,7 +253,7 @@ impl ElasticSerachModel {
         }
     }
 
-    fn parse_doc(doc: &str, doc_type: DocType) -> String {
+    pub(crate) fn parse_doc(doc: &str, doc_type: DocType) -> String {
         match doc_type {
             DocType::PlainText => doc.to_owned(),
             DocType::HTML => shared::md2plain::html2plain(doc),

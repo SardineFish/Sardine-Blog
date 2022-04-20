@@ -1,18 +1,27 @@
-use std::{ usize, ops::{Deref, DerefMut}};
+use std::{
+    ops::{Deref, DerefMut},
+    usize,
+};
 
-use bson::{Document, doc};
+use bson::{doc, Document};
 use chrono::Utc;
-use mongodb::{Collection, Cursor, Database, bson::{self, oid::ObjectId}, options::{FindOneAndUpdateOptions, FindOneOptions, ReturnDocument, UpdateOptions}};
-use futures::{StreamExt, future::ready};
-use shared::md2plain::{md2plain, html2plain, slice_utf8};
+use futures::{future::ready, StreamExt};
+use mongodb::{
+    bson::{self, oid::ObjectId},
+    options::{FindOneAndUpdateOptions, FindOneOptions, ReturnDocument, UpdateOptions},
+    Collection, Cursor, Database,
+};
+use shared::md2plain::{html2plain, md2plain, slice_utf8};
 
-use crate::{BlogContent, CommentContent, DocType, NoteContent, error::*, model::PidType, PubUserInfo};
-use crate::misc::usize_format;
+use crate::{
+    error::*, model::PidType, BlogContent, CommentContent, DocType, NoteContent, PubUserInfo,
+};
+use crate::{misc::usize_format, User};
 
-use serde::{Serialize, Deserialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use shared::error::LogError;
 
-use super::recipe::RecipeContent;
+use super::{recipe::RecipeContent, search::IndexDoc};
 
 const COLLECTION_POST: &str = "post";
 // const COLLECTION_META: &str = "meta";
@@ -32,19 +41,18 @@ fn query(pid: PidType) -> Document {
 
 #[allow(dead_code)]
 #[allow(clippy::upper_case_acronyms)]
-pub enum SortOrder{
+pub enum SortOrder {
     ASC = 1,
     DESC = -1,
 }
 
-
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct PostStats {
-    #[serde(with="usize_format")]
+    #[serde(with = "usize_format")]
     pub likes: usize,
-    #[serde(with="usize_format")]
+    #[serde(with = "usize_format")]
     pub views: usize,
-    #[serde(with="usize_format")]
+    #[serde(with = "usize_format")]
     pub comments: usize,
 }
 
@@ -67,7 +75,7 @@ impl PostData for MiscellaneousPostContent {
     fn unwrap(data: PostType) -> Option<Self> {
         match data {
             PostType::Miscellaneous(data) => Some(data),
-            _ => None
+            _ => None,
         }
     }
 }
@@ -110,8 +118,21 @@ pub struct Post<T: PostData> {
     pub stats: PostStats,
     pub author: PubUserInfo,
 
-    #[serde(flatten, bound="T: PostData")]
+    #[serde(flatten, bound = "T: PostData")]
     pub content: T,
+}
+
+impl<T: PostData> Post<T> {
+    pub fn new(pid: PidType, author: &User, content: T) -> Self {
+        Self {
+            pid,
+            time: Utc::now().into(),
+            stats: PostStats::default(),
+            author: author.into(),
+            uid: author.uid.clone(),
+            content,
+        }
+    }
 }
 
 impl<T: PostData> PostMeta for Post<T> {
@@ -126,7 +147,7 @@ impl<T: PostData> PostMeta for Post<T> {
     }
 }
 
-impl<T: PostData> GenericPost for Post<T>{
+impl<T: PostData> GenericPost for Post<T> {
     type Content = T;
 
     fn post_type_name() -> &'static str {
@@ -155,7 +176,7 @@ pub trait PostMeta {
 }
 
 pub trait GenericPost: PostMeta + DeserializeOwned + Clone + Unpin + Send + Sync + 'static {
-    type Content : PostData;
+    type Content: PostData;
     fn post_type_name() -> &'static str;
 }
 
@@ -170,7 +191,7 @@ pub struct PostDoc {
 }
 
 impl PostDoc {
-    pub fn new(pid: PidType, post: PostType, author: &str) -> Self{
+    pub fn new(pid: PidType, post: PostType, author: &str) -> Self {
         Self {
             _id: ObjectId::new(),
             pid,
@@ -178,6 +199,19 @@ impl PostDoc {
             time: Utc::now().into(),
             stats: Default::default(),
             data: post,
+        }
+    }
+}
+
+impl<T: PostData> From<Post<T>> for PostDoc {
+    fn from(post: Post<T>) -> Self {
+        Self {
+            _id: ObjectId::new(),
+            pid: post.pid,
+            time: post.time,
+            stats: post.stats,
+            uid: post.uid,
+            data: post.content.wrap(),
         }
     }
 }
@@ -196,11 +230,16 @@ impl PostMeta for PostDoc {
     }
 }
 
-pub trait PostData: Serialize + DeserializeOwned + Clone + Sized + Unpin + Send + Sync + 'static {
+pub trait PostData:
+    Serialize + DeserializeOwned + Clone + Sized + Unpin + Send + Sync + 'static
+{
     const ALLOW_SEARCH: bool = false;
     fn post_type_name() -> &'static str;
     fn wrap(self) -> PostType;
     fn unwrap(data: PostType) -> Option<Self>;
+    fn search_index(&self) -> Option<IndexDoc> {
+        None
+    }
 }
 
 pub fn get_content_preview(doc_type: DocType, content: &str, limit: usize) -> String {
@@ -229,7 +268,7 @@ impl PostModel {
             collection: db.collection(COLLECTION_POST),
             update_options: opts,
             coll_meta: db.collection(COLLECTION_POST),
-            meta_id: ObjectId::from_bytes([0;12]),
+            meta_id: ObjectId::from_bytes([0; 12]),
         }
     }
 
@@ -239,7 +278,8 @@ impl PostModel {
             posts: 0,
         };
 
-        self.coll_meta.insert_one(&data, None)
+        self.coll_meta
+            .insert_one(&data, None)
             .await
             .map_model_result()?;
 
@@ -247,75 +287,96 @@ impl PostModel {
     }
 
     pub async fn init_collection(db: &Database) {
-        db.run_command(doc! {
-            "createIndexes": COLLECTION_POST,
-            "indexes": [
-                {
-                    "key": {
-                        "pid": 1,
+        db.run_command(
+            doc! {
+                "createIndexes": COLLECTION_POST,
+                "indexes": [
+                    {
+                        "key": {
+                            "pid": 1,
+                        },
+                        "name": "idx_pid",
+                        "unique": true,
                     },
-                    "name": "idx_pid",
-                    "unique": true,
-                },
-            ],
-        }, None).await.log_warn_consume("init-db-post");
-        db.run_command(doc! {
-            "createIndexes": COLLECTION_POST,
-            "indexes": [
-                {
-                    "key": {
-                        "data.type": 1,
-                        "time": -1,
+                ],
+            },
+            None,
+        )
+        .await
+        .log_warn_consume("init-db-post");
+        db.run_command(
+            doc! {
+                "createIndexes": COLLECTION_POST,
+                "indexes": [
+                    {
+                        "key": {
+                            "data.type": 1,
+                            "time": -1,
+                        },
+                        "name": "idx_type_time",
                     },
-                    "name": "idx_type_time",
-                },
-            ],
-        }, None).await.log_warn_consume("init-db-post");
-        db.run_command(doc! {
-            "createIndexes": COLLECTION_POST,
-            "indexes": [
-                {
-                    "key": {
-                        "data.content.comment_root": 1,
+                ],
+            },
+            None,
+        )
+        .await
+        .log_warn_consume("init-db-post");
+        db.run_command(
+            doc! {
+                "createIndexes": COLLECTION_POST,
+                "indexes": [
+                    {
+                        "key": {
+                            "data.content.comment_root": 1,
+                        },
+                        "name": "idx_comment_root",
                     },
-                    "name": "idx_comment_root",
-                },
-            ],
-        }, None).await.log_warn_consume("init-db-post");
-        db.run_command(doc! {
-            "createIndexes": COLLECTION_POST,
-            "indexes": [
-                {
-                    "key": {
-                        "time": -1,
+                ],
+            },
+            None,
+        )
+        .await
+        .log_warn_consume("init-db-post");
+        db.run_command(
+            doc! {
+                "createIndexes": COLLECTION_POST,
+                "indexes": [
+                    {
+                        "key": {
+                            "time": -1,
+                        },
+                        "name": "idx_time",
                     },
-                    "name": "idx_time",
-                },
-            ],
-        }, None).await.log_warn_consume("init-db-post");
+                ],
+            },
+            None,
+        )
+        .await
+        .log_warn_consume("init-db-post");
     }
 
     pub async fn reset_pid_base(&self, pid: PidType) -> Result<()> {
         let query = doc! {
             "_id": &self.meta_id,
         };
-        let update = doc!{
+        let update = doc! {
             "$set": {
                 "posts": pid
             }
         };
-        self.collection.find_one_and_update(query, update, None)
+        self.collection
+            .find_one_and_update(query, update, None)
             .await?
             .expect("Missing Metadata");
 
         Ok(())
     }
-    
-    pub async fn new_post(&self, post_type: PostType, uid: &str) -> Result<PostDoc> {
+
+    pub async fn new_post<T: PostData>(&self, content: T, author: &User) -> Result<Post<T>> {
         let query = doc! {
             "_id": &self.meta_id,
         };
-        let update = doc!{
+        let update = doc! {
             "$inc": {
                 "posts": 1i32
             }
@@ -323,7 +384,33 @@ impl PostModel {
 
         let mut opts = FindOneAndUpdateOptions::default();
         opts.return_document = Some(ReturnDocument::After);
-        let metadata = self.coll_meta.find_one_and_update(query, update, Some(opts))
+        let metadata = self
+            .coll_meta
+            .find_one_and_update(query, update, Some(opts))
+            .await
+            .map_model_result()?
+            .expect("Missing Metadata");
+
+        let pid = metadata.posts;
+
+        Ok(Post::new(pid, author, content))
+    }
+
+    pub async fn new_post_legacy(&self, post_type: PostType, uid: &str) -> Result<PostDoc> {
+        let query = doc! {
+            "_id": &self.meta_id,
+        };
+        let update = doc! {
+            "$inc": {
+                "posts": 1i32
+            }
+        };
+
+        let mut opts = FindOneAndUpdateOptions::default();
+        opts.return_document = Some(ReturnDocument::After);
+        let metadata = self
+            .coll_meta
+            .find_one_and_update(query, update, Some(opts))
             .await
             .map_model_result()?
             .expect("Missing Metadata");
@@ -342,7 +429,9 @@ impl PostModel {
         };
         let mut opts = UpdateOptions::default();
         opts.upsert = Some(true);
-        let result = self.collection.update_one(query, update, opts)
+        let result = self
+            .collection
+            .update_one(query, update, opts)
             .await
             .map_model_result()?;
         if result.upserted_id.is_none() {
@@ -356,7 +445,9 @@ impl PostModel {
         let query = doc! {
             "pid": pid
         };
-        let doc = self.collection.find_one_and_delete(query, None)
+        let doc = self
+            .collection
+            .find_one_and_delete(query, None)
             .await
             .map_model_result()?
             .and_then(|doc| T::unwrap(doc.data));
@@ -373,57 +464,71 @@ impl PostModel {
                 "data.content": bson::to_bson(&content).map_model_result()?
             }
         };
-        self.collection.find_one_and_update(query, update, None)
+        self.collection
+            .find_one_and_update(query, update, None)
             .await
             .map_model_result()?;
         Ok(())
     }
 
     pub async fn get_raw_by_pid(&self, pid: PidType) -> Result<PostDoc> {
-        let query = doc!{
+        let query = doc! {
             "pid": pid
         };
-        self.collection.find_one(query, None)
+        self.collection
+            .find_one(query, None)
             .await
             .map_model_result()?
             .ok_or(Error::PostNotFound(pid))
     }
 
     pub async fn get_list<T: GenericPost>(&self, skip: usize, limit: usize) -> Result<Vec<T>> {
-        let query = doc!{
+        let query = doc! {
             "data.type": T::post_type_name()
         };
-        let result: Vec<T> = Self::get_flat_posts(&self.collection, query, skip, limit, Some(("time", SortOrder::DESC)))
-            .await?
-            .filter_map(|d| ready(d.ok().and_then(|doc| {
+        let result: Vec<T> = Self::get_flat_posts(
+            &self.collection,
+            query,
+            skip,
+            limit,
+            Some(("time", SortOrder::DESC)),
+        )
+        .await?
+        .filter_map(|d| {
+            ready(d.ok().and_then(|doc| {
                 let result = bson::from_document::<T>(doc);
                 if let Err(err) = &result {
-                    log::warn!("Error when deserializing a {}: {}", T::post_type_name(), err);
+                    log::warn!(
+                        "Error when deserializing a {}: {}",
+                        T::post_type_name(),
+                        err
+                    );
                 }
                 result.ok()
-            })))
-            .collect()
-            .await;
+            }))
+        })
+        .collect()
+        .await;
         Ok(result)
     }
 
-    pub async fn get_post_by_pid<T : GenericPost>(&self, pid:PidType) -> Result<T> {
-        let query = doc!{
+    pub async fn get_post_by_pid<T: GenericPost>(&self, pid: PidType) -> Result<T> {
+        let query = doc! {
             "pid": pid,
             "data.type": T::post_type_name()
         };
 
         let doc = Self::get_flat_posts(&self.collection, query, 0, 1, None)
             .await?
-            .next().await
+            .next()
+            .await
             .ok_or(Error::PostNotFound(pid))?
             .map_model_result()?;
-            
-        
+
         bson::from_document(doc).map_model_result()
     }
-    
-    pub async fn like(&self, pid: PidType) -> Result<usize> {   
+
+    pub async fn like(&self, pid: PidType) -> Result<usize> {
         let post = self.increase_stats(pid, "likes").await?;
         Ok(post.stats.likes)
     }
@@ -457,7 +562,8 @@ impl PostModel {
                 "stats": bson::to_bson(&stats).map_model_result()?
             }
         };
-        self.collection.update_one(query, update, None)
+        self.collection
+            .update_one(query, update, None)
             .await
             .map_model_result()?;
 
@@ -472,7 +578,10 @@ impl PostModel {
         opts.projection = Some(doc! {
             "data.type": 1i32
         });
-        let result = self.collection.clone_with_type::<Document>().find_one(query, opts)
+        let result = self
+            .collection
+            .clone_with_type::<Document>()
+            .find_one(query, opts)
             .await?
             .ok_or(Error::PostNotFound(pid))?
             .get_document_mut("data")?
@@ -492,7 +601,8 @@ impl PostModel {
         };
         let mut options = FindOneAndUpdateOptions::default();
         options.return_document = Some(mongodb::options::ReturnDocument::After);
-        self.collection.find_one_and_update(query, update, self.update_options.clone())
+        self.collection
+            .find_one_and_update(query, update, self.update_options.clone())
             .await
             .map_model_result()?
             .ok_or(Error::PostNotFound(pid))
@@ -509,43 +619,43 @@ impl PostModel {
         };
         let mut options = FindOneAndUpdateOptions::default();
         options.return_document = Some(mongodb::options::ReturnDocument::After);
-        self.collection.find_one_and_update(query, update, self.update_options.clone())
+        self.collection
+            .find_one_and_update(query, update, self.update_options.clone())
             .await
             .map_model_result()?
             .ok_or(Error::PostNotFound(pid))
     }
 
     pub(crate) async fn get_flat_posts<T>(
-        collection: &Collection<T>, 
-        filter: bson::Document, 
-        skip: usize, 
+        collection: &Collection<T>,
+        filter: bson::Document,
+        skip: usize,
         limit: usize,
-        sort: Option<(&str,SortOrder)>
+        sort: Option<(&str, SortOrder)>,
     ) -> Result<Cursor<Document>> {
-
         log::debug!("Get post at {}+{}", skip, limit);
-        
+
         let mut pipeline: Vec<bson::Document> = Vec::new();
-        pipeline.push(doc!{
+        pipeline.push(doc! {
             "$match": filter,
         });
         if let Some((name, order)) = sort {
-            pipeline.push(doc!{
+            pipeline.push(doc! {
                 "$sort" : {
                     name: order as i32
                 }
             });
         }
-        
-        pipeline.push(doc!{
+
+        pipeline.push(doc! {
             "$skip": skip as i32
         });
-        pipeline.push(doc!{
+        pipeline.push(doc! {
             "$limit": limit as i32
         });
 
         // Join with user info
-        pipeline.push(doc!{
+        pipeline.push(doc! {
             "$lookup": {
                 "from": "user",
                 "let": {
@@ -563,7 +673,7 @@ impl PostModel {
         });
 
         // Flatten post data
-        pipeline.push(doc!{
+        pipeline.push(doc! {
             "$replaceRoot": {
                 "newRoot": {
                     "$mergeObjects": [
@@ -583,13 +693,13 @@ impl PostModel {
         });
 
         // Remove private user info
-        pipeline.push(doc!{
+        pipeline.push(doc! {
             "$unset": ["author.email"]
         });
 
-        collection.aggregate(pipeline, None)
+        collection
+            .aggregate(pipeline, None)
             .await
             .map_model_result()
     }
-    
 }

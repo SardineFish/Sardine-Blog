@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
 
-use serde::{Serialize, Deserialize};
+use crate::{blog::DocType, PostData, PostType};
 
-use crate::{ blog::DocType, PostData, PostType};
-
-use super::{ post::Post};
+use super::{
+    post::{get_content_preview, Post},
+    search::{ElasticSerachModel, IndexDoc},
+};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NoteContent {
@@ -12,9 +14,7 @@ pub struct NoteContent {
 }
 
 impl PostData for NoteContent {
-
     const ALLOW_SEARCH: bool = true;
-
     fn post_type_name() -> &'static str {
         "Note"
     }
@@ -26,8 +26,17 @@ impl PostData for NoteContent {
     fn unwrap(data: crate::PostType) -> Option<Self> {
         match data {
             PostType::Note(note) => Some(note),
-            _ => None
+            _ => None,
         }
+    }
+
+    fn search_index(&self) -> Option<super::search::IndexDoc> {
+        Some(IndexDoc {
+            title: String::new(),
+            tags: Vec::new(),
+            preview: get_content_preview(self.doc_type, &self.doc, 300),
+            content: ElasticSerachModel::parse_doc(&self.doc, self.doc_type),
+        })
     }
 }
 
