@@ -35,18 +35,22 @@ pub struct ElasticSerachModel {
 impl ElasticSerachModel {
     pub fn new(base_url: String) -> Result<Self> {
         Ok(Self {
-            base_url: Url::parse(&base_url).map_internal_err()?,
+            base_url: Url::parse(&base_url).map_search_err("Invalid api url")?,
             client: reqwest::Client::builder()
                 .timeout(tokio::time::Duration::from_secs(3))
                 .build()
-                .map_internal_err()?,
+                .map_search_err("Failed to build reqest client")?,
         })
     }
 
     pub async fn init_index(&self) -> Result<()> {
         // Create index
         self.client
-            .put(self.base_url.join(URL_INDEX).map_internal_err()?)
+            .put(
+                self.base_url
+                    .join(URL_INDEX)
+                    .map_search_err("Build url failed")?,
+            )
             .json(&json!({
               "settings": {
                 "analysis": {
@@ -88,7 +92,7 @@ impl ElasticSerachModel {
             }))
             .send()
             .await
-            .map_internal_err()?;
+            .map_search_err("Failed to create index")?;
 
         Ok(())
     }
@@ -107,7 +111,7 @@ impl ElasticSerachModel {
                 Self::parse_doc(&note.doc, note.doc_type),
                 get_content_preview(note.doc_type, &note.doc, PREVIEW_CHARS),
             ),
-            _ => Err("Invalid operation").map_internal_err()?,
+            _ => Err("Invalid operation").map_search_err("Invalid post to index")?,
         };
         let doc = IndexedDoc {
             pid: post.pid,
@@ -125,7 +129,7 @@ impl ElasticSerachModel {
             .join(URL_RESOURCE)
             .map_internal_err()?
             .join(&post.pid.to_string())
-            .map_internal_err()?;
+            .map_search_err("Failed to build API url")?;
 
         log::info!("{}", url);
 
@@ -135,15 +139,14 @@ impl ElasticSerachModel {
             .json(&doc)
             .send()
             .await
-            .map_internal_err()?;
+            .map_search_err("Failed to send indexing post")?;
 
         if !response.status().is_success() {
-            Err(format!(
+            Err("Indexing failed").map_search_err(&format!(
                 "Failed to index post {}: {}",
                 post.pid,
                 response.status()
-            ))
-            .map_internal_err()?;
+            ))?;
         }
 
         Ok(())
@@ -151,71 +154,71 @@ impl ElasticSerachModel {
 
     pub async fn search(&self, query: &str, skip: usize, count: usize) -> Result<SearchResult> {
         let data = json!({
-            "query": {
-              "bool": {
-                "should": [
-                  {
-                    "match": {
-                      "title": {
-                        "query": query,
-                        "boost": 3
-                      }
-                    }
-                  },
-                  {
-                    "match": {
-                      "tags": {
-                        "query": query,
-                        "boost": 2
-                      }
-                    }
-                  },
-                  {
-                    "match": {
-                      "content": {
-                        "query": query,
-                        "boost": 1
-                      }
-                    }
-                  },
-                  {
-                    "match": {
-                      "author": {
-                        "query": query,
-                        "boost": 0.5
-                      }
+          "query": {
+            "bool": {
+              "should": [
+                {
+                  "match": {
+                    "title": {
+                      "query": query,
+                      "boost": 3
                     }
                   }
-                ]
-              }
-            },
-            "fields": [
-              "pid",
-              "author",
-              "tags",
-              "time",
-              "title",
-              "preview",
-              "doc_type"
-            ],
-            "_source": false,
-            "from": skip,
-            "size": count,
-            "highlight": {
-              "fields": {
-                "tags": {},
-                "author": {},
-                "content": {
-                  "number_of_fragments" : 3
                 },
-                "title": {}
-              }
-            },
-            "sort": [
-              "_score",
-              { "time": "desc" }
-            ]
-          });
+                {
+                  "match": {
+                    "tags": {
+                      "query": query,
+                      "boost": 2
+                    }
+                  }
+                },
+                {
+                  "match": {
+                    "content": {
+                      "query": query,
+                      "boost": 1
+                    }
+                  }
+                },
+                {
+                  "match": {
+                    "author": {
+                      "query": query,
+                      "boost": 0.5
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "fields": [
+            "pid",
+            "author",
+            "tags",
+            "time",
+            "title",
+            "preview",
+            "doc_type"
+          ],
+          "_source": false,
+          "from": skip,
+          "size": count,
+          "highlight": {
+            "fields": {
+              "tags": {},
+              "author": {},
+              "content": {
+                "number_of_fragments" : 3
+              },
+              "title": {}
+            }
+          },
+          "sort": [
+            "_score",
+            { "time": "desc" }
+          ]
+        });
 
         let url = self.base_url.join(URL_SEARCH).map_internal_err()?;
 
@@ -225,7 +228,7 @@ impl ElasticSerachModel {
             .json(&data)
             .send()
             .await
-            .map_internal_err()?;
+            .map_search_err("Failed to send search request")?;
 
         match response.status() {
             status if status.is_success() => {

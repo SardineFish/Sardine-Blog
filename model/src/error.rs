@@ -6,8 +6,7 @@ use redis::RedisError;
 use crate::model::PidType;
 
 #[derive(Debug)]
-pub enum Error
-{
+pub enum Error {
     DBError(MongoError),
     PostNotFound(PidType),
     UserNotFound(String),
@@ -54,11 +53,9 @@ impl fmt::Display for Error {
     }
 }
 
-
 pub type Result<T> = std::result::Result<T, Error>;
 
-impl From<MongoError> for Error
-{
+impl From<MongoError> for Error {
     fn from(err: MongoError) -> Error {
         Error::DBError(err)
     }
@@ -88,28 +85,50 @@ impl From<RedisError> for Error {
     }
 }
 
-pub trait MapError<T>
-{
+pub trait MapError<T> {
     fn map_model_result(self) -> Result<T>;
 }
 
-impl<E, T> MapError<T> for std::result::Result<T, E> where E: Into<Error>
+impl<E, T> MapError<T> for std::result::Result<T, E>
+where
+    E: Into<Error>,
 {
     fn map_model_result(self) -> Result<T> {
         self.map_err(E::into)
     }
 }
 
-pub trait MapInternalError<T> {
+pub trait MapInternalError<T>: Sized {
     fn map_internal_err(self) -> Result<T>;
+    fn map_search_err(self, _log_msg: &str) -> Result<T> {
+        self.map_internal_err()
+    }
 }
 
-impl<E, T> MapInternalError<T> for std::result::Result<T, E> where E: Display {
+impl<E, T> MapInternalError<T> for std::result::Result<T, E>
+where
+    E: Display,
+{
     fn map_internal_err(self) -> Result<T> {
         match self {
             Ok(result) => Ok(result),
-            Err(err) => Err(Error::InternalErrorOwned(format!("Internal Error: {}", err))),
+            Err(err) => Err(Error::InternalErrorOwned(format!(
+                "Internal Error: {}",
+                err
+            ))),
         }
-        
+    }
+
+    fn map_search_err(self, log_msg: &str) -> Result<T> {
+        match self {
+            Ok(result) => Ok(result),
+            Err(err) => {
+                log::error!("Search model error: {log_msg}");
+                Err(Error::InternalErrorOwned(format!(
+                    "Internal Error: {}",
+                    err
+                )))
+            }
+        }
     }
 }
