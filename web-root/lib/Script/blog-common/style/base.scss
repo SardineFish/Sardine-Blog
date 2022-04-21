@@ -1,0 +1,6 @@
+@import "./font.scss";
+
+body {
+    margin: 0;
+    @include font-text;
+}

@@ -19,11 +19,16 @@
     "blog-common": "file:../lib/Script/blog-common",
     "esbuild": "^0.14.32",
     "esbuild-plugin-alias": "^0.2.1",
+    "esbuild-sass-plugin": "^2.2.6",
     "node-html-parser": "^5.3.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "sardinefish": "file:../lib/Script/SardineFish",
     "typescript": "^4.6.3",
     "webpack": "^5.71.0"
+  },
+  "dependencies": {
+    "simplemde": "^1.11.2",
+    "stackedit-js": "^1.0.7"
   }
 }

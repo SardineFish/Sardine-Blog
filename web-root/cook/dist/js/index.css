@@ -1,0 +1,217 @@
+/* ../lib/Script/blog-common/style/font.scss */
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Medium-KSY3G7TF.ttf) format("truetype");
+}
+
+/* ../lib/Script/blog-common/style/message.scss */
+#message-container {
+  position: fixed;
+  top: 2em;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+#message-container .icon {
+  height: 1em;
+  margin-right: 0.5em;
+}
+#message-container .message {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  height: 2em;
+  margin-top: 0.5em;
+  color: #888;
+}
+#message-container .message .message-block {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0em 1em;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  height: 2em;
+}
+#message-container .message.info .icon {
+  color: #aaa;
+}
+#message-container .message.warn .icon {
+  color: #ffc537;
+}
+#message-container .message.error .icon {
+  color: #ff6534;
+}
+#message-container .message.show {
+  animation-name: show-msg;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+#message-container .message.hide {
+  animation-name: hide-msg;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+@keyframes show-msg {
+  0% {
+    height: 0;
+    opacity: 0;
+  }
+  100% {
+    height: 2em;
+    opacity: 1;
+  }
+}
+@keyframes hide-msg {
+  0% {
+    height: 2em;
+    opacity: 1;
+  }
+  100% {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* ../static/font/Open_Sans/OpenSans.css */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Open Sans"),
+    local("OpenSans-Regular"),
+    url(./OpenSans-Regular-CRYIR5E5.ttf) format("truetype");
+}
+
+/* ../lib/Script/blog-common/style/top-nav.scss */
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Medium-KSY3G7TF.ttf) format("truetype");
+}
+.top-nav {
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 1em;
+  user-select: none;
+}
+.top-nav .button-menu {
+  display: none;
+}
+.top-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: row nowrap;
+}
+.top-nav li {
+  margin: 1em;
+  border-bottom: solid 2px transparent;
+  transition: all 0.2s;
+  display: block;
+}
+.top-nav li:hover {
+  border-bottom-color: black;
+}
+.top-nav a {
+  text-align: center;
+  display: block;
+  padding: 0.5em 1em;
+  color: inherit;
+  text-decoration: none;
+}
+@media all and (max-width: 700px) {
+  .top-nav {
+    position: fixed;
+    align-items: flex-start;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    margin: 0;
+    height: 3em;
+    width: 3em;
+  }
+  .top-nav .button-menu {
+    width: 2em;
+    display: initial;
+    z-index: 1000;
+    padding: 0.5em;
+  }
+  .top-nav .nav-list {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+  .top-nav .menu-content {
+    position: fixed;
+    top: 0;
+    left: -19em;
+    width: 16em;
+    height: 100%;
+    padding-top: 3em;
+    background: white;
+    box-shadow: 0 0 3em rgba(0, 0, 0, 0.1);
+    flex-flow: column nowrap;
+    z-index: 100;
+    transition: left 0.3s;
+  }
+  .top-nav .menu-content.expand {
+    left: 0;
+  }
+  .top-nav a {
+    text-align: left;
+    padding: 0.5em 2em;
+  }
+  .top-nav li {
+    margin: 0;
+    padding: 1em 0.5em;
+  }
+  .top-nav li:hover {
+    border-bottom-color: transparent;
+    background: #eee;
+  }
+}
+
+/* ../lib/Script/blog-common/style/footer.scss */
+.page-footer {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ../lib/Script/blog-common/style/index.scss */
+
+/* src/style/index.scss */

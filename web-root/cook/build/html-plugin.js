@@ -27,12 +27,16 @@ const HTMLPlugin = (option) => ({
         {
             const baseName = path.parse(args.pluginData.importer).name;
             const scriptName = path.join(build.initialOptions.outdir, `${baseName}.js`);
+            const styleName = path.join(build.initialOptions.outdir, `${baseName}.css`);
             const htmlName = path.join(option.outDir, `${baseName}.html`);
-            const relativeSrc = path.relative(option.outDir, scriptName).replace(/\\/g, '/');
+            const relativeScriptSrc = path.relative(option.outDir, scriptName).replace(/\\/g, '/');
+            const relativeStyleSrc = path.relative(option.outDir, styleName).replace(/\\/g, '/');
+
 
             const html = await fs.promises.readFile(args.path, 'utf-8');
             const root = parse(html);
-            root.querySelector("body").appendChild(new HTMLElement("script", {}, `src="${relativeSrc}"`));
+            root.querySelector("body").appendChild(new HTMLElement("script", {}, `src="${relativeScriptSrc}"`));
+            root.querySelector("body").appendChild(new HTMLElement("link", {}, `rel="stylesheet" href="${relativeStyleSrc}"`));
             await fs.promises.writeFile(htmlName, root.toString());
             console.info(`HTML saved to ${htmlName} with script ${scriptName}`)
             return {
