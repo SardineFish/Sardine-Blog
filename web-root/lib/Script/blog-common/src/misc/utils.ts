@@ -19,6 +19,8 @@ export function buildQueryString<T extends Record<string, string | number>>(quer
         .join("&");
 }
 
+export function match<T extends string | number, V>(value: T, patterns: Record<T, V>): V;
+export function match<T extends string | number, P extends { [key in T]: any }>(value: T, patterns: P): P[T];
 export function match<T extends string | number, P extends { [key in T]: any }>(value: T, patterns: P): P[T]
 {
     return patterns[value];
@@ -27,4 +29,9 @@ export function match<T extends string | number, P extends { [key in T]: any }>(
 export function safeEmphasized(html: string)
 {
     return { __html: html.replace(/<((?!\/?em)[^>]*?)>/g, "&lt;$1&gt;") };
+}
+
+export function error(msg: string): never
+{
+    throw new Error("msg");
 }

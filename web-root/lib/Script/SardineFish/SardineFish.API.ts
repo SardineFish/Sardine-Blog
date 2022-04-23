@@ -256,6 +256,7 @@ export interface RecipeContent
     title: string,
     description: string,
     requirements: string[],
+    optional: string[],
     content: string,
 }
 
@@ -479,12 +480,15 @@ const SardineFishAPI = {
     Cook: {
         getList: api("GET", "/api/cook")
             .query(PageQueryParam)
+            .response<PubPostData<RecipeContent>[]>(),
+        get: api("GET", "/api/cook/{pid}")
+            .path({ pid: "number" })
             .response<PubPostData<RecipeContent>>(),
         post: api("POST", "/api/cook")
             .body<RecipeContent>()
             .response<PidType>(),
         update: api("PUT", "/api/cook/{pid}")
-            .path({ key: "number" })
+            .path({ pid: "number" })
             .body<RecipeContent>()
             .response<number>()
     },

@@ -146,6 +146,7 @@ export interface RecipeContent {
     title: string;
     description: string;
     requirements: string[];
+    optional: string[];
     content: string;
 }
 declare const SardineFishAPI: {
@@ -302,10 +303,13 @@ declare const SardineFishAPI: {
         getList: (params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
+        }> & Partial<{}>) => Promise<PubPostData<RecipeContent>[]>;
+        get: (params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
         post: (params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
         update: (params: Required<{
-            key: number;
+            pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
     };
     DocType: typeof DocType;

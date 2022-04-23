@@ -101,5 +101,7 @@ export const message = {
     {
         ref.current?.show(msg, "warn");
     },
-    error:(msg: string) => ref.current?.show(msg, "error"),
-}
+    error: (msg: string) => ref.current?.show(msg, "error"),
+};
+
+(window as any).message = message;

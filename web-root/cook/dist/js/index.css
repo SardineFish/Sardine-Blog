@@ -1,3 +1,40 @@
+/* ../lib/Script/blog-common/style/base.scss */
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
+}
+.button {
+  cursor: pointer;
+}
+.icon-button {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 1em;
+  cursor: pointer;
+}
+.icon-button .icon {
+  max-height: 100%;
+}
+body {
+  margin: 0;
+  font-family:
+    "Open Sans",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Roboto,
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
 /* ../lib/Script/blog-common/style/font.scss */
 @font-face {
   font-family: "Raleway";
@@ -6,7 +43,7 @@
   src:
     local("Raleway"),
     local("Raleway-Regular"),
-    url(./Raleway-Medium-KSY3G7TF.ttf) format("truetype");
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
 }
 
 /* ../lib/Script/blog-common/style/message.scss */
@@ -107,7 +144,7 @@
   src:
     local("Raleway"),
     local("Raleway-Regular"),
-    url(./Raleway-Medium-KSY3G7TF.ttf) format("truetype");
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
 }
 .top-nav {
   font-family:
@@ -210,6 +247,7 @@
   flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
+  background-color: #ddd;
 }
 
 /* ../lib/Script/blog-common/style/index.scss */

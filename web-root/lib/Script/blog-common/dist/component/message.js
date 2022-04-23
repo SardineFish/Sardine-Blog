@@ -99,4 +99,5 @@ exports.message = {
     },
     error: (msg) => ref.current?.show(msg, "error"),
 };
+window.message = exports.message;
 //# sourceMappingURL=message.js.map

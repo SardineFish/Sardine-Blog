@@ -432,8 +432,9 @@
     },
     Cook: {
       getList: api("GET", "/api/cook").query(PageQueryParam).response(),
+      get: api("GET", "/api/cook/{pid}").path({pid: "number"}).response(),
       post: api("POST", "/api/cook").body().response(),
-      update: api("PUT", "/api/cook/{pid}").path({key: "number"}).body().response()
+      update: api("PUT", "/api/cook/{pid}").path({pid: "number"}).body().response()
     },
     DocType,
     HashMethod,

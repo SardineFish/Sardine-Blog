@@ -1,0 +1,16 @@
+.button {
+    cursor: pointer;
+}
+
+.icon-button {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 1em;
+    cursor: pointer;
+
+    .icon {
+        max-height: 100%;
+    }
+}

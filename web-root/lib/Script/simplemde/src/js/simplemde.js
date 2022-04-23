@@ -11,7 +11,7 @@ require("codemirror/addon/selection/mark-selection.js");
 require("codemirror/mode/gfm/gfm.js");
 require("codemirror/mode/xml/xml.js");
 var CodeMirrorSpellChecker = require("codemirror-spell-checker");
-var marked = require("marked");
+var { marked } = require("marked");
 
 
 // Some variables
@@ -692,24 +692,26 @@ function toggleSideBySide(editor) {
 	var cm = editor.codemirror;
 	var wrapper = cm.getWrapperElement();
 	var preview = wrapper.nextSibling;
-	var toolbarButton = editor.toolbarElements["side-by-side"];
+	var toolbarButton = editor.toolbarElements?.["side-by-side"];
 	var useSideBySideListener = false;
 	if(/editor-preview-active-side/.test(preview.className)) {
 		preview.className = preview.className.replace(
 			/\s*editor-preview-active-side\s*/g, ""
 		);
-		toolbarButton.className = toolbarButton.className.replace(/\s*active\s*/g, "");
+		if (toolbarButton)
+			toolbarButton.className = toolbarButton.className.replace(/\s*active\s*/g, "");
 		wrapper.className = wrapper.className.replace(/\s*CodeMirror-sided\s*/g, " ");
 	} else {
 		// When the preview button is clicked for the first time,
 		// give some time for the transition from editor.css to fire and the view to slide from right to left,
 		// instead of just appearing.
 		setTimeout(function() {
-			if(!cm.getOption("fullScreen"))
-				toggleFullScreen(editor);
+			// if(!cm.getOption("fullScreen"))
+			// 	toggleFullScreen(editor);
 			preview.className += " editor-preview-active-side";
 		}, 1);
-		toolbarButton.className += " active";
+		if (toolbarButton)
+			toolbarButton.className += " active";
 		wrapper.className += " CodeMirror-sided";
 		useSideBySideListener = true;
 	}
@@ -720,10 +722,13 @@ function toggleSideBySide(editor) {
 		previewNormal.className = previewNormal.className.replace(
 			/\s*editor-preview-active\s*/g, ""
 		);
-		var toolbar = editor.toolbarElements.preview;
-		var toolbar_div = wrapper.previousSibling;
-		toolbar.className = toolbar.className.replace(/\s*active\s*/g, "");
-		toolbar_div.className = toolbar_div.className.replace(/\s*disabled-for-preview*/g, "");
+		var toolbar = editor.toolbarElements?.preview;
+		if (toolbar)
+		{
+			var toolbar_div = wrapper.previousSibling;
+			toolbar.className = toolbar.className.replace(/\s*active\s*/g, "");
+			toolbar_div.className = toolbar_div.className.replace(/\s*disabled-for-preview*/g, "");	
+		}
 	}
 
 	var sideBySideRenderingFunction = function() {
@@ -1652,7 +1657,8 @@ SimpleMDE.prototype.createSideBySide = function() {
 SimpleMDE.prototype.createToolbar = function(items) {
 	items = items || this.options.toolbar;
 
-	if(!items || items.length === 0) {
+	if (!items || items.length === 0)
+	{
 		return;
 	}
 	var i;

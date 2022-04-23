@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.safeEmphasized = exports.match = exports.buildQueryString = exports.parseQueryString = void 0;
+exports.error = exports.safeEmphasized = exports.match = exports.buildQueryString = exports.parseQueryString = void 0;
 function parseQueryString(query, defaultValue = {}) {
     return query.substr(query.startsWith("?") ? 1 : 0)
         .split("&")
@@ -23,4 +23,8 @@ function safeEmphasized(html) {
     return { __html: html.replace(/<((?!\/?em)[^>]*?)>/g, "&lt;$1&gt;") };
 }
 exports.safeEmphasized = safeEmphasized;
+function error(msg) {
+    throw new Error("msg");
+}
+exports.error = error;
 //# sourceMappingURL=utils.js.map

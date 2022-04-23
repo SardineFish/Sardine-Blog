@@ -3,18 +3,18 @@ import React, { HTMLAttributes, ReactElement, ReactNode, useContext, useEffect, 
 
 const SelectContext = React.createContext({ selected: false, onClick: (_: string) => undefined as any });
 
-export interface SelectGroupProps extends React.DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+export interface SelectGroupProps<T> extends React.DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
 {
-    selectedKey?: string,
-    onSelectChange?: (key: string) => void,
-    children: ReactElement<{ id: string }>[] | ReactElement<{ id: string }>,
+    selectedKey?: T,
+    onSelectChange?: (key: T) => void,
+    children: ReactElement<{ id: T }>[] | ReactElement<{ id: T }>,
 }
 
-export function SelectGroup(props: SelectGroupProps)
+export function SelectGroup<T extends string = string>(props: SelectGroupProps<T>)
 {
     const [selected, setSelected] = useState<string | undefined>(props.selectedKey);
 
-    const select = (key: string) =>
+    const select = (key: T) =>
     {
         setSelected(key);
         if (key !== selected)
@@ -27,8 +27,8 @@ export function SelectGroup(props: SelectGroupProps)
         {React.Children.map(props.children, (child, idx) => (<SelectContext.Provider
             key={idx}
             value={{
-                selected: child.props.id as string === selected,
-                onClick: () => select(child.props.id as string)
+                selected: child.props.id as T === selected,
+                onClick: () => select(child.props.id as T)
             }}
         >
             {child}
@@ -38,7 +38,7 @@ export function SelectGroup(props: SelectGroupProps)
 
 SelectGroup.Item = SelectItem;
 
-function SelectItem(props: { id: string, onSelected?: (key: string) => void, children: ReactNode })
+function SelectItem<T extends string>(props: { id: T, onSelected?: (key: T) => void, children: ReactNode })
 {
     const context = useContext(SelectContext);
     useEffect(() =>
@@ -49,7 +49,7 @@ function SelectItem(props: { id: string, onSelected?: (key: string) => void, chi
 
     return (<li
         className={clsx("select-item", { "selected": context.selected })}
-        onClick={() => context.onClick(props.id)}
+        onClick={() => context.onClick(props.id as string)}
     >
         {props.children}
     </li>)
