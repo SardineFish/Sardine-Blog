@@ -17,7 +17,9 @@ impl<'s> SearchService<'s> {
     }
 
     pub async fn index<T: PostData>(&self, post: &Post<T>) -> Result<()> {
-        self.service.model.search.insert_post(post).await?;
+        if self.service.option.enable_indexing {
+            self.service.model.search.insert_post(post).await?;
+        }
         Ok(())
     }
 }
