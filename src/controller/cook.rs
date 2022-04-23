@@ -13,7 +13,7 @@ use crate::middleware;
 use Response::Ok;
 
 #[get("")]
-async fn get_recipes(
+async fn get_recipes_list(
     service: Service,
     query: Query<PageQueryParams<100>>,
 ) -> Response<Vec<PubPostData<RecipeContent>>> {
@@ -22,6 +22,16 @@ async fn get_recipes(
         .get_preview_list::<PubPostData<RecipeContent>>(query.from, *query.count)
         .await?;
     Ok(data)
+}
+
+#[get("/{pid}")]
+async fn get_recipe(
+    service: Service,
+    session: Session,
+    pid: Path<PidType>,
+) -> Response<PubPostData<RecipeContent>> {
+    let data = service.cook().get_by_pid(&session.session_id, *pid).await?;
+    Ok(data.into())
 }
 
 #[post("", wrap = "middleware::authentication(Access::Trusted)")]
@@ -46,7 +56,8 @@ async fn update_recipe(
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(
         scope("/cook")
-            .service(get_recipes)
+            .service(get_recipes_list)
+            .service(get_recipe)
             .service(post_recipe)
             .service(update_recipe),
     );

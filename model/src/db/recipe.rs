@@ -9,6 +9,8 @@ pub struct RecipeContent {
     pub title: String,
     pub description: String,
     pub requirements: Vec<String>,
+    #[serde(default)]
+    pub optional: Vec<String>,
     pub content: String,
 }
 
