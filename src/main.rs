@@ -2,7 +2,13 @@
 #![feature(try_trait_v2)]
 #![feature(never_type)]
 
-use actix_web::{self, App, HttpServer, dev::Server, middleware::Logger, web::{self, JsonConfig}};
+use actix_web::{
+    self,
+    dev::Server,
+    middleware::Logger,
+    web::{self, JsonConfig},
+    App, HttpServer,
+};
 
 mod controller;
 mod middleware;
@@ -10,11 +16,11 @@ mod misc;
 
 use clap::arg;
 use misc::error;
-use misc::utils;
-use misc::error_report::ServiceMornitor;
-use shared::ServiceOptions;
-use sar_blog::{MessageMail, Service};
 use misc::error::OkOrLog;
+use misc::error_report::ServiceMornitor;
+use misc::utils;
+use sar_blog::{MessageMail, Service};
+use shared::ServiceOptions;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,41 +37,56 @@ async fn main() -> std::io::Result<()> {
     let opts = if let Some(path) = matches.value_of("config") {
         let json = std::fs::read_to_string(path).expect("Failed to open config file");
         serde_json::de::from_str(&json).unwrap()
+    } else if let Ok(json) = std::fs::read_to_string("./config/config.json") {
+        serde_json::de::from_str(&json).unwrap()
     } else {
         shared::ServiceOptions::default()
     };
 
-    let service = sar_blog::Service::open(opts.clone()).await
+    let service = sar_blog::Service::open(opts.clone())
+        .await
         .expect("Failed to start service");
 
     ServiceMornitor::init(&opts, service.clone());
-    
+
     if matches.is_present("init") || opts.db_init {
         service.init_database(true).await.unwrap();
         // exit(0);
     }
 
-    service.push_service().send_message(&opts.report_address, MessageMail {
-        title: "Server Start Running".to_owned(),
-        content: format!("Server was started at {}", chrono::Utc::now().to_rfc3339())
-    }).await.ok_or_error("Failed to send startup message");
-
+    service
+        .push_service()
+        .send_message(
+            &opts.report_address,
+            MessageMail {
+                title: "Server Start Running".to_owned(),
+                content: format!("Server was started at {}", chrono::Utc::now().to_rfc3339()),
+            },
+        )
+        .await
+        .ok_or_error("Failed to send startup message");
 
     let server = config_server(opts.clone(), service.clone())?;
     server.await?;
 
-
-    service.push_service().send_message(&opts.report_address, MessageMail {
-        title: "Server Shutdown".to_owned(),
-        content: format!("Server was shutdown at {}", chrono::Utc::now().to_rfc3339())
-    }).await.ok_or_error("Failed to send shutdown message");
+    service
+        .push_service()
+        .send_message(
+            &opts.report_address,
+            MessageMail {
+                title: "Server Shutdown".to_owned(),
+                content: format!("Server was shutdown at {}", chrono::Utc::now().to_rfc3339()),
+            },
+        )
+        .await
+        .ok_or_error("Failed to send shutdown message");
 
     Ok(())
 }
 
 fn config_server(options: ServiceOptions, service: Service) -> std::io::Result<Server> {
     let opt_moved = options.clone();
-    let server = HttpServer::new(move  || {
+    let server = HttpServer::new(move || {
         App::new()
             .app_data(actix_web::web::Data::new(opt_moved.clone()))
             .app_data(actix_web::web::Data::new(service.clone()))

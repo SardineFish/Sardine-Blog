@@ -1,13 +1,16 @@
 use std::path::PathBuf;
 
-use actix_http::{StatusCode, header};
-use actix_web::{HttpRequest, HttpResponse, web::{self, Query, ServiceConfig, scope}};
-use actix_web::{get};
-use fs::{ NamedFile};
-use shared::ServiceOptions;
 use actix_files as fs;
+use actix_http::{header, StatusCode};
+use actix_web::{get, CustomizeResponder};
+use actix_web::{
+    web::{self, scope, Query, ServiceConfig},
+    HttpRequest, HttpResponse, Responder,
+};
+use fs::NamedFile;
 use sar_blog::model::PidType;
 use serde::Deserialize;
+use shared::ServiceOptions;
 
 use super::extractor;
 
@@ -27,7 +30,10 @@ macro_rules! static_file {
 
 #[get("/account/login")]
 async fn login_index(options: extractor::Options) -> actix_web::Result<NamedFile> {
-    Ok(NamedFile::open(concat_path(&[&options.web_root, "account/login.html"]))?)
+    Ok(NamedFile::open(concat_path(&[
+        &options.web_root,
+        "account/login.html",
+    ]))?)
 }
 static_file!(register, "/account/register", "account/register.html");
 static_file!(signup, "/account/signup", "account/register.html");
@@ -43,25 +49,37 @@ static_file!(note_view, r"/note/{pid:\d+}", "note/index.html");
 
 #[get("/blog/")]
 async fn blog_index(
-    service: extractor::Service, 
-    options: extractor::Options, 
+    service: extractor::Service,
+    options: extractor::Options,
     query: Query<PidQuery>,
-    request: HttpRequest)
- -> actix_web::Result<HttpResponse> {
+    request: HttpRequest,
+) -> actix_web::Result<HttpResponse> {
     if let Some(pid) = query.pid {
         Ok(HttpResponse::build(StatusCode::PERMANENT_REDIRECT)
             .append_header((header::LOCATION, service.url().blog(pid)))
             .body(""))
     } else {
-        Ok(NamedFile::open(concat_path(&[&options.web_root, "blog/blog.html"]))?.into_response(&request))
+        Ok(
+            NamedFile::open(concat_path(&[&options.web_root, "blog/blog.html"]))?
+                .into_response(&request),
+        )
     }
 }
 
-static_file!(unsubscribe_notification, r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,40}}", "notification/unsubscribe/index.html");
+static_file!(
+    unsubscribe_notification,
+    r"/notification/unsubscribe/{uid:[_A-Za-z0-9]{6,40}}",
+    "notification/unsubscribe/index.html"
+);
 
-async fn notfound_page(options: extractor::Options) -> actix_web::Result<NamedFile> {
-    Ok(NamedFile::open(concat_path(&[&options.web_root, "static/error/404.html"]))?
-        .set_status_code(StatusCode::NOT_FOUND))
+async fn notfound_page(
+    options: extractor::Options,
+) -> actix_web::Result<CustomizeResponder<NamedFile>> {
+    Ok(
+        NamedFile::open(concat_path(&[&options.web_root, "static/error/404.html"]))?
+            .customize()
+            .with_status(StatusCode::NOT_FOUND),
+    )
 }
 
 static_file!(search, "/search", "search/dist/index.html");
@@ -78,20 +96,21 @@ static_file!(cook_page, r"/cook/", "cook/dist/index.html");
 
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
-        cfg.service(scope("")
-            .service(login_index)
-            .service(register)
-            .service(signup)
-            .service(blog_view)
-            .service(blog_index)
-            .service(note_view)
-            .service(unsubscribe_notification)
-            .service(search)
-            .service(cook_with_pid)
-            .service(cook_page)
-            .service(serve_folder(&opts, "/cook/", "cook/dist/"))
-            .service(serve_folder(&opts, "/search/", "search/dist/"))
-            .service(serve_folder(&opts, "/", ""))
+        cfg.service(
+            scope("")
+                .service(login_index)
+                .service(register)
+                .service(signup)
+                .service(blog_view)
+                .service(blog_index)
+                .service(note_view)
+                .service(unsubscribe_notification)
+                .service(search)
+                .service(cook_with_pid)
+                .service(cook_page)
+                .service(serve_folder(&opts, "/cook/", "cook/dist/"))
+                .service(serve_folder(&opts, "/search/", "search/dist/"))
+                .service(serve_folder(&opts, "/", "")),
         );
     }
 }
