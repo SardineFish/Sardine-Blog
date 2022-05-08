@@ -23,6 +23,7 @@ __exportStar(require("./nav-menu"), exports);
 __exportStar(require("./select-group"), exports);
 __exportStar(require("./button"), exports);
 __exportStar(require("./fold-menu"), exports);
+__exportStar(require("./dialog"), exports);
 const react_1 = __importDefault(require("react"));
 window.react1 = react_1.default;
 //# sourceMappingURL=index.js.map

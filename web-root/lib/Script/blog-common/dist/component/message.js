@@ -30,7 +30,6 @@ exports.message = void 0;
 const react_1 = __importStar(require("react"));
 const client_1 = require("react-dom/client");
 const clsx_1 = __importDefault(require("clsx"));
-const utils_1 = require("../misc/utils");
 const icons_1 = require("../misc/icons");
 const TIME_SHOW = 300;
 const TIME_PRESENT = 2000;
@@ -41,12 +40,13 @@ class MessageProvider extends react_1.default.Component {
         super(props);
         this.state = { messages: [] };
     }
-    show(text, type) {
+    show(options) {
         const msg = {
             id: this.nextId++,
             state: "show",
-            text,
-            type,
+            text: options.text,
+            className: options.className,
+            icon: options.icon
         };
         this.setState({ messages: [...this.state.messages, msg] });
         setTimeout(() => this.updateMessage(msg), TIME_SHOW);
@@ -69,17 +69,13 @@ class MessageProvider extends react_1.default.Component {
         }
     }
     render() {
-        return (react_1.default.createElement(react_1.default.Fragment, null, this.state.messages.map((msg, idx) => (react_1.default.createElement(Message, { type: msg.type, key: idx, state: msg.state }, msg.text)))));
+        return (react_1.default.createElement(react_1.default.Fragment, null, this.state.messages.map((msg, idx) => (react_1.default.createElement(Message, { className: msg.className, key: idx, state: msg.state, icon: msg.icon }, msg.text)))));
     }
 }
 function Message(props) {
-    return (react_1.default.createElement("div", { className: (0, clsx_1.default)("message", props.state, props.type) },
+    return (react_1.default.createElement("div", { className: (0, clsx_1.default)("message", props.state, props.className) },
         react_1.default.createElement("div", { className: "message-block" },
-            (0, utils_1.match)(props.type, {
-                "info": react_1.default.createElement(icons_1.Icons.AlertCircleOutline, { className: "icon" }),
-                "warn": react_1.default.createElement(icons_1.Icons.AlertCircle, { className: "icon" }),
-                "error": react_1.default.createElement(icons_1.Icons.CloseCircle, { className: "icon" }),
-            }),
+            props.icon,
             react_1.default.createElement("span", { className: "text" }, props.children))));
 }
 const container = document.createElement("div");
@@ -92,12 +88,29 @@ exports.message = {
     info(msg) {
         if (!ref.current)
             return;
-        ref.current.show(msg, "info");
+        ref.current.show({
+            text: msg,
+            className: "info",
+            icon: react_1.default.createElement(icons_1.Icons.AlertCircleOutline, null)
+        });
     },
     warn(msg) {
-        ref.current?.show(msg, "warn");
+        ref.current?.show({
+            text: msg,
+            className: "warn",
+            icon: react_1.default.createElement(icons_1.Icons.AlertCircle, null)
+        });
     },
-    error: (msg) => ref.current?.show(msg, "error"),
+    error: (msg) => ref.current?.show({
+        text: msg,
+        className: "error",
+        icon: react_1.default.createElement(icons_1.Icons.CloseCircle, null)
+    }),
+    success: (msg) => ref.current?.show({
+        text: msg,
+        className: "success",
+        icon: react_1.default.createElement(icons_1.Icons.CheckCircle, null)
+    }),
 };
 window.message = exports.message;
 //# sourceMappingURL=message.js.map

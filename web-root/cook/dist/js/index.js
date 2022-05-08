@@ -43159,35 +43159,6 @@
     }
   });
 
-  // ../lib/Script/blog-common/dist/misc/utils.js
-  var require_utils = __commonJS({
-    "../lib/Script/blog-common/dist/misc/utils.js"(exports) {
-      "use strict";
-      Object.defineProperty(exports, "__esModule", { value: true });
-      exports.error = exports.safeEmphasized = exports.match = exports.buildQueryString = exports.parseQueryString = void 0;
-      function parseQueryString(query, defaultValue = {}) {
-        return query.substr(query.startsWith("?") ? 1 : 0).split("&").map((part) => part.split("=")).filter((part) => part[0]).reduce((prev, curr) => ({ ...prev, [decodeURIComponent(curr[0])]: decodeURIComponent(curr[1]) }), defaultValue);
-      }
-      exports.parseQueryString = parseQueryString;
-      function buildQueryString(query) {
-        return "?" + Object.keys(query).map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`).join("&");
-      }
-      exports.buildQueryString = buildQueryString;
-      function match(value, patterns) {
-        return patterns[value];
-      }
-      exports.match = match;
-      function safeEmphasized(html) {
-        return { __html: html.replace(/<((?!\/?em)[^>]*?)>/g, "&lt;$1&gt;") };
-      }
-      exports.safeEmphasized = safeEmphasized;
-      function error(msg) {
-        throw new Error("msg");
-      }
-      exports.error = error;
-    }
-  });
-
   // ../lib/Script/blog-common/dist/misc/icons.js
   var require_icons = __commonJS({
     "../lib/Script/blog-common/dist/misc/icons.js"(exports) {
@@ -43210,7 +43181,10 @@
         Close: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" })),
         DotsVertical: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" })),
         DeleteForever: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8.46,11.88L9.87,10.47L12,12.59L14.12,10.47L15.53,11.88L13.41,14L15.53,16.12L14.12,17.53L12,15.41L9.88,17.53L8.47,16.12L10.59,14L8.46,11.88M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" })),
-        TextBoxRemoveOutline: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M14.46,15.88L15.88,14.46L18,16.59L20.12,14.46L21.54,15.88L19.41,18L21.54,20.12L20.12,21.54L18,19.41L15.88,21.54L14.46,20.12L16.59,18L14.46,15.88M5,3H19C20.11,3 21,3.89 21,5V12.8C20.39,12.45 19.72,12.2 19,12.08V5H5V19H12.08C12.2,19.72 12.45,20.39 12.8,21H5C3.89,21 3,20.11 3,19V5C3,3.89 3.89,3 5,3M7,7H17V9H7V7M7,11H17V12.08C16.15,12.22 15.37,12.54 14.68,13H7V11M7,15H12V17H7V15Z" }))
+        TextBoxRemoveOutline: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M14.46,15.88L15.88,14.46L18,16.59L20.12,14.46L21.54,15.88L19.41,18L21.54,20.12L20.12,21.54L18,19.41L15.88,21.54L14.46,20.12L16.59,18L14.46,15.88M5,3H19C20.11,3 21,3.89 21,5V12.8C20.39,12.45 19.72,12.2 19,12.08V5H5V19H12.08C12.2,19.72 12.45,20.39 12.8,21H5C3.89,21 3,20.11 3,19V5C3,3.89 3.89,3 5,3M7,7H17V9H7V7M7,11H17V12.08C16.15,12.22 15.37,12.54 14.68,13H7V11M7,15H12V17H7V15Z" })),
+        InfoOutline: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" })),
+        DotsCircle: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M12 19C13.1 19 14 19.9 14 21S13.1 23 12 23 10 22.1 10 21 10.9 19 12 19M12 1C13.1 1 14 1.9 14 3S13.1 5 12 5 10 4.1 10 3 10.9 1 12 1M6 16C7.1 16 8 16.9 8 18S7.1 20 6 20 4 19.1 4 18 4.9 16 6 16M3 10C4.1 10 5 10.9 5 12S4.1 14 3 14 1 13.1 1 12 1.9 10 3 10M6 4C7.1 4 8 4.9 8 6S7.1 8 6 8 4 7.1 4 6 4.9 4 6 4M18 16C19.1 16 20 16.9 20 18S19.1 20 18 20 16 19.1 16 18 16.9 16 18 16M21 10C22.1 10 23 10.9 23 12S22.1 14 21 14 19 13.1 19 12 19.9 10 21 10M18 4C19.1 4 20 4.9 20 6S19.1 8 18 8 16 7.1 16 6 16.9 4 18 4Z" })),
+        CheckCircle: () => react_1.default.createElement("svg", { viewBox: "0 0 24 24" }, react_1.default.createElement("path", { fill: "currentColor", d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" }))
       };
       exports.Icons = Object.keys(icons).map((key) => [key, (propsOverride) => {
         const element = icons[key]();
@@ -43269,7 +43243,6 @@
       var react_1 = __importStar(require_react());
       var client_1 = require_client2();
       var clsx_1 = __importDefault(require_clsx());
-      var utils_1 = require_utils();
       var icons_1 = require_icons();
       var TIME_SHOW = 300;
       var TIME_PRESENT = 2e3;
@@ -43280,12 +43253,13 @@
           super(props);
           this.state = { messages: [] };
         }
-        show(text, type) {
+        show(options) {
           const msg = {
             id: this.nextId++,
             state: "show",
-            text,
-            type
+            text: options.text,
+            className: options.className,
+            icon: options.icon
           };
           this.setState({ messages: [...this.state.messages, msg] });
           setTimeout(() => this.updateMessage(msg), TIME_SHOW);
@@ -43308,15 +43282,11 @@
           }
         }
         render() {
-          return react_1.default.createElement(react_1.default.Fragment, null, this.state.messages.map((msg, idx) => react_1.default.createElement(Message, { type: msg.type, key: idx, state: msg.state }, msg.text)));
+          return react_1.default.createElement(react_1.default.Fragment, null, this.state.messages.map((msg, idx) => react_1.default.createElement(Message, { className: msg.className, key: idx, state: msg.state, icon: msg.icon }, msg.text)));
         }
       };
       function Message(props) {
-        return react_1.default.createElement("div", { className: (0, clsx_1.default)("message", props.state, props.type) }, react_1.default.createElement("div", { className: "message-block" }, (0, utils_1.match)(props.type, {
-          "info": react_1.default.createElement(icons_1.Icons.AlertCircleOutline, { className: "icon" }),
-          "warn": react_1.default.createElement(icons_1.Icons.AlertCircle, { className: "icon" }),
-          "error": react_1.default.createElement(icons_1.Icons.CloseCircle, { className: "icon" })
-        }), react_1.default.createElement("span", { className: "text" }, props.children)));
+        return react_1.default.createElement("div", { className: (0, clsx_1.default)("message", props.state, props.className) }, react_1.default.createElement("div", { className: "message-block" }, props.icon, react_1.default.createElement("span", { className: "text" }, props.children)));
       }
       var container = document.createElement("div");
       container.id = "message-container";
@@ -43328,12 +43298,29 @@
         info(msg) {
           if (!ref.current)
             return;
-          ref.current.show(msg, "info");
+          ref.current.show({
+            text: msg,
+            className: "info",
+            icon: react_1.default.createElement(icons_1.Icons.AlertCircleOutline, null)
+          });
         },
         warn(msg) {
-          ref.current?.show(msg, "warn");
+          ref.current?.show({
+            text: msg,
+            className: "warn",
+            icon: react_1.default.createElement(icons_1.Icons.AlertCircle, null)
+          });
         },
-        error: (msg) => ref.current?.show(msg, "error")
+        error: (msg) => ref.current?.show({
+          text: msg,
+          className: "error",
+          icon: react_1.default.createElement(icons_1.Icons.CloseCircle, null)
+        }),
+        success: (msg) => ref.current?.show({
+          text: msg,
+          className: "success",
+          icon: react_1.default.createElement(icons_1.Icons.CheckCircle, null)
+        })
       };
       window.message = exports.message;
     }
@@ -43441,6 +43428,39 @@
     }
   });
 
+  // ../lib/Script/blog-common/dist/misc/utils.js
+  var require_utils = __commonJS({
+    "../lib/Script/blog-common/dist/misc/utils.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.timeout = exports.error = exports.safeEmphasized = exports.match = exports.buildQueryString = exports.parseQueryString = void 0;
+      function parseQueryString(query, defaultValue = {}) {
+        return query.substr(query.startsWith("?") ? 1 : 0).split("&").map((part) => part.split("=")).filter((part) => part[0]).reduce((prev, curr) => ({ ...prev, [decodeURIComponent(curr[0])]: decodeURIComponent(curr[1]) }), defaultValue);
+      }
+      exports.parseQueryString = parseQueryString;
+      function buildQueryString(query) {
+        return "?" + Object.keys(query).map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`).join("&");
+      }
+      exports.buildQueryString = buildQueryString;
+      function match(value, patterns) {
+        return patterns[value];
+      }
+      exports.match = match;
+      function safeEmphasized(html) {
+        return { __html: html.replace(/<((?!\/?em)[^>]*?)>/g, "&lt;$1&gt;") };
+      }
+      exports.safeEmphasized = safeEmphasized;
+      function error(msg) {
+        throw new Error("msg");
+      }
+      exports.error = error;
+      function timeout(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+      }
+      exports.timeout = timeout;
+    }
+  });
+
   // ../lib/Script/blog-common/dist/misc/index.js
   var require_misc = __commonJS({
     "../lib/Script/blog-common/dist/misc/index.js"(exports) {
@@ -43521,8 +43541,8 @@
         const [hover, setHover] = (0, react_1.useState)(false);
         const [hold, setHold] = (0, react_1.useState)(false);
         const [state, setState] = (0, react_1.useState)("normal");
-        const onClick = () => {
-          props.onClick && props.onClick();
+        const onClick = (e) => {
+          props.onClick?.(e);
         };
         const mouseDown = () => {
           setHold(true);
@@ -43672,6 +43692,190 @@
     }
   });
 
+  // ../lib/Script/blog-common/dist/component/dialog.js
+  var require_dialog = __commonJS({
+    "../lib/Script/blog-common/dist/component/dialog.js"(exports) {
+      "use strict";
+      var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+        if (k2 === void 0)
+          k2 = k;
+        var desc = Object.getOwnPropertyDescriptor(m, k);
+        if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+          desc = { enumerable: true, get: function() {
+            return m[k];
+          } };
+        }
+        Object.defineProperty(o, k2, desc);
+      } : function(o, m, k, k2) {
+        if (k2 === void 0)
+          k2 = k;
+        o[k2] = m[k];
+      });
+      var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+      } : function(o, v) {
+        o["default"] = v;
+      });
+      var __importStar = exports && exports.__importStar || function(mod) {
+        if (mod && mod.__esModule)
+          return mod;
+        var result = {};
+        if (mod != null) {
+          for (var k in mod)
+            if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+              __createBinding(result, mod, k);
+        }
+        __setModuleDefault(result, mod);
+        return result;
+      };
+      var __importDefault = exports && exports.__importDefault || function(mod) {
+        return mod && mod.__esModule ? mod : { "default": mod };
+      };
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.mergeOption = exports.dialog = void 0;
+      var clsx_1 = __importDefault(require_clsx());
+      var react_1 = __importStar(require_react());
+      var client_1 = require_client2();
+      var misc_1 = require_misc();
+      var button_1 = require_button();
+      var DialogContext = react_1.default.createContext({
+        dispose: () => {
+        }
+      });
+      var PopupManager = class extends react_1.default.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            dialogs: []
+          };
+        }
+        show(dialog) {
+          this.setState({
+            dialogs: [...this.state.dialogs, dialog]
+          });
+        }
+        render() {
+          const dispose = (dialog) => {
+            const idx = this.state.dialogs.indexOf(dialog);
+            this.state.dialogs.splice(idx, 1);
+            this.setState({
+              dialogs: [...this.state.dialogs]
+            });
+          };
+          return react_1.default.createElement(react_1.default.Fragment, null, this.state.dialogs.map((dialog, idx) => react_1.default.createElement(DialogContext.Provider, { key: idx, value: { dispose: () => dispose(dialog) } }, dialog)));
+        }
+      };
+      function Dialog(props) {
+        const buttonKeys = Object.keys(props.option.buttons);
+        const [state, setState] = (0, react_1.useState)("show");
+        const [buttonStates, setButtonStates] = (0, react_1.useState)(buttonKeys.map(() => void 0));
+        const context = (0, react_1.useContext)(DialogContext);
+        const dialogOption = props.option;
+        const getButtonOption = (key) => props.option.buttons[key];
+        const click = async (e, idx) => {
+          const option = getButtonOption(buttonKeys[idx]);
+          e.stopPropagation();
+          e.preventDefault();
+          let result = option.click();
+          if (result instanceof Promise) {
+            buttonStates.splice(idx, 1, "progress");
+            setButtonStates([...buttonStates]);
+            setState("progress");
+            props.onClose(await result);
+            close();
+          } else {
+            props.onClose(result);
+            close();
+          }
+        };
+        const cancel = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          if (props.option.onCancel) {
+            props.onClose(props.option.onCancel());
+            close();
+          }
+        };
+        const close = async () => {
+          if (state === "hide")
+            return;
+          setState("hide");
+          await (0, misc_1.timeout)(1e3);
+          context.dispose();
+        };
+        return react_1.default.createElement("div", { className: (0, clsx_1.default)("dialog", "dialog-bg", state), onClick: cancel }, react_1.default.createElement("div", { className: "wrapper" }, dialogOption.title ? react_1.default.createElement("header", { className: "title" }, dialogOption.title) : null, dialogOption.icon ? react_1.default.createElement("div", { className: "icon" }, dialogOption.icon) : null, react_1.default.createElement("p", { className: "content" }, dialogOption.content), react_1.default.createElement("div", { className: "buttons" }, buttonKeys.map((key, idx) => buttonStates[idx] === "progress" ? react_1.default.createElement(button_1.Button, { className: (0, clsx_1.default)(getButtonOption(key).type, "progress"), key: idx }, react_1.default.createElement(misc_1.Icons.DotsCircle, null)) : react_1.default.createElement(button_1.Button, { className: (0, clsx_1.default)(getButtonOption(key).type), onClick: (e) => click(e, idx), key: idx }, getButtonOption(key).content)))));
+      }
+      var container = document.createElement("div");
+      container.className = "dialog-manager";
+      document.body.appendChild(container);
+      var DialogRef = react_1.default.createRef();
+      var root2 = (0, client_1.createRoot)(container);
+      root2.render(react_1.default.createElement(PopupManager, { ref: DialogRef }));
+      exports.dialog = {
+        async confirm(msg, override) {
+          return await this.show(mergeOption({
+            className: "dialog-confirm",
+            icon: react_1.default.createElement(misc_1.Icons.InfoOutline, null),
+            content: msg,
+            onCancel: () => false,
+            buttons: {
+              ok: {
+                content: "Ok",
+                click: () => true,
+                type: "primary"
+              },
+              cancel: {
+                content: "Cancel",
+                click: () => false
+              }
+            }
+          }, override));
+        },
+        async info(msg, override) {
+          return await this.show(mergeOption({
+            title: "Info",
+            className: "dialog-info",
+            icon: react_1.default.createElement(misc_1.Icons.InfoOutline, null),
+            content: msg,
+            onCancel: () => {
+            },
+            buttons: {
+              ok: {
+                content: "Ok",
+                click: () => {
+                },
+                type: "primary"
+              }
+            }
+          }, override));
+        },
+        show(optios) {
+          console.log(optios);
+          return new Promise((resolve) => {
+            DialogRef.current?.show(react_1.default.createElement(Dialog, { option: optios, onClose: (v) => resolve(v) }));
+          });
+        }
+      };
+      function mergeOption(a, b) {
+        const out = Object.assign({}, a, b);
+        if (!b || !a)
+          return out;
+        for (const key in out) {
+          const aField = a[key];
+          const bField = b[key];
+          if (typeof aField === "object" && typeof bField === "object") {
+            if (bField.$$typeof == Symbol.for("react.element") || bField.$$typeof == Symbol.for("react.element"))
+              continue;
+            out[key] = mergeOption(a[key], b[key]);
+          }
+        }
+        return out;
+      }
+      exports.mergeOption = mergeOption;
+      window.dialog = exports.dialog;
+    }
+  });
+
   // ../lib/Script/blog-common/dist/component/index.js
   var require_component = __commonJS({
     "../lib/Script/blog-common/dist/component/index.js"(exports) {
@@ -43706,6 +43910,7 @@
       __exportStar(require_select_group(), exports);
       __exportStar(require_button(), exports);
       __exportStar(require_fold_menu(), exports);
+      __exportStar(require_dialog(), exports);
       var react_1 = __importDefault(require_react());
       window.react1 = react_1.default;
     }
@@ -43750,7 +43955,7 @@
       className: "top-nav"
     }), /* @__PURE__ */ import_react.default.createElement("main", null), /* @__PURE__ */ import_react.default.createElement(import_blog_common.Footer, null));
   }
-  var root = (0, import_client.createRoot)(document.body);
+  var root = (0, import_client.createRoot)(document.querySelector("#root") ?? document.body);
   root.render(/* @__PURE__ */ import_react.default.createElement(App, null));
 })();
 /**
@@ -43793,3 +43998,4 @@
  * @internal
  * @license Modernizr 3.0.0pre (Custom Build) | MIT
  */
+//# sourceMappingURL=index.js.map

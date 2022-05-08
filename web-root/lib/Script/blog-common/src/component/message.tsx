@@ -5,12 +5,21 @@ import clsx from "clsx";
 import { match } from "../misc/utils";
 import { Icons } from "../misc/icons";
 
+interface MessageOptions
+{
+    text: string,
+    icon?: React.ReactNode,
+    className?: string,
+}
+
 interface MessageState
 {
     id: number,
-    state: "show" | "present" | "hide",
     text: string,
-    type: "info" | "warn" | "error",
+
+    state: "show" | "present" | "hide",
+    icon?: React.ReactNode,
+    className?: string,
 }
 
 interface MessageProviderState
@@ -30,13 +39,14 @@ class MessageProvider extends React.Component<{}, MessageProviderState>
         super(props);
         this.state = { messages: [] };
     }
-    show(text: string, type: "info" | "warn" | "error")
+    show(options: MessageOptions)
     {
         const msg: MessageState = {
             id: this.nextId++,
             state: "show",
-            text,
-            type,
+            text: options.text,
+            className: options.className,
+            icon: options.icon
         };
         this.setState({ messages: [...this.state.messages, msg] });
 
@@ -64,20 +74,24 @@ class MessageProvider extends React.Component<{}, MessageProviderState>
     render()
     {
         return (<>
-            {this.state.messages.map((msg, idx) => (<Message type={msg.type} key={idx} state={msg.state}>{msg.text}</Message>))}
+            {this.state.messages.map((msg, idx) => (<Message className={msg.className} key={idx} state={msg.state} icon={msg.icon}>{msg.text}</Message>))}
         </>)
     }
 }
 
-function Message(props: { children?: React.ReactNode, state: "show" | "present" | "hide", type: "info" | "warn" | "error"})
+interface MessageProps
 {
-    return (<div className={clsx("message", props.state, props.type)}>
+    state: "show" | "present" | "hide",
+    icon?: React.ReactNode,
+    className?: string,
+    children?: React.ReactNode
+}
+
+function Message(props: MessageProps)
+{
+    return (<div className={clsx("message", props.state, props.className)}>
         <div className="message-block">
-            {match(props.type, {
-                "info": <Icons.AlertCircleOutline className="icon" />,
-                "warn": <Icons.AlertCircle className="icon" />,
-                "error": <Icons.CloseCircle className="icon" />,
-            })}
+            {props.icon}
             <span className="text">{props.children}</span>
         </div>
     </div>)
@@ -95,13 +109,30 @@ export const message = {
     {
         if (!ref.current)
             return;
-        ref.current.show(msg, "info");
+        ref.current.show({
+            text: msg,
+            className: "info",
+            icon: <Icons.AlertCircleOutline />
+        });
     },
     warn(msg: string)
     {
-        ref.current?.show(msg, "warn");
+        ref.current?.show({
+            text: msg,
+            className: "warn",
+            icon: <Icons.AlertCircle/>
+        });
     },
-    error: (msg: string) => ref.current?.show(msg, "error"),
+    error: (msg: string) => ref.current?.show({
+        text: msg,
+        className: "error",
+        icon: <Icons.CloseCircle/>
+    }),
+    success: (msg: string) => ref.current?.show({
+        text: msg,
+        className: "success",
+        icon: <Icons.CheckCircle/>
+    }),
 };
 
 (window as any).message = message;

@@ -11,5 +11,8 @@ export declare const Icons: {
     DotsVertical: React.FC<React.SVGProps<React.ReactSVGElement>>;
     DeleteForever: React.FC<React.SVGProps<React.ReactSVGElement>>;
     TextBoxRemoveOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    InfoOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    DotsCircle: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    CheckCircle: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

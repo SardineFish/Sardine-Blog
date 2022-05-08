@@ -1,4 +1,5 @@
 import { api, HTTPMethods, ParamDescriptor, Validators } from "./api-builder";
+export { APIError, ClientErrorCode } from "./api-builder";
 
 function formatDateTime(time: Date)
 {

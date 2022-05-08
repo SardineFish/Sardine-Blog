@@ -736,6 +736,9 @@ body {
 #message-container .message.error .icon {
   color: #ff6534;
 }
+#message-container .message.success .icon {
+  color: #94e383;
+}
 #message-container .message.show {
   animation-name: show-msg;
   animation-duration: 0.3s;
@@ -769,17 +772,6 @@ body {
     height: 0;
     opacity: 0;
   }
-}
-
-/* ../static/font/Open_Sans/OpenSans.css */
-@font-face {
-  font-family: "Open Sans";
-  font-style: normal;
-  font-weight: normal;
-  src:
-    local("Open Sans"),
-    local("OpenSans-Regular"),
-    url(./OpenSans-Regular-CRYIR5E5.ttf) format("truetype");
 }
 
 /* ../lib/Script/blog-common/style/top-nav.scss */
@@ -894,6 +886,180 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #ddd;
+}
+
+/* ../static/font/Open_Sans/OpenSans.css */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Open Sans"),
+    local("OpenSans-Regular"),
+    url(./OpenSans-Regular-CRYIR5E5.ttf) format("truetype");
+}
+
+/* ../lib/Script/blog-common/style/dialog.scss */
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
+}
+.dialog {
+  user-select: none;
+  pointer-events: no;
+}
+.dialog.dialog-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+.dialog .wrapper {
+  width: 400px;
+  min-height: 200px;
+  background-color: white;
+  border-radius: 1em;
+  padding: 1.5em 2em;
+  display: flex;
+  flex-flow: column nowrap;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+.dialog .icon {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 3em;
+}
+.dialog .content {
+  flex: 1 0;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  font-size: 1.2em;
+}
+.dialog .buttons {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
+}
+.dialog .button {
+  padding: 0.5em 0.5em;
+  background-color: #eee;
+  margin-left: 1em;
+  border-radius: 0.5em;
+  min-width: 5em;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #777;
+  box-sizing: border-box;
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+.dialog .button.primary {
+  background-color: #444;
+  color: white;
+}
+.dialog .button.progress {
+  padding: 0;
+}
+.dialog .button.progress .icon {
+  height: 1.5em;
+  animation-name: spin;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.63, 0.19, 0.44, 0.88);
+}
+.dialog.show {
+  animation-name: show-dialog-bg;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+.dialog.show .wrapper {
+  animation-name: show-dialog-wrapper;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.39, 1.49, 0.84, 0.98);
+  animation-iteration-count: 1;
+}
+.dialog.hide {
+  animation-name: hide-dialog-bg;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+.dialog.hide .wrapper {
+  animation-name: hide-dialog-wrapper;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+}
+@keyframes show-dialog-bg {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes show-dialog-wrapper {
+  0% {
+    transform: scale(0.5) translate(0, -100px);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+@keyframes hide-dialog-bg {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hide-dialog-wrapper {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) translate(0, 100px);
+    opacity: 0;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
 }
 
 /* ../lib/Script/blog-common/style/index.scss */
@@ -1169,3 +1335,4 @@ ul {
  * @link https://github.com/NextStepWebs/simplemde-markdown-editor
  * @license MIT
  */
+/*# sourceMappingURL=editor.css.map */

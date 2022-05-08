@@ -1,14 +1,14 @@
 import clsx from 'clsx';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 
-export function Button(props: { className?: string, onClick?: () => void, children?: React.ReactNode })
+export function Button(props: { className?: string, onClick?: (e: MouseEvent<HTMLSpanElement>) => void, children?: React.ReactNode })
 {
     const [hover, setHover] = useState(false);
     const [hold, setHold] = useState(false);
     const [state, setState] = useState("normal" as "normal" | "click" | "hover");
-    const onClick = () =>
+    const onClick = (e: MouseEvent<HTMLSpanElement>) =>
     {
-        props.onClick && props.onClick();
+        props.onClick?.(e);
     };
     const mouseDown = () =>
     {

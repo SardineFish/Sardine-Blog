@@ -33,8 +33,8 @@ function Button(props) {
     const [hover, setHover] = (0, react_1.useState)(false);
     const [hold, setHold] = (0, react_1.useState)(false);
     const [state, setState] = (0, react_1.useState)("normal");
-    const onClick = () => {
-        props.onClick && props.onClick();
+    const onClick = (e) => {
+        props.onClick?.(e);
     };
     const mouseDown = () => {
         setHold(true);

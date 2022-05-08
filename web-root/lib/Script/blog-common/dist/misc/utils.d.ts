@@ -9,4 +9,5 @@ export declare function safeEmphasized(html: string): {
     __html: string;
 };
 export declare function error(msg: string): never;
+export declare function timeout(time: number): Promise<void>;
 //# sourceMappingURL=utils.d.ts.map

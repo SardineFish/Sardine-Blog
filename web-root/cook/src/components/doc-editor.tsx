@@ -1,4 +1,4 @@
-import { match, IconButton, Icons, FoldMenu } from "blog-common";
+import { match, IconButton, Icons, FoldMenu, dialog, message } from "blog-common";
 import React, { MutableRefObject, RefObject, useEffect, useRef, useState } from "react";
 import { DocType } from "sardinefish/SardineFish.API";
 import { DocTypeSelector } from "./doc-type-editor";
@@ -99,35 +99,43 @@ export interface FieldEditorProps<T extends EditorHeaderFieldTypeDescriptor>
 export interface DocEditorProps<T extends EditorHeaderDescriptor>
 {
     headers: T,
+    autoSaveInterval?: number,
+    /** Key to identify an auto-saved post saving such as the unique identity for editing document*/
+    autoSaveKey?: string | number,
     initialDoc?: Doc<T>,
-    onSend: (doc: Doc<T>) => void;
-    onDelete: () => void;
+    onSend: (doc: Doc<T>) => Promise<boolean>;
+    onDelete: () => Promise<void>;
 }
+
+const DOC_SAVE_KEY = "doc-editor-saved_";
 
 export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEditorProps<Headers>)
 {
+    const headers: (keyof Headers & string)[] = Object.keys(props.headers) as (keyof Headers & string)[];
+    const refs: EditorHeaderRef<Headers> = {} as any;
+    for (const key of headers)
+    {
+        refs[key] = useRef<FieldEditorRef<Headers[typeof key]["type"]>>(null);
+    }
+
+
     const [docType, setDocType] = useState(DocType.Markdown);
     const docRef = useRef<MarkdownEditorRef>();
-    const send = () =>
+    const save_key = `${DOC_SAVE_KEY}-${props.autoSaveKey ?? "NEW"}`;
+    const getDoc = () =>
     {
         const headerValues: EditorHeaderType<Headers> = {} as any;
 
         for (const key of headers)
         {
             if (!refs[key].current)
-            {
-                console.warn("ref uninitialized");
-                return;
-            }
+                throw new Error("ref uninitialized");
 
             headerValues[key] = refs[key].current?.getValue() as EditorHeaderFieldType<Headers[typeof key]["type"]>;
         }
 
         if (!docRef.current)
-        {
-            console.warn("ref uninitialized");
-            return;
-        }
+            throw new Error("ref uninitialized");
 
         const content = docRef.current.getDoc();
         const doc: Doc<Headers> = {
@@ -135,34 +143,92 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
             docType,
             content,
         }
-        props.onSend(doc);
+        return doc;
+    }
+    const send = async () =>
+    {
+        const doc = getDoc();
+        const success = await props.onSend(doc);
+
+        // Clear saved doc if we successfully post to server
+        if (success)
+        {
+            window.localStorage.removeItem(save_key);
+        }
+    }
+    const saveDoc = () =>
+    {
+        const doc = getDoc();
+        window.localStorage.setItem(save_key, JSON.stringify(doc));
+        console.log("Doc saved");
+    }
+    const loadDoc = (doc: Doc<Headers>) =>
+    {
+        for (const key in doc.headers)
+        {
+            refs[key].current?.setValue(doc.headers[key]);
+        }
+        docRef.current?.setDoc(doc.content);
     }
     useEffect(() =>
     {
         if (props.initialDoc)
         {
-            for (const key in props.initialDoc.headers)
+            loadDoc(props.initialDoc);
+        }
+        else
+        {
+            const docJson = window.localStorage.getItem(save_key);
+            if (docJson)
             {
-                refs[key].current?.setValue(props.initialDoc.headers[key]);
+                loadDoc(JSON.parse(docJson));
+                console.log("load saved doc");
             }
-            docRef.current?.setDoc(props.initialDoc.content);
         }
     }, [props.initialDoc]);
-    const clear = () =>
+    useEffect(() =>
     {
-        for (const key in refs)
+        let handle : number = 0;
+        if (props.autoSaveInterval !== undefined)
         {
-            refs[key].current?.clear();
+            handle = window.setInterval(() =>
+            {
+                saveDoc();
+            }, props.autoSaveInterval * 1000);
         }
-        docRef.current?.clear();
-    }
 
-    const headers: (keyof Headers & string)[] = Object.keys(props.headers) as (keyof Headers & string)[];
-    const refs: EditorHeaderRef<Headers> = {} as any;
-    for (const key of headers)
+        return () => clearInterval(handle);
+    });
+    const onClear = async () =>
     {
-        refs[key] = useRef<FieldEditorRef<Headers[typeof key]["type"]>>(null);
-    }
+        if (await dialog.confirm("All content will be clear?"))
+        {
+            for (const key in refs)
+            {
+                refs[key].current?.clear();
+            }
+            docRef.current?.clear();
+            message.success("All content clear");
+        }
+    };
+    const onDelete = () =>
+    {
+        dialog.confirm("Confirm to delete this post forever?", {
+            className: "dialog-delete-post",
+            icon: <Icons.DeleteForever />,
+            buttons: {
+                ok: {
+                    content: "Delete",
+                    click: async () =>
+                    {
+                        await props.onDelete();
+                        return true;
+                    }
+                },
+            }
+        });
+    };
+    
     return (<div className="doc-editor" >
         <header className="headers">
             {headers.map((key, idx) => (match(props.headers[key].type, {
@@ -189,7 +255,7 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
         <div className="action-panel">
             <DocTypeSelector docType={docType} onChanged={setDocType} />
             <div className="post-actions">
-                <FoldActionPanel delete={props.onDelete} clear={clear}/>
+                <FoldActionPanel delete={onDelete} clear={onClear}/>
                 <IconButton className="button-send" icon={<Icons.Send />} onClick={send} />
             </div>
         </div>

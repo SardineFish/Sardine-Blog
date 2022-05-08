@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./base.html";
-import { Footer, NavMenu, parseQueryString } from "blog-common";
+import { error, Footer, message, NavMenu, parseQueryString } from "blog-common";
 import "../style/editor.scss";
 import SimpleMDE from "simplemde";
 import { MarkdownEditor } from "../components/md-editor";
 import { Doc, DocEditor, EditorHeaderDescriptor } from "../components/doc-editor";
-import SardineFishAPI, { DocType } from "sardinefish/SardineFish.API";
+import SardineFishAPI, { DocType, APIError } from "sardinefish/SardineFish.API";
 
 function App()
 {
@@ -34,19 +34,30 @@ function App()
 
     const send = async (doc: Doc<typeof headerDescriptor>) =>
     {
-        const body = {
-            title: doc.headers.title,
-            description: doc.headers.description,
-            requirements: doc.headers.requirements,
-            optional: doc.headers.optional,
-            content: doc.content
-        };
-        if (editPid)
-            await SardineFishAPI.Cook.update({ pid: editPid }, body);
-        else
+        try
         {
-            const pid = await SardineFishAPI.Cook.post({}, body);
-            setEditPid(pid);
+            const body = {
+                title: doc.headers.title,
+                description: doc.headers.description,
+                requirements: doc.headers.requirements,
+                optional: doc.headers.optional,
+                content: doc.content
+            };
+            if (editPid)
+            {
+                await SardineFishAPI.Cook.update({ pid: editPid }, body);
+            }
+            else
+            {
+                const pid = await SardineFishAPI.Cook.post({}, body);
+                setEditPid(pid);
+            }
+            return true;
+        }
+        catch (err)
+        {
+            message.error(`0x${(err as APIError).code.toString(16)}: ${(err as APIError).message}`);
+            return false;
         }
     };
     const deleteDoc = async () =>
@@ -81,11 +92,11 @@ function App()
     return (<>
         <NavMenu className="top-nav" />
         <main className="page-content">
-            <DocEditor headers={headerDescriptor} onSend={send} initialDoc={iniialDoc} onDelete={deleteDoc}/>
+            <DocEditor headers={headerDescriptor} onSend={send} initialDoc={iniialDoc} onDelete={deleteDoc} autoSaveInterval={10} autoSaveKey={editPid}/>
         </main>
         <Footer />
     </>);
 }
 
-const root = createRoot(document.body);
+const root = createRoot(document.querySelector("#root") ?? document.body);
 root.render(<App />);

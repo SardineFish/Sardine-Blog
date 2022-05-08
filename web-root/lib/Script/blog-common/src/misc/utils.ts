@@ -35,3 +35,8 @@ export function error(msg: string): never
 {
     throw new Error("msg");
 }
+
+export function timeout(time: number): Promise<void>
+{
+    return new Promise(resolve => setTimeout(resolve, time));
+}

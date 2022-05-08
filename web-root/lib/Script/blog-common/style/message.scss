@@ -52,6 +52,12 @@
             }
         }
 
+        &.success {
+            .icon {
+                color: #94e383;
+            }
+        }
+
         &.show {
             animation-name: show-msg;
             animation-duration: .3s;

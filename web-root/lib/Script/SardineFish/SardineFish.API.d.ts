@@ -1,4 +1,5 @@
 import { HTTPMethods } from "./api-builder";
+export { APIError, ClientErrorCode } from "./api-builder";
 declare function formatDateTime(time: Date): string;
 export interface ProgressRequestOptions {
     method?: HTTPMethods;
