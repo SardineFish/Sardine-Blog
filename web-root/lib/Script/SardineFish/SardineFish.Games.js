@@ -36,7 +36,7 @@
     return params;
   }
   function validateEmail(key, email) {
-    if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email))
+    if (/^\w+@[a-zA-Z_]+?(\.[a-zA-Z]+)*$/.test(email))
       return email;
     throw new APIError(ClientErrorCode.InvalidParameter, `Invalid email address in '${key}'`);
   }
