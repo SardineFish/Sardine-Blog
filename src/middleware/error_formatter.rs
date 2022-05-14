@@ -1,8 +1,7 @@
 use actix_http::body::MessageBody;
 use actix_http::header::{self, HeaderValue};
-use actix_http::StatusCode;
 use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
-use actix_web::{HttpResponse, Result};
+use actix_web::Result;
 use futures::{future::Ready, task, Future};
 use futures_util::future::ok;
 
@@ -10,10 +9,10 @@ use std::pin::Pin;
 
 use crate::misc::{error::Error, response::ErrorResponseData};
 
-pub struct ErrorFormatter {}
+pub struct ErrorFormatter;
 
 pub fn error_formatter() -> ErrorFormatter {
-    ErrorFormatter {}
+    ErrorFormatter
 }
 
 impl<S> Transform<S, ServiceRequest> for ErrorFormatter
@@ -50,8 +49,8 @@ where
     }
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        let (request, payload) = req.into_parts();
-        let req = ServiceRequest::from_parts(request.clone(), payload);
+        // let (request, payload) = req.into_parts();
+        // let req = ServiceRequest::from_parts(request.clone(), payload);
         let future = self.service.call(req);
         Box::pin(async move {
             match future.await {
@@ -92,21 +91,31 @@ where
                 }
                 Err(err) => {
                     log::error!("Internal middleware error: {:?}", err);
-                    let mut response = HttpResponse::new(StatusCode::INTERNAL_SERVER_ERROR)
-                        .set_body(
-                            ErrorResponseData::from(Error::Uncaught(
-                                "Internal middleware error".to_string(),
-                            ))
-                            .build_json(),
-                        )
-                        .map_into_boxed_body();
-                    response.headers_mut().append(
-                        header::CONTENT_TYPE,
-                        HeaderValue::from_static("application/json"),
-                    );
-                    Ok(ServiceResponse::new(request, response))
+                    // let mut response = HttpResponse::new(StatusCode::INTERNAL_SERVER_ERROR)
+                    //     .set_body(
+                    //         ErrorResponseData::from(Error::Uncaught(
+                    //             "Internal middleware error".to_string(),
+                    //         ))
+                    //         .build_json(),
+                    //     )
+                    //     .map_into_boxed_body();
+                    // response.headers_mut().append(
+                    //     header::CONTENT_TYPE,
+                    //     HeaderValue::from_static("application/json"),
+                    // );
+                    // Ok(ServiceResponse::new(request, response))
+                    Err(err)
                 }
             }
         })
+    }
+}
+
+#[allow(unused)]
+struct UncaughtError(actix_web::Error);
+
+impl From<actix_web::Error> for UncaughtError {
+    fn from(err: actix_web::Error) -> Self {
+        Self(err)
     }
 }
