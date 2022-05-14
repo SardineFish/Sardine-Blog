@@ -62,7 +62,7 @@ jobs:
       - name: Release binary
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.ver.outputs.version }}
+          tag: ${{ steps.ver.outputs.version_tag }}
           commit: ${{ env.GITHUB_SHA }}
           artifacts: "bin/sar-blog-x86_64-unknown-linux-gnu,bin/sar-blog-x86_64-unknown-linux-gnu.sha256"
           token: ${{ secrets.GITHUB_TOKEN }}
