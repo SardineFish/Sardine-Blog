@@ -20,7 +20,7 @@ use misc::error::OkOrLog;
 use misc::error_report::ServiceMornitor;
 use misc::utils;
 use sar_blog::{MessageMail, Service};
-use shared::ServiceOptions;
+use shared::{LogError, ServiceOptions};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -32,6 +32,7 @@ async fn main() -> std::io::Result<()> {
         .version("0.1.0")
         .arg(arg!(--init))
         .arg(arg!(-c --config [CONFIG] "Service configure JSON file."))
+        .arg(arg!(--test))
         .get_matches();
 
     let opts = if let Some(path) = matches.value_of("config") {
@@ -42,6 +43,14 @@ async fn main() -> std::io::Result<()> {
     } else {
         shared::ServiceOptions::default()
     };
+
+    if matches.is_present("test") {
+        env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("debug"))
+            .try_init()
+            .log_error_consume("log");
+        sar_blog::Service::test(opts).await;
+        return Ok(());
+    }
 
     let service = sar_blog::Service::open(opts.clone())
         .await

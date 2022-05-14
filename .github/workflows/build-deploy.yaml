@@ -46,6 +46,16 @@ jobs:
           sha256sum -b bin/sar-blog-x86_64-unknown-linux-gnu > bin/sar-blog-x86_64-unknown-linux-gnu.sha256
           cat bin/sar-blog-x86_64-unknown-linux-gnu.sha256
 
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-binary
+          path: bin/sar-blog-x86_64-unknown-linux-gnu
+
+      - name: Test binary
+        run: |
+          bin/sar-blog-x86_64-unknown-linux-gnu --test
+
       - name: Release binary
         uses: ncipollo/release-action@v1
         with:

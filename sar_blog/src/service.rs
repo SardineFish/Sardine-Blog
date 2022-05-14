@@ -1,13 +1,17 @@
 use model::{AuthenticationInfo, Model, RedisCache, User};
-use shared::ServiceOptions;
-use rand::{RngCore, SeedableRng, prelude::StdRng};
+use rand::{prelude::StdRng, RngCore, SeedableRng};
 use sha2::{Digest, Sha256};
+use shared::{LogError, ServiceOptions};
 
-use crate::{blog::BlogService, comment::CommentService, email_notify::EmailNotifyService, error::MapServiceError, note::NoteService, post_data::PostDataService, rank::{RankServiceSelector}, search::SearchService, session::SessionService, storage::StorageService, url::UrlService, user::UserService, cook::CookService};
+use crate::{
+    blog::BlogService, comment::CommentService, cook::CookService,
+    email_notify::EmailNotifyService, error::MapServiceError, note::NoteService,
+    post_data::PostDataService, rank::RankServiceSelector, search::SearchService,
+    session::SessionService, storage::StorageService, url::UrlService, user::UserService,
+};
 
 use crate::error::*;
-use std::{cell::RefCell};
-
+use std::cell::RefCell;
 
 pub struct Service {
     pub(crate) model: Model,
@@ -24,6 +28,22 @@ impl Service {
             rng: RefCell::new(StdRng::from_entropy()),
             option: service_options,
         })
+    }
+
+    pub async fn test(service_options: ServiceOptions) -> bool {
+        log::info!("Testing database...");
+        let mut ok = Model::open(&service_options)
+            .await
+            .map_service_err()
+            .log_error("database")
+            .is_ok();
+        log::info!("Testing redis...");
+        ok |= RedisCache::open(&service_options)
+            .await
+            .map_service_err()
+            .log_error("redis")
+            .is_ok();
+        ok
     }
 
     pub fn blog(&self) -> BlogService {
@@ -81,25 +101,27 @@ impl Service {
             log::warn!("Init database...");
             log::warn!("Will rewrite some metadata in database which is very important!");
             self.model.init(true).await.map_service_err()?;
-            
-            log::warn!("Secrete of root user will be generated randomly, please make sure to change it.");
+
+            log::warn!(
+                "Secrete of root user will be generated randomly, please make sure to change it."
+            );
             let mut secret: [u8; 16] = [0; 16];
             self.rng.borrow_mut().fill_bytes(&mut secret);
             let hash = format!("{:x}", Sha256::digest(&secret));
-            
-            let user = User::root(AuthenticationInfo{
+
+            let user = User::root(AuthenticationInfo {
                 method: model::HashMethod::SHA256,
                 password_hash: hash.clone(),
-                salt: "".to_string()
+                salt: "".to_string(),
             });
-        
+
             self.model.user.add(&user).await.map_service_err()?;
-        
+
             log::warn!("The secrete of root is '{}'", hash);
-        
+
             log::warn!("Init completed.");
         }
-        
+
         Ok(())
     }
 }
