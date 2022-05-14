@@ -19,6 +19,9 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Install rust nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
