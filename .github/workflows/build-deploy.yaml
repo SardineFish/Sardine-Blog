@@ -2,7 +2,7 @@ name: Build & Deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     paths:
       - "**/Cargo.lock"
       - "**/*.rs"
@@ -17,13 +17,13 @@ jobs:
         uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
-          
+
       - uses: actions/checkout@v2
       - name: Install rust nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-      
+
       - uses: actions/cache@v2
         with:
           path: |
@@ -35,11 +35,33 @@ jobs:
             sar_blog/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Bump version
+        id: ver
+        uses: paulhatch/semantic-version@v4.0.2
+        with:
+          tag_prefix: "v"
+          bump_each_commit: true
+
       - name: Build rust project
         uses: actions-rs/cargo@v1
-        with: 
+        with:
           command: build
           args: --release --target=x86_64-unknown-linux-gnu
+
+      - name: Prepare binary
+        run: |
+          mkdir bin
+          cp target/x86_64-unknown-linux-gnu/release/sar-blog bin/sar-blog-x86_64-unknown-linux-gnu
+          sha256sum -b bin/sar-blog-x86_64-unknown-linux-gnu > bin/sar-blog-x86_64-unknown-linux-gnu.sha256
+          cat bin/sar-blog-x86_64-unknown-linux-gnu.sha256
+
+      - name: Release binary
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.ver.outputs.version_tag }}
+          commit: ${{ env.GITHUB_SHA }}
+          artifacts: "bin/sar-blog-x86_64-unknown-linux-gnu,bin/sar-blog-x86_64-unknown-linux-gnu.sha256"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare Identity
         run: echo "${{ secrets.SSH_KEY }}" > ssh_key && chmod 400 ssh_key
@@ -70,4 +92,3 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
           WORK_DIR: ${{ secrets.PROJECT_DIR }}
-
