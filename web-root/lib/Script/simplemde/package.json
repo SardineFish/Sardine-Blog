@@ -11,6 +11,7 @@
   ],
   "homepage": "https://github.com/NextStepWebs/simplemde-markdown-editor",
   "main": "./src/js/simplemde.js",
+  "module": "./dist/simplemde.min.mjs",
   "license": "MIT",
   "company": "Next Step Webs, Inc.",
   "author": {

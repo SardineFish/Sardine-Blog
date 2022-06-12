@@ -10,7 +10,7 @@ const ServeFolder = /^\/cook\//;
 const bs = browserSync.create();
 
 bs.init({
-    proxy: "localhost:3000",
+    proxy: "127.0.0.1:3000",
     port: "8080"
 });
 

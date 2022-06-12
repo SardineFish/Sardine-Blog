@@ -14,6 +14,7 @@ const Option = {
         HTMLPlugin({ outDir: "./dist" }),
         alias({
             "react": path.resolve('./node_modules/react/index.js'),
+            "react-dom": path.resolve("./node_modules/react-dom/index.js"),
         }),
         sassPlugin({
             type: "css",

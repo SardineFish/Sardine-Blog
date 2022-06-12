@@ -501,7 +501,12 @@ const SardineFishAPI = {
     }
 }
 
-const SardineFish = (window as any).SardineFish || {};
+interface SardineFish
+{
+    API: typeof SardineFishAPI
+};
+
+const SardineFish: SardineFish = (window as any).SardineFish || {} ;
 (window as any).SardineFish = {
     ...SardineFish,
     API: SardineFishAPI
@@ -515,4 +520,6 @@ declare global
     }
 }
 
-export default SardineFishAPI;
+export default SardineFish;
+
+export const API = SardineFishAPI;

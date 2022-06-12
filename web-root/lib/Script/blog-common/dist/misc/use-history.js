@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.useHistory = void 0;
-const react_1 = require("react");
-function useHistory(callback) {
-    const [urlState, setUrlState] = (0, react_1.useState)(window.location);
-    const [_handler, _] = (0, react_1.useState)(() => {
+import { useState } from "react";
+export function useHistory(callback) {
+    const [urlState, setUrlState] = useState(window.location);
+    const [_handler, _] = useState(() => {
         const onPopState = () => {
             setUrlState(window.location);
             callback?.();
@@ -18,5 +15,4 @@ function useHistory(callback) {
             callback?.();
         }];
 }
-exports.useHistory = useHistory;
 //# sourceMappingURL=use-history.js.map

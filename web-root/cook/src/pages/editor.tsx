@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import "./base.html";
 import { error, Footer, message, NavMenu, parseQueryString } from "blog-common";
 import "../style/editor.scss";
-import SimpleMDE from "simplemde";
-import { MarkdownEditor } from "../components/md-editor";
-import { Doc, DocEditor, EditorHeaderDescriptor } from "../components/doc-editor";
-import SardineFishAPI, { DocType, APIError } from "sardinefish/SardineFish.API";
+// import { Doc, DocEditor, EditorHeaderDescriptor } from "../components/doc-editor";
+import { Doc, EditorHeaderDescriptor, DocEditor } from "blog-common";
+import { API, DocType, APIError } from "sardinefish";
+import "./base.html";
+
+(window as any).react2 = React;
 
 function App()
 {
@@ -45,11 +46,11 @@ function App()
             };
             if (editPid)
             {
-                await SardineFishAPI.Cook.update({ pid: editPid }, body);
+                await API.Cook.update({ pid: editPid }, body);
             }
             else
             {
-                const pid = await SardineFishAPI.Cook.post({}, body);
+                const pid = await API.Cook.post({}, body);
                 setEditPid(pid);
             }
             return true;
@@ -74,7 +75,7 @@ function App()
         {
             if (editPid)
             {
-                const data = await SardineFishAPI.Cook.get({ pid: editPid as number });
+                const data = await API.Cook.get({ pid: editPid as number });
                 setInitialDoc({
                     headers: {
                         title: data.content.title,

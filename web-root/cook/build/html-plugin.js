@@ -17,10 +17,14 @@ const HTMLPlugin = (option) => ({
         build.onResolve({ filter: FILE_PATTEN }, async (args) =>
         {
             return {
+                // Use namespace to create copy of the imported data.
+                // To avoid onLoad being called only once.
+                namespace: path.basename(args.importer),
                 path: path.join(args.resolveDir, args.path),
                 pluginData: {
                     importer: args.importer,
-                }
+                },
+                sideEffects: true,
             }
         })
         build.onLoad({ filter: FILE_PATTEN }, async (args) =>

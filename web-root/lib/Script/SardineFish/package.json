@@ -2,16 +2,17 @@
   "name": "sardinefish",
   "version": "1.0.0",
   "description": "",
-  "main": "SardineFish.API.js",
+  "main": "./dist/SardineFish.API.js",
+  "module": "./dist/esm/SardineFish.API.js",
   "scripts": {
     "build": "npm run build:bundle && npm run build:declare",
-    "build:bundle": "npx esbuild --bundle --outdir=. SardineFish.API.ts SardineFish.Games.ts",
+    "build:bundle": "npx esbuild --bundle --outdir=. SardineFish.API.ts SardineFish.Games.ts && node ./build/esbuild.js",
     "build:declare": "npx tsc"
   },
   "author": "SardineFish",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.11.20",
+    "esbuild": "^0.14.32",
     "ts-loader": "^8.0.17"
   }
 }

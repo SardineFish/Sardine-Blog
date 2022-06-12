@@ -1,4 +1,4 @@
-@import "../../../../static/font/Open_Sans/OpenSans.css";
+@import "font/Open_Sans/OpenSans.css";
 
 @font-face {
     font-family: 'Raleway';
@@ -6,7 +6,7 @@
     font-weight: normal;
     src: local('Raleway'),
         local('Raleway-Regular'),
-        url("../../../../static/font/Raleway/Raleway-Regular.ttf") format('truetype');
+        url("font/Raleway/Raleway-Regular.ttf") format('truetype');
 }
 
 @mixin font-text {

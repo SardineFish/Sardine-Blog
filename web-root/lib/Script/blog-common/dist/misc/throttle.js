@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.useThrottle = exports.makeThrottle = exports.ThrottleReject = void 0;
-const react_1 = require("react");
-exports.ThrottleReject = Symbol("rejected call");
+import { useState } from "react";
+export const ThrottleReject = Symbol("rejected call");
 function makeFIFOThrottle(interval) {
     let handle = 0;
     return (fn) => {
         return ((...args) => new Promise((resolve, reject) => {
             if (handle) {
                 console.info("rejected");
-                reject(exports.ThrottleReject);
+                reject(ThrottleReject);
                 return;
             }
             handle = window.setTimeout(() => {
@@ -38,7 +35,7 @@ function makeFILOThrottle(interval) {
         }));
     };
 }
-function makeThrottle(interval, reject = "older") {
+export function makeThrottle(interval, reject = "older") {
     switch (reject) {
         case "newer":
             return makeFIFOThrottle(interval);
@@ -46,10 +43,8 @@ function makeThrottle(interval, reject = "older") {
             return makeFILOThrottle(interval);
     }
 }
-exports.makeThrottle = makeThrottle;
-function useThrottle(interval, reject = "older") {
-    const [throttle, _] = (0, react_1.useState)(() => makeThrottle(interval, reject));
+export function useThrottle(interval, reject = "older") {
+    const [throttle, _] = useState(() => makeThrottle(interval, reject));
     return throttle;
 }
-exports.useThrottle = useThrottle;
 //# sourceMappingURL=throttle.js.map

@@ -1,41 +1,12 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeOption = exports.dialog = void 0;
-const clsx_1 = __importDefault(require("clsx"));
-const react_1 = __importStar(require("react"));
-const client_1 = require("react-dom/client");
-const misc_1 = require("../misc");
-const button_1 = require("./button");
-const DialogContext = react_1.default.createContext({
+import clsx from "clsx";
+import React, { useContext, useState } from "react";
+import { createRoot } from "react-dom/client";
+import { Icons, timeout } from "../misc";
+import { Button } from "./button";
+const DialogContext = React.createContext({
     dispose: () => { }
 });
-class PopupManager extends react_1.default.Component {
+class PopupManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -55,14 +26,14 @@ class PopupManager extends react_1.default.Component {
                 dialogs: [...this.state.dialogs]
             });
         };
-        return (react_1.default.createElement(react_1.default.Fragment, null, this.state.dialogs.map((dialog, idx) => (react_1.default.createElement(DialogContext.Provider, { key: idx, value: { dispose: () => dispose(dialog) } }, dialog)))));
+        return (React.createElement(React.Fragment, null, this.state.dialogs.map((dialog, idx) => (React.createElement(DialogContext.Provider, { key: idx, value: { dispose: () => dispose(dialog) } }, dialog)))));
     }
 }
 function Dialog(props) {
     const buttonKeys = Object.keys(props.option.buttons);
-    const [state, setState] = (0, react_1.useState)("show");
-    const [buttonStates, setButtonStates] = (0, react_1.useState)(buttonKeys.map(() => undefined));
-    const context = (0, react_1.useContext)(DialogContext);
+    const [state, setState] = useState("show");
+    const [buttonStates, setButtonStates] = useState(buttonKeys.map(() => undefined));
+    const context = useContext(DialogContext);
     const dialogOption = props.option;
     const getButtonOption = (key) => props.option.buttons[key];
     const click = async (e, idx) => {
@@ -94,30 +65,30 @@ function Dialog(props) {
         if (state === "hide")
             return;
         setState("hide");
-        await (0, misc_1.timeout)(1000);
+        await timeout(1000);
         context.dispose();
     };
-    return (react_1.default.createElement("div", { className: (0, clsx_1.default)("dialog", "dialog-bg", state), onClick: cancel },
-        react_1.default.createElement("div", { className: "wrapper" },
-            dialogOption.title ? (react_1.default.createElement("header", { className: "title" }, dialogOption.title)) : null,
-            dialogOption.icon ? (react_1.default.createElement("div", { className: "icon" }, dialogOption.icon)) : null,
-            react_1.default.createElement("p", { className: "content" }, dialogOption.content),
-            react_1.default.createElement("div", { className: "buttons" }, buttonKeys.map((key, idx) => (buttonStates[idx] === "progress"
-                ? react_1.default.createElement(button_1.Button, { className: (0, clsx_1.default)(getButtonOption(key).type, "progress"), key: idx },
-                    react_1.default.createElement(misc_1.Icons.DotsCircle, null))
-                : react_1.default.createElement(button_1.Button, { className: (0, clsx_1.default)(getButtonOption(key).type), onClick: (e) => click(e, idx), key: idx }, getButtonOption(key).content)))))));
+    return (React.createElement("div", { className: clsx("dialog", "dialog-bg", state), onClick: cancel },
+        React.createElement("div", { className: "wrapper" },
+            dialogOption.title ? (React.createElement("header", { className: "title" }, dialogOption.title)) : null,
+            dialogOption.icon ? (React.createElement("div", { className: "icon" }, dialogOption.icon)) : null,
+            React.createElement("p", { className: "content" }, dialogOption.content),
+            React.createElement("div", { className: "buttons" }, buttonKeys.map((key, idx) => (buttonStates[idx] === "progress"
+                ? React.createElement(Button, { className: clsx(getButtonOption(key).type, "progress"), key: idx },
+                    React.createElement(Icons.DotsCircle, null))
+                : React.createElement(Button, { className: clsx(getButtonOption(key).type), onClick: (e) => click(e, idx), key: idx }, getButtonOption(key).content)))))));
 }
 const container = document.createElement("div");
 container.className = "dialog-manager";
 document.body.appendChild(container);
-const DialogRef = react_1.default.createRef();
-const root = (0, client_1.createRoot)(container);
-root.render(react_1.default.createElement(PopupManager, { ref: DialogRef }));
-exports.dialog = {
+const DialogRef = React.createRef();
+const root = createRoot(container);
+root.render(React.createElement(PopupManager, { ref: DialogRef }));
+export const dialog = {
     async confirm(msg, override) {
         return await this.show(mergeOption({
             className: "dialog-confirm",
-            icon: react_1.default.createElement(misc_1.Icons.InfoOutline, null),
+            icon: React.createElement(Icons.InfoOutline, null),
             content: msg,
             onCancel: () => false,
             buttons: {
@@ -137,7 +108,7 @@ exports.dialog = {
         return await this.show(mergeOption({
             title: "Info",
             className: "dialog-info",
-            icon: react_1.default.createElement(misc_1.Icons.InfoOutline, null),
+            icon: React.createElement(Icons.InfoOutline, null),
             content: msg,
             onCancel: () => { },
             buttons: {
@@ -152,11 +123,11 @@ exports.dialog = {
     show(optios) {
         console.log(optios);
         return new Promise((resolve) => {
-            DialogRef.current?.show(react_1.default.createElement(Dialog, { option: optios, onClose: (v) => resolve(v) }));
+            DialogRef.current?.show(React.createElement(Dialog, { option: optios, onClose: (v) => resolve(v) }));
         });
     }
 };
-function mergeOption(a, b) {
+export function mergeOption(a, b) {
     const out = Object.assign({}, a, b);
     if (!b || !a)
         return out;
@@ -172,6 +143,5 @@ function mergeOption(a, b) {
     }
     return out;
 }
-exports.mergeOption = mergeOption;
-window.dialog = exports.dialog;
+window.dialog = dialog;
 //# sourceMappingURL=dialog.js.map
