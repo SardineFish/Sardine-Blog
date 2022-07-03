@@ -60,7 +60,7 @@ impl<'s, T: PostData> PostService<'s, T> {
             .service
             .model
             .post
-            .get_list::<Post<T>>(skip, limit)
+            .get_preview_list::<Post<T>>(skip, limit)
             .await?;
 
         let list = list.into_iter().map(Preview::from).collect();

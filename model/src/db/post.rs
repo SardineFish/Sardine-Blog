@@ -78,6 +78,10 @@ impl PostData for MiscellaneousPostContent {
             _ => None,
         }
     }
+
+    fn ignore_fields_on_preview() -> &'static [&'static str] {
+        &[]
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -153,6 +157,10 @@ impl<T: PostData> GenericPost for Post<T> {
     fn post_type_name() -> &'static str {
         T::post_type_name()
     }
+
+    fn ignore_fields_on_preview() -> &'static [&'static str] {
+        T::ignore_fields_on_preview()
+    }
 }
 
 impl<T: PostData> Deref for Post<T> {
@@ -178,6 +186,8 @@ pub trait PostMeta {
 pub trait GenericPost: PostMeta + DeserializeOwned + Clone + Unpin + Send + Sync + 'static {
     type Content: PostData;
     fn post_type_name() -> &'static str;
+
+    fn ignore_fields_on_preview() -> &'static [&'static str];
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -240,6 +250,7 @@ pub trait PostData:
     fn search_index(&self) -> Option<IndexDoc> {
         None
     }
+    fn ignore_fields_on_preview() -> &'static [&'static str];
 }
 
 pub fn get_content_preview(doc_type: DocType, content: &str, limit: usize) -> String {
@@ -482,13 +493,32 @@ impl PostModel {
             .ok_or(Error::PostNotFound(pid))
     }
 
-    pub async fn get_list<T: GenericPost>(&self, skip: usize, limit: usize) -> Result<Vec<T>> {
+    pub async fn get_preview_list<T: GenericPost>(
+        &self,
+        skip: usize,
+        limit: usize,
+    ) -> Result<Vec<T>> {
+        self.get_list(T::ignore_fields_on_preview(), skip, limit)
+            .await
+    }
+
+    pub async fn get_full_list<T: GenericPost>(&self, skip: usize, limit: usize) -> Result<Vec<T>> {
+        self.get_list(&[], skip, limit).await
+    }
+
+    async fn get_list<T: GenericPost>(
+        &self,
+        ignore_fields: &[&str],
+        skip: usize,
+        limit: usize,
+    ) -> Result<Vec<T>> {
         let query = doc! {
             "data.type": T::post_type_name()
         };
         let result: Vec<T> = Self::get_flat_posts(
             &self.collection,
             query,
+            ignore_fields,
             skip,
             limit,
             Some(("time", SortOrder::DESC)),
@@ -518,7 +548,7 @@ impl PostModel {
             "data.type": T::post_type_name()
         };
 
-        let doc = Self::get_flat_posts(&self.collection, query, 0, 1, None)
+        let doc = Self::get_flat_posts(&self.collection, query, &[], 0, 1, None)
             .await?
             .next()
             .await
@@ -629,6 +659,7 @@ impl PostModel {
     pub(crate) async fn get_flat_posts<T>(
         collection: &Collection<T>,
         filter: bson::Document,
+        ignore_fields: &[&str],
         skip: usize,
         limit: usize,
         sort: Option<(&str, SortOrder)>,
@@ -639,6 +670,18 @@ impl PostModel {
         pipeline.push(doc! {
             "$match": filter,
         });
+
+        // Build ignore fields
+        if !ignore_fields.is_empty() {
+            let mut map = bson::Document::new();
+            for field in ignore_fields {
+                map.insert(format!("data.content.{}", field), 0);
+            }
+            pipeline.push(doc! {
+                "$project": &map
+            });
+        }
+
         if let Some((name, order)) = sort {
             pipeline.push(doc! {
                 "$sort" : {

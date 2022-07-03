@@ -77,20 +77,28 @@
     bypass: validateByPass,
     positive: validatePositive
   };
-  var ClientErrorCode;
-  (function(ClientErrorCode2) {
+  var ClientErrorCode = /* @__PURE__ */ ((ClientErrorCode2) => {
     ClientErrorCode2[ClientErrorCode2["Error"] = -1] = "Error";
     ClientErrorCode2[ClientErrorCode2["InvalidParameter"] = -2] = "InvalidParameter";
     ClientErrorCode2[ClientErrorCode2["NetworkFailure"] = -3] = "NetworkFailure";
     ClientErrorCode2[ClientErrorCode2["ParseError"] = -4] = "ParseError";
-  })(ClientErrorCode || (ClientErrorCode = {}));
+    return ClientErrorCode2;
+  })(ClientErrorCode || {});
   var APIError = class extends Error {
+    code;
     constructor(code, message) {
       super(message);
       this.code = code;
     }
   };
   var ApiBuilder = class {
+    method;
+    url;
+    pathInfo;
+    queryInfo;
+    dataInfo;
+    redirectOption;
+    requestMode;
     constructor(method, mode, url, path, query, data) {
       this.method = method;
       this.url = url;
@@ -117,7 +125,7 @@
           return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, null);
         return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, simpleParam(data));
       } else {
-        throw new APIError(-1, `HTTP Method ${this.method} should not have body.`);
+        throw new APIError(-1 /* Error */, `HTTP Method ${this.method} should not have body.`);
       }
     }
     redirect(redirect) {
@@ -137,7 +145,7 @@
             url = url.replace(`{${key}}`, "");
             continue;
           }
-          throw new APIError(-2, `Missing path '${key}'`);
+          throw new APIError(-2 /* InvalidParameter */, `Missing path '${key}'`);
         }
         url = url.replace(`{${key}}`, this.pathInfo[key].validator(key, value).toString());
       }
@@ -145,7 +153,7 @@
       for (const key in this.queryInfo) {
         const value = params[key];
         if (value === void 0 && !this.queryInfo[key].optional)
-          throw new APIError(-2, `Missing query param '${key}'`);
+          throw new APIError(-2 /* InvalidParameter */, `Missing query param '${key}'`);
         else if (value !== void 0)
           queryParams.push(`${key}=${encodeURIComponent(this.queryInfo[key].validator(key, value).toString())}`);
       }
@@ -156,7 +164,7 @@
           const dataInfo = this.dataInfo[key];
           const value = data[key];
           if (value === void 0 && !dataInfo.optional)
-            throw new APIError(-2, `Missing field '${key} in request body'`);
+            throw new APIError(-2 /* InvalidParameter */, `Missing field '${key} in request body'`);
           else if (value !== void 0)
             data[key] = dataInfo.validator(key, value);
         }
@@ -174,7 +182,7 @@
           body: this.dataInfo === void 0 ? void 0 : JSON.stringify(data)
         });
       } catch (err) {
-        throw new APIError(-3, "Failed to send request.");
+        throw new APIError(-3 /* NetworkFailure */, "Failed to send request.");
       }
       if (response.status >= 400) {
         const body = await this.parseBody(response);
@@ -193,7 +201,7 @@
         const body = await response.json();
         return body;
       } catch (err) {
-        throw new APIError(-3, `${response.status} ${response.statusText}`);
+        throw new APIError(-3 /* NetworkFailure */, `${response.status} ${response.statusText}`);
       }
     }
   };
@@ -211,7 +219,7 @@
   // SardineFish.Games.ts
   var GameAPI = (baseUrl = "") => ({
     Rank: {
-      getRankedScores: api("GET", "/api/rank/{key}").base(baseUrl).path({key: "string"}).query({
+      getRankedScores: api("GET", "/api/rank/{key}").base(baseUrl).path({ key: "string" }).query({
         skip: {
           type: "number",
           optional: true,
@@ -223,7 +231,7 @@
           validator: Validators.bypass
         }
       }).response(),
-      postScore: api("POST", "/api/rank/{key}").base(baseUrl).path({key: "string"}).body().response()
+      postScore: api("POST", "/api/rank/{key}").base(baseUrl).path({ key: "string" }).body().response()
     }
   });
   var SardineFish = window.SardineFish || {};

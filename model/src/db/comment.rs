@@ -1,12 +1,14 @@
-
 use futures::{future::ready, StreamExt};
-use mongodb::{Collection, Database, bson::{self, doc}};
-use serde::{Serialize, Deserialize};
+use mongodb::{
+    bson::{self, doc},
+    Collection, Database,
+};
+use serde::{Deserialize, Serialize};
 
-use crate::{model::PidType, PostData, PostType, PostDoc};
 use crate::error::*;
+use crate::{model::PidType, PostData, PostDoc, PostType};
 
-use super::{post::{PostModel, SortOrder, Post}};
+use super::post::{Post, PostModel, SortOrder};
 
 const COLLECTION_COMMENT: &str = "post";
 
@@ -35,6 +37,9 @@ impl PostData for CommentContent {
             _ => None,
         }
     }
+    fn ignore_fields_on_preview() -> &'static [&'static str] {
+        &[]
+    }
 }
 
 #[derive(Clone)]
@@ -45,7 +50,7 @@ pub struct CommentModel {
 impl CommentModel {
     pub fn new(db: &Database) -> Self {
         Self {
-            collection: db.collection(COLLECTION_COMMENT)
+            collection: db.collection(COLLECTION_COMMENT),
         }
     }
 
@@ -54,20 +59,28 @@ impl CommentModel {
             "data.type": "Comment",
             "data.content.comment_root": pid,
         };
-        let result: Vec<Comment> = PostModel::get_flat_posts(&self.collection, query, 0, 128, Some(("pid", SortOrder::ASC)))
-            .await?
-            .filter_map(|d| ready(d.ok().and_then(|doc| {
+        let result: Vec<Comment> = PostModel::get_flat_posts(
+            &self.collection,
+            query,
+            &[],
+            0,
+            128,
+            Some(("pid", SortOrder::ASC)),
+        )
+        .await?
+        .filter_map(|d| {
+            ready(d.ok().and_then(|doc| {
                 let result = bson::from_document::<Comment>(doc);
                 if let Err(err) = &result {
                     log::warn!("Error when deserializing a Comment: {}", err);
                 }
                 result.ok()
-            })))
-            .collect()
-            .await;
-        
+            }))
+        })
+        .collect()
+        .await;
+
         Ok(result)
-            
     }
 
     pub async fn update_notify_state(&self, pid: PidType, notified: bool) -> Result<()> {

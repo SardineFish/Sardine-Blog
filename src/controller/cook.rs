@@ -1,6 +1,5 @@
-use actix_web::put;
 use actix_web::web::{scope, Json, Path, ServiceConfig};
-use actix_web::{get, post, web::Query};
+use actix_web::{delete, get, post, put, web::Query};
 use sar_blog::model::{Access, PidType, RecipeContent};
 use sar_blog::PubPostData;
 
@@ -53,12 +52,22 @@ async fn update_recipe(
     Ok(*pid)
 }
 
+#[delete("/{pid}", wrap = "middleware::authentication(Access::Owner)")]
+async fn delete_recipe(
+    service: Service,
+    auth: Auth,
+    pid: Path<PidType>,
+) -> Response<Option<RecipeContent>> {
+    Ok(service.cook().delete(&auth.uid, *pid).await?)
+}
+
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(
         scope("/cook")
             .service(get_recipes_list)
             .service(get_recipe)
             .service(post_recipe)
-            .service(update_recipe),
+            .service(update_recipe)
+            .service(delete_recipe),
     );
 }

@@ -11,6 +11,7 @@ pub struct RecipeContent {
     pub requirements: Vec<String>,
     #[serde(default)]
     pub optional: Vec<String>,
+    #[serde(default)]
     pub content: String,
 }
 
@@ -38,5 +39,9 @@ impl PostData for RecipeContent {
             preview: self.description.clone(),
             content: ElasticSerachModel::parse_doc(&self.content, crate::DocType::Markdown),
         })
+    }
+
+    fn ignore_fields_on_preview() -> &'static [&'static str] {
+        &["content"]
     }
 }

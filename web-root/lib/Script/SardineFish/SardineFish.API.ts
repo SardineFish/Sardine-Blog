@@ -261,6 +261,8 @@ export interface RecipeContent
     content: string,
 }
 
+export type RecipePreviewContent = Omit<RecipeContent, "content">;
+
 const PageQueryParam = ParamDescriptor(
     {
         from: "number",
@@ -481,7 +483,7 @@ const SardineFishAPI = {
     Cook: {
         getList: api("GET", "/api/cook")
             .query(PageQueryParam)
-            .response<PubPostData<RecipeContent>[]>(),
+            .response<PubPostData<RecipePreviewContent>[]>(),
         get: api("GET", "/api/cook/{pid}")
             .path({ pid: "number" })
             .response<PubPostData<RecipeContent>>(),
@@ -491,7 +493,10 @@ const SardineFishAPI = {
         update: api("PUT", "/api/cook/{pid}")
             .path({ pid: "number" })
             .body<RecipeContent>()
-            .response<number>()
+            .response<number>(),
+        delete: api("DELETE", "/api/cook/{pid}")
+            .path({ pid: "number" })
+            .response<RecipeContent | null>(),
     },
     DocType,
     HashMethod,

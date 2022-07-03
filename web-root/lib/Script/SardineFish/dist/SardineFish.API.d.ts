@@ -150,6 +150,7 @@ export interface RecipeContent {
     optional: string[];
     content: string;
 }
+export declare type RecipePreviewContent = Omit<RecipeContent, "content">;
 declare const SardineFishAPI: {
     User: {
         checkAuth: (params: Required<{}> & Partial<{}>) => Promise<string>;
@@ -304,7 +305,7 @@ declare const SardineFishAPI: {
         getList: (params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<RecipeContent>[]>;
+        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "requirements">>[]>;
         get: (params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
@@ -312,6 +313,9 @@ declare const SardineFishAPI: {
         update: (params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        delete: (params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>;
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;
@@ -484,7 +488,7 @@ export declare const API: {
         getList: (params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<RecipeContent>[]>;
+        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "requirements">>[]>;
         get: (params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
@@ -492,6 +496,9 @@ export declare const API: {
         update: (params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        delete: (params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>;
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;

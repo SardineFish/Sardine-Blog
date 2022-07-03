@@ -47,6 +47,10 @@ impl PostData for BlogContent {
             content: ElasticSerachModel::parse_doc(&self.doc, self.doc_type),
         })
     }
+
+    fn ignore_fields_on_preview() -> &'static [&'static str] {
+        &[]
+    }
 }
 
 pub type Blog = Post<BlogContent>;

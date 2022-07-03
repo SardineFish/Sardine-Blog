@@ -80,20 +80,28 @@
     bypass: validateByPass,
     positive: validatePositive
   };
-  var ClientErrorCode;
-  (function(ClientErrorCode2) {
+  var ClientErrorCode = /* @__PURE__ */ ((ClientErrorCode2) => {
     ClientErrorCode2[ClientErrorCode2["Error"] = -1] = "Error";
     ClientErrorCode2[ClientErrorCode2["InvalidParameter"] = -2] = "InvalidParameter";
     ClientErrorCode2[ClientErrorCode2["NetworkFailure"] = -3] = "NetworkFailure";
     ClientErrorCode2[ClientErrorCode2["ParseError"] = -4] = "ParseError";
-  })(ClientErrorCode || (ClientErrorCode = {}));
+    return ClientErrorCode2;
+  })(ClientErrorCode || {});
   var APIError = class extends Error {
+    code;
     constructor(code, message) {
       super(message);
       this.code = code;
     }
   };
   var ApiBuilder = class {
+    method;
+    url;
+    pathInfo;
+    queryInfo;
+    dataInfo;
+    redirectOption;
+    requestMode;
     constructor(method, mode, url, path, query, data) {
       this.method = method;
       this.url = url;
@@ -120,7 +128,7 @@
           return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, null);
         return new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, simpleParam(data));
       } else {
-        throw new APIError(-1, `HTTP Method ${this.method} should not have body.`);
+        throw new APIError(-1 /* Error */, `HTTP Method ${this.method} should not have body.`);
       }
     }
     redirect(redirect) {
@@ -140,7 +148,7 @@
             url = url.replace(`{${key}}`, "");
             continue;
           }
-          throw new APIError(-2, `Missing path '${key}'`);
+          throw new APIError(-2 /* InvalidParameter */, `Missing path '${key}'`);
         }
         url = url.replace(`{${key}}`, this.pathInfo[key].validator(key, value).toString());
       }
@@ -148,7 +156,7 @@
       for (const key in this.queryInfo) {
         const value = params[key];
         if (value === void 0 && !this.queryInfo[key].optional)
-          throw new APIError(-2, `Missing query param '${key}'`);
+          throw new APIError(-2 /* InvalidParameter */, `Missing query param '${key}'`);
         else if (value !== void 0)
           queryParams.push(`${key}=${encodeURIComponent(this.queryInfo[key].validator(key, value).toString())}`);
       }
@@ -159,7 +167,7 @@
           const dataInfo = this.dataInfo[key];
           const value = data[key];
           if (value === void 0 && !dataInfo.optional)
-            throw new APIError(-2, `Missing field '${key} in request body'`);
+            throw new APIError(-2 /* InvalidParameter */, `Missing field '${key} in request body'`);
           else if (value !== void 0)
             data[key] = dataInfo.validator(key, value);
         }
@@ -177,7 +185,7 @@
           body: this.dataInfo === void 0 ? void 0 : JSON.stringify(data)
         });
       } catch (err) {
-        throw new APIError(-3, "Failed to send request.");
+        throw new APIError(-3 /* NetworkFailure */, "Failed to send request.");
       }
       if (response.status >= 400) {
         const body = await this.parseBody(response);
@@ -196,7 +204,7 @@
         const body = await response.json();
         return body;
       } catch (err) {
-        throw new APIError(-3, `${response.status} ${response.statusText}`);
+        throw new APIError(-3 /* NetworkFailure */, `${response.status} ${response.statusText}`);
       }
     }
   };
@@ -266,19 +274,19 @@
     type: "string",
     validator: Validators.url
   };
-  var HashMethod;
-  (function(HashMethod2) {
+  var HashMethod = /* @__PURE__ */ ((HashMethod2) => {
     HashMethod2["SHA256"] = "SHA256";
     HashMethod2["SHA1"] = "SHA1";
     HashMethod2["MD5"] = "MD5";
     HashMethod2["NoLogin"] = "NoLogin";
-  })(HashMethod || (HashMethod = {}));
-  var DocType;
-  (function(DocType2) {
+    return HashMethod2;
+  })(HashMethod || {});
+  var DocType = /* @__PURE__ */ ((DocType2) => {
     DocType2["PlainText"] = "PlainText";
     DocType2["Markdown"] = "Markdown";
     DocType2["HTML"] = "HTML";
-  })(DocType || (DocType = {}));
+    return DocType2;
+  })(DocType || {});
   var PageQueryParam = ParamDescriptor({
     from: "number",
     count: "number"
@@ -286,8 +294,8 @@
   var SardineFishAPI = {
     User: {
       checkAuth: api("GET", "/api/user").response(),
-      getChallenge: api("GET", "/api/user/{uid}/challenge").path({uid: Uid}).response(),
-      login: api("POST", "/api/user/login").body({uid: Uid, pwd_hash: "string"}).response(),
+      getChallenge: api("GET", "/api/user/{uid}/challenge").path({ uid: Uid }).response(),
+      login: api("POST", "/api/user/login").body({ uid: Uid, pwd_hash: "string" }).response(),
       signup: api("POST", "/api/user/signup").body({
         uid: Uid,
         pwd_hash: "string",
@@ -299,17 +307,17 @@
         avatar: Url
       }).response(),
       signout: api("DELETE", "/api/user/session").response(),
-      getAvatar: api("GET", "/api/user/{uid}/avatar").path({uid: Uid}).redirect("manual").response(),
+      getAvatar: api("GET", "/api/user/{uid}/avatar").path({ uid: Uid }).redirect("manual").response(),
       avatarUrl: (uid) => `/api/user/${uid}/avatar`,
       getInfo: api("GET", "/api/user/info").response(),
-      deleteEmail: api("DELETE", "/api/user/{uid}/info/email").path({uid: Uid}).response()
+      deleteEmail: api("DELETE", "/api/user/{uid}/info/email").path({ uid: Uid }).response()
     },
     Blog: {
       getList: api("GET", "/api/blog").query({
         from: "number",
         count: "number"
       }).response(),
-      getByPid: api("GET", "/api/blog/{pid}").path({pid: "number"}).response(),
+      getByPid: api("GET", "/api/blog/{pid}").path({ pid: "number" }).response(),
       post: api("POST", "/api/blog").body({
         title: {
           type: "string",
@@ -322,7 +330,7 @@
           validator: Validators.nonEmpty
         }
       }).response(),
-      update: api("PUT", "/api/blog/{pid}").path({pid: "number"}).body({
+      update: api("PUT", "/api/blog/{pid}").path({ pid: "number" }).body({
         title: {
           type: "string",
           validator: Validators.nonEmpty
@@ -334,7 +342,7 @@
           validator: Validators.nonEmpty
         }
       }).response(),
-      delete: api("DELETE", "/api/blog/{pid}").path({pid: "number"}).response()
+      delete: api("DELETE", "/api/blog/{pid}").path({ pid: "number" }).response()
     },
     Note: {
       getList: api("GET", "/api/note").query({
@@ -362,14 +370,14 @@
       }).response()
     },
     Comment: {
-      getByPid: api("GET", "/api/comment/{pid}").path({pid: "number"}).query({
+      getByPid: api("GET", "/api/comment/{pid}").path({ pid: "number" }).query({
         depth: {
           type: "number",
           validator: Validators.bypass,
           optional: true
         }
       }).response(),
-      post: api("POST", "/api/comment/{pid}").path({pid: "number"}).body({
+      post: api("POST", "/api/comment/{pid}").path({ pid: "number" }).body({
         name: Name,
         email: {
           type: "string",
@@ -387,12 +395,12 @@
           validator: Validators.nonEmpty
         }
       }).response(),
-      delete: api("DELETE", "/api/comment/{pid}").path({pid: "number"}).response()
+      delete: api("DELETE", "/api/comment/{pid}").path({ pid: "number" }).response()
     },
     PostData: {
-      getStatsByPid: api("GET", "/api/post/{pid}/stats").path({pid: "number"}).response(),
-      like: api("POST", "/api/post/{pid}/like").path({pid: "number"}).response(),
-      dislike: api("DELETE", "/api/post/{pid}/like").path({pid: "number"}).response(),
+      getStatsByPid: api("GET", "/api/post/{pid}/stats").path({ pid: "number" }).response(),
+      like: api("POST", "/api/post/{pid}/like").path({ pid: "number" }).response(),
+      dislike: api("DELETE", "/api/post/{pid}/like").path({ pid: "number" }).response(),
       postMisc: api("POST", "/api/post/misc_post").body({
         description: {
           type: "string",
@@ -409,7 +417,7 @@
       getUploadInfo: api("POST", "/api/oss/new").response()
     },
     Rank: {
-      getRankedScores: api("GET", "/api/rank/{key}").path({key: "string"}).query({
+      getRankedScores: api("GET", "/api/rank/{key}").path({ key: "string" }).query({
         skip: {
           type: "number",
           optional: true,
@@ -421,7 +429,7 @@
           validator: Validators.bypass
         }
       }).response(),
-      postScore: api("POST", "/api/rank/{key}").path({key: "string"}).body().response()
+      postScore: api("POST", "/api/rank/{key}").path({ key: "string" }).body().response()
     },
     Search: {
       search: api("GET", "/api/search").query({
@@ -432,9 +440,10 @@
     },
     Cook: {
       getList: api("GET", "/api/cook").query(PageQueryParam).response(),
-      get: api("GET", "/api/cook/{pid}").path({pid: "number"}).response(),
+      get: api("GET", "/api/cook/{pid}").path({ pid: "number" }).response(),
       post: api("POST", "/api/cook").body().response(),
-      update: api("PUT", "/api/cook/{pid}").path({pid: "number"}).body().response()
+      update: api("PUT", "/api/cook/{pid}").path({ pid: "number" }).body().response(),
+      delete: api("DELETE", "/api/cook/{pid}").path({ pid: "number" }).response()
     },
     DocType,
     HashMethod,
@@ -448,5 +457,6 @@
     ...SardineFish,
     API: SardineFishAPI
   };
-  var SardineFish_API_default = SardineFishAPI;
+  var SardineFish_API_default = SardineFish;
+  var API = SardineFishAPI;
 })();
