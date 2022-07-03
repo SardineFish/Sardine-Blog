@@ -11,13 +11,19 @@ export function RecipeDetailsManager()
     const [pid, setPid] = useState<number>();
     const [previewRect, setPreviewRect] = useState<DOMRect>();
     const [resolver, setResolver] = useState<() => void>();
+    const [depth, setDepth] = useState(0);
     const [url] = useHistory();
     const show = pid !== undefined;
 
 
 
-    context.showDetails = (pid: number, previewRect?: DOMRect) =>
+    context.showDetails = (pid: number, pushHistory: boolean, previewRect?: DOMRect) =>
     {
+        if (pushHistory)
+        {
+            history.pushState(null, "", `/cook/${pid}`);
+            setDepth(depth + 1);
+        }
         return new Promise((resolve =>
         {
             if (!resolver)
@@ -33,13 +39,11 @@ export function RecipeDetailsManager()
     {
         const paths = url.pathname.split("/");
         const pidPath = paths.pop();
-        let pid: number;
         if (pidPath && !isNaN(pidPath as any as number))
         {
-            pid = Number(pidPath);
             setTimeout(() =>
             {
-                context.showDetails(pid);
+                context.showDetails(Number(pidPath), false);
             }, 100);
         }
         else
@@ -55,16 +59,30 @@ export function RecipeDetailsManager()
         setPid(undefined);
     };
 
+    const requestClose = () =>
+    {
+        if (depth === 0)
+        {
+            history.pushState(null, "", "/cook/");
+            setDepth(depth + 1);
+        }
+        else
+        {
+            history.back();
+            setDepth(depth - 1);
+        }
+    };
+
     const rect = previewRect || new DOMRect(document.body.clientWidth / 2, 0, 0, 0);
 
-    return (<RecipeDetails show={show} pid={pid || -1} onFullyClosed={onClosed} previewRect={rect}/>)
+    return (<RecipeDetails show={show} pid={pid || -1} onFullyClosed={onClosed} previewRect={rect} onCloseRequest={requestClose}/>)
 }
 
 export const RecipeContext = React.createContext({
-    async showDetails(pid: number, previewRect?: DOMRect) { }
+    async showDetails(pid: number, pushHistory: Boolean, previewRect?: DOMRect) { }
 });
 
-function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect, onFullyClosed: ()=>void })
+function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect, onFullyClosed: ()=>void, onCloseRequest: ()=>void})
 {
     const [data, setData] = useState<PubPostData<RecipeContent>>();
     const [state, setState] = useState<"showing" | "present" | "hiding" | "invisible">("invisible");
@@ -136,7 +154,7 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
 
     const clickClose = () =>
     {
-        history.back();
+        props.onCloseRequest();
     };
 
     return (<div className={clsx("recipe-details", state)} onClick={clickClose}>

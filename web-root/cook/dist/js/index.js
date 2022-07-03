@@ -23835,20 +23835,20 @@
   // ../lib/Script/blog-common/dist/misc/use-history.js
   var import_react6 = __toESM(require_react());
   function useHistory(callback) {
-    const [urlState, setUrlState] = (0, import_react6.useState)(window.location);
-    const [_handler, _] = (0, import_react6.useState)(() => {
+    const [_, update] = (0, import_react6.useState)({});
+    const [_handler] = (0, import_react6.useState)(() => {
       const onPopState = () => {
-        const location = {
-          ...window.location
-        };
-        setUrlState(location);
         callback?.();
+        update({});
       };
       window.addEventListener("popstate", onPopState);
       console.log("useHistory");
       return onPopState;
     });
-    return [urlState, (url, title) => {
+    const location = {
+      ...window.location
+    };
+    return [location, (url, title) => {
       window.history.pushState(url, title || document.title, url);
       callback?.();
     }];
@@ -45600,9 +45600,14 @@ ${content}</tr>
     const [pid, setPid] = (0, import_react21.useState)();
     const [previewRect, setPreviewRect] = (0, import_react21.useState)();
     const [resolver, setResolver] = (0, import_react21.useState)();
+    const [depth, setDepth] = (0, import_react21.useState)(0);
     const [url] = useHistory();
     const show = pid !== void 0;
-    context.showDetails = (pid2, previewRect2) => {
+    context.showDetails = (pid2, pushHistory, previewRect2) => {
+      if (pushHistory) {
+        history.pushState(null, "", `/cook/${pid2}`);
+        setDepth(depth + 1);
+      }
       return new Promise((resolve) => {
         if (!resolver) {
           setResolver(() => resolve);
@@ -45614,11 +45619,9 @@ ${content}</tr>
     (0, import_react21.useEffect)(() => {
       const paths = url.pathname.split("/");
       const pidPath = paths.pop();
-      let pid2;
       if (pidPath && !isNaN(pidPath)) {
-        pid2 = Number(pidPath);
         setTimeout(() => {
-          context.showDetails(pid2);
+          context.showDetails(Number(pidPath), false);
         }, 100);
       } else {
         setPid(void 0);
@@ -45629,16 +45632,26 @@ ${content}</tr>
       setResolver(void 0);
       setPid(void 0);
     };
+    const requestClose = () => {
+      if (depth === 0) {
+        history.pushState(null, "", "/cook/");
+        setDepth(depth + 1);
+      } else {
+        history.back();
+        setDepth(depth - 1);
+      }
+    };
     const rect = previewRect || new DOMRect(document.body.clientWidth / 2, 0, 0, 0);
     return /* @__PURE__ */ import_react21.default.createElement(RecipeDetails, {
       show,
       pid: pid || -1,
       onFullyClosed: onClosed,
-      previewRect: rect
+      previewRect: rect,
+      onCloseRequest: requestClose
     });
   }
   var RecipeContext = import_react21.default.createContext({
-    async showDetails(pid, previewRect) {
+    async showDetails(pid, pushHistory, previewRect) {
     }
   });
   function RecipeDetails(props) {
@@ -45688,7 +45701,7 @@ ${content}</tr>
       }, 300);
     };
     const clickClose = () => {
-      history.back();
+      props.onCloseRequest();
     };
     return /* @__PURE__ */ import_react21.default.createElement("div", {
       className: clsx_m_default2("recipe-details", state),
@@ -45778,12 +45791,11 @@ ${content}</tr>
       if (!ref2.current)
         return;
       e.preventDefault();
-      history.pushState(null, "", `/cook/${props.recipe.pid}`);
       setVisible(false);
       (async () => {
         if (!ref2.current)
           return;
-        await context.showDetails(props.recipe.pid, ref2.current.getBoundingClientRect());
+        await context.showDetails(props.recipe.pid, true, ref2.current.getBoundingClientRect());
         setVisible(true);
       })();
     };

@@ -14,13 +14,13 @@ export function RecipePreview(props: { recipe: PubPostData<RecipePreviewContent>
         if (!ref.current)
             return;
         e.preventDefault();
-        history.pushState(null, "", `/cook/${props.recipe.pid}`);
+        // history.pushState(null, "", `/cook/${props.recipe.pid}`);
         setVisible(false);
         (async () =>
         {
             if (!ref.current)
                 return;
-            await context.showDetails(props.recipe.pid, ref.current.getBoundingClientRect());
+            await context.showDetails(props.recipe.pid, true, ref.current.getBoundingClientRect());
             setVisible(true);
         })();
     };
