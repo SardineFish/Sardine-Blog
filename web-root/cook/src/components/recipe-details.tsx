@@ -149,7 +149,7 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
         {
             setState("invisible");
             props.onFullyClosed();
-        }, 300);
+        }, 200);
     }
 
     const clickClose = () =>

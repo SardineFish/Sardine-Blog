@@ -64,6 +64,11 @@ body {
         &.hidden {
             opacity: 0;
         }
+
+        &.visible {
+            opacity: 1;
+            transition: opacity .1s;
+        }
     }
 }
 
@@ -264,6 +269,7 @@ body {
 
         .details-panel {
             transition: all .3s;
+            opacity: 0;
         }
     }
     &.invisible {
