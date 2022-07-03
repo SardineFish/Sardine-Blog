@@ -10,6 +10,7 @@ var EditMode;
     EditMode["Code"] = "code";
     EditMode["Markdown"] = "markdown";
 })(EditMode || (EditMode = {}));
+window.react1 = React;
 export function MarkdownEditor(props) {
     let ref = useRef(null);
     const [editMode, setEditMode] = useState(EditMode.Preview);

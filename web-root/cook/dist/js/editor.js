@@ -1001,7 +1001,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState14(initialState) {
+          function useState16(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1009,11 +1009,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef5(initialValue) {
+          function useRef6(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect7(create, deps) {
+          function useEffect8(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1793,15 +1793,15 @@
           exports.useContext = useContext3;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect7;
+          exports.useEffect = useEffect8;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
-          exports.useRef = useRef5;
-          exports.useState = useState14;
+          exports.useRef = useRef6;
+          exports.useState = useState16;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2297,9 +2297,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React17 = require_react();
+          var React18 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React17.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React18.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3700,7 +3700,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React17.Children.forEach(props.children, function(child) {
+                  React18.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -11272,7 +11272,7 @@
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React17.Component().refs;
+          var emptyRefsObject = new React18.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22596,7 +22596,7 @@
   });
 
   // src/pages/editor.tsx
-  var import_react19 = __toESM(require_react());
+  var import_react21 = __toESM(require_react());
   var import_client3 = __toESM(require_client());
 
   // ../lib/Script/blog-common/dist/component/footer.js
@@ -22664,7 +22664,8 @@
     TextBoxRemoveOutline: () => import_react2.default.createElement("svg", { viewBox: "0 0 24 24" }, import_react2.default.createElement("path", { fill: "currentColor", d: "M14.46,15.88L15.88,14.46L18,16.59L20.12,14.46L21.54,15.88L19.41,18L21.54,20.12L20.12,21.54L18,19.41L15.88,21.54L14.46,20.12L16.59,18L14.46,15.88M5,3H19C20.11,3 21,3.89 21,5V12.8C20.39,12.45 19.72,12.2 19,12.08V5H5V19H12.08C12.2,19.72 12.45,20.39 12.8,21H5C3.89,21 3,20.11 3,19V5C3,3.89 3.89,3 5,3M7,7H17V9H7V7M7,11H17V12.08C16.15,12.22 15.37,12.54 14.68,13H7V11M7,15H12V17H7V15Z" })),
     InfoOutline: () => import_react2.default.createElement("svg", { viewBox: "0 0 24 24" }, import_react2.default.createElement("path", { fill: "currentColor", d: "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" })),
     DotsCircle: () => import_react2.default.createElement("svg", { viewBox: "0 0 24 24" }, import_react2.default.createElement("path", { fill: "currentColor", d: "M12 19C13.1 19 14 19.9 14 21S13.1 23 12 23 10 22.1 10 21 10.9 19 12 19M12 1C13.1 1 14 1.9 14 3S13.1 5 12 5 10 4.1 10 3 10.9 1 12 1M6 16C7.1 16 8 16.9 8 18S7.1 20 6 20 4 19.1 4 18 4.9 16 6 16M3 10C4.1 10 5 10.9 5 12S4.1 14 3 14 1 13.1 1 12 1.9 10 3 10M6 4C7.1 4 8 4.9 8 6S7.1 8 6 8 4 7.1 4 6 4.9 4 6 4M18 16C19.1 16 20 16.9 20 18S19.1 20 18 20 16 19.1 16 18 16.9 16 18 16M21 10C22.1 10 23 10.9 23 12S22.1 14 21 14 19 13.1 19 12 19.9 10 21 10M18 4C19.1 4 20 4.9 20 6S19.1 8 18 8 16 7.1 16 6 16.9 4 18 4Z" })),
-    CheckCircle: () => import_react2.default.createElement("svg", { viewBox: "0 0 24 24" }, import_react2.default.createElement("path", { fill: "currentColor", d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" }))
+    CheckCircle: () => import_react2.default.createElement("svg", { viewBox: "0 0 24 24" }, import_react2.default.createElement("path", { fill: "currentColor", d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" })),
+    Pencil: () => import_react2.default.createElement("svg", { viewBox: "0 0 24 24" }, import_react2.default.createElement("path", { fill: "currentColor", d: "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" }))
   };
   var Icons = Object.keys(icons).map((key) => [key, (propsOverride) => {
     const element = icons[key]();
@@ -22780,7 +22781,7 @@
 
   // ../lib/Script/blog-common/dist/misc/utils.js
   function parseQueryString(query, defaultValue = {}) {
-    return query.substr(query.startsWith("?") ? 1 : 0).split("&").map((part) => part.split("=")).filter((part) => part[0]).reduce((prev, curr) => ({ ...prev, [decodeURIComponent(curr[0])]: decodeURIComponent(curr[1]) }), defaultValue);
+    return query.substring(query.startsWith("?") ? 1 : 0).split("&").map((part) => part.split("=")).filter((part) => part[0]).reduce((prev, curr) => ({ ...prev, [decodeURIComponent(curr[0])]: decodeURIComponent(curr[1]) }), defaultValue);
   }
   function buildQueryString(query) {
     return "?" + Object.keys(query).map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`).join("&");
@@ -23010,12 +23011,18 @@
   }
   window.dialog = dialog;
 
-  // ../lib/Script/blog-common/dist/component/index.js
+  // ../lib/Script/blog-common/dist/component/waterfall.js
+  var import_react13 = __toESM(require_react());
+
+  // ../lib/Script/blog-common/dist/misc/useArrayState.js
   var import_react12 = __toESM(require_react());
-  window.react1 = import_react12.default;
+
+  // ../lib/Script/blog-common/dist/component/index.js
+  var import_react14 = __toESM(require_react());
+  window.react1 = import_react14.default;
 
   // ../lib/Script/blog-common/dist/doc-editor/components/doc-editor.js
-  var import_react18 = __toESM(require_react());
+  var import_react20 = __toESM(require_react());
 
   // ../lib/Script/SardineFish/dist/esm/SardineFish.API.js
   function ParamDescriptor(p) {
@@ -23468,26 +23475,26 @@
       requestProgress: requestWithProgress
     }
   };
-  var SardineFish = window.SardineFish || {};
+  var SardineFish2 = window.SardineFish || {};
   window.SardineFish = {
-    ...SardineFish,
+    ...SardineFish2,
     API: SardineFishAPI
   };
   var API = SardineFishAPI;
 
   // ../lib/Script/blog-common/dist/doc-editor/components/doc-type-editor.js
-  var import_react13 = __toESM(require_react());
+  var import_react15 = __toESM(require_react());
   function DocTypeSelector(props) {
-    const [docType, setDocType] = (0, import_react13.useState)(props.docType);
+    const [docType, setDocType] = (0, import_react15.useState)(props.docType);
     const change = (key) => {
       setDocType(key);
       props.onChanged?.(key);
     };
-    return import_react13.default.createElement("div", { className: "doc-type-selector" }, import_react13.default.createElement("header", { className: "label" }, "DocType"), import_react13.default.createElement(SelectGroup, { selectedKey: docType, onSelectChange: change }, import_react13.default.createElement(SelectGroup.Item, { id: DocType.PlainText }, "PlainText"), import_react13.default.createElement(SelectGroup.Item, { id: DocType.Markdown }, "Markdown"), import_react13.default.createElement(SelectGroup.Item, { id: DocType.HTML }, "HTML")));
+    return import_react15.default.createElement("div", { className: "doc-type-selector" }, import_react15.default.createElement("header", { className: "label" }, "DocType"), import_react15.default.createElement(SelectGroup, { selectedKey: docType, onSelectChange: change }, import_react15.default.createElement(SelectGroup.Item, { id: DocType.PlainText }, "PlainText"), import_react15.default.createElement(SelectGroup.Item, { id: DocType.Markdown }, "Markdown"), import_react15.default.createElement(SelectGroup.Item, { id: DocType.HTML }, "HTML")));
   }
 
   // ../lib/Script/blog-common/dist/doc-editor/components/md-editor.js
-  var import_react14 = __toESM(require_react());
+  var import_react16 = __toESM(require_react());
 
   // ../lib/Script/simplemde/dist/simplemde.min.mjs
   var __getOwnPropNames2 = Object.getOwnPropertyNames;
@@ -42412,11 +42419,12 @@ ${content}</tr>
     EditMode2["Code"] = "code";
     EditMode2["Markdown"] = "markdown";
   })(EditMode || (EditMode = {}));
+  window.react1 = import_react16.default;
   function MarkdownEditor(props) {
-    let ref2 = (0, import_react14.useRef)(null);
-    const [editMode, setEditMode] = (0, import_react14.useState)(EditMode.Preview);
-    const [editor, setEditor] = (0, import_react14.useState)(null);
-    (0, import_react14.useEffect)(() => {
+    let ref2 = (0, import_react16.useRef)(null);
+    const [editMode, setEditMode] = (0, import_react16.useState)(EditMode.Preview);
+    const [editor, setEditor] = (0, import_react16.useState)(null);
+    (0, import_react16.useEffect)(() => {
       if (!ref2.current)
         return;
       if (!editor) {
@@ -42441,13 +42449,13 @@ ${content}</tr>
         setDoc: (value) => editor?.value(value)
       };
     }
-    return import_react14.default.createElement("div", { className: "md-editor" }, import_react14.default.createElement("header", { className: "tool-bar" }, import_react14.default.createElement(SelectGroup, { className: "select-edit-mode", selectedKey: editMode, onSelectChange: setEditMode }, import_react14.default.createElement(SelectGroup.Item, { id: EditMode.Code }, "Code"), import_react14.default.createElement(SelectGroup.Item, { id: EditMode.Preview }, "Preview"), import_react14.default.createElement(SelectGroup.Item, { id: EditMode.Markdown }, "Markdown"))), import_react14.default.createElement("main", { className: "md-input" }, import_react14.default.createElement("textarea", { ref: ref2 })));
+    return import_react16.default.createElement("div", { className: "md-editor" }, import_react16.default.createElement("header", { className: "tool-bar" }, import_react16.default.createElement(SelectGroup, { className: "select-edit-mode", selectedKey: editMode, onSelectChange: setEditMode }, import_react16.default.createElement(SelectGroup.Item, { id: EditMode.Code }, "Code"), import_react16.default.createElement(SelectGroup.Item, { id: EditMode.Preview }, "Preview"), import_react16.default.createElement(SelectGroup.Item, { id: EditMode.Markdown }, "Markdown"))), import_react16.default.createElement("main", { className: "md-input" }, import_react16.default.createElement("textarea", { ref: ref2 })));
   }
 
   // ../lib/Script/blog-common/dist/doc-editor/components/tag-editor.js
-  var import_react15 = __toESM(require_react());
+  var import_react17 = __toESM(require_react());
   function TagEditor(props) {
-    const [tags, setTags] = (0, import_react15.useState)([""]);
+    const [tags, setTags] = (0, import_react17.useState)([""]);
     const tagChanged = (tag, idx) => {
       tags[idx] = tag;
       setTags([...tags]);
@@ -42467,29 +42475,29 @@ ${content}</tr>
         setValue: (tags2) => setTags(tags2)
       };
     }
-    return import_react15.default.createElement(FieldEditorWrapper, { className: "tag-editor", name: props.name, descriptor: props.descriptor }, import_react15.default.createElement("ul", { className: "tags-container" }, tags.map((tag, idx) => import_react15.default.createElement(EditableTag, { text: tag, key: idx, onChange: (text) => tagChanged(text, idx), onRemove: () => removeTag(idx) }))), import_react15.default.createElement(IconButton, { className: "button-add", icon: import_react15.default.createElement(Icons.Plus, null), onClick: addTag }), import_react15.default.createElement("header", { className: "placeholder label" }, props.descriptor.placeholder));
+    return import_react17.default.createElement(FieldEditorWrapper, { className: "tag-editor", name: props.name, descriptor: props.descriptor }, import_react17.default.createElement("ul", { className: "tags-container" }, tags.map((tag, idx) => import_react17.default.createElement(EditableTag, { text: tag, key: idx, onChange: (text) => tagChanged(text, idx), onRemove: () => removeTag(idx) }))), import_react17.default.createElement(IconButton, { className: "button-add", icon: import_react17.default.createElement(Icons.Plus, null), onClick: addTag }), import_react17.default.createElement("header", { className: "placeholder label" }, props.descriptor.placeholder));
   }
   function EditableTag(props) {
     const onInput = (e) => {
       props.onChange?.(e.currentTarget.innerText);
     };
-    const ref2 = (0, import_react15.useRef)(null);
-    (0, import_react15.useEffect)(() => {
+    const ref2 = (0, import_react17.useRef)(null);
+    (0, import_react17.useEffect)(() => {
       if (!ref2.current)
         return;
       if (ref2.current.innerText !== props.text)
         ref2.current.innerText = props.text;
     }, [props.text]);
-    (0, import_react15.useEffect)(() => {
+    (0, import_react17.useEffect)(() => {
       ref2.current?.focus();
     }, []);
-    return import_react15.default.createElement("li", { className: "editable-tag tag" }, import_react15.default.createElement("span", { contentEditable: true, onInput, "data-placeholder": "Tag", ref: ref2 }), import_react15.default.createElement(IconButton, { className: "button-remove", onClick: props.onRemove, icon: import_react15.default.createElement(Icons.Close, null) }));
+    return import_react17.default.createElement("li", { className: "editable-tag tag" }, import_react17.default.createElement("span", { contentEditable: true, onInput, "data-placeholder": "Tag", ref: ref2 }), import_react17.default.createElement(IconButton, { className: "button-remove", onClick: props.onRemove, icon: import_react17.default.createElement(Icons.Close, null) }));
   }
 
   // ../lib/Script/blog-common/dist/doc-editor/components/text-field.js
-  var import_react16 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
   function TextFieldEditor(props) {
-    const [text, setText] = (0, import_react16.useState)("");
+    const [text, setText] = (0, import_react18.useState)("");
     if (props.handle) {
       props.handle.current = {
         getValue: () => text,
@@ -42497,13 +42505,13 @@ ${content}</tr>
         clear: () => setText("")
       };
     }
-    return import_react16.default.createElement(FieldEditorWrapper, { className: "text-editor", name: props.name, descriptor: props.descriptor }, import_react16.default.createElement("input", { type: "text", value: text, placeholder: props.descriptor.placeholder, onChange: (e) => setText(e.target.value) }));
+    return import_react18.default.createElement(FieldEditorWrapper, { className: "text-editor", name: props.name, descriptor: props.descriptor }, import_react18.default.createElement("input", { type: "text", value: text, placeholder: props.descriptor.placeholder, onChange: (e) => setText(e.target.value) }));
   }
 
   // ../lib/Script/blog-common/dist/doc-editor/components/title-editor.js
-  var import_react17 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
   function TitleEditor(props) {
-    const [text, setText] = (0, import_react17.useState)("");
+    const [text, setText] = (0, import_react19.useState)("");
     if (props.handle) {
       props.handle.current = {
         getValue: () => text,
@@ -42511,7 +42519,7 @@ ${content}</tr>
         clear: () => setText("")
       };
     }
-    return import_react17.default.createElement(FieldEditorWrapper, { className: "title-editor", name: props.name, descriptor: props.descriptor }, import_react17.default.createElement("input", { type: "text", value: text, onChange: (e) => setText(e.target.value), placeholder: props.descriptor.placeholder }));
+    return import_react19.default.createElement(FieldEditorWrapper, { className: "title-editor", name: props.name, descriptor: props.descriptor }, import_react19.default.createElement("input", { type: "text", value: text, onChange: (e) => setText(e.target.value), placeholder: props.descriptor.placeholder }));
   }
 
   // ../lib/Script/blog-common/dist/doc-editor/components/doc-editor.js
@@ -42536,10 +42544,10 @@ ${content}</tr>
     const headers = Object.keys(props.headers);
     const refs = {};
     for (const key of headers) {
-      refs[key] = (0, import_react18.useRef)(null);
+      refs[key] = (0, import_react20.useRef)(null);
     }
-    const [docType, setDocType] = (0, import_react18.useState)(DocType.Markdown);
-    const docRef = (0, import_react18.useRef)();
+    const [docType, setDocType] = (0, import_react20.useState)(DocType.Markdown);
+    const docRef = (0, import_react20.useRef)();
     const save_key = `${DOC_SAVE_KEY}-${props.autoSaveKey ?? "NEW"}`;
     const getDoc = () => {
       const headerValues = {};
@@ -42576,7 +42584,7 @@ ${content}</tr>
       }
       docRef.current?.setDoc(doc.content);
     };
-    (0, import_react18.useEffect)(() => {
+    (0, import_react20.useEffect)(() => {
       if (props.initialDoc) {
         loadDoc(props.initialDoc);
       } else {
@@ -42587,7 +42595,7 @@ ${content}</tr>
         }
       }
     }, [props.initialDoc]);
-    (0, import_react18.useEffect)(() => {
+    (0, import_react20.useEffect)(() => {
       let handle = 0;
       if (props.autoSaveInterval !== void 0) {
         handle = window.setInterval(() => {
@@ -42608,7 +42616,7 @@ ${content}</tr>
     const onDelete = () => {
       dialog.confirm("Confirm to delete this post forever?", {
         className: "dialog-delete-post",
-        icon: import_react18.default.createElement(Icons.DeleteForever, null),
+        icon: import_react20.default.createElement(Icons.DeleteForever, null),
         buttons: {
           ok: {
             content: "Delete",
@@ -42620,22 +42628,22 @@ ${content}</tr>
         }
       });
     };
-    return import_react18.default.createElement("div", { className: "doc-editor" }, import_react18.default.createElement("header", { className: "headers" }, headers.map((key, idx) => match(props.headers[key].type, {
-      "tag": import_react18.default.createElement(TagEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] }),
-      "text": import_react18.default.createElement(TextFieldEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] }),
-      "title": import_react18.default.createElement(TitleEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })
-    }))), import_react18.default.createElement("div", { className: "action-panel" }, import_react18.default.createElement(DocTypeSelector, { docType, onChanged: setDocType }), import_react18.default.createElement("div", { className: "post-actions" }, import_react18.default.createElement(FoldActionPanel, { delete: onDelete, clear: onClear }), import_react18.default.createElement(IconButton, { className: "button-send", icon: import_react18.default.createElement(Icons.Send, null), onClick: send }))), import_react18.default.createElement("div", { className: "content-editor" }, import_react18.default.createElement(MarkdownEditor, { handle: docRef })));
+    return import_react20.default.createElement("div", { className: "doc-editor" }, import_react20.default.createElement("header", { className: "headers" }, headers.map((key, idx) => match(props.headers[key].type, {
+      "tag": import_react20.default.createElement(TagEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] }),
+      "text": import_react20.default.createElement(TextFieldEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] }),
+      "title": import_react20.default.createElement(TitleEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })
+    }))), import_react20.default.createElement("div", { className: "action-panel" }, import_react20.default.createElement(DocTypeSelector, { docType, onChanged: setDocType }), import_react20.default.createElement("div", { className: "post-actions" }, import_react20.default.createElement(FoldActionPanel, { delete: onDelete, clear: onClear }), import_react20.default.createElement(IconButton, { className: "button-send", icon: import_react20.default.createElement(Icons.Send, null), onClick: send }))), import_react20.default.createElement("div", { className: "content-editor" }, import_react20.default.createElement(MarkdownEditor, { handle: docRef })));
   }
   function FieldEditorWrapper(props) {
     const { className, children, ...others } = props;
-    return import_react18.default.createElement("div", { className: clsx_m_default("field-editor", className, props.descriptor.className, `field-${props.name}`), ...others }, children);
+    return import_react20.default.createElement("div", { className: clsx_m_default("field-editor", className, props.descriptor.className, `field-${props.name}`), ...others }, children);
   }
   function FoldActionPanel(props) {
-    return import_react18.default.createElement(FoldMenu, { className: "fold-actions", icon: import_react18.default.createElement(Icons.DotsVertical, null) }, import_react18.default.createElement(IconButton, { onClick: props.delete, icon: import_react18.default.createElement(Icons.DeleteForever, null) }), import_react18.default.createElement(IconButton, { onClick: props.clear, icon: import_react18.default.createElement(Icons.TextBoxRemoveOutline, null) }));
+    return import_react20.default.createElement(FoldMenu, { className: "fold-actions", icon: import_react20.default.createElement(Icons.DotsVertical, null) }, import_react20.default.createElement(IconButton, { onClick: props.delete, icon: import_react20.default.createElement(Icons.DeleteForever, null) }), import_react20.default.createElement(IconButton, { onClick: props.clear, icon: import_react20.default.createElement(Icons.TextBoxRemoveOutline, null) }));
   }
 
   // src/pages/editor.tsx
-  window.react2 = import_react19.default;
+  window.react2 = import_react21.default;
   function App() {
     const headerDescriptor = EditorHeaderDescriptor({
       title: {
@@ -42655,8 +42663,8 @@ ${content}</tr>
         placeholder: "Optional"
       }
     });
-    const [iniialDoc, setInitialDoc] = (0, import_react19.useState)();
-    const [editPid, setEditPid] = (0, import_react19.useState)(parseQueryString(window.location.search).pid);
+    const [iniialDoc, setInitialDoc] = (0, import_react21.useState)();
+    const [editPid, setEditPid] = (0, import_react21.useState)(parseQueryString(window.location.search).pid);
     const send = async (doc) => {
       try {
         const body = {
@@ -42686,9 +42694,18 @@ ${content}</tr>
     };
     const deleteDoc = async () => {
       if (editPid) {
+        try {
+          await SardineFish.API.Cook.delete({ pid: editPid });
+          message.success("Successfully deleted");
+          setTimeout(() => {
+            window.location.assign("/cook/");
+          }, 1e3);
+        } catch (err) {
+          message.error(`Failed to delete :${err.message}`);
+        }
       }
     };
-    (0, import_react19.useEffect)(() => {
+    (0, import_react21.useEffect)(() => {
       (async () => {
         if (editPid) {
           const data = await API.Cook.get({ pid: editPid });
@@ -42705,21 +42722,21 @@ ${content}</tr>
         }
       })();
     }, [editPid]);
-    return /* @__PURE__ */ import_react19.default.createElement(import_react19.default.Fragment, null, /* @__PURE__ */ import_react19.default.createElement(NavMenu, {
+    return /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null, /* @__PURE__ */ import_react21.default.createElement(NavMenu, {
       className: "top-nav"
-    }), /* @__PURE__ */ import_react19.default.createElement("main", {
+    }), /* @__PURE__ */ import_react21.default.createElement("main", {
       className: "page-content"
-    }, /* @__PURE__ */ import_react19.default.createElement(DocEditor, {
+    }, /* @__PURE__ */ import_react21.default.createElement(DocEditor, {
       headers: headerDescriptor,
       onSend: send,
       initialDoc: iniialDoc,
       onDelete: deleteDoc,
       autoSaveInterval: 10,
       autoSaveKey: editPid
-    })), /* @__PURE__ */ import_react19.default.createElement(Footer, null));
+    })), /* @__PURE__ */ import_react21.default.createElement(Footer, null));
   }
   var root3 = (0, import_client3.createRoot)(document.querySelector("#root") ?? document.body);
-  root3.render(/* @__PURE__ */ import_react19.default.createElement(App, null));
+  root3.render(/* @__PURE__ */ import_react21.default.createElement(App, null));
 })();
 /**
  * @license React

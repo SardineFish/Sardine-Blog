@@ -73,7 +73,19 @@ function App()
     {
         if (editPid)
         {
-            
+            try
+            {
+                await SardineFish.API.Cook.delete({ pid: editPid });
+                message.success("Successfully deleted");
+                setTimeout(() =>
+                {
+                    window.location.assign("/cook/");
+                }, 1000);
+            }
+            catch (err)
+            {
+                message.error(`Failed to delete :${(err as APIError).message}`);
+            }
         }
     }
 

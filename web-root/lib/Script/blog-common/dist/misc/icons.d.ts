@@ -14,5 +14,6 @@ export declare const Icons: {
     InfoOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
     DotsCircle: React.FC<React.SVGProps<React.ReactSVGElement>>;
     CheckCircle: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    Pencil: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

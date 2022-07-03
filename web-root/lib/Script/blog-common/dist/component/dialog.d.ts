@@ -23,8 +23,8 @@ export declare const dialog: {
         content: string;
         icon?: ReactNode;
         buttons: Partial<{
-            cancel: Partial<DialogButton<boolean>>;
             ok: Partial<DialogButton<boolean>>;
+            cancel: Partial<DialogButton<boolean>>;
         }>;
         className?: string | undefined;
         onCancel?: (() => boolean) | undefined;

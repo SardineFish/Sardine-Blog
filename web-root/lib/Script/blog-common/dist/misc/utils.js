@@ -1,5 +1,5 @@
 export function parseQueryString(query, defaultValue = {}) {
-    return query.substr(query.startsWith("?") ? 1 : 0)
+    return query.substring(query.startsWith("?") ? 1 : 0)
         .split("&")
         .map(part => part.split("="))
         .filter(part => part[0])
@@ -21,5 +21,17 @@ export function error(msg) {
 }
 export function timeout(time) {
     return new Promise(resolve => setTimeout(resolve, time));
+}
+export function minIndexOf(array, selector) {
+    var minValue = Number.MAX_VALUE;
+    var minIdx = -1;
+    for (let i = 0; i < array.length; ++i) {
+        var value = selector(array[i], i);
+        if (value < minValue) {
+            minIdx = i;
+            minValue = value;
+        }
+    }
+    return minIdx;
 }
 //# sourceMappingURL=utils.js.map

@@ -1,1 +1,281 @@
-@import url("../../../lib/Script/blog-common/style/index.scss");
+@import "blog-common/style/index.scss";
+@import "./theme.scss";
+
+body {
+    background-color: #eee;
+    color: $theme-text-color;
+}
+
+.page-content {
+    width: 1600px;
+    margin: auto;
+}
+
+.cook-book {
+    .waterfall {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .recipe-preview {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        background-color: white;
+        margin: 2em 1em;
+        border-radius: .6em;
+        overflow: hidden;
+
+        .image-wrapper {
+            height: auto;
+            width: 100%;
+            min-height: 100px;
+            display: block;
+            background-color: #e0e0e0;
+        }
+
+        .info {
+            padding: 2em;
+            padding-top: 1em;
+        }
+
+        .title {
+            font-size: 1.6em;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .optional {
+            .item {
+                background-color: #eee;
+            }
+        }
+
+        transform-origin: .5 .5;
+        transition: transform .2s;
+        transition-timing-function: cubic-bezier(0.32, 2.54, 0.71, 1);
+        &:hover {
+            transform: scale(1.06);
+        }
+
+        &.hidden {
+            opacity: 0;
+        }
+    }
+}
+
+.tags {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    margin-top: 1em;
+    list-style: none;
+    padding: 0;
+
+    .item {
+        font-size: 0.8em;
+        background-color: $theme-color-light;
+        margin: .3em;
+        padding: 0.2em 1em;
+        border-radius: 6em;
+    }
+}
+
+
+.recipe-details {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+
+    .background {
+        opacity: 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        transition: opacity .3s;
+    }
+
+    .details-container {
+        width: 800px;
+        height: 80%;
+    }
+
+    .details-panel {
+        position: fixed;
+        z-index: 10000;
+        background-color: white;
+        border-radius: 1em;
+        overflow: hidden;
+
+        .image-wrapper {
+            height: auto;
+            width: 100%;
+            min-height: 300px;
+            background-color: #e0e0e0;
+            position: relative;
+        }
+
+        .header {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgb(80,80,80);
+            background: linear-gradient(0deg, rgba(80,80,80,0.4) 0%, rgba(255,255,255,0) 100%);
+            color: white;
+            padding: 1em 2em;
+        }
+
+        .title {
+            font-size: 2em;
+        }
+
+        .by {
+            margin-left: 2em;
+            font-size: .8em;
+            user-select: none;
+        }
+        
+        .author {
+            text-decoration: none;
+            color: inherit;
+            border-bottom: solid 2px transparent;
+            transition: border-bottom-color .2s;
+
+            &:hover {
+                border-bottom: solid 2px white;
+            }
+        }
+
+        .info {
+            padding: 2em;
+            padding-top: 1em;
+            position: relative;
+        }
+
+        .description {
+            color: $theme-text-solid;
+        }
+
+        .requirements::before {
+            content: "Requirements";
+            font-size: 1em;
+            font-family: $font-ui;
+            margin-right: 1em;
+            font-weight: bold;
+            color: $theme-text-mid-light;
+        }
+
+        .optional {
+            &::before {
+                content: "Optional";
+                font-size: 1em;
+                font-family: $font-ui;
+                margin-right: 1em;
+                font-weight: bold;
+                color: $theme-text-mid-light;
+            }
+
+            .item {
+                background-color: #eee;
+            }
+        }
+
+        .divider {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: stretch;
+
+            .text {
+                font-family: $font-ui;
+                font-weight: bold;
+                color: $theme-text-mid-light;
+            }
+
+            hr {
+                flex: 1 0;
+                border: none;
+                background-color: $theme-bg;
+                height: 2px;
+                margin-left: 1em;
+            }
+        }
+
+        .button-edit {
+            color: white;
+            text-decoration: none;
+            outline: none;
+            width: 3em;
+            height: 3em;
+            background-color: $theme-color;
+            border-radius: 3em;
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -1.5em;
+            right: 2em;
+            overflow: hidden;
+
+            .icon {
+                width: 1.6em;
+            }
+        }
+    }
+
+    &.showing {
+        opacity: 1;
+        pointer-events: unset;
+
+        .background {
+            opacity: 1;
+        }
+
+        .details-panel {
+            transition: all .3s;
+        }
+    }
+    &.present {
+        pointer-events: unset;
+        .background {
+            opacity: 1;
+        }
+    }
+    &.hiding {
+        .background {
+            opacity: 0;
+        }
+
+        .details-panel {
+            transition: all .3s;
+        }
+    }
+    &.invisible {
+        opacity: 0;
+        .background {
+            opacity: 0;
+        }
+    }
+}
+
+.details-panel .content {
+    h1,h2,h3,h4,h5,h6 {
+        font-family: $font-ui;
+    }
+}

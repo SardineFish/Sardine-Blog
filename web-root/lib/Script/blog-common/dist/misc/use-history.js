@@ -3,7 +3,10 @@ export function useHistory(callback) {
     const [urlState, setUrlState] = useState(window.location);
     const [_handler, _] = useState(() => {
         const onPopState = () => {
-            setUrlState(window.location);
+            const location = {
+                ...window.location
+            };
+            setUrlState(location);
             callback?.();
         };
         window.addEventListener("popstate", onPopState);

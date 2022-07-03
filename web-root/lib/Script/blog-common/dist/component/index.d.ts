@@ -5,4 +5,5 @@ export * from "./select-group";
 export * from "./button";
 export * from "./fold-menu";
 export * from "./dialog";
+export * from "./waterfall";
 //# sourceMappingURL=index.d.ts.map

@@ -5,6 +5,7 @@ export * from "./select-group";
 export * from "./button";
 export * from "./fold-menu";
 export * from "./dialog";
+export * from "./waterfall";
 import React from "react";
 
 (window as any).react1 = React;

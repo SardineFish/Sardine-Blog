@@ -49,6 +49,9 @@ const icons = {
     CheckCircle: () => (<svg viewBox="0 0 24 24">
         <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
     </svg>),
+    Pencil: () => (<svg viewBox="0 0 24 24">
+        <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+    </svg>),
 };
 
 export const Icons = Object.keys(icons).map((key) => [key, (propsOverride: React.SVGProps<React.ReactSVGElement>) =>

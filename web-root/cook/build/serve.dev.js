@@ -17,6 +17,7 @@ bs.init({
 esbuild.build({
     ...BaseOption,
     sourcemap: "linked",
+    sourceRoot: "..",
     watch: {
         onRebuild: (err, result) =>
         {
