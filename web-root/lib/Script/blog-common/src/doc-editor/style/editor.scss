@@ -39,6 +39,10 @@
 
     .md-input {
         position: relative;
+
+        .CodeMirror, .CodeMirror-scroll {
+        	min-height: 500px;
+        }
     }
 
     .CodeMirror {

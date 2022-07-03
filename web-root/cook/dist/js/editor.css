@@ -889,6 +889,7 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #ddd;
+  height: 200px;
 }
 @font-face {
   font-family: "Raleway";
@@ -1054,6 +1055,7 @@ body {
 body {
   background-color: #eee;
   color: #444;
+  min-height: 100vh;
 }
 ul {
   list-style: none;
@@ -1107,6 +1109,10 @@ ul {
 }
 .md-editor .md-input {
   position: relative;
+}
+.md-editor .md-input .CodeMirror,
+.md-editor .md-input .CodeMirror-scroll {
+  min-height: 500px;
 }
 .md-editor .CodeMirror {
   border: none;
@@ -1321,3 +1327,4 @@ ul {
  * @link https://github.com/NextStepWebs/simplemde-markdown-editor
  * @license MIT
  */
+/*# sourceMappingURL=editor.css.map */

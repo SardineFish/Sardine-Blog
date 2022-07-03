@@ -22782,6 +22782,9 @@
   function parseQueryString(query, defaultValue = {}) {
     return query.substr(query.startsWith("?") ? 1 : 0).split("&").map((part) => part.split("=")).filter((part) => part[0]).reduce((prev, curr) => ({ ...prev, [decodeURIComponent(curr[0])]: decodeURIComponent(curr[1]) }), defaultValue);
   }
+  function buildQueryString(query) {
+    return "?" + Object.keys(query).map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`).join("&");
+  }
   function match(value, patterns) {
     return patterns[value];
   }
@@ -42664,9 +42667,15 @@ ${content}</tr>
         };
         if (editPid) {
           await API.Cook.update({ pid: editPid }, body);
+          message.success("Successfully updated");
         } else {
           const pid = await API.Cook.post({}, body);
-          setEditPid(pid);
+          message.success(`Cook created as pid ${pid}`);
+          setTimeout(() => {
+            let queryString = parseQueryString(window.location.search);
+            queryString.pid = pid;
+            window.location.search = buildQueryString(queryString);
+          }, 1e3);
         }
         return true;
       } catch (err) {
@@ -42751,3 +42760,4 @@ ${content}</tr>
  * @internal
  * @license Modernizr 3.0.0pre (Custom Build) | MIT
  */
+//# sourceMappingURL=editor.js.map

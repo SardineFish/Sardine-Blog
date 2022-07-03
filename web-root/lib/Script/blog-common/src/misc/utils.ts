@@ -12,6 +12,7 @@ export function parseQueryString<T extends Record<string, string | number>>(quer
         );
 }
 
+export function buildQueryString<T extends Record<string, string | number>>(query: Partial<T>): string
 export function buildQueryString<T extends Record<string, string | number>>(query: T): string
 {
     return "?" + Object.keys(query)

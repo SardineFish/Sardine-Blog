@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { error, Footer, message, NavMenu, parseQueryString } from "blog-common";
+import { buildQueryString, error, Footer, message, NavMenu, parseQueryString } from "blog-common";
 import "../style/editor.scss";
 // import { Doc, DocEditor, EditorHeaderDescriptor } from "../components/doc-editor";
 import { Doc, EditorHeaderDescriptor, DocEditor } from "blog-common";
@@ -47,11 +47,19 @@ function App()
             if (editPid)
             {
                 await API.Cook.update({ pid: editPid }, body);
+                message.success("Successfully updated");
             }
             else
             {
                 const pid = await API.Cook.post({}, body);
-                setEditPid(pid);
+                message.success(`Cook created as pid ${pid}`);
+                setTimeout(() =>
+                {
+                    let queryString = parseQueryString<{pid: number}>(window.location.search);
+                    queryString.pid = pid;
+                    window.location.search = buildQueryString(queryString);
+                    // setEditPid(pid);
+                }, 1000);
             }
             return true;
         }
