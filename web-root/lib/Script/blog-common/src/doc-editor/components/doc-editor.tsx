@@ -9,8 +9,17 @@ import { TitleEditor } from "./title-editor";
 import clsx from "clsx";
 import { dialog, message, IconButton, FoldMenu } from "../../component";
 import { Icons, match } from "../../misc";
+import { ImageEditor } from "./img-editor";
 
-type EditorHeaderFieldTypeDescriptor = "title" | "text" | "tag";
+interface EditorHeaderTypes
+{
+    "title": string,
+    "text": string,
+    "tag": string[],
+    "img": string,
+}
+
+type EditorHeaderFieldTypeDescriptor = keyof EditorHeaderTypes;
 interface EditorHeaderFieldDetailedDescriptor<T extends EditorHeaderFieldTypeDescriptor = EditorHeaderFieldTypeDescriptor>
 {
     type: T,
@@ -20,15 +29,11 @@ interface EditorHeaderFieldDetailedDescriptor<T extends EditorHeaderFieldTypeDes
 }
 type EditorHeaderFieldDescriptor = EditorHeaderFieldDetailedDescriptor | EditorHeaderFieldTypeDescriptor;
 
-type EditorHeaderFieldType<T extends EditorHeaderFieldDescriptor> =
+type EditorHeaderFieldValueType<T extends EditorHeaderFieldDescriptor> =
     T extends EditorHeaderFieldTypeDescriptor ?
-    {
-        "title": string,
-        "text": string,
-        "tag": string[]
-    }[T]
+    EditorHeaderTypes[T]
     : T extends EditorHeaderFieldDetailedDescriptor
-    ? EditorHeaderFieldType<T["type"]> : never;
+    ? EditorHeaderFieldValueType<T["type"]> : never;
 
 type IntoDetailedDescriptor<T extends EditorHeaderFieldDescriptor> =
     T extends EditorHeaderFieldTypeDescriptor
@@ -69,7 +74,7 @@ export function EditorHeaderDescriptor<T extends { [key: string]: EditorHeaderFi
 }
 
 type EditorHeaderType<T extends EditorHeaderDescriptor> = {
-    [key in keyof T]: EditorHeaderFieldType<T[key]["type"]>
+    [key in keyof T]: EditorHeaderFieldValueType<T[key]["type"]>
 };
 
 type EditorHeaderRef<T extends EditorHeaderDescriptor> = {
@@ -85,16 +90,16 @@ export interface Doc<T extends EditorHeaderDescriptor>
 
 export interface FieldEditorRef<T extends EditorHeaderFieldTypeDescriptor>
 {
-    getValue(): EditorHeaderFieldType<T>,
+    getValue(): EditorHeaderFieldValueType<T>,
     clear(): void,
-    setValue(value: EditorHeaderFieldType<T>): void,
+    setValue(value: EditorHeaderFieldValueType<T>): void,
 }
 
 export interface FieldEditorProps<T extends EditorHeaderFieldTypeDescriptor>
 {
     name: string,
     descriptor: EditorHeaderFieldDetailedDescriptor<T>,
-    onChanged?: (value: EditorHeaderFieldType<T>) => void,
+    onChanged?: (value: EditorHeaderFieldValueType<T>) => void,
     handle?: RefObject<FieldEditorRef<T>>;
 }
 
@@ -133,7 +138,7 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
             if (!refs[key].current)
                 throw new Error("ref uninitialized");
 
-            headerValues[key] = refs[key].current?.getValue() as EditorHeaderFieldType<Headers[typeof key]["type"]>;
+            headerValues[key] = refs[key].current?.getValue() as EditorHeaderFieldValueType<Headers[typeof key]["type"]>;
         }
 
         if (!docRef.current)
@@ -252,6 +257,12 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
                     handle={refs[key] as RefObject<FieldEditorRef<"title">>}
                     descriptor={props.headers[key] as EditorHeaderFieldDetailedDescriptor<"title">}
                 />),
+                "img": (<ImageEditor
+                    name={key}
+                    key={idx}
+                    handle={refs[key] as RefObject<FieldEditorRef<"img">>}
+                    descriptor={props.headers[key] as EditorHeaderFieldDetailedDescriptor<"img">}
+                />)
             })))}
         </header>
         <div className="action-panel">

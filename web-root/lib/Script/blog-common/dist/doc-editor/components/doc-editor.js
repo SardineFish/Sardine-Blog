@@ -8,6 +8,7 @@ import { TitleEditor } from "./title-editor";
 import clsx from "clsx";
 import { dialog, message, IconButton, FoldMenu } from "../../component";
 import { Icons, match } from "../../misc";
+import { ImageEditor } from "./img-editor";
 export function EditorHeaderDescriptor(headers) {
     const result = {};
     for (const key in headers) {
@@ -120,6 +121,7 @@ export function DocEditor(props) {
             "tag": (React.createElement(TagEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })),
             "text": (React.createElement(TextFieldEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })),
             "title": (React.createElement(TitleEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })),
+            "img": (React.createElement(ImageEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] }))
         })))),
         React.createElement("div", { className: "action-panel" },
             React.createElement(DocTypeSelector, { docType: docType, onChanged: setDocType }),

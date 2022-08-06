@@ -1,1 +1,717 @@
-@font-face{font-family:Open Sans;font-style:normal;font-weight:400;src:local("Open Sans"),local("OpenSans-Regular"),url(./OpenSans-Regular-CRYIR5E5.ttf) format("truetype")}@font-face{font-family:Raleway;font-style:normal;font-weight:400;src:local("Raleway"),local("Raleway-Regular"),url(./Raleway-Regular-NOFERR7R.ttf) format("truetype")}.button{cursor:pointer}.icon-button{display:flex;flex-flow:row nowrap;align-items:center;justify-content:center;height:1em;cursor:pointer}.icon-button .icon{max-height:100%}body{margin:0;font-family:Open Sans,Segoe UI,Microsoft YaHei UI,Roboto,Tahoma,Geneva,Verdana,sans-serif}@font-face{font-family:Raleway;font-style:normal;font-weight:400;src:local("Raleway"),local("Raleway-Regular"),url(./Raleway-Regular-NOFERR7R.ttf) format("truetype")}#message-container{position:fixed;top:2em;left:0;width:100%;pointer-events:none;display:flex;flex-flow:column nowrap;align-items:center}#message-container .icon{height:1em;margin-right:.5em}#message-container .message{display:flex;flex-flow:column nowrap;justify-content:flex-end;height:2em;margin-top:.5em;color:#888}#message-container .message .message-block{display:flex;flex-flow:row nowrap;flex-shrink:0;align-items:center;padding:0 1em;background:white;border-radius:5px;box-shadow:0 0 10px #0000001a;position:relative;height:2em}#message-container .message.info .icon{color:#aaa}#message-container .message.warn .icon{color:#ffc537}#message-container .message.error .icon{color:#ff6534}#message-container .message.success .icon{color:#94e383}#message-container .message.show{animation-name:show-msg;animation-duration:.3s;animation-timing-function:ease-in;animation-fill-mode:forwards;animation-iteration-count:1}#message-container .message.hide{animation-name:hide-msg;animation-duration:.3s;animation-timing-function:ease-in;animation-fill-mode:forwards;animation-iteration-count:1}@keyframes show-msg{0%{height:0;opacity:0}to{height:2em;opacity:1}}@keyframes hide-msg{0%{height:2em;opacity:1}to{height:0;opacity:0}}@font-face{font-family:Raleway;font-style:normal;font-weight:400;src:local("Raleway"),local("Raleway-Regular"),url(./Raleway-Regular-NOFERR7R.ttf) format("truetype")}.top-nav{font-family:Raleway,Roboto,Segoe UI,Microsoft YaHei UI,Tahoma,Geneva,Verdana,sans-serif;width:100%;display:flex;flex-flow:column nowrap;align-items:center;font-weight:700;margin-top:1em;user-select:none}.top-nav .button-menu{display:none}.top-nav ul{list-style:none;margin:0;padding:0;display:flex;flex-flow:row nowrap}.top-nav li{margin:1em;border-bottom:solid 2px transparent;transition:all .2s;display:block}.top-nav li:hover{border-bottom-color:#000}.top-nav a{text-align:center;display:block;padding:.5em 1em;color:inherit;text-decoration:none}@media all and (max-width: 700px){.top-nav{position:fixed;align-items:flex-start;top:0;left:0;z-index:100;margin:0;height:3em;width:3em}.top-nav .button-menu{width:2em;display:initial;z-index:1000;padding:.5em}.top-nav .nav-list{display:flex;flex-flow:column nowrap}.top-nav .menu-content{position:fixed;top:0;left:-19em;width:16em;height:100%;padding-top:3em;background:white;box-shadow:0 0 3em #0000001a;flex-flow:column nowrap;z-index:100;transition:left .3s}.top-nav .menu-content.expand{left:0}.top-nav a{text-align:left;padding:.5em 2em}.top-nav li{margin:0;padding:1em .5em}.top-nav li:hover{border-bottom-color:transparent;background:#eee}}.page-footer{display:flex;flex-flow:column nowrap;align-items:center;justify-content:center;background-color:#ddd;height:200px}@font-face{font-family:Raleway;font-style:normal;font-weight:400;src:local("Raleway"),local("Raleway-Regular"),url(./Raleway-Regular-NOFERR7R.ttf) format("truetype")}.dialog{user-select:none;pointer-events:no}.dialog.dialog-bg{position:fixed;top:0;left:0;width:100%;height:100%;background-color:#0003;z-index:1000;display:flex;flex-flow:column nowrap;align-items:center;justify-content:center}.dialog .wrapper{width:400px;min-height:200px;background-color:#fff;border-radius:1em;padding:1.5em 2em;display:flex;flex-flow:column nowrap;box-shadow:0 0 30px #0000001a}.dialog .icon{display:flex;flex-flow:column nowrap;align-items:center;justify-content:center;height:3em}.dialog .content{flex:1 0;display:flex;flex-flow:column;align-items:center;font-size:1.2em}.dialog .buttons{display:flex;flex-flow:row;justify-content:flex-end}.dialog .button{padding:.5em;background-color:#eee;margin-left:1em;border-radius:.5em;min-width:5em;display:flex;flex-flow:row nowrap;align-items:center;justify-content:center;font-weight:700;color:#777;box-sizing:border-box;font-family:Raleway,Roboto,Segoe UI,Microsoft YaHei UI,Tahoma,Geneva,Verdana,sans-serif}.dialog .button.primary{background-color:#444;color:#fff}.dialog .button.progress{padding:0}.dialog .button.progress .icon{height:1.5em;animation-name:spin;animation-duration:2s;animation-iteration-count:infinite;animation-fill-mode:forwards;animation-timing-function:cubic-bezier(.63,.19,.44,.88)}.dialog.show{animation-name:show-dialog-bg;animation-duration:.3s;animation-fill-mode:forwards;animation-iteration-count:1}.dialog.show .wrapper{animation-name:show-dialog-wrapper;animation-duration:.3s;animation-fill-mode:forwards;animation-timing-function:cubic-bezier(.39,1.49,.84,.98);animation-iteration-count:1}.dialog.hide{animation-name:hide-dialog-bg;animation-duration:.3s;animation-fill-mode:forwards;animation-iteration-count:1}.dialog.hide .wrapper{animation-name:hide-dialog-wrapper;animation-duration:.3s;animation-fill-mode:forwards;animation-iteration-count:1;animation-timing-function:ease-out}@keyframes show-dialog-bg{0%{opacity:0}to{opacity:1}}@keyframes show-dialog-wrapper{0%{transform:scale(.5) translateY(-100px)}to{transform:scale(1) translate(0)}}@keyframes hide-dialog-bg{0%{opacity:1}to{opacity:0}}@keyframes hide-dialog-wrapper{0%{transform:scale(1) translate(0);opacity:1}to{transform:scale(0) translateY(100px);opacity:0}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(720deg)}}.waterfall{display:flex;flex-flow:row nowrap;align-items:flex-start}.waterfall .waterfall-column{list-style:none;padding:0;margin:0;flex:1}body{background-color:#eee;color:#444}.page-content{width:1600px;margin:auto}.cook-book .waterfall{width:100%;justify-content:stretch}.cook-book .recipe-preview{display:block;text-decoration:none;color:inherit;background-color:#fff;margin:2em 1em;border-radius:.6em;overflow:hidden;transform-origin:.5 .5;transition:transform .2s;transition-timing-function:cubic-bezier(.32,2.54,.71,1)}.cook-book .recipe-preview .image-wrapper{height:auto;width:100%;min-height:100px;display:block;background-color:#e0e0e0}.cook-book .recipe-preview .info{padding:1em 2em 2em}.cook-book .recipe-preview .title{font-size:1.6em}.cook-book .recipe-preview ul{list-style:none;padding:0}.cook-book .recipe-preview .optional .item{background-color:#eee}.cook-book .recipe-preview:hover{transform:scale(1.06)}.cook-book .recipe-preview.hidden{opacity:0}.cook-book .recipe-preview.visible{opacity:1;transition:opacity .1s}.tags{display:flex;flex-flow:row wrap;align-items:center;margin-top:1em;list-style:none;padding:0}.tags .item{font-size:.8em;background-color:#fffacb;margin:.3em;padding:.2em 1em;border-radius:6em}.recipe-details{position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;display:flex;flex-flow:column nowrap;align-items:center;justify-content:center;pointer-events:none}.recipe-details .background{opacity:0;background-color:#0000001a;position:absolute;left:0;top:0;width:100%;height:100%;transition:opacity .3s}.recipe-details .details-container{width:800px;height:80%}.recipe-details .details-panel{position:fixed;z-index:10000;background-color:#fff;border-radius:1em;overflow:hidden}.recipe-details .details-panel .image-wrapper{height:auto;width:100%;min-height:300px;background-color:#e0e0e0;position:relative}.recipe-details .details-panel .header{position:absolute;bottom:0;left:0;width:100%;background:rgb(80,80,80);background:linear-gradient(0deg,rgba(80,80,80,.4) 0%,rgba(255,255,255,0) 100%);color:#fff;padding:1em 2em}.recipe-details .details-panel .title{font-size:2em}.recipe-details .details-panel .by{margin-left:2em;font-size:.8em;user-select:none}.recipe-details .details-panel .author{text-decoration:none;color:inherit;border-bottom:solid 2px transparent;transition:border-bottom-color .2s}.recipe-details .details-panel .author:hover{border-bottom:solid 2px white}.recipe-details .details-panel .info{padding:1em 2em 2em;position:relative}.recipe-details .details-panel .description{color:#000}.recipe-details .details-panel .requirements:before{content:"Requirements";font-size:1em;font-family:Raleway,Roboto,Segoe UI,Microsoft YaHei UI,Tahoma,Geneva,Verdana,sans-serif;margin-right:1em;font-weight:700;color:#888}.recipe-details .details-panel .optional:before{content:"Optional";font-size:1em;font-family:Raleway,Roboto,Segoe UI,Microsoft YaHei UI,Tahoma,Geneva,Verdana,sans-serif;margin-right:1em;font-weight:700;color:#888}.recipe-details .details-panel .optional .item{background-color:#eee}.recipe-details .details-panel .divider{display:flex;flex-flow:row nowrap;align-items:center;justify-content:stretch}.recipe-details .details-panel .divider .text{font-family:Raleway,Roboto,Segoe UI,Microsoft YaHei UI,Tahoma,Geneva,Verdana,sans-serif;font-weight:700;color:#888}.recipe-details .details-panel .divider hr{flex:1 0;border:none;background-color:#eee;height:2px;margin-left:1em}.recipe-details .details-panel .button-edit{color:#fff;text-decoration:none;outline:none;width:3em;height:3em;background-color:#ffc957;border-radius:3em;display:flex;flex-flow:column nowrap;align-items:center;justify-content:center;position:absolute;top:-1.5em;right:2em;overflow:hidden}.recipe-details .details-panel .button-edit .icon{width:1.6em}.recipe-details.showing{opacity:1;pointer-events:unset}.recipe-details.showing .background{opacity:1}.recipe-details.showing .details-panel{transition:all .3s}.recipe-details.present{pointer-events:unset}.recipe-details.present .background{opacity:1}.recipe-details.hiding .background{opacity:0}.recipe-details.hiding .details-panel{transition:all .3s;opacity:0}.recipe-details.invisible,.recipe-details.invisible .background{opacity:0}.details-panel .content h1,.details-panel .content h2,.details-panel .content h3,.details-panel .content h4,.details-panel .content h5,.details-panel .content h6{font-family:Raleway,Roboto,Segoe UI,Microsoft YaHei UI,Tahoma,Geneva,Verdana,sans-serif}
+/* ../static/font/Open_Sans/OpenSans.css */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Open Sans"),
+    local("OpenSans-Regular"),
+    url(./OpenSans-Regular-CRYIR5E5.ttf) format("truetype");
+}
+
+/* src/style/index.scss */
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
+}
+.button {
+  cursor: pointer;
+}
+.icon-button {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 1em;
+  cursor: pointer;
+}
+.icon-button .icon {
+  max-height: 100%;
+}
+body {
+  margin: 0;
+  font-family:
+    "Open Sans",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Roboto,
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
+}
+#message-container {
+  position: fixed;
+  top: 2em;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+#message-container .icon {
+  height: 1em;
+  margin-right: 0.5em;
+}
+#message-container .message {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  height: 2em;
+  margin-top: 0.5em;
+  color: #888;
+}
+#message-container .message .message-block {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0em 1em;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  height: 2em;
+}
+#message-container .message.info .icon {
+  color: #aaa;
+}
+#message-container .message.warn .icon {
+  color: #ffc537;
+}
+#message-container .message.error .icon {
+  color: #ff6534;
+}
+#message-container .message.success .icon {
+  color: #94e383;
+}
+#message-container .message.show {
+  animation-name: show-msg;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+#message-container .message.hide {
+  animation-name: hide-msg;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+@keyframes show-msg {
+  0% {
+    height: 0;
+    opacity: 0;
+  }
+  100% {
+    height: 2em;
+    opacity: 1;
+  }
+}
+@keyframes hide-msg {
+  0% {
+    height: 2em;
+    opacity: 1;
+  }
+  100% {
+    height: 0;
+    opacity: 0;
+  }
+}
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
+}
+.top-nav {
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 1em;
+  user-select: none;
+}
+.top-nav .button-menu {
+  display: none;
+}
+.top-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: row nowrap;
+}
+.top-nav li {
+  margin: 1em;
+  border-bottom: solid 2px transparent;
+  transition: all 0.2s;
+  display: block;
+}
+.top-nav li:hover {
+  border-bottom-color: black;
+}
+.top-nav a {
+  text-align: center;
+  display: block;
+  padding: 0.5em 1em;
+  color: inherit;
+  text-decoration: none;
+}
+@media all and (max-width: 700px) {
+  .top-nav {
+    position: fixed;
+    align-items: flex-start;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    margin: 0;
+    height: 3em;
+    width: 3em;
+  }
+  .top-nav .button-menu {
+    width: 2em;
+    display: initial;
+    z-index: 1000;
+    padding: 0.5em;
+  }
+  .top-nav .nav-list {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+  .top-nav .menu-content {
+    position: fixed;
+    top: 0;
+    left: -19em;
+    width: 16em;
+    height: 100%;
+    padding-top: 3em;
+    background: white;
+    box-shadow: 0 0 3em rgba(0, 0, 0, 0.1);
+    flex-flow: column nowrap;
+    z-index: 100;
+    transition: left 0.3s;
+  }
+  .top-nav .menu-content.expand {
+    left: 0;
+  }
+  .top-nav a {
+    text-align: left;
+    padding: 0.5em 2em;
+  }
+  .top-nav li {
+    margin: 0;
+    padding: 1em 0.5em;
+  }
+  .top-nav li:hover {
+    border-bottom-color: transparent;
+    background: #eee;
+  }
+}
+.page-footer {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  background-color: #ddd;
+  height: 200px;
+}
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local("Raleway"),
+    local("Raleway-Regular"),
+    url(./Raleway-Regular-NOFERR7R.ttf) format("truetype");
+}
+.dialog {
+  user-select: none;
+  pointer-events: no;
+}
+.dialog.dialog-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+.dialog .wrapper {
+  width: 400px;
+  min-height: 200px;
+  background-color: white;
+  border-radius: 1em;
+  padding: 1.5em 2em;
+  display: flex;
+  flex-flow: column nowrap;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+.dialog .icon {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 3em;
+}
+.dialog .content {
+  flex: 1 0;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  font-size: 1.2em;
+}
+.dialog .buttons {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
+}
+.dialog .button {
+  padding: 0.5em 0.5em;
+  background-color: #eee;
+  margin-left: 1em;
+  border-radius: 0.5em;
+  min-width: 5em;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #777;
+  box-sizing: border-box;
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+.dialog .button.primary {
+  background-color: #444;
+  color: white;
+}
+.dialog .button.progress {
+  padding: 0;
+}
+.dialog .button.progress .icon {
+  height: 1.5em;
+  animation-name: spin;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.63, 0.19, 0.44, 0.88);
+}
+.dialog.show {
+  animation-name: show-dialog-bg;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+.dialog.show .wrapper {
+  animation-name: show-dialog-wrapper;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.39, 1.49, 0.84, 0.98);
+  animation-iteration-count: 1;
+}
+.dialog.hide {
+  animation-name: hide-dialog-bg;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+.dialog.hide .wrapper {
+  animation-name: hide-dialog-wrapper;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+}
+@keyframes show-dialog-bg {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes show-dialog-wrapper {
+  0% {
+    transform: scale(0.5) translate(0, -100px);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+@keyframes hide-dialog-bg {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hide-dialog-wrapper {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) translate(0, 100px);
+    opacity: 0;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+.waterfall {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+.waterfall .waterfall-column {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+body {
+  background-color: #eee;
+  color: #444;
+}
+.page-content {
+  width: 1600px;
+  margin: auto;
+}
+.cook-book .waterfall {
+  width: 100%;
+  justify-content: stretch;
+}
+.cook-book .recipe-preview {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background-color: white;
+  margin: 2em 1em;
+  border-radius: 0.6em;
+  overflow: hidden;
+  transform-origin: 0.5 0.5;
+  transition: transform 0.2s;
+  transition-timing-function: cubic-bezier(0.32, 2.54, 0.71, 1);
+}
+.cook-book .recipe-preview .image-wrapper {
+  height: auto;
+  width: 100%;
+  min-height: 160px;
+  display: block;
+  background-color: rgb(247, 247, 247);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+.cook-book .recipe-preview .image-wrapper img {
+  width: 100%;
+}
+.cook-book .recipe-preview .image-wrapper .icon {
+  height: 3em;
+  color: #ccc;
+}
+.cook-book .recipe-preview .info {
+  padding: 2em;
+  padding-top: 1em;
+}
+.cook-book .recipe-preview .title {
+  font-size: 1.6em;
+}
+.cook-book .recipe-preview ul {
+  list-style: none;
+  padding: 0;
+}
+.cook-book .recipe-preview .optional .item {
+  background-color: #eee;
+}
+.cook-book .recipe-preview:hover {
+  transform: scale(1.06);
+}
+.cook-book .recipe-preview.hidden {
+  opacity: 0;
+}
+.cook-book .recipe-preview.visible {
+  opacity: 1;
+  transition: opacity 0.1s;
+}
+.tags {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin-top: 1em;
+  list-style: none;
+  padding: 0;
+}
+.tags .item {
+  font-size: 0.8em;
+  background-color: #fff8e2;
+  margin: 0.3em;
+  padding: 0.2em 1em;
+  border-radius: 6em;
+}
+.tags.requirements .item {
+  color: #feb31d;
+}
+.recipe-details {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.recipe-details .background {
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s;
+}
+.recipe-details .details-container {
+  width: 800px;
+  height: 80%;
+}
+.recipe-details .details-panel {
+  position: fixed;
+  z-index: 10000;
+  background-color: white;
+  border-radius: 1em;
+  overflow: hidden;
+}
+.recipe-details .details-panel .image-wrapper {
+  height: auto;
+  width: 100%;
+  min-height: 300px;
+  background-color: rgb(247, 247, 247);
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+}
+.recipe-details .details-panel .image-wrapper img {
+  width: 100%;
+}
+.recipe-details .details-panel .image-wrapper .icon {
+  height: 3em;
+  color: #ccc;
+}
+.recipe-details .details-panel .header {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgb(80, 80, 80);
+  background: linear-gradient(0deg, rgba(80, 80, 80, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  color: white;
+  padding: 1em 2em;
+}
+.recipe-details .details-panel .title {
+  font-size: 2em;
+}
+.recipe-details .details-panel .by {
+  margin-left: 2em;
+  font-size: 0.8em;
+  user-select: none;
+}
+.recipe-details .details-panel .author {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: solid 2px transparent;
+  transition: border-bottom-color 0.2s;
+}
+.recipe-details .details-panel .author:hover {
+  border-bottom: solid 2px white;
+}
+.recipe-details .details-panel .info {
+  padding: 2em;
+  padding-top: 1em;
+  position: relative;
+}
+.recipe-details .details-panel .description {
+  color: black;
+}
+.recipe-details .details-panel .requirements::before {
+  content: "Requirements";
+  font-size: 1em;
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+  margin-right: 1em;
+  font-weight: bold;
+  color: #888;
+}
+.recipe-details .details-panel .optional::before {
+  content: "Optional";
+  font-size: 1em;
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+  margin-right: 1em;
+  font-weight: bold;
+  color: #888;
+}
+.recipe-details .details-panel .optional .item {
+  background-color: #eee;
+}
+.recipe-details .details-panel .divider {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: stretch;
+}
+.recipe-details .details-panel .divider .text {
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+  font-weight: bold;
+  color: #888;
+}
+.recipe-details .details-panel .divider hr {
+  flex: 1 0;
+  border: none;
+  background-color: #eee;
+  height: 2px;
+  margin-left: 1em;
+}
+.recipe-details .details-panel .button-edit {
+  color: white;
+  text-decoration: none;
+  outline: none;
+  width: 3em;
+  height: 3em;
+  background-color: #ffc957;
+  border-radius: 3em;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -1.5em;
+  right: 2em;
+  overflow: hidden;
+}
+.recipe-details .details-panel .button-edit .icon {
+  width: 1.6em;
+}
+.recipe-details.showing {
+  opacity: 1;
+  pointer-events: unset;
+}
+.recipe-details.showing .background {
+  opacity: 1;
+}
+.recipe-details.showing .details-panel {
+  transition: all 0.3s;
+}
+.recipe-details.present {
+  pointer-events: unset;
+}
+.recipe-details.present .background {
+  opacity: 1;
+}
+.recipe-details.hiding .background {
+  opacity: 0;
+}
+.recipe-details.hiding .details-panel {
+  transition: all 0.3s;
+  opacity: 0;
+}
+.recipe-details.invisible {
+  opacity: 0;
+}
+.recipe-details.invisible .background {
+  opacity: 0;
+}
+.details-panel .content h1,
+.details-panel .content h2,
+.details-panel .content h3,
+.details-panel .content h4,
+.details-panel .content h5,
+.details-panel .content h6 {
+  font-family:
+    "Raleway",
+    "Roboto",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+/*# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiLi4vLi4vLi4vc3RhdGljL2ZvbnQvT3Blbl9TYW5zL09wZW5TYW5zLmNzcyIsICIuLi8uLi9ub2RlX21vZHVsZXMvYmxvZy1jb21tb24vc3R5bGUvZm9udC5zY3NzIiwgIi4uLy4uL25vZGVfbW9kdWxlcy9ibG9nLWNvbW1vbi9zdHlsZS9idXR0b24uc2NzcyIsICIuLi8uLi9ub2RlX21vZHVsZXMvYmxvZy1jb21tb24vc3R5bGUvYmFzZS5zY3NzIiwgIi4uLy4uL25vZGVfbW9kdWxlcy9ibG9nLWNvbW1vbi9zdHlsZS9tZXNzYWdlLnNjc3MiLCAiLi4vLi4vbm9kZV9tb2R1bGVzL2Jsb2ctY29tbW9uL3N0eWxlL3RvcC1uYXYuc2NzcyIsICIuLi8uLi9ub2RlX21vZHVsZXMvYmxvZy1jb21tb24vc3R5bGUvZm9vdGVyLnNjc3MiLCAiLi4vLi4vbm9kZV9tb2R1bGVzL2Jsb2ctY29tbW9uL3N0eWxlL2RpYWxvZy5zY3NzIiwgIi4uLy4uL25vZGVfbW9kdWxlcy9ibG9nLWNvbW1vbi9zdHlsZS93YXRlcmZhbGwuc2NzcyIsICIuLi8uLi9zcmMvc3R5bGUvaW5kZXguc2NzcyIsICIuLi8uLi9zcmMvc3R5bGUvdGhlbWUuc2NzcyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsiQGZvbnQtZmFjZSB7XHJcbiAgZm9udC1mYW1pbHk6ICdPcGVuIFNhbnMnO1xyXG4gIGZvbnQtc3R5bGU6IG5vcm1hbDtcclxuICBmb250LXdlaWdodDogbm9ybWFsO1xyXG4gIHNyYzogbG9jYWwoJ09wZW4gU2FucycpLFxyXG4gICAgICAgbG9jYWwoJ09wZW5TYW5zLVJlZ3VsYXInKSxcclxuICAgICAgIHVybChPcGVuU2Fucy1SZWd1bGFyLnR0ZikgZm9ybWF0KCd0cnVldHlwZScpO1xyXG59IiwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbCwgbnVsbF0sCiAgIm1hcHBpbmdzIjogIjtBQUFBO0FBQ0U7QUFDQTtBQUNBO0FBQ0E7QUFBQTtBQUFBO0FBQUE7QUFBQTs7O0FDRkY7QUFDSTtBQUNBO0FBQ0E7QUFDQTs7Ozs7QUNOSjtBQUNJOztBQUdKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7O0FDVlI7QUFDSTtBRlFBOzs7Ozs7Ozs7O0FBVko7QUFDSTtBQUNBO0FBQ0E7QUFDQTs7Ozs7QUdOSjtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDSTtBQUNBOztBQUdKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBSUE7QUFDSTs7QUFLSjtBQUNJOztBQUtKO0FBQ0k7O0FBS0o7QUFDSTs7QUFJUjtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUtaOztBQUVRO0FBQ0E7OztBQUdBO0FBQ0E7OztBQUlSOztBQUVRO0FBQ0E7OztBQUlBO0FBQ0E7OztBSC9GUjtBQUNJO0FBQ0E7QUFDQTtBQUNBOzs7OztBSUpKO0FKcUJJOzs7Ozs7Ozs7QUluQkE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDSTs7QUFHSjtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTtBQUNBO0FBQ0E7QUFDQTs7QUFFSjtBQUNJOztBQUdKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFJUjtBQUNJO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNJO0FBQ0E7QUFDQTtBQUNBOztBQUdKO0FBQ0k7QUFDQTs7QUFHSjtBQUVJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBQ0E7QUFDSTs7QUFNUjtBQUNJO0FBQ0E7O0FBR0o7QUFDSTtBQUNBOztBQUdKO0FBQ0k7QUFDQTs7O0FDbEdaO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBTEpKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7Ozs7O0FNSko7QUFDSTtBQUNBOztBQUVBO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFHSjtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUdKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFHSjtBQUNJO0FBQ0E7QUFDQTs7QUFLSjtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBTjdDSjs7Ozs7Ozs7OztBTWlESTtBQUNJO0FBQ0E7O0FBR0o7QUFDSTs7QUFFQTtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFLWjtBQUNJO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFJUjtBQUNJO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFLWjs7QUFFUTs7O0FBSUE7OztBQUlSOztBQUVROzs7QUFHQTs7O0FBSVI7O0FBRVE7OztBQUlBOzs7QUFJUjs7QUFFUTtBQUNBOzs7QUFHQTtBQUNBOzs7QUFJUjs7QUFFUTs7O0FBSUE7OztBQ3hLUjtBQUNJO0FBQ0E7QUFDQTs7QUFFQTtBQUNJO0FBQ0E7QUFDQTtBQUNBOztBQ05SO0FBQ0k7QUFDQTs7QUFHSjtBQUNJO0FBQ0E7O0FBSUE7QUFDSTtBQUNBOztBQUdKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUEyQ0E7QUFDQTtBQUNBOztBQTNDQTtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNJOztBQUdKO0FBQ0k7QUFDQTs7QUFJUjtBQUNJO0FBQ0E7O0FBR0o7QUFDSTs7QUFHSjtBQUNJO0FBQ0E7O0FBSUE7QUFDSTs7QUFPUjtBQUNJOztBQUdKO0FBQ0k7O0FBR0o7QUFDSTtBQUNBOztBQUtaO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFLSjtBQUNJOztBQUtSO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTtBQUNBOztBQUdKO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNJOztBQUdKO0FBQ0k7QUFDQTs7QUFJUjtBQUNJO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTs7QUFHSjtBQUNJO0FBQ0E7QUFDQTs7QUFHSjtBQUNJO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7O0FBSVI7QUFDSTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTs7QUFHSjtBQUNJO0FBQ0E7QUFDQTs7Ozs7Ozs7O0FBQ0E7QUFDQTtBQUNBOztBQUlBO0FBQ0k7QUFDQTtBQUNBOzs7Ozs7Ozs7QUFDQTtBQUNBO0FBQ0E7O0FBR0o7QUFDSTs7QUFJUjtBQUNJO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7Ozs7Ozs7OztBQUNBO0FBQ0E7O0FBR0o7QUFDSTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUlSO0FBQ0k7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0k7O0FBS1o7QUFDSTtBQUNBOztBQUVBO0FBQ0k7O0FBR0o7QUFDSTs7QUFHUjtBQUNJOztBQUNBO0FBQ0k7O0FBSUo7QUFDSTs7QUFHSjtBQUNJO0FBQ0E7O0FBR1I7QUFDSTs7QUFDQTtBQUNJOztBQU1SOzs7Ozs7QUFDSTs7Ozs7Ozs7OzsiLAogICJuYW1lcyI6IFtdCn0K */

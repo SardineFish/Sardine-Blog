@@ -146,6 +146,7 @@ export interface PubPostData<T> {
 export interface RecipeContent {
     title: string;
     description: string;
+    images: string[];
     requirements: string[];
     optional: string[];
     content: string;
@@ -305,7 +306,7 @@ declare const SardineFishAPI: {
         getList: (params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "requirements">>[]>;
+        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>;
         get: (params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
@@ -488,7 +489,7 @@ export declare const API: {
         getList: (params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "requirements">>[]>;
+        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>;
         get: (params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;

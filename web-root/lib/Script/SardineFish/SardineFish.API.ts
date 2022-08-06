@@ -256,6 +256,7 @@ export interface RecipeContent
 {
     title: string,
     description: string,
+    images: string[],
     requirements: string[],
     optional: string[],
     content: string,

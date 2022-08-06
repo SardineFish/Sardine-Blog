@@ -1,3 +1,4 @@
+import { Icons } from "blog-common";
 import clsx from "clsx";
 import React, { useContext, useRef, useState } from "react";
 import { RecipePreviewContent, PubPostData } from "sardinefish";
@@ -31,7 +32,12 @@ export function RecipePreview(props: { recipe: PubPostData<RecipePreviewContent>
         ref={ref}
     >
         <div className="image-wrapper">
-            <img src="" alt="cook image" />
+            {
+                props.recipe.content.images[0]
+                    ? <img src={props.recipe.content.images[0]} alt="cook image" />
+                    : <Icons.ForkKnife />
+            }
+            
         </div>
         <div className="info">
             <header className="title">{props.recipe.content.title}</header>

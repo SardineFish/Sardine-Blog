@@ -1,6 +1,12 @@
 import React, { RefObject } from "react";
 import { DocType } from "sardinefish";
-declare type EditorHeaderFieldTypeDescriptor = "title" | "text" | "tag";
+interface EditorHeaderTypes {
+    "title": string;
+    "text": string;
+    "tag": string[];
+    "img": string;
+}
+declare type EditorHeaderFieldTypeDescriptor = keyof EditorHeaderTypes;
 interface EditorHeaderFieldDetailedDescriptor<T extends EditorHeaderFieldTypeDescriptor = EditorHeaderFieldTypeDescriptor> {
     type: T;
     placeholder?: string;
@@ -8,11 +14,7 @@ interface EditorHeaderFieldDetailedDescriptor<T extends EditorHeaderFieldTypeDes
     className?: string;
 }
 declare type EditorHeaderFieldDescriptor = EditorHeaderFieldDetailedDescriptor | EditorHeaderFieldTypeDescriptor;
-declare type EditorHeaderFieldType<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? {
-    "title": string;
-    "text": string;
-    "tag": string[];
-}[T] : T extends EditorHeaderFieldDetailedDescriptor ? EditorHeaderFieldType<T["type"]> : never;
+declare type EditorHeaderFieldValueType<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? EditorHeaderTypes[T] : T extends EditorHeaderFieldDetailedDescriptor ? EditorHeaderFieldValueType<T["type"]> : never;
 declare type IntoDetailedDescriptor<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? {
     type: T;
 } : T extends EditorHeaderFieldDetailedDescriptor ? T : never;
@@ -25,7 +27,7 @@ export declare function EditorHeaderDescriptor<T extends {
     [key in keyof T]: IntoDetailedDescriptor<T[key]>;
 };
 declare type EditorHeaderType<T extends EditorHeaderDescriptor> = {
-    [key in keyof T]: EditorHeaderFieldType<T[key]["type"]>;
+    [key in keyof T]: EditorHeaderFieldValueType<T[key]["type"]>;
 };
 export interface Doc<T extends EditorHeaderDescriptor> {
     headers: EditorHeaderType<T>;
@@ -33,14 +35,14 @@ export interface Doc<T extends EditorHeaderDescriptor> {
     content: string;
 }
 export interface FieldEditorRef<T extends EditorHeaderFieldTypeDescriptor> {
-    getValue(): EditorHeaderFieldType<T>;
+    getValue(): EditorHeaderFieldValueType<T>;
     clear(): void;
-    setValue(value: EditorHeaderFieldType<T>): void;
+    setValue(value: EditorHeaderFieldValueType<T>): void;
 }
 export interface FieldEditorProps<T extends EditorHeaderFieldTypeDescriptor> {
     name: string;
     descriptor: EditorHeaderFieldDetailedDescriptor<T>;
-    onChanged?: (value: EditorHeaderFieldType<T>) => void;
+    onChanged?: (value: EditorHeaderFieldValueType<T>) => void;
     handle?: RefObject<FieldEditorRef<T>>;
 }
 export interface DocEditorProps<T extends EditorHeaderDescriptor> {

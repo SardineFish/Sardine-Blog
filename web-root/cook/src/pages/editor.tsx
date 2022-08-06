@@ -6,12 +6,17 @@ import "../style/editor.scss";
 import { Doc, EditorHeaderDescriptor, DocEditor } from "blog-common";
 import { API, DocType, APIError } from "sardinefish";
 import "./base.html";
+import { RecipeContent } from "sardinefish/SardineFish.API";
 
 (window as any).react2 = React;
 
 function App()
 {
     const headerDescriptor = EditorHeaderDescriptor({
+        cover: {
+            type: "img",
+            placeholder: "Image Cover",
+        },
         title: {
             type: "title",
             placeholder: "Title",
@@ -37,9 +42,10 @@ function App()
     {
         try
         {
-            const body = {
+            const body: RecipeContent = {
                 title: doc.headers.title,
                 description: doc.headers.description,
+                images: doc.headers.cover === "" ? [] : [doc.headers.cover],
                 requirements: doc.headers.requirements,
                 optional: doc.headers.optional,
                 content: doc.content
@@ -48,6 +54,10 @@ function App()
             {
                 await API.Cook.update({ pid: editPid }, body);
                 message.success("Successfully updated");
+                setTimeout(() =>
+                {
+                    window.location.assign("/cook/");
+                }, 1000);
             }
             else
             {
@@ -55,9 +65,7 @@ function App()
                 message.success(`Cook created as pid ${pid}`);
                 setTimeout(() =>
                 {
-                    let queryString = parseQueryString<{pid: number}>(window.location.search);
-                    queryString.pid = pid;
-                    window.location.search = buildQueryString(queryString);
+                    window.location.assign("/cook/");
                     // setEditPid(pid);
                 }, 1000);
             }
@@ -99,6 +107,7 @@ function App()
                 setInitialDoc({
                     headers: {
                         title: data.content.title,
+                        cover: data.content.images[0] || "",
                         description: data.content.description,
                         requirements: data.content.requirements,
                         optional: data.content.optional,

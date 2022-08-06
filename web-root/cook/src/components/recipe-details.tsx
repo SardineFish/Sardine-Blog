@@ -209,7 +209,12 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
         style={style}
     >
         <div className="image-wrapper">
-            <img src="" alt="cook image" />
+            {
+                data.content.images[0]
+                    ? <img src={data.content.images[0]} alt="cook image" />
+                    : <Icons.ForkKnife />
+            }
+            
 
             <header className="header">
                 <span className="title">{data.content.title}</span>

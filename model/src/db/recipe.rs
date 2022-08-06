@@ -7,6 +7,8 @@ use super::search::{ElasticSerachModel, IndexDoc};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecipeContent {
     pub title: String,
+    #[serde(default)]
+    pub images: Vec<String>,
     pub description: String,
     pub requirements: Vec<String>,
     #[serde(default)]

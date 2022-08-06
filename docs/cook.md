@@ -28,6 +28,10 @@ count: number
         "content": {
             "title": "<title>",
             "description": "<description>",
+            "images": [
+                "<url1>",
+                "<url2>"
+            ],
             "requirements": [
                 "requirement1",
                 "requirement2",
@@ -64,6 +68,10 @@ count: number
     "content": {
         "title": "<title>",
         "description": "<description>",
+        "images": [
+            "<url1>",
+            "<url2>"
+        ],
         "requirements": [
             "requirement1",
             "requirement2",
@@ -86,12 +94,17 @@ count: number
 
 ### Request
 ```json
-"title": "<title>",
+{
+    "title": "<title>",
     "description": "<description>",
     "requirements": [
         "requirement1",
         "requirement2",
         "..."
+    ],
+    "images": [
+        "<url1>",
+        "<url2>"
     ],
     "optional": [
         "item1",
@@ -99,6 +112,7 @@ count: number
         "..."
     ],
     "content": "<content of recipe in markdown format>"
+}
 ```
 
 ## Update recipe
@@ -108,8 +122,13 @@ count: number
 
 ### Request
 ```json
-"title": "<title>",
+{
+    "title": "<title>",
     "description": "<description>",
+    "images": [
+        "<url1>",
+        "<url2>"
+    ],
     "requirements": [
         "requirement1",
         "requirement2",
@@ -121,6 +140,7 @@ count: number
         "..."
     ],
     "content": "<content of recipe in markdown format>"
+}
 ```
 
 ## Delete recipe
@@ -134,6 +154,10 @@ count: number
 {
     "title": "<title>",
     "description": "<description>",
+    "images": [
+        "<url1>",
+        "<url2>"
+    ],
     "requirements": [
         "requirement1",
         "requirement2",

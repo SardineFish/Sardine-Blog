@@ -15,5 +15,9 @@ export declare const Icons: {
     DotsCircle: React.FC<React.SVGProps<React.ReactSVGElement>>;
     CheckCircle: React.FC<React.SVGProps<React.ReactSVGElement>>;
     Pencil: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    Upload: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ImageArea: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ChefHat: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ForkKnife: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map
