@@ -1,4 +1,4 @@
-import { Icons, match, message, useHistory } from "blog-common";
+import { Icons, match, message, useHistory, WindowEvent } from "blog-common";
 import clsx from "clsx";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { APIError, PubPostData, RecipeContent } from "sardinefish";
@@ -157,14 +157,25 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
         props.onCloseRequest();
     };
 
+    const onWindowResize = () =>
+    {
+        if (!containerRef.current)
+            return;
+        const targetRect = containerRef.current.getBoundingClientRect();
+        if (state === "present" || state == "showing")
+        {
+            setRect(targetRect);
+        }
+    };
+
     return (<div className={clsx("recipe-details", state)} onClick={clickClose}>
         <div className="background"></div>
-        <div className="details-container" ref={containerRef}></div>
-        {
+        <div className="details-container" ref={containerRef}></div>{
             data
-                ? <RecipeDetailsPanel data={data} rect={rect} limitHeight={state!=="present"} />
+                ? <RecipeDetailsPanel data={data} rect={rect} limitHeight={state !== "present"} />
                 : null
         }
+        <WindowEvent event="resize" listener={onWindowResize}/>
     </div>)
 }
 
@@ -194,48 +205,49 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
 
     }, [props.data]);
 
-    const style: React.CSSProperties = {
+    let style: React.CSSProperties = {
         left: rect.left,
         top: rect.top,
         width: rect.width,
-        minHeight: rect.height
     };
     if (props.limitHeight)
         style.height = rect.height;
 
-    return (<main
-        className="details-panel"
-        onClick={clickPanel}
-        style={style}
-    >
-        <div className="image-wrapper">
-            {
-                data.content.images[0]
-                    ? <img src={data.content.images[0]} alt="cook image" />
-                    : <Icons.ForkKnife />
-            }
-            
+    return (
+        <div className="scroller" style={style}>
+            <main
+                className="details-panel"
+                onClick={clickPanel}
+            >
+                <div className="image-wrapper">
+                    {
+                        data.content.images[0]
+                            ? <img src={data.content.images[0]} alt="cook image" />
+                            : <Icons.ForkKnife />
+                    }
 
-            <header className="header">
-                <span className="title">{data.content.title}</span>
-                <span className="by">by </span>
-                <a className="author" href={data.author.url || ""}>{data.author.name}</a>
-            </header>
 
-        </div>
-        <div className="info">
-            <a href={`/cook/editor.html?pid=${props.data.pid}`} className="button-edit button icon-button">
-                <Icons.Pencil />
-            </a>
-            <div className="description">{data.content.description}</div>
-            <MaterialTags type="requirements" tags={data.content.requirements} />
-            <MaterialTags type="optional" tags={data.content.optional} />
-            <div className="divider">
-                <span className="text">Details</span>
-                <hr />
-            </div>
-            <div className="content" ref={contentRef}></div>
-        </div>
+                    <header className="header">
+                        <span className="title">{data.content.title}</span>
+                        <span className="by">by </span>
+                        <a className="author" href={data.author.url || ""}>{data.author.name}</a>
+                    </header>
 
-    </main>);
+                </div>
+                <div className="info">
+                    <a href={`/cook/editor.html?pid=${props.data.pid}`} className="button-edit button icon-button">
+                        <Icons.Pencil />
+                    </a>
+                    <div className="description">{data.content.description}</div>
+                    <MaterialTags type="requirements" tags={data.content.requirements} />
+                    <MaterialTags type="optional" tags={data.content.optional} />
+                    <div className="divider">
+                        <span className="text">Details</span>
+                        <hr />
+                    </div>
+                    <div className="content" ref={contentRef}></div>
+                </div>
+
+            </main>
+        </div>);
 }

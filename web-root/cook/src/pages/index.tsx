@@ -1,18 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./base.html";
-import { Footer, message, NavMenu, Waterfall } from "blog-common";
+import { Footer, message, NavMenu, Waterfall, WindowEvent } from "blog-common";
 import "../style/index.scss";
 import InfiniteScroller from "react-infinite-scroller";
 import { RecipePreview } from "../components/recipe-preview";
 import { APIError, PubPostData, RecipePreviewContent } from "sardinefish";
 import { RecipeContext, RecipeDetailsManager } from "../components/recipe-details";
 
+function responsiveColum()
+{
+    if (window.innerWidth > 1660)
+        return 5;
+    if (window.innerWidth > 1400)
+        return 4;
+    if (window.innerWidth > 1000)
+        return 3;
+    if (window.innerWidth > 660)
+        return 2;
+    return 1;
+}
+
 function App()
 {
     const [data, setData] = useState<PubPostData<RecipePreviewContent>[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [columns, setColumns] = useState(responsiveColum());
 
     const loadMore = async () =>
     { 
@@ -39,12 +53,18 @@ function App()
         loadMore();
     }, []);
 
+    const onWindowResize = () =>
+    {
+        if (responsiveColum() != columns)
+            setColumns(responsiveColum());
+    };
+
     return (
         <RecipeContext.Provider value={{ async showDetails() { } }}>
             <NavMenu className="top-nav" />
             <main className="page-content">
                 <InfiniteScroller className="cook-book" loadMore={loadMore} hasMore={!isLoading && hasMore} initialLoad>
-                    <Waterfall columns={5}>
+                    <Waterfall columns={columns}>
                         {
                             data.map((item, idx) => (<RecipePreview recipe={item} key={idx} />))
                         }
@@ -53,6 +73,7 @@ function App()
             </main>
             <Footer />
             <RecipeDetailsManager />
+            <WindowEvent event="resize" listener={onWindowResize}/>
         </RecipeContext.Provider>);
 }
 

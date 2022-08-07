@@ -22,6 +22,6 @@ export function useArrayState(initial, minLength = 0, defaultValue) {
         array.length = minLength;
         array.fill(defaultValue, originalLength, array.length);
     }
-    return [array, setElement];
+    return [array, setElement, setArray];
 }
 //# sourceMappingURL=useArrayState.js.map

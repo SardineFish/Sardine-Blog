@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 
-export function useArrayState<T>(initial: T[], minLength?: number): [Array<T | undefined>, (idx: number, elem: T) => void]
-export function useArrayState<T>(initial: T[], minLength: number, defaultValue: T): [Array<T>, (idx: number, elem: T) => void]
-export function useArrayState<T, TDefault = undefined>(initial: T[], minLength: number = 0, defaultValue?: TDefault): [Array<T | TDefault>, (idx: number, elem: T) => void]
+export function useArrayState<T>(initial: T[], minLength?: number): [Array<T | undefined>, (idx: number, elem: T) => void, (arr: Array<T>) => void]
+export function useArrayState<T>(initial: T[], minLength: number, defaultValue: T): [Array<T>, (idx: number, elem: T) => void, (arr: Array<T>) => void]
+export function useArrayState<T, TDefault = undefined>(initial: T[], minLength: number = 0, defaultValue?: TDefault): [Array<T | TDefault>, (idx: number, elem: T) => void, (arr: Array<T>) => void]
 {
     const [array, setArray] = useState(initial);
     const [_, setUpdate] = useState({});
@@ -34,5 +34,5 @@ export function useArrayState<T, TDefault = undefined>(initial: T[], minLength: 
         array.fill(defaultValue as any, originalLength, array.length);
     }
 
-    return [array, setElement];
+    return [array, setElement, setArray];
 }

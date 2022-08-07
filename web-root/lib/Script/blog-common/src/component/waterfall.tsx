@@ -10,8 +10,8 @@ export interface WaterfallProps extends HTMLProps<HTMLDivElement>
 
 export function Waterfall(props: WaterfallProps)
 {
-    const [columnsHeight, setColumnsHeight] = useArrayState<number>([], props.columns, 0);
-    const [columnsItemIndics, setColumnItemIndices] = useArrayState<number[]>([], props.columns, []);
+    const [columnsHeight, setColumnsHeight, setColumnsHeightArr] = useArrayState<number>([], props.columns, 0);
+    const [columnsItemIndics, setColumnItemIndices, setColumnItemIndicesArr] = useArrayState<number[]>([], props.columns, []);
     const [childrenColumnIndices, setChildrenColumnIndices] = useState<number[]>([]);
     const [ready, setReady] = useState(true);
 
@@ -25,6 +25,14 @@ export function Waterfall(props: WaterfallProps)
     let childrenArr = React.Children.toArray(children);
 
     childrenColumnIndices.length = React.Children.count(children);
+
+    useEffect(() =>
+    {
+        setColumnsHeightArr(new Array(props.columns).fill(0));
+        setColumnItemIndicesArr(new Array(props.columns).fill([]));
+        setChildrenColumnIndices(new Array(childrenColumnIndices.length).fill(undefined));
+    }, [props.columns]);
+
     if (ready)
     {
         for (let index = 0; index < childrenColumnIndices.length; ++index)

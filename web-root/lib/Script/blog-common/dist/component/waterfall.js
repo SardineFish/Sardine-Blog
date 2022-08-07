@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { minIndexOf } from "../misc";
 import { useArrayState } from "../misc/useArrayState";
 export function Waterfall(props) {
-    const [columnsHeight, setColumnsHeight] = useArrayState([], props.columns, 0);
-    const [columnsItemIndics, setColumnItemIndices] = useArrayState([], props.columns, []);
+    const [columnsHeight, setColumnsHeight, setColumnsHeightArr] = useArrayState([], props.columns, 0);
+    const [columnsItemIndics, setColumnItemIndices, setColumnItemIndicesArr] = useArrayState([], props.columns, []);
     const [childrenColumnIndices, setChildrenColumnIndices] = useState([]);
     const [ready, setReady] = useState(true);
     const onHeightChanged = (idx, height) => {
@@ -14,6 +14,11 @@ export function Waterfall(props) {
     const { className, children, ...otherProps } = props;
     let childrenArr = React.Children.toArray(children);
     childrenColumnIndices.length = React.Children.count(children);
+    useEffect(() => {
+        setColumnsHeightArr(new Array(props.columns).fill(0));
+        setColumnItemIndicesArr(new Array(props.columns).fill([]));
+        setChildrenColumnIndices(new Array(childrenColumnIndices.length).fill(undefined));
+    }, [props.columns]);
     if (ready) {
         for (let index = 0; index < childrenColumnIndices.length; ++index) {
             if (childrenColumnIndices[index] === undefined) {
