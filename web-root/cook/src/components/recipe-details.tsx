@@ -1,6 +1,6 @@
-import { Icons, match, message, useHistory, WindowEvent } from "blog-common";
+import { IconButton, Icons, match, message, useHistory, WindowEvent } from "blog-common";
 import clsx from "clsx";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { TouchEvent, UIEvent, useContext, useEffect, useRef, useState } from "react";
 import { APIError, PubPostData, RecipeContent, API } from "sardinefish";
 import { MaterialTags } from "./recipe-preview";
 import {marked} from "marked";
@@ -138,6 +138,11 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
                 {
                     setState("present");
                 }, 300);
+            case "present":
+                document.body.style.overflow = "hidden";
+                break;
+            default:
+                document.body.style.overflow = "";
         }
     }, [state]);
 
@@ -219,6 +224,7 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
                 className="details-panel"
                 onClick={clickPanel}
             >
+                <IconButton className="button-close" icon={<Icons.Close/>} />
                 <div className="image-wrapper">
                     {
                         data.content.images[0]

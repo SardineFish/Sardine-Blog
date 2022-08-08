@@ -7,6 +7,9 @@ export function FoldMenu(props) {
     const [expand, toggleExpand] = useToggle(false);
     return (React.createElement("aside", { className: clsx("fold-menu", props.className) },
         React.createElement(IconButton, { className: "button-menu", onClick: () => toggleExpand(), icon: icon }),
+        props.title
+            ? React.createElement("header", { className: "title" }, props.title)
+            : null,
         React.createElement("div", { className: clsx("menu-content", { "expand": expand }) }, props.children)));
 }
 //# sourceMappingURL=fold-menu.js.map

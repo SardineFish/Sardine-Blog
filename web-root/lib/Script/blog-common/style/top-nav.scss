@@ -39,9 +39,15 @@
         color: inherit;
         text-decoration: none;
     }
+
+    .title {
+        font-size: 2em;
+        font-weight: lighter;
+    }
 }
 
 @media all and (max-width: 700px) {
+
     .top-nav {
         position: fixed;
         align-items: flex-start;
@@ -53,6 +59,7 @@
         width: 3em;
 
         .button-menu {
+            font-size: 2em;
             width: 2em;
             display: initial;
             z-index: 1000;
@@ -97,6 +104,10 @@
         li:hover {
             border-bottom-color: transparent;
             background: #eee;
+        }
+
+        .title {
+            font-size: 1.2em;
         }
     }
 }

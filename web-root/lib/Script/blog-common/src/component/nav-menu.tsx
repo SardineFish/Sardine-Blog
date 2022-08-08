@@ -5,11 +5,11 @@ import { useToggle } from "../misc/use-toggle";
 import { FoldMenu } from "./fold-menu";
 import { SelectGroup } from "./select-group";
 
-export function NavMenu(props: {className: string})
+export function NavMenu(props: {className: string, title?: string})
 {
     const [expand, toggleExpand] = useToggle(false);
     return (
-        <FoldMenu className={clsx("nav-menu", props.className)}>
+        <FoldMenu className={clsx("nav-menu", props.className)} title={props.title}>
             <BlogNav/>
         </FoldMenu>
     );

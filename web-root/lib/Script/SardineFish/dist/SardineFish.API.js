@@ -287,6 +287,15 @@
     DocType2["HTML"] = "HTML";
     return DocType2;
   })(DocType || {});
+  var ImagePreset = {
+    Width600: "w600",
+    Width1000: "w1k",
+    Width1000FullQuality: "w1k_f",
+    Width2000: "w2k"
+  };
+  function processSarImgUrl(img, preset) {
+    return img + "-" + ImagePreset[preset];
+  }
   var PageQueryParam = ParamDescriptor({
     from: "number",
     count: "number"
@@ -414,7 +423,8 @@
       }).response()
     },
     Storage: {
-      getUploadInfo: api("POST", "/api/oss/new").response()
+      getUploadInfo: api("POST", "/api/oss/new").response(),
+      processImg: processSarImgUrl
     },
     Rank: {
       getRankedScores: api("GET", "/api/rank/{key}").path({ key: "string" }).query({

@@ -61,7 +61,7 @@ function App()
 
     return (
         <RecipeContext.Provider value={{ async showDetails() { } }}>
-            <NavMenu className="top-nav" />
+            <NavMenu className="top-nav" title="SardineFish's Cookbook"/>
             <main className="page-content">
                 <InfiniteScroller className="cook-book" loadMore={loadMore} hasMore={!isLoading && hasMore} initialLoad>
                     <Waterfall columns={columns}>

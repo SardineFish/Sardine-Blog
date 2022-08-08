@@ -5,7 +5,7 @@ import { FoldMenu } from "./fold-menu";
 import { SelectGroup } from "./select-group";
 export function NavMenu(props) {
     const [expand, toggleExpand] = useToggle(false);
-    return (React.createElement(FoldMenu, { className: clsx("nav-menu", props.className) },
+    return (React.createElement(FoldMenu, { className: clsx("nav-menu", props.className), title: props.title },
         React.createElement(BlogNav, null)));
 }
 export function BlogNav() {

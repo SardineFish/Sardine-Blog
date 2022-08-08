@@ -264,6 +264,18 @@ export interface RecipeContent
 
 export type RecipePreviewContent = Omit<RecipeContent, "content">;
 
+const ImagePreset = {
+    Width600: "w600",
+    Width1000: "w1k",
+    Width1000FullQuality: "w1k_f",
+    Width2000: "w2k",
+};
+
+function processSarImgUrl(img: string, preset: keyof typeof ImagePreset)
+{
+    return img + "-" + ImagePreset[preset];
+}
+
 const PageQueryParam = ParamDescriptor(
     {
         from: "number",
@@ -446,6 +458,7 @@ const SardineFishAPI = {
     Storage: {
         getUploadInfo: api("POST", "/api/oss/new")
             .response<OSSUploadInfo>(),
+        processImg: processSarImgUrl,
     },
     Rank: {
         getRankedScores: api("GET", "/api/rank/{key}")

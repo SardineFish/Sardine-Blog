@@ -119,8 +119,12 @@ function App()
         })();
     }, [editPid]);
 
+    const title = editPid > 0
+        ? `Editing ${editPid}`
+        : "New Recipe";
+
     return (<>
-        <NavMenu className="top-nav" />
+        <NavMenu className="top-nav" title={title} />
         <main className="page-content">
             <DocEditor headers={headerDescriptor} onSend={send} initialDoc={iniialDoc} onDelete={deleteDoc} autoSaveInterval={10} autoSaveKey={editPid}/>
         </main>
