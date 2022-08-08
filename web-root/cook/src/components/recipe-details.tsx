@@ -1,7 +1,7 @@
 import { Icons, match, message, useHistory, WindowEvent } from "blog-common";
 import clsx from "clsx";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { APIError, PubPostData, RecipeContent } from "sardinefish";
+import { APIError, PubPostData, RecipeContent, API } from "sardinefish";
 import { MaterialTags } from "./recipe-preview";
 import {marked} from "marked";
 
@@ -222,7 +222,7 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
                 <div className="image-wrapper">
                     {
                         data.content.images[0]
-                            ? <img src={data.content.images[0]} alt="cook image" />
+                            ? <img src={API.Storage.processImg(data.content.images[0], "Width1000")} alt="cook image" />
                             : <Icons.ForkKnife />
                     }
 

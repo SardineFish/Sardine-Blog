@@ -2,6 +2,7 @@ import { Icons } from "blog-common";
 import clsx from "clsx";
 import React, { useContext, useRef, useState } from "react";
 import { RecipePreviewContent, PubPostData } from "sardinefish";
+import * as SardineFish from "sardinefish";
 import { RecipeContext } from "./recipe-details";
 
 export function RecipePreview(props: { recipe: PubPostData<RecipePreviewContent> })
@@ -34,7 +35,7 @@ export function RecipePreview(props: { recipe: PubPostData<RecipePreviewContent>
         <div className="image-wrapper">
             {
                 props.recipe.content.images[0]
-                    ? <img src={props.recipe.content.images[0]} alt="cook image" />
+                    ? <img src={SardineFish.API.Storage.processImg(props.recipe.content.images[0], "Width600")} alt="cook image" />
                     : <Icons.ForkKnife />
             }
             
