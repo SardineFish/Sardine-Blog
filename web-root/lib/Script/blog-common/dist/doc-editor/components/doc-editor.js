@@ -116,6 +116,11 @@ export function DocEditor(props) {
             }
         });
     };
+    if (props.handle) {
+        props.handle.current = {
+            save: saveDoc
+        };
+    }
     return (React.createElement("div", { className: "doc-editor" },
         React.createElement("header", { className: "headers" }, headers.map((key, idx) => (match(props.headers[key].type, {
             "tag": (React.createElement(TagEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })),

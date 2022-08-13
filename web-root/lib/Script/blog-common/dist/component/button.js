@@ -30,6 +30,10 @@ export function Button(props) {
     return (React.createElement("span", { className: clsx("button", state, props.className), onClick: onClick, onMouseEnter: mouseIn, onMouseLeave: mouseOut, onMouseDown: mouseDown }, props.children));
 }
 export function IconButton(props) {
-    return (React.createElement(Button, { className: clsx("icon-button", props.className), onClick: props.onClick }, props.icon));
+    return (React.createElement(Button, { className: clsx("icon-button", props.className), onClick: props.onClick },
+        props.icon,
+        props.children
+            ? React.createElement("span", { className: "content" }, props.children)
+            : null));
 }
 //# sourceMappingURL=button.js.map

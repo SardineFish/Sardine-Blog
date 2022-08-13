@@ -110,8 +110,14 @@ export interface DocEditorProps<T extends EditorHeaderDescriptor>
     /** Key to identify an auto-saved post saving such as the unique identity for editing document*/
     autoSaveKey?: string | number,
     initialDoc?: Doc<T>,
+    handle?: RefObject<DocEditorRef>,
     onSend: (doc: Doc<T>) => Promise<boolean>;
     onDelete: () => Promise<void>;
+}
+
+export interface DocEditorRef
+{
+    save: () => void;
 }
 
 const DOC_SAVE_KEY = "doc-editor-saved_";
@@ -235,6 +241,13 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
             }
         });
     };
+    
+    if (props.handle)
+    {
+        (props.handle as MutableRefObject<DocEditorRef>).current = {
+            save: saveDoc
+        };
+    }
     
     return (<div className="doc-editor" >
         <header className="headers">

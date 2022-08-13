@@ -8,5 +8,6 @@ export declare function IconButton(props: {
     className?: string;
     onClick?: () => void;
     icon: React.ReactNode;
+    children?: React.ReactChild;
 }): JSX.Element;
 //# sourceMappingURL=button.d.ts.map

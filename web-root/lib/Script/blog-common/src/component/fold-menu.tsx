@@ -7,7 +7,7 @@ export function FoldMenu(props: { className: string, title?: string, children?: 
 {
     const icon = props.icon ?? <Icons.Menu/>
     const [expand, toggleExpand] = useToggle(false);
-    return (<aside className={clsx("fold-menu", props.className)}>
+    return (<aside className={clsx("fold-menu", props.className, {"expand": expand})}>
         <IconButton className="button-menu" onClick={() => toggleExpand()} icon={icon} />
         {
             props.title

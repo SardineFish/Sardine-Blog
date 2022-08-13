@@ -49,21 +49,34 @@
 @media all and (max-width: 700px) {
 
     .top-nav {
-        position: fixed;
+        position: sticky;
         align-items: flex-start;
         top: 0;
         left: 0;
         z-index: 100;
         margin: 0;
-        height: 3em;
-        width: 3em;
+        height: 4em;
+        width: 100%;
 
+        width: 100%;
+        height: 4em;
+    
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    
         .button-menu {
             font-size: 2em;
             width: 2em;
+            height: 2em;
+            box-sizing: border-box;
             display: initial;
             z-index: 1000;
             padding: .5em;
+        }
+
+        .title {
+            font-size: 1.2em;
         }
 
         .nav-list {
@@ -108,6 +121,12 @@
 
         .title {
             font-size: 1.2em;
+        }
+
+        &.expand {
+            .button-menu {
+                color: #777;
+            }
         }
     }
 }

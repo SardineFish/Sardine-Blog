@@ -1,5 +1,6 @@
 @import "blog-common/style/index.scss";
 @import "./theme.scss";
+@import "./shared.scss";
 
 body {
     background-color: #eee;
@@ -9,6 +10,28 @@ body {
 .page-content {
     width: 1600px;
     margin: auto;
+}
+
+.cook-book {
+    .create-new {
+        margin: 2em 1em;
+        border: dashed 5px;
+        border-radius: 1em;
+        height: 6em;
+
+        color: $theme-text-ex-light;
+
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        .icon {
+            width: 3em;
+        }
+    }
 }
 
 .waterfall {
@@ -414,36 +437,6 @@ body {
                 padding: 1.5em;
                 padding-top: 0.5em;
             }
-        }
-    }
-}
-
-@media (max-width: 700px) {
-    .top-nav {
-        position: sticky;
-        background-color: $theme-color;
-        width: 100%;
-        height: 4em;
-
-        display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-
-        .button {
-            width: 2em;
-            height: 2em;
-            box-sizing: border-box;
-        }
-
-        .title {
-            color: $theme-color-text;
-            font-size: 1.2em;
-            font-family: $font-ui;
-        }
-
-        .button-menu {
-            font-size: 2em;
-            color: $theme-color-text;
         }
     }
 }

@@ -5,7 +5,7 @@ import { IconButton } from "./button";
 export function FoldMenu(props) {
     const icon = props.icon ?? React.createElement(Icons.Menu, null);
     const [expand, toggleExpand] = useToggle(false);
-    return (React.createElement("aside", { className: clsx("fold-menu", props.className) },
+    return (React.createElement("aside", { className: clsx("fold-menu", props.className, { "expand": expand }) },
         React.createElement(IconButton, { className: "button-menu", onClick: () => toggleExpand(), icon: icon }),
         props.title
             ? React.createElement("header", { className: "title" }, props.title)

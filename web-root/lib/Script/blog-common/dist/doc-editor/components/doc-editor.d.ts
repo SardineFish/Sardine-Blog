@@ -51,8 +51,12 @@ export interface DocEditorProps<T extends EditorHeaderDescriptor> {
     /** Key to identify an auto-saved post saving such as the unique identity for editing document*/
     autoSaveKey?: string | number;
     initialDoc?: Doc<T>;
+    handle?: RefObject<DocEditorRef>;
     onSend: (doc: Doc<T>) => Promise<boolean>;
     onDelete: () => Promise<void>;
+}
+export interface DocEditorRef {
+    save: () => void;
 }
 export declare function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEditorProps<Headers>): JSX.Element;
 interface FieldEditorWrapperProps<T extends EditorHeaderFieldTypeDescriptor> extends React.HTMLProps<HTMLDivElement> {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./base.html";
-import { Footer, message, NavMenu, Waterfall, WindowEvent } from "blog-common";
+import { BlogNav, Footer, Icons, message, NavMenu, Waterfall, WindowEvent } from "blog-common";
 import "../style/index.scss";
 import InfiniteScroller from "react-infinite-scroller";
 import { RecipePreview } from "../components/recipe-preview";
 import { APIError, PubPostData, RecipePreviewContent } from "sardinefish";
 import { RecipeContext, RecipeDetailsManager } from "../components/recipe-details";
+import { AdminMenu } from "../components/admin-menu";
 
 function responsiveColum()
 {
@@ -61,13 +62,19 @@ function App()
 
     return (
         <RecipeContext.Provider value={{ async showDetails() { } }}>
-            <NavMenu className="top-nav" title="SardineFish's Cookbook"/>
+            <NavMenu className="top-nav" title="SardineFish's Cookbook">
+                <BlogNav />
+                <AdminMenu/>
+            </NavMenu>
             <main className="page-content">
                 <InfiniteScroller className="cook-book" loadMore={loadMore} hasMore={!isLoading && hasMore} initialLoad>
                     <Waterfall columns={columns}>
                         {
                             data.map((item, idx) => (<RecipePreview recipe={item} key={idx} />))
                         }
+                        <a className="create-new" href="/cook/editor.html">
+                            <Icons.Plus/>
+                        </a>
                     </Waterfall>
                 </InfiniteScroller>
             </main>

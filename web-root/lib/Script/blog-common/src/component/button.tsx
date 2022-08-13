@@ -42,9 +42,14 @@ export function Button(props: { className?: string, onClick?: (e: MouseEvent<HTM
     )
 }
 
-export function IconButton(props: { className?: string, onClick?: () => void, icon: React.ReactNode })
+export function IconButton(props: { className?: string, onClick?: () => void, icon: React.ReactNode, children?: React.ReactChild })
 {
     return (<Button className={clsx("icon-button", props.className)} onClick={props.onClick}>
         {props.icon}
+        {
+            props.children
+                ? <span className="content">{props.children}</span>
+                : null
+        }
     </Button>)
 }

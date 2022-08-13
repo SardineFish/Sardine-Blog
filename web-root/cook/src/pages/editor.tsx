@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { buildQueryString, error, Footer, message, NavMenu, parseQueryString } from "blog-common";
+import { buildQueryString, DocEditorRef, error, Footer, message, NavMenu, parseQueryString } from "blog-common";
 import "../style/editor.scss";
 // import { Doc, DocEditor, EditorHeaderDescriptor } from "../components/doc-editor";
 import { Doc, EditorHeaderDescriptor, DocEditor } from "blog-common";
@@ -37,6 +37,7 @@ function App()
 
     const [iniialDoc, setInitialDoc] = useState<Doc<typeof headerDescriptor>>();
     const [editPid, setEditPid] = useState<number>(parseQueryString(window.location.search).pid as number);
+    const editoRef = useRef<DocEditorRef>(null);
 
     const send = async (doc: Doc<typeof headerDescriptor>) =>
     {
@@ -73,7 +74,16 @@ function App()
         }
         catch (err)
         {
-            message.error(`0x${(err as APIError).code.toString(16)}: ${(err as APIError).message}`);
+            const apiErr = err as APIError;
+            message.error(`0x${apiErr.code.toString(16)}: ${apiErr.message}`);
+            if (apiErr.code === 0x30400)
+            {
+                editoRef.current?.save();
+                setTimeout(() =>
+                {
+                    window.location.assign(`/account/login?redirect=${encodeURIComponent(window.location.toString())}`);
+                }, 1000);
+            }
             return false;
         }
     };
@@ -126,7 +136,15 @@ function App()
     return (<>
         <NavMenu className="top-nav" title={title} />
         <main className="page-content">
-            <DocEditor headers={headerDescriptor} onSend={send} initialDoc={iniialDoc} onDelete={deleteDoc} autoSaveInterval={10} autoSaveKey={editPid}/>
+            <DocEditor
+                headers={headerDescriptor}
+                onSend={send}
+                initialDoc={iniialDoc}
+                onDelete={deleteDoc}
+                autoSaveInterval={10}
+                autoSaveKey={editPid}
+                handle={editoRef}
+            />
         </main>
         <Footer />
     </>);

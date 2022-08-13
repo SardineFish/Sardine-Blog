@@ -41,6 +41,8 @@ const icons = {
         React.createElement("path", { fill: "currentColor", d: "M12.5,1.5C10.73,1.5 9.17,2.67 8.67,4.37C8.14,4.13 7.58,4 7,4A4,4 0 0,0 3,8C3,9.82 4.24,11.41 6,11.87V19H19V11.87C20.76,11.41 22,9.82 22,8A4,4 0 0,0 18,4C17.42,4 16.86,4.13 16.33,4.37C15.83,2.67 14.27,1.5 12.5,1.5M12,10.5H13V17.5H12V10.5M9,12.5H10V17.5H9V12.5M15,12.5H16V17.5H15V12.5M6,20V21A1,1 0 0,0 7,22H18A1,1 0 0,0 19,21V20H6Z" }))),
     ForkKnife: () => (React.createElement("svg", { viewBox: "0 0 24 24" },
         React.createElement("path", { fill: "currentColor", d: "M11,9H9V2H7V9H5V2H3V9C3,11.12 4.66,12.84 6.75,12.97V22H9.25V12.97C11.34,12.84 13,11.12 13,9V2H11V9M16,6V14H18.5V22H21V2C18.24,2 16,4.24 16,6Z" }))),
+    Account: () => (React.createElement("svg", { viewBox: "0 0 24 24" },
+        React.createElement("path", { fill: "currentColor", d: "M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" }))),
 };
 export const Icons = Object.keys(icons).map((key) => [key, (propsOverride) => {
         const element = icons[key]();
