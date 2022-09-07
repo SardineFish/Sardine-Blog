@@ -19,6 +19,12 @@ ul {
     margin: auto;
 }
 
+.top-nav {
+    .title {
+        display: none;
+    }
+}
+
 @import "blog-common/src/doc-editor/style/editor.scss";
 
 .md-editor {
