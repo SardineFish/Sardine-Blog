@@ -4,7 +4,7 @@ import { Color, animate, counter, interpolate, sleep, getPalette, Vector2, vec2,
 import moment from "moment";
 import { IconSend, IconReply, IconAdd, IconLoading } from "./icon";
 import gravatar from "gravatar";
-import SardineFish, * as SarAPI from "../../lib/Script/SardineFish/SardineFish.API";
+import * as SardineFish from "../../lib/Script/SardineFish";
 
 export interface ChartData
 {
@@ -63,7 +63,7 @@ export class RoseChart extends React.Component<RoseChartProps, RoseChartState>
         const style = this.props.style || "pie";
         const startAngle = (this.props.startAngle || 0) / 180 * Math.PI;
         const animation = this.props.animation || true;
-        
+
         // Init canvas
         this.canvas.current.width = this.state.width;
         this.canvas.current.height = this.state.height;
@@ -187,7 +187,7 @@ export class RoseChart extends React.Component<RoseChartProps, RoseChartState>
         getPalette(renderData.length).forEach((color, i) => renderData[i].color = Color.fromString(color));
         await counter(this.state.data.length, async (i, T) =>
         {
-            await animate(interpolate(0.05,0.1,Math.sqrt(T)), (t) =>
+            await animate(interpolate(0.05, 0.1, Math.sqrt(T)), (t) =>
             {
                 //t = Math.sqrt(t);
                 renderData[i].value = this.state.data[i].value / maxValue * t;
@@ -201,14 +201,14 @@ export class RoseChart extends React.Component<RoseChartProps, RoseChartState>
             {
                 renderData[i].textColor.alpha = t;
                 this.renderChart(renderData, maxRadius, 0);
-            }); 
+            });
         });
     }
 }
 
-export class Banner extends React.Component<{},{x:number,y:number, animate:boolean, show: boolean}>
+export class Banner extends React.Component<{}, { x: number, y: number, animate: boolean, show: boolean }>
 {
-    constructor(props:any)
+    constructor(props: any)
     {
         super(props);
         this.state = {
@@ -222,11 +222,11 @@ export class Banner extends React.Component<{},{x:number,y:number, animate:boole
     {
         try
         {
-            const stats = await SardineFish.PostData.getStatsByPid({ pid: 0 });
-            
+            const stats = await SardineFish.API.PostData.getStatsByPid({ pid: 0 });
+
             let visitText = stats.views.toString() + ({ [11]: 'th', [12]: 'th', [13]: 'th' } as any)[stats.views % 100]
                 || ({ [1]: 'st', [2]: 'nd', [3]: 'rd' } as any)[stats.views % 10] || 'th';
-            
+
             (this.refs["visit"] as HTMLElement).innerText = visitText;
             await waitLoad(this.refs["img"] as HTMLImageElement);
         }
@@ -273,7 +273,7 @@ export class Banner extends React.Component<{},{x:number,y:number, animate:boole
     {
         const resource = "https://cdn-static.sardinefish.com";
         return (
-            <div className={["wrapper",this.state.show?"show":""].join(" ")}>
+            <div className={["wrapper", this.state.show ? "show" : ""].join(" ")}>
                 <div className="ground" ref="gound"></div>
                 <picture className={`seedling ${this.state.animate ? "animate" : ""}`} ref="seedling" style={{ bottom: `${this.state.y}px`, left: `${this.state.x}px` }}>
                     <source media="(min-width: 1024px)" srcSet={resource + "/img/logo/Logo_Main_800.min.png"}></source>
@@ -450,7 +450,7 @@ export class Section extends React.Component<SectionProps>
                 <main className="content-wrapper">{children}</main>
             </section>
         )
-    }    
+    }
 }
 
 
@@ -493,9 +493,9 @@ export class DeferSection extends React.Component<SectionProps, { viewed: boolea
     }
 }
 
-export class LifeTimer extends React.Component<{},{t:number}>
+export class LifeTimer extends React.Component<{}, { t: number }>
 {
-    constructor(props:any)
+    constructor(props: any)
     {
         super(props);
         this.state = {
@@ -532,7 +532,7 @@ export class Age extends React.Component<{}, { t: number }>
         setInterval(() =>
         {
             this.setState({
-                t: moment.duration(Date.now()-new Date("1998-11-25 0:0:0").getTime()).years()
+                t: moment.duration(Date.now() - new Date("1998-11-25 0:0:0").getTime()).years()
             });
         }, 1000);
     }
@@ -564,7 +564,7 @@ interface TextCloudRenderData
     opacity: number;
     show: boolean;
 }
-export class TextCloud extends React.Component<TextCloudProps,{data:TextCloudRenderData[]}>
+export class TextCloud extends React.Component<TextCloudProps, { data: TextCloudRenderData[] }>
 {
     constructor(props: TextCloudProps)
     {
@@ -578,7 +578,7 @@ export class TextCloud extends React.Component<TextCloudProps,{data:TextCloudRen
                 return {
                     text: data.name,
                     size: interpolate(this.props.minSize, this.props.maxSize, Math.sqrt(t)),
-                    order: 1 - t, 
+                    order: 1 - t,
                     x: 0,
                     y: 0,
                     opacity: 0,
@@ -597,7 +597,7 @@ export class TextCloud extends React.Component<TextCloudProps,{data:TextCloudRen
         const padding = this.props.padding || 5;
         const boundSize = vec2((this.refs["element"] as HTMLElement).getBoundingClientRect().width, (this.refs["element"] as HTMLElement).getBoundingClientRect().height);
         let dataSet = /*this.state.data;//*/linq.from(this.state.data).orderBy(d => d.order).toArray();
-        for (let idx = 0; idx < this.state.data.length;idx++)
+        for (let idx = 0; idx < this.state.data.length; idx++)
         //this.state.data.forEach((data, idx) =>
         {
             await sleep(0.01);
@@ -618,7 +618,7 @@ export class TextCloud extends React.Component<TextCloudProps,{data:TextCloudRen
                     return;
                 }
                 figure.pos = plus(basePos, vec2(r * Math.cos(phi), r * Math.sin(phi)));
-            
+
                 /*data.x = figure.pos.x + boundSize.x / 2;
                 data.y = figure.pos.y + boundSize.y / 2;
                 data.opacity = 1;
@@ -668,10 +668,10 @@ export class TextCloud extends React.Component<TextCloudProps,{data:TextCloudRen
     render()
     {
         return (
-            <div className={[this.props.className, "text-cloud"].join(" ")} id={this.props.id} ref="element" style={{position:"relative"}}>
+            <div className={[this.props.className, "text-cloud"].join(" ")} id={this.props.id} ref="element" style={{ position: "relative" }}>
                 {
                     this.state.data.map((data, idx) => (
-                        <span className={["word", data.show ? "show":""].join(" ")} key={idx} ref={idx.toString()} style={{
+                        <span className={["word", data.show ? "show" : ""].join(" ")} key={idx} ref={idx.toString()} style={{
                             position: "absolute",
                             left: `${data.x}px`,
                             top: `${data.y}px`,
@@ -710,14 +710,14 @@ export function FriendLink(props: { data: FriendData })
         </div>
     )
 }
-function processData(data: SarAPI.Comment):CommentProps
+function processData(data: SardineFish.Comment): CommentProps
 {
     return {
         avatar: data.author.avatar,
         name: data.author.name,
         postID: data.pid,
         commentID: data.comment_to,
-        time: SardineFish.Utils.formatDateTime(new Date(data.time)),
+        time: SardineFish.API.Utils.formatDateTime(new Date(data.time)),
         text: data.text,
         url: data.author.url,
         replies: (data.comments?.length) > 0
@@ -766,7 +766,7 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
         this.setState({
             userAvatar: gravatar.url(email, {
                 default: "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png",
-            },true)
+            }, true)
         });
     }
     async onSend()
@@ -786,7 +786,7 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
         }, true);
         try
         {
-            await SardineFish.Comment.post({ pid: this.state.replyID }, {
+            await SardineFish.API.Comment.post({ pid: this.state.replyID }, {
                 name,
                 email,
                 avatar,
@@ -802,14 +802,14 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
         catch (err)
         {
             this.setState({
-                errorMsg: err.message,
+                errorMsg: (err as SardineFish.APIError).message,
                 sending: false
             });
         }
     }
     async reload()
     {
-        let data = await SardineFish.Comment.getByPid({
+        let data = await SardineFish.API.Comment.getByPid({
             pid: this.props.pageID,
             depth: 6
         });
@@ -834,8 +834,8 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
                 <div className="post-area">
                     <div className="decoration">
                         <div className="circle-wrapper">
-                            <div className="circle button button-reply" onClick={()=>this.onReply(this.props.pageID, "")}>
-                                <IconAdd/>
+                            <div className="circle button button-reply" onClick={() => this.onReply(this.props.pageID, "")}>
+                                <IconAdd />
                             </div>
                         </div>
                         <div className="line-wrapper">
@@ -851,15 +851,15 @@ export class CommentSystem extends React.Component<CommentSystemProps, CommentSy
                             <div className="info-wrapper">
                                 <div className="user-info">
                                     <div className="hor-wrapper">
-                                        <input type="text" className="text-input input-name" placeholder="名称（公开）" ref="input-name"/>
-                                        <input type="email" className="text-input input-email" placeholder="邮箱（非公开）" ref="input-email" onBlur={e=>this.onEmailInput(e)}/>
+                                        <input type="text" className="text-input input-name" placeholder="名称（公开）" ref="input-name" />
+                                        <input type="email" className="text-input input-email" placeholder="邮箱（非公开）" ref="input-email" onBlur={e => this.onEmailInput(e)} />
                                     </div>
-                                    <input type="url" className="text-input input-url" placeholder="Url（公开）" ref="input-url"/>
+                                    <input type="url" className="text-input input-url" placeholder="Url（公开）" ref="input-url" />
                                 </div>
-                                <div className={["button","button-send",this.state.sending?"sending":""].join(" ")} onClick={() => this.onSend()}>
+                                <div className={["button", "button-send", this.state.sending ? "sending" : ""].join(" ")} onClick={() => this.onSend()}>
                                     {
                                         this.state.sending
-                                            ? <IconLoading/>
+                                            ? <IconLoading />
                                             : <IconSend></IconSend>
                                     }
                                 </div>
@@ -906,9 +906,9 @@ export class Comment extends React.Component<CommentProps>
 {
     onAvatarFailed(e: React.SyntheticEvent<HTMLElement, Event>)
     {
-        (e.target as HTMLImageElement).src = "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png";   
+        (e.target as HTMLImageElement).src = "https://cdn-static.sardinefish.com/img/decoration/unknown-user.png";
     }
-    onReplyBubble(cid: number, name:string)
+    onReplyBubble(cid: number, name: string)
     {
         if (this.props.onReply)
             this.props.onReply(cid, name);
@@ -924,7 +924,7 @@ export class Comment extends React.Component<CommentProps>
             <li className="comment">
                 <div className="decoration">
                     <div className="circle-wrapper">
-                        <div className="circle button button-reply" onClick={()=>this.onReplyClick()}>
+                        <div className="circle button button-reply" onClick={() => this.onReplyClick()}>
                             <IconReply />
                         </div>
                     </div>
@@ -935,7 +935,7 @@ export class Comment extends React.Component<CommentProps>
                 <div className="ver-wrapper">
                     <div className="hor-wrapper">
                         <div className="avatar-wrapper">
-                            <img src={this.props.avatar} className="avatar" onError={e=>this.onAvatarFailed(e)}/>
+                            <img src={this.props.avatar} className="avatar" onError={e => this.onAvatarFailed(e)} />
                             <div className={["line", this.props.replies.length > 0 ? "show" : "hide"].join(" ")}></div>
                         </div>
                         <div className="comment-wrapper">
@@ -948,7 +948,7 @@ export class Comment extends React.Component<CommentProps>
                     </div>
                     <ul className="replies">
                         {
-                            this.props.replies.map((reply, idx) => (<Comment key={idx} onReply={(cid, name)=>this.onReplyBubble(cid, name)} {...reply}></Comment>))
+                            this.props.replies.map((reply, idx) => (<Comment key={idx} onReply={(cid, name) => this.onReplyBubble(cid, name)} {...reply}></Comment>))
                         }
                     </ul>
                 </div>

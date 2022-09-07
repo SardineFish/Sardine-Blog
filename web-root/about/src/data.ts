@@ -79,7 +79,7 @@ export const languageSkillsData: ChartData[] = [{
 },
 {
     name: "Golang",
-    value: 0.4 ,
+    value: 0.4,
     note: "2019-3"
 },
 {
@@ -107,7 +107,7 @@ export const toolsData: ChartData[] = [{
     name: "Game Development",
     value: 0.7,
     note: "Unity / UE4 / Cocos2D JS"
-},{
+}, {
     name: "Computer Graphics",
     value: 0.6,
     note: "Unity SRP / OpenGL / WebGL / DX12"
@@ -732,5 +732,11 @@ export const friendsData: FriendData[] = [{
     link: "https://ablustrund.com/",
     avatar: "https://github.com/Ablustrund.png",
     note: "好兄弟 | CG/NLPer 大佬",
+},
+{
+    name: "Zilize",
+    link: "https://moecode.com/",
+    avatar: "https://img.sardinefish.com/ndA2",
+    note: "HustPort 站长 | Web | CG | 可爱捏",
 }
 ]
