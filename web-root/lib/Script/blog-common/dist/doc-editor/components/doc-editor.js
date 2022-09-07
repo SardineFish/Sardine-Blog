@@ -72,16 +72,19 @@ export function DocEditor(props) {
         docRef.current?.setDoc(doc.content);
     };
     useEffect(() => {
-        if (props.initialDoc) {
-            loadDoc(props.initialDoc);
-        }
-        else {
-            const docJson = window.localStorage.getItem(save_key);
-            if (docJson) {
-                loadDoc(JSON.parse(docJson));
-                console.log("load saved doc");
+        const timeout = setTimeout(() => {
+            if (props.initialDoc) {
+                loadDoc(props.initialDoc);
             }
-        }
+            else {
+                const docJson = window.localStorage.getItem(save_key);
+                if (docJson) {
+                    loadDoc(JSON.parse(docJson));
+                    console.log("load saved doc");
+                }
+            }
+        }, 100);
+        return () => clearTimeout(timeout);
     }, [props.initialDoc]);
     useEffect(() => {
         let handle = 0;

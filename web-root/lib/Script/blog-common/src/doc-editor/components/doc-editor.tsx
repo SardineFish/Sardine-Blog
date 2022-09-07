@@ -185,23 +185,27 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
     }
     useEffect(() =>
     {
-        if (props.initialDoc)
+        const timeout = setTimeout(() =>
         {
-            loadDoc(props.initialDoc);
-        }
-        else
-        {
-            const docJson = window.localStorage.getItem(save_key);
-            if (docJson)
+            if (props.initialDoc)
             {
-                loadDoc(JSON.parse(docJson));
-                console.log("load saved doc");
+                loadDoc(props.initialDoc);
             }
-        }
+            else
+            {
+                const docJson = window.localStorage.getItem(save_key);
+                if (docJson)
+                {
+                    loadDoc(JSON.parse(docJson));
+                    console.log("load saved doc");
+                }
+            }
+        }, 100);
+        return () => clearTimeout(timeout);
     }, [props.initialDoc]);
     useEffect(() =>
     {
-        let handle : number = 0;
+        let handle: number = 0;
         if (props.autoSaveInterval !== undefined)
         {
             handle = window.setInterval(() =>
@@ -241,14 +245,14 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
             }
         });
     };
-    
+
     if (props.handle)
     {
         (props.handle as MutableRefObject<DocEditorRef>).current = {
             save: saveDoc
         };
     }
-    
+
     return (<div className="doc-editor" >
         <header className="headers">
             {headers.map((key, idx) => (match(props.headers[key].type, {
@@ -281,7 +285,7 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
         <div className="action-panel">
             <DocTypeSelector docType={docType} onChanged={setDocType} />
             <div className="post-actions">
-                <FoldActionPanel delete={onDelete} clear={onClear}/>
+                <FoldActionPanel delete={onDelete} clear={onClear} />
                 <IconButton className="button-send" icon={<Icons.Send />} onClick={send} />
             </div>
         </div>
@@ -305,10 +309,10 @@ export function FieldEditorWrapper<T extends EditorHeaderFieldTypeDescriptor>(pr
     </div>)
 }
 
-function FoldActionPanel(props: { delete: () => void, clear: ()=>void })
+function FoldActionPanel(props: { delete: () => void, clear: () => void })
 {
-    return (<FoldMenu className="fold-actions" icon={<Icons.DotsVertical/>}>
+    return (<FoldMenu className="fold-actions" icon={<Icons.DotsVertical />}>
         <IconButton onClick={props.delete} icon={<Icons.DeleteForever />} />
-        <IconButton onClick={props.clear} icon={<Icons.TextBoxRemoveOutline/>}/>
+        <IconButton onClick={props.clear} icon={<Icons.TextBoxRemoveOutline />} />
     </FoldMenu>)
 }

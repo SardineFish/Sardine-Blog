@@ -30,11 +30,13 @@ function App()
     const [columns, setColumns] = useState(responsiveColum());
 
     const loadMore = async () =>
-    { 
+    {
+        if (isLoading)
+            return;
         setIsLoading(true);
         try
         {
-            var fetchedData = await SardineFish.API.Cook.getList({ from: data.length, count: 10 });
+            var fetchedData = await SardineFish.API.Cook.getList({ from: data.length, count: 30 });
             setData([...data, ...fetchedData]);
             if (fetchedData.length === 0)
                 setHasMore(false);
@@ -64,7 +66,7 @@ function App()
         <RecipeContext.Provider value={{ async showDetails() { } }}>
             <NavMenu className="top-nav" title="SardineFish's Cookbook">
                 <BlogNav />
-                <AdminMenu/>
+                <AdminMenu />
             </NavMenu>
             <main className="page-content">
                 <InfiniteScroller className="cook-book" loadMore={loadMore} hasMore={!isLoading && hasMore} initialLoad>
@@ -73,14 +75,14 @@ function App()
                             data.map((item, idx) => (<RecipePreview recipe={item} key={idx} />))
                         }
                         <a className="create-new" href="/cook/editor.html">
-                            <Icons.Plus/>
+                            <Icons.Plus />
                         </a>
                     </Waterfall>
                 </InfiniteScroller>
             </main>
             <Footer />
             <RecipeDetailsManager />
-            <WindowEvent event="resize" listener={onWindowResize}/>
+            <WindowEvent event="resize" listener={onWindowResize} />
         </RecipeContext.Provider>);
 }
 

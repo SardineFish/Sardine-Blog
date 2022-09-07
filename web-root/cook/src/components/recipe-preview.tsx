@@ -36,20 +36,22 @@ export function RecipePreview(props: { recipe: PubPostData<RecipePreviewContent>
             {
                 props.recipe.content.images[0]
                     ? <img src={SardineFish.API.Storage.processImg(props.recipe.content.images[0], "Width600")} alt="cook image" />
-                    : <Icons.ForkKnife />
+                    : <div className="placeholder">
+                        <Icons.ForkKnife />
+                    </div>
             }
-            
+
         </div>
         <div className="info">
             <header className="title">{props.recipe.content.title}</header>
             <aside className="description">{props.recipe.content.description}</aside>
             <MaterialTags type="requirements" tags={props.recipe.content.requirements} />
-            <MaterialTags type="optional" tags={props.recipe.content.optional}/>
+            <MaterialTags type="optional" tags={props.recipe.content.optional} />
         </div>
     </a>)
 }
 
-export function MaterialTags(props: {type: string, tags: string[]})
+export function MaterialTags(props: { type: string, tags: string[] })
 {
     return (<ul className={clsx("tags", props.type)}>
         {props.tags.map((item, idx) => (<li className="item" key={idx}>{item}</li>))}

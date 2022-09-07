@@ -51,7 +51,6 @@ body {
     .image-wrapper {
         height: auto;
         width: 100%;
-        min-height: 160px;
         display: block;
         background-color: $theme-bg-mid-light;
         display: flex;
@@ -61,6 +60,14 @@ body {
 
         img {
             width: 100%;
+        }
+
+        .placeholder {
+            min-height: 160px;
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            justify-content: center;
         }
 
         .icon {
@@ -188,7 +195,7 @@ body {
         overflow: hidden;
         border-radius: 1em;
         background-color: white;
-        
+
         .button-close {
             display: none;
         }
@@ -196,13 +203,20 @@ body {
         .image-wrapper {
             height: auto;
             width: 100%;
-            min-height: 300px;
             background-color: $theme-bg-mid-light;
             position: relative;
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             justify-content: center;
+
+            .placeholder {
+                min-height: 300px;
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+            }
 
             img {
                 width: 100%;

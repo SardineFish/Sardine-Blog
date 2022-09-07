@@ -3,7 +3,7 @@ import clsx from "clsx";
 import React, { TouchEvent, UIEvent, useContext, useEffect, useRef, useState } from "react";
 import { APIError, PubPostData, RecipeContent, API } from "sardinefish";
 import { MaterialTags } from "./recipe-preview";
-import {marked} from "marked";
+import { marked } from "marked";
 
 export function RecipeDetailsManager()
 {
@@ -75,14 +75,14 @@ export function RecipeDetailsManager()
 
     const rect = previewRect || new DOMRect(document.body.clientWidth / 2, 0, 0, 0);
 
-    return (<RecipeDetails show={show} pid={pid || -1} onFullyClosed={onClosed} previewRect={rect} onCloseRequest={requestClose}/>)
+    return (<RecipeDetails show={show} pid={pid || -1} onFullyClosed={onClosed} previewRect={rect} onCloseRequest={requestClose} />)
 }
 
 export const RecipeContext = React.createContext({
     async showDetails(pid: number, pushHistory: Boolean, previewRect?: DOMRect) { }
 });
 
-function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect, onFullyClosed: ()=>void, onCloseRequest: ()=>void})
+function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect, onFullyClosed: () => void, onCloseRequest: () => void })
 {
     const [data, setData] = useState<PubPostData<RecipeContent>>();
     const [state, setState] = useState<"showing" | "present" | "hiding" | "invisible">("invisible");
@@ -92,7 +92,7 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
     {
         if (!containerRef.current)
             return;
-        
+
         if (props.show)
         {
             if (state === "invisible")
@@ -121,9 +121,9 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
                 }
             })();
 
-            
+
         }
-        else if(state === "present")
+        else if (state === "present")
         {
             close();
         }
@@ -133,7 +133,7 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
     {
         switch (state)
         {
-            case "showing": 
+            case "showing":
                 setTimeout(() =>
                 {
                     setState("present");
@@ -180,7 +180,7 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
                 ? <RecipeDetailsPanel data={data} rect={rect} limitHeight={state !== "present"} />
                 : null
         }
-        <WindowEvent event="resize" listener={onWindowResize}/>
+        <WindowEvent event="resize" listener={onWindowResize} />
     </div>)
 }
 
@@ -198,7 +198,7 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
 
     useEffect(() =>
     {
-        
+
         marked.parse(props.data.content.content, (err, result) =>
         {
             if (err)
@@ -224,12 +224,14 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
                 className="details-panel"
                 onClick={clickPanel}
             >
-                <IconButton className="button-close" icon={<Icons.Close/>} />
+                <IconButton className="button-close" icon={<Icons.Close />} />
                 <div className="image-wrapper">
                     {
                         data.content.images[0]
                             ? <img src={API.Storage.processImg(data.content.images[0], "Width1000")} alt="cook image" />
-                            : <Icons.ForkKnife />
+                            : <div className="placeholder">
+                                <Icons.ForkKnife />
+                            </div>
                     }
 
 
