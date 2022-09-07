@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SelectGroup } from "../component/select-group";
 import { SearchBar } from "../component/search-bar";
-import SardineFishAPI, { SearchHitInfo, SearchResult } from "sardinefish/SardineFish.API";
+import { SearchHitInfo, SearchResult } from "sardinefish";
 import { buildQueryString, parseQueryString } from "blog-common";
 import { useHistory } from "blog-common";
 import InfiniteScroller from "react-infinite-scroller";
@@ -35,9 +35,9 @@ export function SearchPage()
         setHits([]);
     });
 
-    const queryObj = parseQueryString<UrlQuery>(url.search, { q: ""});
+    const queryObj = parseQueryString<UrlQuery>(url.search, { q: "" });
 
-    const search = searchThrottle(() => SardineFishAPI.Search.search({ q: queryObj.q, skip: hits?.length ?? 0, count: PER_PAGE_COUNT }));
+    const search = searchThrottle(() => SardineFish.API.Search.search({ q: queryObj.q, skip: hits?.length ?? 0, count: PER_PAGE_COUNT }));
 
     const loadMore = async () =>
     {
@@ -79,10 +79,10 @@ export function SearchPage()
     };
 
     return (<>
-        <SearchBar className={clsx({"empty": !queryObj.q})} query={queryObj.q} onSearch={onSearch} />
+        <SearchBar className={clsx({ "empty": !queryObj.q })} query={queryObj.q} onSearch={onSearch} />
         <main className="results-container">
             <InfiniteScroller loadMore={loadMore} hasMore={!isLoading && hasMore} initialLoad>
-                {hits?.map((hitInfo, idx) => (<SearchHitInfoBlock hitInfo={hitInfo} key={idx}/>))}
+                {hits?.map((hitInfo, idx) => (<SearchHitInfoBlock hitInfo={hitInfo} key={idx} />))}
             </InfiniteScroller>
         </main>
     </>);
