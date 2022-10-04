@@ -46,7 +46,7 @@ export function MarkdownEditor(props) {
                 React.createElement(SelectGroup.Item, { id: EditMode.Code }, "Code"),
                 React.createElement(SelectGroup.Item, { id: EditMode.Preview }, "Preview"),
                 React.createElement(SelectGroup.Item, { id: EditMode.Markdown }, "Markdown"))),
-        React.createElement("main", { className: "md-input" },
+        React.createElement("main", { className: "md-input markdown-body" },
             React.createElement("textarea", { ref: ref }))));
 }
 //# sourceMappingURL=md-editor.js.map

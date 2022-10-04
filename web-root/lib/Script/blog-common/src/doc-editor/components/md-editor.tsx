@@ -69,7 +69,7 @@ export function MarkdownEditor(props: {handle?: MutableRefObject<MarkdownEditorR
                 <SelectGroup.Item id={EditMode.Markdown}>Markdown</SelectGroup.Item>
             </SelectGroup>
         </header>
-        <main className="md-input">
+        <main className="md-input markdown-body">
             <textarea ref={ref}></textarea>
         </main>
     </div>)

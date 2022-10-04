@@ -1,6 +1,7 @@
 @import "./theme.scss";
 @import "blog-common/style/index.scss";
 @import "blog-common/src/doc-editor/style/editor.scss";
+@import "./markdown-body.scss";
 
 body {
     background-color: #eee;
