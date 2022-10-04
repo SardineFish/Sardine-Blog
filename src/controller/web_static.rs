@@ -109,6 +109,8 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .service(signup)
                 .service(blog_view)
                 .service(blog_index)
+                .service(blog_edit)
+                .service(blog_edit_pid)
                 .service(note_view)
                 .service(unsubscribe_notification)
                 .service(search)
@@ -116,6 +118,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .service(cook_page)
                 .service(serve_folder(&opts, "/cook/", "cook/dist/"))
                 .service(serve_folder(&opts, "/search/", "search/dist/"))
+                .service(serve_folder(&opts, "/blog/edit/", "blog/dist/"))
                 .service(serve_folder(&opts, "/blog/", "blog/dist/"))
                 .service(serve_folder(&opts, "/", "")),
         );
