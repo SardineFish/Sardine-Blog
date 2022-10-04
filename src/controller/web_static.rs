@@ -44,7 +44,13 @@ struct PidQuery {
 }
 
 // static_file!(blog_index, "/blog/", "blog/blog.html");
-static_file!(blog_view, r"/blog/{pid:\d+}", "blog/blogView.html");
+static_file!(blog_view, r"/blog/{pid:\d+}", "blog/dist/view.html");
+static_file!(
+    blog_edit_pid,
+    r"/blog/edit/{pid:\d+}",
+    "blog/dist/editor.html"
+);
+static_file!(blog_edit, r"/blog/edit", "blog/dist/editor.html");
 static_file!(note_view, r"/note/{pid:\d+}", "note/index.html");
 
 #[get("/blog/")]
@@ -60,7 +66,7 @@ async fn blog_index(
             .body(""))
     } else {
         Ok(
-            NamedFile::open(concat_path(&[&options.web_root, "blog/blog.html"]))?
+            NamedFile::open(concat_path(&[&options.web_root, "blog/dist/index.html"]))?
                 .into_response(&request),
         )
     }
@@ -110,6 +116,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .service(cook_page)
                 .service(serve_folder(&opts, "/cook/", "cook/dist/"))
                 .service(serve_folder(&opts, "/search/", "search/dist/"))
+                .service(serve_folder(&opts, "/blog/", "blog/dist/"))
                 .service(serve_folder(&opts, "/", "")),
         );
     }
