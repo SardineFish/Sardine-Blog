@@ -15,3 +15,15 @@ body {
     background-color: $theme-color-light;
     color: $theme-text-light;
 }
+
+@media (max-width: 1200px) {
+    .page-content {
+        width: 90vw;
+    }
+}
+
+@media (max-width: 700px) {
+    .page-content {
+        width: 100vw;
+    }
+}
