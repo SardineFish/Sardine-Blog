@@ -18,6 +18,11 @@
         justify-content: center;
         font-family: $font-ui;
         box-shadow: 0 0 20px $theme-shadow-color;
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
     }
 
     .select-edit-mode {
@@ -70,6 +75,10 @@
 }
 
 .field-editor {
+    ul {
+        list-style: none;
+        padding: 0;
+    }
     & {
         border-bottom: solid $theme-bg 1px;
     }
@@ -204,6 +213,11 @@
     align-items: center;
     padding: 20px;
     position: relative;
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
 }
 
 .doc-type-selector {

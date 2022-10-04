@@ -6,14 +6,20 @@ import { resolve } from "path";
 export default defineConfig({
   plugins: [react()],
   base: "",
-  root: "./html",
+  // root: "./html",
+  resolve: {
+    alias: {
+      "font": resolve(__dirname, "node_modules/font"),
+      "simplemde": resolve(__dirname, "node_modules/simplemde")
+    }
+  },
   build: {
     outDir: resolve(__dirname, "dist"),
     rollupOptions: {
       input: {
-        index: resolve(__dirname, "html/index.html"),
-        view: resolve(__dirname, "html/view.html"),
-        editor: resolve(__dirname, "html/editor.html"),
+        index: resolve(__dirname, "index.html"),
+        view: resolve(__dirname, "view.html"),
+        editor: resolve(__dirname, "editor.html"),
       }
     }
   },
@@ -22,8 +28,13 @@ export default defineConfig({
     port: 8080,
     proxy: {
       "/api": "http://127.0.0.1:3000/",
-      "/": "http://127.0.0.1:3000/"
+      "/account": "http://127.0.0.1:3000/",
+      "/lib": "http://127.0.0.1:3000/",
+      // "/": "http://127.0.0.1:3000/"
     },
-    base: "/blog"
+    base: "/blog",
+    fs: {
+      allow: [".."]
+    }
   }
 })

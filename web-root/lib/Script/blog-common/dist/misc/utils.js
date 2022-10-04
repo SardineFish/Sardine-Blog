@@ -1,3 +1,4 @@
+import { message } from "../component";
 export function parseQueryString(query, defaultValue = {}) {
     return query.substring(query.startsWith("?") ? 1 : 0)
         .split("&")
@@ -33,5 +34,17 @@ export function minIndexOf(array, selector) {
         }
     }
     return minIdx;
+}
+export async function catch_and_log(f, defaultRet) {
+    try {
+        return await f();
+    }
+    catch (err) {
+        if (err.code)
+            message.error(`${err.code}: ${err.message}`);
+        else
+            message.error(err.message);
+        return defaultRet;
+    }
 }
 //# sourceMappingURL=utils.js.map

@@ -1,3 +1,5 @@
+import { message } from "../component";
+
 export function parseQueryString<T extends Record<string, string | number>>(query: string): Partial<T>
 export function parseQueryString<T extends Record<string, string | number>>(query: string, defaultValue: T): T
 export function parseQueryString<T extends Record<string, string | number>>(query: string, defaultValue: Partial<T> = {}): T
@@ -56,4 +58,22 @@ export function minIndexOf<T>(array: T[], selector: (value: T, idx: number) => n
         }
     }
     return minIdx;
+}
+
+export async function catch_and_log<Ret>(f: () => Promise<Ret>): Promise<Ret | undefined>;
+export async function catch_and_log<Ret>(f: () => Promise<Ret>, defaultRet: Ret): Promise<Ret>;
+export async function catch_and_log<Ret>(f: () => Promise<Ret>, defaultRet?: Ret): Promise<Ret | undefined>
+{
+    try
+    {
+        return await f();
+    }
+    catch (err: any)
+    {
+        if (err.code)
+            message.error(`${err.code}: ${err.message}`);
+        else
+            message.error(err.message);
+        return defaultRet;
+    }
 }

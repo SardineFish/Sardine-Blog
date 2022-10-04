@@ -11,4 +11,6 @@ export declare function safeEmphasized(html: string): {
 export declare function error(msg: string): never;
 export declare function timeout(time: number): Promise<void>;
 export declare function minIndexOf<T>(array: T[], selector: (value: T, idx: number) => number): number;
+export declare function catch_and_log<Ret>(f: () => Promise<Ret>): Promise<Ret | undefined>;
+export declare function catch_and_log<Ret>(f: () => Promise<Ret>, defaultRet: Ret): Promise<Ret>;
 //# sourceMappingURL=utils.d.ts.map

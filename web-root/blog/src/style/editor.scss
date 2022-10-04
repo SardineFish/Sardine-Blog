@@ -1,0 +1,17 @@
+@import "./theme.scss";
+@import "blog-common/style/index.scss";
+@import "blog-common/src/doc-editor/style/editor.scss";
+
+body {
+    background-color: #eee;
+}
+
+.page-content {
+    width: 1200px;
+    margin: auto;
+}
+
+.tag-editor .tag {
+    background-color: $theme-color-light;
+    color: $theme-text-light;
+}

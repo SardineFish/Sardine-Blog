@@ -158,7 +158,7 @@ function loadBlog(pid) {
 
     var hljsLib = "//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1";
 
-    $("#write").href = "/blog/write/?pid=" + pid;
+    $("#write").href = "/blog/edit/" + pid;
 
     SardineFish.API.Blog.getByPid({ pid: pid }).then(data =>
     {
