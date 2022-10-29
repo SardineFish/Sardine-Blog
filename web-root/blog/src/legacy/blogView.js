@@ -473,12 +473,7 @@ function initImagePreview()
         e.stopPropagation(); 
     }
 
-    window.onwheel = e =>
-    {
-        e.preventDefault();
-    }
-
-    window.addEventListener("scroll", e =>
+    window.addEventListener("wheel", e =>
     {
         if (shown)
             e.preventDefault();
