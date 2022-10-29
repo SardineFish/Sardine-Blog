@@ -252,7 +252,7 @@ function loadBlog(pid) {
             document.querySelectorAll("app").forEach(loadApp);
             
             // Time before this post dose not include image note
-            if (new Date(data.time).getTime() >= 1648567159012)
+            if (new Date(data.time).getTime() >= 1648567159000)
                 loadImageNote();
             initImagePreview();
         });
