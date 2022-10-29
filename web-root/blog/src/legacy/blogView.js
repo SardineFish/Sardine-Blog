@@ -252,7 +252,7 @@ function loadBlog(pid) {
             document.querySelectorAll("app").forEach(loadApp);
             
             // Time before this post dose not include image note
-            if (data.time >= 1667056727479)
+            if (new Date(data.time).getTime() >= 1648567159012)
                 loadImageNote();
             initImagePreview();
         });
@@ -739,7 +739,7 @@ function markdownItImagePostProcess(md)
         {
             img.src = imagePostProcess(img.src);
         }
-        console.log(wrapper.innerHTML);
+        // console.log(wrapper.innerHTML);
         token.content = wrapper.innerHTML;
     }
 
@@ -771,7 +771,6 @@ function markedImagePostProcess(marked)
 
     renderer.image = function (src, title, text)
     {
-        console.log(src, title, text);
         var imgUrl = src;
         imgUrl = imagePostProcess(imgUrl);
 
