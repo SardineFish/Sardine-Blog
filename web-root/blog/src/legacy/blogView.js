@@ -1,5 +1,7 @@
+import "../style/view.scss";
+
 /**
- * @typedef {import("../lib/Script/SardineFish/SardineFish.API")}
+ * @typedef {import("sardinefish")}
  */
 
 /**
@@ -217,8 +219,9 @@ function loadBlog(pid) {
                             unknowLanguages[lang] = true;
                         }
                         return hljs.highlightAuto(str).value;
-                    }
+                    },
                 });
+
                 markdownItImagePostProcess(md);
                 md.use(markdownitEmoji);
                 md.use(markdownitKatex);
@@ -247,6 +250,11 @@ function loadBlog(pid) {
         Promise.resolve().then(() =>
         {
             document.querySelectorAll("app").forEach(loadApp);
+            
+            // Time before this post dose not include image note
+            if (data.time >= 1667056727479)
+                loadImageNote();
+            initImagePreview();
         });
     }).catch(err =>
     {
@@ -375,6 +383,129 @@ function loadApp(element)
     }
     element.appendChild(wrapper);
 
+}
+
+function loadImageNote()
+{
+    const imgs = document.querySelectorAll("img");
+    const groupImgs = Array.from(document.querySelectorAll(".img-row img"));
+    const imgGroups = document.querySelectorAll(".img-row");
+
+    for (const img of imgs)
+    {
+        if (groupImgs.includes(img))
+            continue;
+        
+        const element = document.createElement("aside");
+        element.innerText = img.alt;
+        element.classList.add("img-note");
+        img.insertAdjacentElement("afterend", element);
+    }
+
+    for (const group of imgGroups)
+    {
+        const imgs = group.querySelectorAll("img");
+        const notes = Array.from(imgs).map(img =>
+        {
+            const element = document.createElement("aside");
+            element.innerText = img.alt;
+            element.classList.add("img-note");
+            return element;
+        });
+        const noteElement = document.createElement("aside");
+        noteElement.classList.add("img-row-note");
+        notes.forEach(node => noteElement.appendChild(node));
+        group.insertAdjacentElement("afterend", noteElement);
+    }
+}
+
+const SizeSufix = ["w1k", "w600", "w1k_f", "w2k", "s600", "s800"];
+
+/**
+ * 
+ * @param {string} url 
+ * @param {"w1k" | "w600" | "w1k_f" | "w2k" | "s600" | "s800"} size 
+ */
+function appendImgSizeOption(url, size)
+{
+    url = removeImgSizeSufix(url);
+    return url + "-" + size;
+}
+
+/**
+ * 
+ * @param {string} url 
+ */
+function removeImgSizeSufix(url)
+{
+    const sufx = SizeSufix.filter(sufix => url.endsWith("-" + sufix))[0];
+    if (sufx) {
+        url = url.substring(0, url.length - sufx.length - 1);
+    }
+    return url;
+}
+
+function initImagePreview()
+{
+    const imgs = document.querySelectorAll(".markdown-body img");
+    /** @type {HTMLDivElement} */
+    const imageView = document.querySelector(".img-viewer");
+    const imageViewImg = imageView.querySelector("img");
+
+    const hide = () =>
+    {
+        if (!shown)
+            return;
+        shown = false;
+        imageView.classList.remove("show");
+    };
+
+    imageView.querySelector(".button-close").onclick = hide;
+    imageView.onclick = (e) =>
+    {
+        e.preventDefault();
+        e.stopPropagation();
+        hide();
+    }
+    imageViewImg.onclick = (e) =>
+    {
+        e.preventDefault();
+        e.stopPropagation(); 
+    }
+
+    window.onwheel = e =>
+    {
+        e.preventDefault();
+    }
+
+    window.addEventListener("scroll", e =>
+    {
+        if (shown)
+            e.preventDefault();
+    })
+    window.addEventListener("scroll", e =>
+    {
+        if (shown)
+            e.preventDefault();
+    });
+
+    let shown = false;
+
+    for (const img of imgs)
+    {
+        img.onclick = () =>
+        {
+            if (shown)
+                return;
+            
+            imageViewImg.src = removeImgSizeSufix(img.src);
+            shown = true;
+            setTimeout(() =>
+            {
+                imageView.classList.add("show");
+            }, 34);
+        }
+    }
 }
 
 function loadContentNav()
@@ -546,37 +677,85 @@ function loadPuzzle()
     });
 }
 
+function imagePostProcess(imgUrl)
+{
+    const src = imgUrl;
+    // The image address in blog content are dynamic
+    // This will make WebArchive failed to save our images.
+    // WebArchive will relpace all url in this JS script to its archive address,
+    // So I encode the original address into b64 to avoid changing.
+    // Then these address in images will be replaced to `defaultImageHost` that modified by WebArchive
+    var httpsImageHost = "https://img.sardinefish.com/";
+    var defaultImageHost = "https://img.sardinefish.com/";
+    var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/|(?:localhost|127.0.0.1)(?:\:\d+)?\/)(.*)/;
+    var webArchivePrefixReplacer = atob("aHR0cDovL2ltZy5zYXJkaW5lZmlzaC5jb20v");
+
+
+    if (reg.test(imgUrl))
+    {
+        var img = reg.exec(imgUrl)[2];
+
+        // if (window.location.protocol === "https:")
+        //     imgUrl = httpsImageHost + img;
+        // else
+        //     imgUrl = defaultImageHost + img;
+        imgUrl = httpsImageHost + img;
+
+        imgUrl = appendImgSizeOption(imgUrl, "s800");
+        
+    }
+
+    // imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
+
+    console.log(`${src} -> ${imgUrl}`);
+    
+    return imgUrl;
+}
+
 function markdownItImagePostProcess(md)
 {
     var imgProcess = md.renderer.rules.image;
+    const htmlBlockProcess = md.renderer.rules.html_block;
+    const htmlInlineProcess = md.renderer.rules.html_inline;
 
-    var httpsImageHost = "https://img.sardinefish.com/";
-    var defaultImageHost = "https://img.sardinefish.com/";
-    var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
-    var webArchivePrefixReplacer = atob("aHR0cDovL2ltZy5zYXJkaW5lZmlzaC5jb20v");
-
-    md.renderer.rules.image = function (tokens, idx, options, env, slf) {
+    md.renderer.rules.image = function (tokens, idx, options, env, slf)
+    {
         var token = tokens[idx];
         var imgUrl = token.attrs[token.attrIndex('src')][1];
-
-        // Replace all http image with https
-
-        if (reg.test(imgUrl))
-        {
-            var img = reg.exec(imgUrl)[2];
-
-            // if (window.location.protocol === "https:")
-            //     imgUrl = httpsImageHost + img;
-            // else
-            //     imgUrl = defaultImageHost + img;
-            imgUrl = httpsImageHost + img;
-        }
+        imgUrl = imagePostProcess(imgUrl);
 
         //imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
         console.log(`${token.attrs[token.attrIndex('src')][1]} -> ${imgUrl}`);
         token.attrs[token.attrIndex('src')][1] = imgUrl;
         return imgProcess(tokens, idx, options, env, slf);
     };
+
+    const handleHTML = (token) =>
+    {
+        const html = token.content;
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = html;
+        for (const img of wrapper.querySelectorAll("img"))
+        {
+            img.src = imagePostProcess(img.src);
+        }
+        console.log(wrapper.innerHTML);
+        token.content = wrapper.innerHTML;
+    }
+
+    md.renderer.rules.html_block = (tokens, idx, options, env, slf) =>
+    {
+        var token = tokens[idx];
+        handleHTML(token);
+        return htmlBlockProcess(tokens, idx, options, env, slf);
+    };
+
+    md.renderer.rules.html_inline = (tokens, idx, options, env, slf) =>
+    {
+        var token = tokens[idx];
+        handleHTML(token);
+        return htmlInlineProcess    (tokens, idx, options, env, slf);
+    }
 }
 
 function markedImagePostProcess(marked)
@@ -584,22 +763,19 @@ function markedImagePostProcess(marked)
     var renderer = new marked.Renderer();
     var imgRenderer = renderer.image;
 
-    var httpsImageHost = "https://cdn-img.sardinefish.com/";
-    var defaultImageHost = "http://img.sardinefish.com/";
-    var reg = /((?:https?:)?\/\/[^/]*.sardinefish.com\/)(.*)/;
-    var webArchivePrefixReplacer = atob("aHR0cDovL2ltZy5zYXJkaW5lZmlzaC5jb20v");
+    // The image address in blog content are dynamic
+    // This will make WebArchive failed to save our images.
+    // WebArchive will relpace all url in this JS script to its archive address,
+    // So I encode the original address into b64 to avoid changing.
+    // Then these address in images will be replaced to `defaultImageHost` that modified by WebArchive
 
     renderer.image = function (src, title, text)
     {
+        console.log(src, title, text);
         var imgUrl = src;
-        if (reg.test(imgUrl)) {
-            var img = reg.exec(imgUrl)[2];
-            if (window.location.protocol === "https:")
-                imgUrl = httpsImageHost + img;
-            else
-                imgUrl = defaultImageHost + img;
-        }
-        imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
+        imgUrl = imagePostProcess(imgUrl);
+
+        // imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
         console.log(`${src} -> ${imgUrl}`);
         src = imgUrl;
         return imgRenderer.bind(renderer)(src, title, text);

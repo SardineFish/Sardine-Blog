@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "blog-common": "file:../lib/Script/blog-common",
+    "font": "file:../static/font",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sardinefish": "file:../lib/Script/SardineFish",
-    "simplemde": "file:../lib/Script/simplemde",
-    "font": "file:../static/font"
+    "simplemde": "file:../lib/Script/simplemde"
   },
   "devDependencies": {
     "@types/node": "^18.8.1",

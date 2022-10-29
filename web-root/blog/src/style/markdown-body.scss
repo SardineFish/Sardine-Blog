@@ -11,5 +11,51 @@
     img {
         display: block;
         margin: auto;
+        cursor: pointer;
+    }
+
+    .img-row {
+        display: flex;
+        width: 100%;
+        flex-flow: row nowrap;
+        overflow: hidden;
+        align-content: center;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: nowrap;
+
+        * {
+            flex: 1;
+            min-width: 0;
+
+            margin: 5px;
+        }
+    }
+
+    .img-note {
+        color: #aaa;
+        text-align: center;
+        width: 80%;
+        margin: auto;
+        margin-bottom: 1em;
+        margin-top: 0.5em;
+        line-height: 1.4em;
+    }
+
+    .img-row-note {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        align-content: stretch;
+        flex-wrap: nowrap;
+        font-size: 0.9em;
+        color: #aaa;
+        margin-bottom: 1em;
+        line-height: 1.4em;
+        
+        * {
+            margin-left: 1em;
+            margin-right: 1em;
+        }
     }
 }

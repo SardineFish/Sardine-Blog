@@ -21,16 +21,13 @@ export default defineConfig({
         view: resolve(__dirname, "view.html"),
         editor: resolve(__dirname, "editor.html"),
       }
-    }
+    },
   },
   server: {
     host: "0.0.0.0",
     port: 8080,
     proxy: {
-      "/api": "http://127.0.0.1:3000/",
-      "/account": "http://127.0.0.1:3000/",
-      "/lib": "http://127.0.0.1:3000/",
-      // "/": "http://127.0.0.1:3000/"
+      "/": "http://127.0.0.1:3000/"
     },
     base: "/blog",
     fs: {
