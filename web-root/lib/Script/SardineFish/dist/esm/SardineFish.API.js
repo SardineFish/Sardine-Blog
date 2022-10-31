@@ -287,13 +287,23 @@ var DocType = /* @__PURE__ */ ((DocType2) => {
   return DocType2;
 })(DocType || {});
 var ImagePreset = {
+  Size600: "s600",
+  Size800: "s800",
   Width600: "w600",
   Width1000: "w1k",
   Width1000FullQuality: "w1k_f",
   Width2000: "w2k"
 };
+var SizeSufix = ["w1k", "w600", "w1k_f", "w2k", "s600", "s800"];
 function processSarImgUrl(img, preset) {
-  return img + "-" + ImagePreset[preset];
+  return removeSarImgSuffix(img) + "-" + ImagePreset[preset];
+}
+function removeSarImgSuffix(url) {
+  const sufx = SizeSufix.filter((sufix) => url.endsWith("-" + sufix))[0];
+  if (sufx) {
+    url = url.substring(0, url.length - sufx.length - 1);
+  }
+  return url;
 }
 var PageQueryParam = ParamDescriptor({
   from: "number",
@@ -423,7 +433,8 @@ var SardineFishAPI = {
   },
   Storage: {
     getUploadInfo: api("POST", "/api/oss/new").response(),
-    processImg: processSarImgUrl
+    processImg: processSarImgUrl,
+    removeImgSuffix: removeSarImgSuffix
   },
   Rank: {
     getRankedScores: api("GET", "/api/rank/{key}").path({ key: "string" }).query({

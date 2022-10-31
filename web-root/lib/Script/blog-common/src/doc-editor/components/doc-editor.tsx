@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { dialog, message, IconButton, FoldMenu } from "../../component";
 import { Icons, match } from "../../misc";
 import { ImageEditor } from "./img-editor";
+import { FoldedImgUploader, ImageUploader } from "./img-uploader";
 
 interface EditorHeaderTypes
 {
@@ -282,6 +283,7 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
                 />)
             })))}
         </header>
+        <FoldedImgUploader/>
         <div className="action-panel">
             <DocTypeSelector docType={docType} onChanged={setDocType} />
             <div className="post-actions">

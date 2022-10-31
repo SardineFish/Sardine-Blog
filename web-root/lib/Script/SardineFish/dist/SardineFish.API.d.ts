@@ -153,12 +153,15 @@ export interface RecipeContent {
 }
 export declare type RecipePreviewContent = Omit<RecipeContent, "content">;
 declare const ImagePreset: {
+    Size600: string;
+    Size800: string;
     Width600: string;
     Width1000: string;
     Width1000FullQuality: string;
     Width2000: string;
 };
 declare function processSarImgUrl(img: string, preset: keyof typeof ImagePreset): string;
+declare function removeSarImgSuffix(url: string): string;
 declare const SardineFishAPI: {
     User: {
         checkAuth: (params: Required<{}> & Partial<{}>) => Promise<string>;
@@ -287,6 +290,7 @@ declare const SardineFishAPI: {
             [x: string]: string | number | boolean | string[];
         }> & Partial<{}>) => Promise<OSSUploadInfo>;
         processImg: typeof processSarImgUrl;
+        removeImgSuffix: typeof removeSarImgSuffix;
     };
     Rank: {
         getRankedScores: (params: Required<{
@@ -471,6 +475,7 @@ export declare const API: {
             [x: string]: string | number | boolean | string[];
         }> & Partial<{}>) => Promise<OSSUploadInfo>;
         processImg: typeof processSarImgUrl;
+        removeImgSuffix: typeof removeSarImgSuffix;
     };
     Rank: {
         getRankedScores: (params: Required<{

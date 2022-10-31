@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { dialog, message, IconButton, FoldMenu } from "../../component";
 import { Icons, match } from "../../misc";
 import { ImageEditor } from "./img-editor";
+import { FoldedImgUploader } from "./img-uploader";
 export function EditorHeaderDescriptor(headers) {
     const result = {};
     for (const key in headers) {
@@ -131,6 +132,7 @@ export function DocEditor(props) {
             "title": (React.createElement(TitleEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] })),
             "img": (React.createElement(ImageEditor, { name: key, key: idx, handle: refs[key], descriptor: props.headers[key] }))
         })))),
+        React.createElement(FoldedImgUploader, null),
         React.createElement("div", { className: "action-panel" },
             React.createElement(DocTypeSelector, { docType: docType, onChanged: setDocType }),
             React.createElement("div", { className: "post-actions" },

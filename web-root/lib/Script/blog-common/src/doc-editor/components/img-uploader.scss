@@ -1,0 +1,141 @@
+.fold-img-uploader {
+    padding: 0 1em;
+    user-select: none;
+
+    .menu-content {
+        margin-top: 1em;
+        height: 0;
+        transition: height .2s;
+        overflow: hidden;
+    }
+
+    .button-menu {
+        justify-content: flex-start;
+        height: auto;
+    }
+
+    .header {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        user-select: none;
+        color: #aaa;
+
+        .icon {
+            height: 2em;
+            width: 2em;
+            transition: all .2s;
+        }
+    }
+
+    &.expand {
+        .header .icon {
+            transform: rotate(90deg);
+        }
+
+        .menu-content {
+            height: 180px;
+        }
+    }
+
+    .img-uploader {
+        height: 100%;
+        min-height: 180px;
+        display: flex;
+        flex-flow: column nowrap;
+        padding: 0 2em;
+        box-sizing: border-box;
+
+        .panel {
+            flex: 1 0;
+            display: flex;
+            flex-flow: row nowrap;
+            height: 100%;
+        }
+
+        .img-wrapper {
+            height: 100%;
+            width: 320px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+
+            background-position: 0px 0px, 16px 16px;
+            background-size: 32px 32px;
+            background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
+        }
+
+        .placeholder {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            justify-content: center;
+            border: dashed 3px $theme-text-ex-light;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border-radius: 1em;
+
+            .icon {
+                height: 3em;
+                width: 3em;
+                color: $theme-text-ex-light;
+            }
+        }
+
+        .addr-panel {
+            color: $theme-text-ex-light;
+            font-family: monospace;
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            justify-content: space-evenly;
+            margin-left: 2em;
+
+
+            a {
+                color: inherit;
+            }
+
+            pre {
+                margin: 0;
+                user-select: all;
+            }
+        }
+
+        .progress-bar {
+            height: 3px;
+            position: relative;
+            opacity: 0;
+            transition: opacity .1s;
+
+            .bar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                color: $theme-color;
+            }
+        }
+
+        &.progress {
+            .progress-bar {
+                opacity: 1;
+            }
+        }
+
+        &.has-img {
+            .placeholder {
+                display: none;
+            }
+        }
+    }
+}

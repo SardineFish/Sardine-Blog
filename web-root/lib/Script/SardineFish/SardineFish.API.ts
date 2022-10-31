@@ -265,15 +265,29 @@ export interface RecipeContent
 export type RecipePreviewContent = Omit<RecipeContent, "content">;
 
 const ImagePreset = {
+    Size600: "s600",
+    Size800: "s800",
     Width600: "w600",
     Width1000: "w1k",
     Width1000FullQuality: "w1k_f",
     Width2000: "w2k",
 };
 
+const SizeSufix = ["w1k", "w600", "w1k_f", "w2k", "s600", "s800"];
+
 function processSarImgUrl(img: string, preset: keyof typeof ImagePreset)
 {
-    return img + "-" + ImagePreset[preset];
+    return removeSarImgSuffix(img) + "-" + ImagePreset[preset];
+}
+
+function removeSarImgSuffix(url: string)
+{
+    const sufx = SizeSufix.filter(sufix => url.endsWith("-" + sufix))[0];
+    if (sufx)
+    {
+        url = url.substring(0, url.length - sufx.length - 1);
+    }
+    return url;
 }
 
 const PageQueryParam = ParamDescriptor(
@@ -459,6 +473,7 @@ const SardineFishAPI = {
         getUploadInfo: api("POST", "/api/oss/new")
             .response<OSSUploadInfo>(),
         processImg: processSarImgUrl,
+        removeImgSuffix: removeSarImgSuffix,
     },
     Rank: {
         getRankedScores: api("GET", "/api/rank/{key}")
