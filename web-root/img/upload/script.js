@@ -32,18 +32,22 @@ function upload(img)
         .then(response => response.json())
         .then(data =>
         {
+            const urlBase = "https://img.sardinefish.com/";
             $("#progress").stop();
             $("#progress").animate({ width: "100%" }, 200);
-            $("#link").attr("href", "https://img.sardinefish.com/" + data.key);
-            $("#link").text("https://img.sardinefish.com/" + data.key);
+            $("#link").attr("href", urlBase + data.key);
+            $("#link").text(urlBase + data.key);
+
+            $("#img-embed").text(`<img alt="" src="${urlBase + data.key}">`);
+            $("#markdown").text(`![](${urlBase + data.key})`);
             uploadComplete({
-                url: "https://img.sardinefish.com/" + data.key,
+                url: urlBase + data.key,
                 key: data.key
             });
         })
         .catch(err =>
         {
-            console.exception(err);
+            console.error(err);
         });
 }
 function resizeImg()
@@ -72,10 +76,19 @@ function uploadComplete(data)
         // $("#progressBar").animate({ "opacity": 0 }, 700);
         $("#buttonUpload").animate({ opacity: 1 }, 200);
     }
-    imgPreview.get(0).src = "https://img.sardinefish.com/" + data.key;
+    const urlBase = "https://img.sardinefish.com/";
+    imgPreview.get(0).src = urlBase + data.key;
     if (onUploaded)
     {
         onUploaded({
+            url: urlBase + data.key,
+            key: data.key
+        });
+        $("#progress").stop();
+        $("#progress").animate({ width: "100%" }, 200);
+        $("#link").attr("href", urlBase + data.key);
+        $("#link").text(urlBase + data.key);
+        uploadComplete({
             url: "https://img.sardinefish.com/" + data.key,
             key: data.key
         });
@@ -113,3 +126,26 @@ window.onload = function (e)
 {
     resizeImg();
 }
+window.document.addEventListener("paste", async e =>
+{
+    if (e.clipboardData.files.length == 1)
+    {
+        const file = e.clipboardData.files[0];
+        upload(new Blob([await file.arrayBuffer()]));
+        // const info = await SardineFish.API.Storage.getUploadInfo({});
+        // const formData = new FormData();
+        // formData.append("token", info.token);
+        // formData.append("key", info.key);
+        // formData.append("file", new Blob([await file.arrayBuffer()]));
+        // const response = await SardineFish.API.Utils.requestProgress(info.upload, {
+        //     method: "POST",
+        //     onUploadProgress: (sent, total) =>
+        //     {
+        //         $("#progress").stop();
+        //         $("#progress").animate({ width: sent / total * 100 + "%" }, 200);
+        //         console.log(sent);
+        //     },
+        //     body: formData,
+        // })
+    }
+})

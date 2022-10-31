@@ -11,6 +11,8 @@
         body {
             margin: 0px;
             font-family: "Segoe UI",Microsoft YaHei, Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eee;
+            user-select: none;
         }
         .border {
         }
@@ -43,6 +45,7 @@
             position: relative;
             max-width: 80%;
             max-height: 80%;
+            box-shadow: 0 0 30px rgba(0, 0, 0, .1);
         }
         #uploadArea {
             position: relative;
@@ -87,11 +90,15 @@
             text-align: center;
             font-size: 30px;
         }
+        pre {
+            text-align: center;
+            user-select: text;
+        }
     </style>
 </head>
 <body>
     <div id="root">
-        <div id="imgUpload" onselectstart="return false;" ondragstart="return false;">
+        <div id="imgUpload" >
             <div id="imgArea">
                 <img id="imgPreview" src="default.jpg" />
             </div>
@@ -101,6 +108,8 @@
                     <div id="progress"></div>
                 </div>
                 <a id="link" href="https://img.sardinefish.com/233"></a>
+                <pre id="img-embed"></pre>
+                <pre id="markdown"></pre>
                 <a id="buttonUpload">Upload</a>
             </div>
         </div>
