@@ -105,6 +105,11 @@ export function DocEditor(props) {
             message.success("All content clear");
         }
     };
+    const onPreview = () => {
+        saveDoc();
+        const doc = getDoc();
+        props.onPreview?.(doc);
+    };
     const onDelete = () => {
         dialog.confirm("Confirm to delete this post forever?", {
             className: "dialog-delete-post",
@@ -136,7 +141,7 @@ export function DocEditor(props) {
         React.createElement("div", { className: "action-panel" },
             React.createElement(DocTypeSelector, { docType: docType, onChanged: setDocType }),
             React.createElement("div", { className: "post-actions" },
-                React.createElement(FoldActionPanel, { delete: onDelete, clear: onClear }),
+                React.createElement(FoldActionPanel, { delete: onDelete, clear: onClear, preview: onPreview }),
                 React.createElement(IconButton, { className: "button-send", icon: React.createElement(Icons.Send, null), onClick: send }))),
         React.createElement("div", { className: "content-editor" },
             React.createElement(MarkdownEditor, { handle: docRef }))));
@@ -148,6 +153,7 @@ export function FieldEditorWrapper(props) {
 function FoldActionPanel(props) {
     return (React.createElement(FoldMenu, { className: "fold-actions", icon: React.createElement(Icons.DotsVertical, null) },
         React.createElement(IconButton, { onClick: props.delete, icon: React.createElement(Icons.DeleteForever, null) }),
-        React.createElement(IconButton, { onClick: props.clear, icon: React.createElement(Icons.TextBoxRemoveOutline, null) })));
+        React.createElement(IconButton, { onClick: props.clear, icon: React.createElement(Icons.TextBoxRemoveOutline, null) }),
+        React.createElement(IconButton, { onClick: props.preview, icon: React.createElement(Icons.FileEyeOutline, null) })));
 }
 //# sourceMappingURL=doc-editor.js.map

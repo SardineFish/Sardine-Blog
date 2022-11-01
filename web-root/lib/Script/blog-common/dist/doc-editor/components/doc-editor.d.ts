@@ -53,6 +53,7 @@ export interface DocEditorProps<T extends EditorHeaderDescriptor> {
     initialDoc?: Doc<T>;
     handle?: RefObject<DocEditorRef>;
     onSend: (doc: Doc<T>) => Promise<boolean>;
+    onPreview?: (doc: Doc<T>) => void;
     onDelete: () => Promise<void>;
 }
 export interface DocEditorRef {

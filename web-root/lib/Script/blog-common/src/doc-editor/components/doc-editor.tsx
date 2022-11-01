@@ -113,6 +113,7 @@ export interface DocEditorProps<T extends EditorHeaderDescriptor>
     initialDoc?: Doc<T>,
     handle?: RefObject<DocEditorRef>,
     onSend: (doc: Doc<T>) => Promise<boolean>;
+    onPreview?: (doc: Doc<T>) => void;
     onDelete: () => Promise<void>;
 }
 
@@ -229,6 +230,12 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
             message.success("All content clear");
         }
     };
+    const onPreview = () =>
+    {
+        saveDoc();
+        const doc = getDoc();
+        props.onPreview?.(doc);
+    }
     const onDelete = () =>
     {
         dialog.confirm("Confirm to delete this post forever?", {
@@ -287,7 +294,7 @@ export function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEdit
         <div className="action-panel">
             <DocTypeSelector docType={docType} onChanged={setDocType} />
             <div className="post-actions">
-                <FoldActionPanel delete={onDelete} clear={onClear} />
+                <FoldActionPanel delete={onDelete} clear={onClear} preview={onPreview} />
                 <IconButton className="button-send" icon={<Icons.Send />} onClick={send} />
             </div>
         </div>
@@ -311,10 +318,11 @@ export function FieldEditorWrapper<T extends EditorHeaderFieldTypeDescriptor>(pr
     </div>)
 }
 
-function FoldActionPanel(props: { delete: () => void, clear: () => void })
+function FoldActionPanel(props: { delete: () => void, clear: () => void, preview: ()=>void })
 {
     return (<FoldMenu className="fold-actions" icon={<Icons.DotsVertical />}>
         <IconButton onClick={props.delete} icon={<Icons.DeleteForever />} />
         <IconButton onClick={props.clear} icon={<Icons.TextBoxRemoveOutline />} />
+        <IconButton onClick={props.preview} icon={<Icons.FileEyeOutline />} />
     </FoldMenu>)
 }

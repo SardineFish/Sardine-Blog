@@ -36,6 +36,13 @@ window.onload = function ()
     HTMLTemplate.Init();
     initTopBar();
 
+    if (window.location.pathname.endsWith("/preview"))
+    {
+        const blog = JSON.parse(localStorage.getItem("sardinefish.blog.preview"));
+        loadBlogContent(blog);
+        return;
+    }
+
     let caps = /\d+$/.exec(window.location.pathname);
     if (!caps)
     {
@@ -143,6 +150,103 @@ function initTopBar()
     });
     initSearch();
 }
+
+function loadBlogContent(data)
+{
+    data.time = SardineFish.API.Utils.formatDateTime(new Date(data.time));
+    if (data.doc_type === SardineFish.API.DocType.Markdown)
+    {
+        var unknowLanguages = {};
+        if (new Date(data.time).getTime() < 1546272000000)
+        {
+            var renderer = markedImagePostProcess(marked);
+            marked.setOptions({
+                highlight: function (str, lang, callback)
+                {
+                    if (lang && hljs.getLanguage(lang))
+                    {
+                        try
+                        {
+                            return hljs.highlight(lang, str).value;
+                        } catch (__) { }
+                    }
+                    else if (lang && !unknowLanguages[lang])
+                    {
+                        unknowLanguages[lang] = fetch(`${hljsLib}/languages/${lang}.min.js`)
+                            .then(response => response.text())
+                            .then(code =>
+                            {
+                                eval(code);
+                                $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
+                            });
+                    }
+                    return hljs.highlightAuto(str).value;
+                },
+                renderer: renderer
+            });
+            data.doc = marked(data.doc);
+        }
+        else
+        {
+            var md = window.markdownit({
+                html: true, // Enable HTML tags in source
+                xhtmlOut: false, // Use '/' to close single tags (<br />).
+                breaks: true, // Convert '\n' in paragraphs into <br>
+                langPrefix: 'lang-', // CSS language prefix for fenced blocks. Can be
+                linkify: true, // Autoconvert URL-like text to links
+                typographer: false,
+                highlight: function (str, lang)
+                {
+                    if (lang && hljs.getLanguage(lang))
+                    {
+                        try
+                        {
+                            return hljs.highlight(lang, str).value;
+                        } catch (__) { }
+                    } else if (lang)
+                    {
+                        unknowLanguages[lang] = true;
+                    }
+                    return hljs.highlightAuto(str).value;
+                },
+            });
+
+            markdownItImagePostProcess(md);
+            md.use(markdownitEmoji);
+            md.use(markdownitKatex);
+            data.doc = md.render(data.doc);
+
+            // Post highlight
+            Object.keys(unknowLanguages).forEach(lang =>
+            {
+                fetch(`${hljsLib}/languages/${lang}.min.js`)
+                    .then(response => response.text())
+                    .then(code =>
+                    {
+                        eval(code);
+                        $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
+                    });
+            });
+        }
+    }
+
+    document.querySelector("#article-template").dataSource = data;
+    loadContentNav();
+    $("#page-title").innerText = data.title;
+    $("#loading").style.display = "none";
+    $$(".hide-loading").forEach(el => el.className = el.className.replace("hide-loading", ""));
+    document.head.title = document.title = data.title;
+    Promise.resolve().then(() =>
+    {
+        document.querySelectorAll("app").forEach(loadApp);
+
+        // Time before this post dose not include image note
+        if (new Date(data.time).getTime() >= 1648567159000)
+            loadImageNote();
+        initImagePreview();
+    });
+}
+
 function loadBlog(pid) {
     /*var data = {
         title: "The Title of This Article",
@@ -164,98 +268,7 @@ function loadBlog(pid) {
 
     SardineFish.API.Blog.getByPid({ pid: pid }).then(data =>
     {
-        data.time = SardineFish.API.Utils.formatDateTime(new Date(data.time));
-        if (data.doc_type === SardineFish.API.DocType.Markdown)
-        {
-            var unknowLanguages = {};
-            if (new Date(data.time).getTime() < 1546272000000)
-            {
-                var renderer = markedImagePostProcess(marked);
-                marked.setOptions({
-                    highlight: function (str, lang, callback)
-                    {
-                        if (lang && hljs.getLanguage(lang))
-                        {
-                            try
-                            {
-                                return hljs.highlight(lang, str).value;
-                            } catch (__) { }
-                        }
-                        else if (lang && !unknowLanguages[lang])
-                        {
-                            unknowLanguages[lang] = fetch(`${hljsLib}/languages/${lang}.min.js`)
-                                .then(response => response.text())
-                                .then(code =>
-                                {
-                                    eval(code);
-                                    $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
-                                });
-                        }
-                        return hljs.highlightAuto(str).value;
-                    },
-                    renderer: renderer
-                });
-                data.doc = marked(data.doc);
-            }
-            else
-            {
-                var md = window.markdownit({
-                    html: true, // Enable HTML tags in source
-                    xhtmlOut: false, // Use '/' to close single tags (<br />).
-                    breaks: true, // Convert '\n' in paragraphs into <br>
-                    langPrefix: 'lang-', // CSS language prefix for fenced blocks. Can be
-                    linkify: true, // Autoconvert URL-like text to links
-                    typographer: false,
-                    highlight: function (str, lang)
-                    {
-                        if (lang && hljs.getLanguage(lang))
-                        {
-                            try
-                            {
-                                return hljs.highlight(lang, str).value;
-                            } catch (__) { }
-                        } else if (lang)
-                        {
-                            unknowLanguages[lang] = true;
-                        }
-                        return hljs.highlightAuto(str).value;
-                    },
-                });
-
-                markdownItImagePostProcess(md);
-                md.use(markdownitEmoji);
-                md.use(markdownitKatex);
-                data.doc = md.render(data.doc);
-
-                // Post highlight
-                Object.keys(unknowLanguages).forEach(lang =>
-                {
-                    fetch(`${hljsLib}/languages/${lang}.min.js`)
-                        .then(response => response.text())
-                        .then(code =>
-                        {
-                            eval(code);
-                            $$(`code.lang-${lang}`).forEach(element => hljs.highlightBlock(element));
-                        });
-                });
-            }
-        }
-
-        document.querySelector("#article-template").dataSource = data;
-        loadContentNav();
-        $("#page-title").innerText = data.title;
-        $("#loading").style.display = "none";
-        $$(".hide-loading").forEach(el => el.className = el.className.replace("hide-loading", ""));
-        document.head.title = document.title = data.title;
-        Promise.resolve().then(() =>
-        {
-            document.querySelectorAll("app").forEach(loadApp);
-            
-            // Time before this post dose not include image note
-            if (new Date(data.time).getTime() >= 1648567159000)
-                loadImageNote();
-            initImagePreview();
-        });
+        loadBlogContent(data);
     }).catch(err =>
     {
         switch (err.code)

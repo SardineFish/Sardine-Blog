@@ -21,5 +21,6 @@ export declare const Icons: {
     ForkKnife: React.FC<React.SVGProps<React.ReactSVGElement>>;
     Account: React.FC<React.SVGProps<React.ReactSVGElement>>;
     ChevronRightL: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    FileEyeOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

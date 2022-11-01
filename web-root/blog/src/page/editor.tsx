@@ -1,7 +1,7 @@
 import { NavMenu, BlogNav, DocEditor, EditorHeaderDescriptor, BlogNavigation, Doc, parseQueryString, DocEditorRef, catch_and_log, message, dialog } from "blog-common";
 import React, { useEffect, useRef, useState } from "react";
 import {createRoot} from "react-dom/client";
-import { API, APIError } from "sardinefish";
+import { API, APIError, Blog } from "sardinefish";
 
 const headerDescriptor = EditorHeaderDescriptor({
     "title": {
@@ -79,6 +79,26 @@ function App()
         });
     }
 
+    const onPreview = async (doc: Doc<typeof headerDescriptor>) =>
+    {
+        const blog: Blog = {
+            author: await API.User.getInfo({}),
+            doc: doc.content,
+            doc_type: doc.docType,
+            pid: -1,
+            stats: {
+                comments: 0,
+                likes: 0,
+                views: 0,
+            },
+            tags: doc.headers.tags,
+            time: Date.now(),
+            title: doc.headers.title
+        };
+        localStorage.setItem("sardinefish.blog.preview", JSON.stringify(blog));
+        window.location.assign("/blog/preview");
+    }
+
     useEffect(() =>
     {
         if (!editPid)
@@ -111,6 +131,7 @@ function App()
                 handle={editoRef}
                 onSend={send}
                 onDelete={deleteDoc}
+                onPreview={onPreview}
             />
         </main>
     </>

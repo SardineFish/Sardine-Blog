@@ -5,7 +5,14 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "",
+  // base: "http://localhost:8080/",
+  experimental: {
+    renderBuiltUrl: (filename, type) =>
+    {
+      console.log(filename, type);
+      return filename;
+    }
+  },
   // root: "./html",
   resolve: {
     alias: {
@@ -27,11 +34,14 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 8080,
     proxy: {
-      "/": "http://127.0.0.1:3000/"
+      // "/": "http://127.0.0.1:3000/",
+      "^/api|lib|static|resource": "http://127.0.0.1:3000/",
+      // "^(?!\\/blog|\\/@)": "http://127.0.0.1:3000/",
     },
-    base: "/blog",
-    fs: {
-      allow: [".."]
-    }
+    // base: "/blog/",
+
+    // fs: {
+    //   allow: [".."]
+    // }
   }
 })
