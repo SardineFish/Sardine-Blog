@@ -45,6 +45,7 @@ struct PidQuery {
 
 // static_file!(blog_index, "/blog/", "blog/blog.html");
 static_file!(blog_view, r"/blog/{pid:\d+}", "blog/dist/view.html");
+static_file!(blog_preview, r"/blog/preview", "blog/dist/view.html");
 static_file!(
     blog_edit_pid,
     r"/blog/edit/{pid:\d+}",
@@ -108,6 +109,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .service(register)
                 .service(signup)
                 .service(blog_view)
+                .service(blog_preview)
                 .service(blog_index)
                 .service(blog_edit)
                 .service(blog_edit_pid)
