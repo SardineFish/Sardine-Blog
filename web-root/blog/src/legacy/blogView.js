@@ -1,5 +1,7 @@
 import "../style/view.scss";
 
+const hljsLib = "https://cdn.staticfile.org/highlight.js/11.6.0";
+
 /**
  * @typedef {import("sardinefish")}
  */
@@ -159,6 +161,7 @@ function loadBlogContent(data)
         var unknowLanguages = {};
         if (new Date(data.time).getTime() < 1546272000000)
         {
+            const marked = window.marked.marked;
             var renderer = markedImagePostProcess(marked);
             marked.setOptions({
                 highlight: function (str, lang, callback)
