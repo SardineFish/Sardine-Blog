@@ -31,6 +31,7 @@
     "markdown-it": "^13.0.1",
     "markdown-it-emoji": "^2.0.2",
     "marked": "^4.0.15",
+    "punycode": "^2.1.1",
     "sardinefish": "file:../SardineFish",
     "simplemde": "file:../simplemde"
   }

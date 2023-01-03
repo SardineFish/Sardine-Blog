@@ -35,6 +35,7 @@ export function BlogNav()
         <SelectGroup.Item id="note"><a href="/note/">NOTES</a></SelectGroup.Item>
         <SelectGroup.Item id="lab"><a href="https://lab.sardinefish.com/">LAB</a></SelectGroup.Item>
         <SelectGroup.Item id="github"><a href="https://github.com/SardineFish">GITHUB</a></SelectGroup.Item>
+        <SelectGroup.Item id="cook"><a href="/cook/">COOK</a></SelectGroup.Item>
         <SelectGroup.Item id="about"><a href="/about/">ABOUT</a></SelectGroup.Item>
     </SelectGroup>);
 }

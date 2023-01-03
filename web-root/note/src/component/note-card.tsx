@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { FoldView } from "./fold-view";
 import { CommentSystem } from "./comments";
 import { urlDefault } from "../misc/utils";
-import API, { DocType, Note } from "../../../lib/Script/SardineFish/SardineFish.API";
+import { API, Comment, DocType, Note } from "sardinefish";
 
 export function NoteCard(props: {note: Note})
 {

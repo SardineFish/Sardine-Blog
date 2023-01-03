@@ -23,6 +23,8 @@ const Option = {
     ],
     loader: {
         ".ttf": "file",
+        ".woff2": "file",
+        ".woff": "file",
     }
 }
 

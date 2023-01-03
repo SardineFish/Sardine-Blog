@@ -21,6 +21,8 @@ export function BlogNav() {
             React.createElement("a", { href: "https://lab.sardinefish.com/" }, "LAB")),
         React.createElement(SelectGroup.Item, { id: "github" },
             React.createElement("a", { href: "https://github.com/SardineFish" }, "GITHUB")),
+        React.createElement(SelectGroup.Item, { id: "cook" },
+            React.createElement("a", { href: "/cook/" }, "COOK")),
         React.createElement(SelectGroup.Item, { id: "about" },
             React.createElement("a", { href: "/about/" }, "ABOUT"))));
 }

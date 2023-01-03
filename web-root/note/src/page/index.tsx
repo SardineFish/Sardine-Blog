@@ -4,7 +4,7 @@ import "../assets/css/index.scss";
 import { Page } from "./page";
 import { SiteNavs } from "../data/site";
 // import { Note, NoteBoard } from "../data/note";
-import API, { Note, UserInfo } from "../../../lib/Script/SardineFish/SardineFish.API";
+import { API, Note, UserInfo } from "sardinefish";
 import { NoteCard } from "../component/note-card";
 import linq from "linq";
 import classnames from "classnames";

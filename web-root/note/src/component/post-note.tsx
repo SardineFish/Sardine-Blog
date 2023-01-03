@@ -3,7 +3,7 @@ import { IconEarth, IconEyeOff, IconSend, IconAsterisk } from "./icon";
 import { Button } from "./button";
 import gravatar from "gravatar";
 // import { NoteBoard } from "../data/note";
-import API, { DocType } from "../../../lib/Script/SardineFish/SardineFish.API";
+import { API, Comment, DocType } from "sardinefish";
 import classNames from "classnames";
 
 export function PostNote(props: {onPost?:(pid:number)=>void})
@@ -57,7 +57,7 @@ export function PostNote(props: {onPost?:(pid:number)=>void})
             props.onPost && props.onPost(pid);
             (refText.current as HTMLDivElement).innerHTML = "";
         }
-        catch (err)
+        catch (err: any)
         {
             setError(err.message);
             setHint("error");

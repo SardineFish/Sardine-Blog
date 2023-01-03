@@ -12,6 +12,7 @@
   "dependencies": {
     "blog-common": "file:../lib/Script/blog-common",
     "font": "file:../static/font",
+    "katex": "^0.16.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sardinefish": "file:../lib/Script/SardineFish",

@@ -32,6 +32,11 @@ export const SiteNavs: NavItem[] = [
         key: "lab",
     },
     {
+        name: "COOK",
+        url: "/cook/",
+        key: "cook",
+    },
+    {
         name: "ABOUT",
         url: "/about/",
         key: "about",

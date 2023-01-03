@@ -5,7 +5,7 @@ import linq from "linq";
 import gravatar from "gravatar";
 import calssNames from "classnames";
 import { urlDefault } from "../misc/utils";
-import API, { Comment, DocType } from "../../../lib/Script/SardineFish/SardineFish.API";
+import {API, Comment, DocType } from "sardinefish";
 
 const CommentContext = React.createContext({
     replyComment: null as Comment | null,
@@ -217,7 +217,7 @@ function PostComment(props: { cid: number, onPost?:()=>void })
             props.onPost && props.onPost();
             setPostVisible(false);
         }
-        catch (err)
+        catch (err : any)
         {
             setError(err.message);
             setHint("error");

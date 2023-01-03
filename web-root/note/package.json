@@ -33,6 +33,7 @@
     "gravatar": "^1.8.1",
     "linq": "^3.2.1",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "sardinefish": "file:../lib/Script/SardineFish"
   }
 }

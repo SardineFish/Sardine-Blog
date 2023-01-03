@@ -343,7 +343,6 @@ interface SardineFish {
 declare const SardineFish: SardineFish;
 declare global {
     namespace SardineFish {
-        const API: typeof SardineFishAPI;
     }
 }
 export default SardineFish;
