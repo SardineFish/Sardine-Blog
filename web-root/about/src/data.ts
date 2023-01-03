@@ -39,12 +39,12 @@ export const summaryData: ChartData[] = [{
 ]
 export const languageSkillsData: ChartData[] = [{
     name: "C/C++",
-    value: 0.6,
+    value: 0.7,
     note: "2012-9"
 },
 {
     name: "VB / VB .NET",
-    value: 0.2,
+    value: 0.1,
     note: "2012-11"
 },
 {
@@ -64,7 +64,7 @@ export const languageSkillsData: ChartData[] = [{
 },
 {
     name: "JS / TS",
-    value: 0.85,
+    value: 0.95,
     note: "2015-7"
 },
 {
@@ -79,38 +79,38 @@ export const languageSkillsData: ChartData[] = [{
 },
 {
     name: "Golang",
-    value: 0.4,
+    value: 0.2,
     note: "2019-3"
 },
 {
     name: "Rust",
-    value: 0.7,
+    value: 0.9,
     note: "2020-11"
 }
 ]
 export const toolsData: ChartData[] = [{
     name: ".NET",
-    value: 0.9,
+    value: 0.8,
     note: ".NET Framework / WPF / UWP"
 },
 {
     name: "Front End",
-    value: 0.8,
+    value: 0.9,
     note: "HTML5 / CSS3 / React / Electron"
 },
 {
     name: "Back End",
     value: 0.5,
-    note: "Node.Js / .NET Core / MongoDB / MySQL"
+    note: "Node.Js / .NET Core / SQL / NoSQL / Rust"
 },
 {
     name: "Game Development",
-    value: 0.7,
+    value: 0.85,
     note: "Unity / UE4 / Cocos2D JS"
 }, {
     name: "Computer Graphics",
     value: 0.6,
-    note: "Unity SRP / OpenGL / WebGL / DX12"
+    note: "Unity SRP / OpenGL / WebGL / WebGPU / Unreal"
 },
 {
     name: "3D Modeling",
@@ -360,240 +360,169 @@ export const gameDataOld: ChartData[] = [{
 },
 ]
 
-export const steamData2020: ChartData[] = [{
-    "name": "Kerbal Space Program",
-    "value": 11590
+interface SteamOwnedGame
+{
+    appid: number,
+    img_icon_url: string,
+    name: string,
+    playtime_forever: number,
+    playtime_linux_forever: number,
+    playtime_mac_forever: number,
+    playtime_windows_forever: number,
+    rtime_last_played: number,
+}
+
+export async function fetchSteamGameData(apiKey: string): Promise<ChartData[]>
+{
+    return (await fetch(`https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${apiKey}&steamid=76561198281817883&format=json&include_appinfo=1`)
+        .then(r => r.json()))
+        .response.games.map((data: SteamOwnedGame) => ({
+            name: data.name,
+            value: data.playtime_forever
+        }));
+}
+
+export const SteamData: ChartData[] = [{
+    "name": "Hitman: Blood Money",
+    "value": 0
 }, {
-    "name": "NieR:Automata™",
-    "value": 8639
+    "name": "The Sims™ 3",
+    "value": 0
 }, {
-    "name": "Total War: THREE KINGDOMS",
-    "value": 8306
+    "name": "Hitman: Sniper Challenge",
+    "value": 0
 }, {
-    "name": "Ghost Recon® Wildlands",
-    "value": 8189
+    "name": "Nihilumbra",
+    "value": 0
 }, {
-    "name": "The Division",
-    "value": 8055
+    "name": "Goat Simulator",
+    "value": 0
 }, {
-    "name": "No Man's Sky",
-    "value": 7037
+    "name": "Starbound - Unstable",
+    "value": 0
 }, {
-    "name": "Terraria",
-    "value": 5528
+    "name": "Grand Theft Auto: San Andreas",
+    "value": 0
 }, {
-    "name": "Grand Theft Auto V",
-    "value": 5106
+    "name": "Grand Theft Auto IV: The Complete Edition",
+    "value": 0
 }, {
-    "name": "Starbound",
-    "value": 4794
+    "name": "Grand Theft Auto: San Andreas",
+    "value": 0
 }, {
-    "name": "Mount & Blade II: Bannerlord",
-    "value": 4060
+    "name": "Metro: Last Light Redux",
+    "value": 0
 }, {
-    "name": "The Forest",
-    "value": 3814
+    "name": "100% Orange Juice",
+    "value": 0
 }, {
-    "name": "ACE COMBAT™ 7: SKIES UNKNOWN",
-    "value": 2595
+    "name": "Submerged",
+    "value": 0
 }, {
-    "name": "Celeste",
-    "value": 2474
+    "name": "INSIDE",
+    "value": 0
 }, {
-    "name": "Stardew Valley",
-    "value": 2138
+    "name": "The Way of Life Free Edition",
+    "value": 0
 }, {
-    "name": "Assassin's Creed® III",
-    "value": 2019
+    "name": "Hero Siege",
+    "value": 0
 }, {
-    "name": "Human: Fall Flat",
-    "value": 1992
+    "name": "Crypt of the NecroDancer",
+    "value": 0
 }, {
-    "name": "Life is Strange™",
-    "value": 1977
+    "name": "Move or Die",
+    "value": 0
 }, {
-    "name": "Far Cry 5",
-    "value": 1837
+    "name": "Sleeping Dogs: Definitive Edition",
+    "value": 0
 }, {
-    "name": "Halo: The Master Chief Collection",
-    "value": 1781
+    "name": "This War of Mine",
+    "value": 0
 }, {
-    "name": "Assassin's Creed II",
-    "value": 1499
+    "name": "The Binding of Isaac: Rebirth",
+    "value": 0
 }, {
-    "name": "Besiege",
-    "value": 1486
+    "name": "Evoland 2",
+    "value": 0
 }, {
-    "name": "Unrailed!",
-    "value": 1232
+    "name": "Evoland Legendary Edition",
+    "value": 0
 }, {
-    "name": "Cities: Skylines",
-    "value": 1076
+    "name": "Firewatch",
+    "value": 0
 }, {
-    "name": "BattleBlock Theater",
-    "value": 919
+    "name": "Hacknet",
+    "value": 0
 }, {
-    "name": "Devil May Cry 5",
-    "value": 894
+    "name": "Rise of the Tomb Raider",
+    "value": 0
 }, {
-    "name": "Frostpunk",
-    "value": 891
+    "name": "Tricky Towers",
+    "value": 0
 }, {
-    "name": "Sekiro™: Shadows Die Twice",
-    "value": 824
+    "name": "Tom Clancy's The Division PTS",
+    "value": 0
 }, {
-    "name": "RWBY: Grimm Eclipse",
-    "value": 747
+    "name": "Epistory - Typing Chronicles",
+    "value": 0
 }, {
-    "name": "SPACEPLAN",
-    "value": 737
+    "name": "Bayonetta",
+    "value": 0
 }, {
-    "name": "Control",
-    "value": 732
+    "name": "Surviving Mars",
+    "value": 0
 }, {
-    "name": "ICEY",
-    "value": 661
+    "name": "Quantum Break",
+    "value": 0
 }, {
-    "name": "Portal 2",
-    "value": 593
+    "name": "theHunter: Call of the Wild™",
+    "value": 0
 }, {
-    "name": "Counter-Strike",
-    "value": 584
+    "name": "Everything",
+    "value": 0
 }, {
-    "name": "Overcooked",
-    "value": 546
+    "name": "HITMAN™",
+    "value": 0
 }, {
-    "name": "Muse Dash",
-    "value": 537
+    "name": "Journey",
+    "value": 0
 }, {
-    "name": "Portal",
-    "value": 439
+    "name": "Flower",
+    "value": 0
 }, {
-    "name": "Tomb Raider",
-    "value": 395
+    "name": "Mechanism",
+    "value": 0
 }, {
-    "name": "ACE COMBAT™ ASSAULT HORIZON Enhanced Edition",
-    "value": 393
+    "name": "Unturned",
+    "value": 0
 }, {
-    "name": "ISLANDERS",
-    "value": 371
+    "name": "Life is Strange: Before the Storm",
+    "value": 0
 }, {
-    "name": "Refunct",
-    "value": 367
+    "name": "Cypher",
+    "value": 0
 }, {
-    "name": "Helltaker",
-    "value": 340
+    "name": "Just Cause 3",
+    "value": 0
 }, {
-    "name": "Superflight",
-    "value": 325
+    "name": "The Tiny Bang Story",
+    "value": 0
 }, {
-    "name": "Two Point Hospital",
-    "value": 322
+    "name": "Moncage",
+    "value": 0
 }, {
-    "name": "Door Kickers",
-    "value": 282
+    "name": "Little Nightmares",
+    "value": 0
 }, {
-    "name": "Command and Conquer: Red Alert 3 - Uprising",
-    "value": 267
+    "name": "Wallpaper Engine",
+    "value": 2
 }, {
-    "name": "Left 4 Dead 2",
-    "value": 262
+    "name": "Toribash",
+    "value": 5
 }, {
-    "name": "Cyberpunk 2077",
-    "value": 220
-}, {
-    "name": "Counter-Strike: Condition Zero",
-    "value": 185
-}, {
-    "name": "Poly Bridge",
-    "value": 181
-}, {
-    "name": "Hand Simulator",
-    "value": 167
-}, {
-    "name": "RUINER",
-    "value": 150
-}, {
-    "name": "Pilgrims",
-    "value": 148
-}, {
-    "name": "What Remains of Edith Finch",
-    "value": 128
-}, {
-    "name": "Infinifactory",
-    "value": 127
-}, {
-    "name": "Hitman: Absolution",
-    "value": 123
-}, {
-    "name": "Baba Is You",
-    "value": 97
-}, {
-    "name": "Black Mesa",
-    "value": 79
-}, {
-    "name": "Stick Fight: The Game",
-    "value": 72
-}, {
-    "name": "Gorogoa",
-    "value": 71
-}, {
-    "name": "Noita",
-    "value": 62
-}, {
-    "name": "Assassin’s Creed® Chronicles: China",
-    "value": 61
-}, {
-    "name": "DeathComing",
-    "value": 60
-}, {
-    "name": "CS2D",
-    "value": 57
-}, {
-    "name": "Portal Stories: Mel",
-    "value": 56
-}, {
-    "name": "Minecraft: Story Mode - A Telltale Games Series",
-    "value": 46
-}, {
-    "name": "RUNNING WITH RIFLES",
-    "value": 42
-}, {
-    "name": "12 is Better Than 6",
-    "value": 36
-}, {
-    "name": "Bridge Constructor Portal",
-    "value": 35
-}, {
-    "name": "LIMBO",
-    "value": 34
-}, {
-    "name": "Ori and the Blind Forest",
-    "value": 31
-}, {
-    "name": "The Long Dark",
-    "value": 20
-}, {
-    "name": "ibb & obb",
-    "value": 19
-}, {
-    "name": "The Gardens Between",
-    "value": 15
-}, {
-    "name": "Tom Clancy's Ghost Recon Future Soldier",
-    "value": 13
-}, {
-    "name": "Ghostrunner Demo",
-    "value": 13
-}, {
-    "name": "Door Kickers: Action Squad",
-    "value": 12
-}, {
-    "name": "Oxenfree",
-    "value": 10
-}, {
-    "name": "Counter-Strike: Condition Zero Deleted Scenes",
-    "value": 7
+    "name": "Viridi",
+    "value": 5
 }, {
     "name": "Warframe",
     "value": 6
@@ -604,17 +533,287 @@ export const steamData2020: ChartData[] = [{
     "name": "GlassWire",
     "value": 6
 }, {
-    "name": "Toribash",
-    "value": 5
+    "name": "Counter-Strike: Condition Zero Deleted Scenes",
+    "value": 7
 }, {
-    "name": "Viridi",
-    "value": 5
+    "name": "Oxenfree",
+    "value": 10
 }, {
-    "name": "Wallpaper Engine",
-    "value": 2
+    "name": "Door Kickers: Action Squad",
+    "value": 12
+}, {
+    "name": "Tom Clancy's Ghost Recon Future Soldier",
+    "value": 13
+}, {
+    "name": "Ghostrunner Demo",
+    "value": 13
+}, {
+    "name": "雀魂麻将(MahjongSoul)",
+    "value": 13
+}, {
+    "name": "Call of Duty®: Modern Warfare® II - Open Beta",
+    "value": 14
+}, {
+    "name": "The Gardens Between",
+    "value": 15
+}, {
+    "name": "ibb & obb",
+    "value": 19
+}, {
+    "name": "The Long Dark",
+    "value": 20
+}, {
+    "name": "Metro 2033 Redux",
+    "value": 30
+}, {
+    "name": "Ori and the Blind Forest",
+    "value": 31
+}, {
+    "name": "LIMBO",
+    "value": 34
+}, {
+    "name": "Bridge Constructor Portal",
+    "value": 35
+}, {
+    "name": "12 is Better Than 6",
+    "value": 36
+}, {
+    "name": "RUNNING WITH RIFLES",
+    "value": 42
+}, {
+    "name": "Minecraft: Story Mode - A Telltale Games Series",
+    "value": 46
+}, {
+    "name": "Portal Stories: Mel",
+    "value": 56
+}, {
+    "name": "CS2D",
+    "value": 57
+}, {
+    "name": "DeathComing",
+    "value": 60
+}, {
+    "name": "Assassin’s Creed® Chronicles: China",
+    "value": 61
+}, {
+    "name": "Noita",
+    "value": 62
+}, {
+    "name": "Gorogoa",
+    "value": 71
+}, {
+    "name": "Stick Fight: The Game",
+    "value": 72
+}, {
+    "name": "Black Mesa",
+    "value": 79
+}, {
+    "name": "Baba Is You",
+    "value": 97
+}, {
+    "name": "Hitman: Absolution",
+    "value": 123
+}, {
+    "name": "Infinifactory",
+    "value": 127
+}, {
+    "name": "What Remains of Edith Finch",
+    "value": 128
+}, {
+    "name": "Pilgrims",
+    "value": 148
+}, {
+    "name": "RUINER",
+    "value": 150
+}, {
+    "name": "Hand Simulator",
+    "value": 167
+}, {
+    "name": "Poly Bridge",
+    "value": 181
+}, {
+    "name": "Counter-Strike: Condition Zero",
+    "value": 185
+}, {
+    "name": "Left 4 Dead 2",
+    "value": 262
+}, {
+    "name": "Door Kickers",
+    "value": 282
+}, {
+    "name": "Superliminal",
+    "value": 302
+}, {
+    "name": "Two Point Hospital",
+    "value": 322
+}, {
+    "name": "Superflight",
+    "value": 327
+}, {
+    "name": "Helltaker",
+    "value": 340
+}, {
+    "name": "Refunct",
+    "value": 367
+}, {
+    "name": "ISLANDERS",
+    "value": 371
+}, {
+    "name": "Airborne Kingdom",
+    "value": 389
+}, {
+    "name": "ACE COMBAT™ ASSAULT HORIZON Enhanced Edition",
+    "value": 393
+}, {
+    "name": "Tomb Raider",
+    "value": 395
+}, {
+    "name": "Command and Conquer: Red Alert 3 - Uprising",
+    "value": 401
+}, {
+    "name": "Portal",
+    "value": 439
+}, {
+    "name": "Totally Accurate Battle Simulator",
+    "value": 465
+}, {
+    "name": "Overcooked",
+    "value": 546
+}, {
+    "name": "Muse Dash",
+    "value": 552
+}, {
+    "name": "Counter-Strike",
+    "value": 584
+}, {
+    "name": "Portal 2",
+    "value": 593
+}, {
+    "name": "ICEY",
+    "value": 661
+}, {
+    "name": "SPACEPLAN",
+    "value": 737
+}, {
+    "name": "Forza Horizon 5",
+    "value": 741
+}, {
+    "name": "RWBY: Grimm Eclipse",
+    "value": 747
+}, {
+    "name": "Sekiro™: Shadows Die Twice",
+    "value": 856
+}, {
+    "name": "NieR Replicant ver.1.22474487139...",
+    "value": 858
+}, {
+    "name": "Frostpunk",
+    "value": 891
+}, {
+    "name": "Devil May Cry 5",
+    "value": 894
+}, {
+    "name": "BattleBlock Theater",
+    "value": 919
+}, {
+    "name": "It Takes Two",
+    "value": 946
+}, {
+    "name": "Project Wingman",
+    "value": 1080
+}, {
+    "name": "Sid Meier's Civilization VI",
+    "value": 1082
+}, {
+    "name": "Unrailed!",
+    "value": 1232
+}, {
+    "name": "Assassin's Creed II",
+    "value": 1499
+}, {
+    "name": "Besiege",
+    "value": 1615
+}, {
+    "name": "Halo: The Master Chief Collection",
+    "value": 1781
+}, {
+    "name": "Control Ultimate Edition",
+    "value": 1824
+}, {
+    "name": "Far Cry 5",
+    "value": 1837
+}, {
+    "name": "Life is Strange™",
+    "value": 1977
+}, {
+    "name": "Cities: Skylines",
+    "value": 1985
+}, {
+    "name": "Human: Fall Flat",
+    "value": 1992
+}, {
+    "name": "Assassin's Creed® III",
+    "value": 2019
+}, {
+    "name": "Stardew Valley",
+    "value": 2138
+}, {
+    "name": "DEATHLOOP",
+    "value": 2188
+}, {
+    "name": "Celeste",
+    "value": 2494
+}, {
+    "name": "ACE COMBAT™ 7: SKIES UNKNOWN",
+    "value": 2603
+}, {
+    "name": "HUMANKIND™",
+    "value": 3689
+}, {
+    "name": "The Forest",
+    "value": 3814
+}, {
+    "name": "Starbound",
+    "value": 4794
+}, {
+    "name": "Grand Theft Auto V",
+    "value": 5106
+}, {
+    "name": "Terraria",
+    "value": 5528
+}, {
+    "name": "Fallout 4",
+    "value": 6209
+}, {
+    "name": "No Man's Sky",
+    "value": 7037
+}, {
+    "name": "Cyberpunk 2077",
+    "value": 7844
+}, {
+    "name": "Mount & Blade II: Bannerlord",
+    "value": 7973
+}, {
+    "name": "Tom Clancy's The Division",
+    "value": 8055
+}, {
+    "name": "Tom Clancy's Ghost Recon® Wildlands",
+    "value": 8189
+}, {
+    "name": "Total War: THREE KINGDOMS",
+    "value": 8306
+}, {
+    "name": "NieR:Automata™",
+    "value": 8639
+}, {
+    "name": "Kerbal Space Program",
+    "value": 12978
+}, {
+    "name": "Battlefield™ 2042",
+    "value": 15920
 }];
 
-export const manualUpdateGameData2020: ChartData[] = [
+export const UbiGameData: ChartData[] = [
     {
         name: "STEEP",
         value: 720,
@@ -631,19 +830,105 @@ export const manualUpdateGameData2020: ChartData[] = [
         name: "For Honer",
         value: 270,
     },
+];
+
+const playTime = (day: number, hour: number, minute: number) => (day * 24 + hour) * 60 + minute;
+
+export const XBOXGameData: ChartData[] = [
+    {
+        name: "Forza Horizon 5",
+        value: playTime(7,13,48),
+    },
     {
         name: "Minecraft",
-        value: 10560,
+        value: playTime(0, 18, 3) + playTime(1, 17, 37),
     },
+    {
+        name: "Taiko no Tatsujin",
+        value: playTime(0, 0, 22),
+    },
+    {
+        name: "Age of Empires IV",
+        value: playTime(0, 0, 54),
+    },
+    {
+        name: "Hades",
+        value: playTime(0, 0, 44),
+    },
+    {
+        name: "Humankind",
+        value: playTime(3, 3, 39),
+    },
+    {
+        name: "OCTOPATH TRAVELER",
+        value: playTime(1, 7, 18),
+    },
+    {
+        name: "Forza Horizon 4",
+        value: playTime(8, 2, 49),
+    },
+    {
+        name: "Age of Empires II",
+        value: playTime(1, 6, 26),
+    },
+    {
+        name: "Slime Rancher",
+        value: playTime(0, 14, 26),
+    },
+    {
+        name: "Minecraft Dungeons",
+        value: playTime(0, 18, 25),
+    },
+    {
+        name: "Halo",
+        value: playTime(1, 14, 45)
+    },
+    {
+        name: "Forza Motorsport 7",
+        value: playTime(0, 2, 56),
+    }
+];
+
+export const EpicGameData: ChartData[] = [
     {
         name: "Borderlands 3",
         value: 3867,
     },
     {
+        name: "Sifu",
+        value: playTime(0, 34, 26),
+    }
+];
+
+
+export const manualUpdateGameData2020: ChartData[] = [
+    {
+        name: "Minecraft",
+        value: 10560,
+    },
+    {
         name: "osu!",
         value: 7940
     }
-]
+];
+
+export function mergeChartData(...chartData: ChartData[][])
+{
+    const map: Map<string, ChartData> = new Map();
+    for (const dataSet of chartData)
+    {
+        for (const data of dataSet)
+        {
+            if (!map.get(data.name))
+                map.set(data.name, data);
+            else
+                map.get(data.name).value += data.value;
+        }
+    }
+    return Array.from(map.values());
+}
+
+export const GameData = mergeChartData(SteamData, XBOXGameData, EpicGameData, UbiGameData, manualUpdateGameData2020);
 
 export const friendsData: FriendData[] = [{
     name: "Dwscdv3",

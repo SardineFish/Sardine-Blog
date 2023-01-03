@@ -268,7 +268,7 @@ picture img{
     color: #888;
 }
 #skills-chart .note::before{
-    content: "From ";
+    content: "Since ";
 }
 .bar-chart .element:hover .note{
     opacity: 1;
@@ -320,8 +320,8 @@ picture img{
 }
 
 #game-data{
-    width: 80%;
-    height: 1000px;
+    width: 100%;
+    height: 1200px;
     margin: 0 5em;
 }
 #game-data .word{

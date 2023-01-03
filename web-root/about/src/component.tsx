@@ -4,7 +4,7 @@ import { Color, animate, counter, interpolate, sleep, getPalette, Vector2, vec2,
 import moment from "moment";
 import { IconSend, IconReply, IconAdd, IconLoading } from "./icon";
 import gravatar from "gravatar";
-import * as SardineFish from "../../lib/Script/SardineFish";
+import * as SardineFish from "sardinefish";
 
 export interface ChartData
 {

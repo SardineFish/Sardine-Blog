@@ -1,7 +1,7 @@
 import React, { RefObject } from "react";
 import ReactDOM from "react-dom";
 import { RoseChart, ChartData, DeferSection, Banner, DeferElement, LifeTimer, Age, BarChart, TextCloud, FriendLink, CommentSystem } from "./component";
-import { languageSkillsData, summaryData, toolsData, toolsChartPalette, steamData2020, friendsData, manualUpdateGameData2020 } from "./data";
+import { languageSkillsData, summaryData, toolsData, toolsChartPalette, friendsData, manualUpdateGameData2020, GameData } from "./data";
 import { GithubLogo, SteamLogo, EmailIcon, IconAdd, IconArrowUp } from "./icon";
 import { animate } from "./lib";
 
@@ -9,7 +9,7 @@ class App extends React.Component
 {
     render()
     {
-        const gameData = [...steamData2020, ...manualUpdateGameData2020];
+        const gameData = GameData;
         return (
             <div>
                 <section id="banner">
@@ -18,8 +18,9 @@ class App extends React.Component
                             <li><a href="/">Home</a></li>
                             <li><a href="/blog/">Blog</a></li>
                             <li><a href="/note/">Note</a></li>
-                            <li><a href="/lab/">Lab</a></li>
+                            <li><a href="https://lab.sardinefish.com/">Lab</a></li>
                             <li><a href="//github.com/SardineFish">GitHub</a></li>
+                            <li><a href="/cook/">Cook</a></li>
                             <li><a href="/about/">About</a></li>
                         </ul>
                     </nav>
@@ -36,7 +37,7 @@ class App extends React.Component
                     </DeferElement>
                     <DeferElement className="summary-text" visibleHeight={innerHeight / 5}>
                         <p>17岁<sub>+{<LifeTimer />}s</sub>JK<del className="line"></del></p>
-                        <p className="weak"><Age/>岁，是学生</p>
+                        <p className="weak"><Age/>岁，是社畜</p>
                     </DeferElement>
                     <DeferElement className="summary-text" visibleHeight={innerHeight / 5}>
                         <p>不是女装dalao，没有女装，不会女装的</p>
@@ -64,20 +65,62 @@ class App extends React.Component
                         <BarChart id="tools-chart" data={toolsData} maxValue={1} palette={toolsChartPalette}></BarChart>
                     </div>
                 </DeferSection>
+                <DeferSection className="section" id="interest" header="Interest">
+                    <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
+                        <p>喜欢看日本动画片</p>
+                        <p className="weak">心中的神作：冰菓、物语系列、CLANNAD</p>
+                        <p className="weak">品味比较挑剔随性，热门作品也未必会看</p>
+                    </DeferElement>
+                    <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
+                        <p>b站基本只看动画、生活和鬼畜区</p>
+                        <p className="weak">ACG 快要被开除b站了</p>
+                    </DeferElement>
+                    <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
+                        <p>微博重度成瘾患者</p>
+                        <p className="weak">偶尔也刷刷推特</p>
+                        <p className="weak">不看短视频</p>
+                    </DeferElement>
+                    <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
+                        <p>也有在尝试做一些模型手工</p>
+                        <p className="weak">胶达，粘土，船模之类的</p>
+                        <p className="weak">在工作台前一坐就会忘记时间</p>
+                        <p className="weak">修水口这种不需要脑子的事情就很适合下班之后的夜晚</p>
+                    </DeferElement>
+                    <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
+                        <p>不喜欢运动</p>
+                        <p className="weak">时间总是不够用，不感兴趣的事情只能往后稍稍</p>
+                        <p className="weak">但是也该健了</p>
+                    </DeferElement>
+                    <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
+                        <p>烹饪其实挺有趣的</p>
+                        <p className="weak">疫情居家一学期从米虫进化为家庭主厨</p>
+                        <p className="weak">烹饪其实也是一件富有创造性的事情</p>
+                        <p className="weak">颠锅点燃的油雾总是有种火系魔法的感觉，很好玩</p>
+                        <p className="weak">最不拿手的菜是番茄炒蛋，大城市的西红柿非常难吃</p>
+                    </DeferElement>
+                </DeferSection>
                 <DeferSection className="section" id="gaming" header="Gaming">
                     <TextCloud id="game-data" data={gameData} maxSize={60} minSize={12} placeMode="random"></TextCloud>
                     <DeferElement className="text-main text-light" visibleHeight={innerHeight / 4}>
                         <p>宅的时间除了写代码就是玩游戏了</p>
-                        <p className="weak">或者一边玩自己做的游戏一边写BUG</p>
+                        <p className="weak"><del>或者一边玩自己做的游戏一边写BUG</del></p>
+                        <p className="weak">毕业之后就没有再继续做业余游戏开发了</p>
                         <p>游戏涉猎不广，遇到好玩的游戏会一直玩</p>
                         <p className="weak">因为穷和没时间</p>
                         <p>喜欢单人剧<sub>(养)</sub>情<sub>(老)</sub>向 FPS / TPS / ACT</p>
                         <p className="weak">太菜了只能打Normal的AI _(:з)∠)_</p>
                         <p className="weak">曾经很喜欢红警之类的RTS</p>
+                        <p className="weak">文明类也很上头</p>
                         <p>喜欢和朋友一起玩多人游戏</p>
                         <p className="weak">这里点名表扬全境封锁和 HFF</p>
+                        <p className="weak">不过已经很久没有和朋友们一起玩游戏了</p>
                         <p>不喜欢竞技类和卡牌类游戏</p>
                         <p className="weak">太菜了玩不出快乐 _(:з)∠)_</p>
+                        <p>主机类只有一台<del>交换机</del> Switch，但玩的很少</p>
+                        <p className="weak">因为玩游戏的时间不多，大部分独占也兴趣不是很大</p>
+                        <p className="weak">塞尔达至今没有通关</p>
+                        <p className="weak">动森也只玩了个大概</p>
+                        <p className="weak">倒是在 NS 上把 Hades 通关了</p>
                     </DeferElement>
                 </DeferSection>
                 <DeferSection id="contact">
