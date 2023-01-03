@@ -173,20 +173,26 @@ function RecipeDetails(props: { show: boolean, pid: number, previewRect: DOMRect
         }
     };
 
+    const targetRect = containerRef.current
+        ? containerRef.current.getBoundingClientRect()
+        : new DOMRect();
+
     return (<div className={clsx("recipe-details", state)} onClick={clickClose}>
         <div className="background"></div>
         <div className="details-container" ref={containerRef}></div>{
             data
-                ? <RecipeDetailsPanel data={data} rect={rect} limitHeight={state !== "present"} />
+                ? <RecipeDetailsPanel data={data} rect={rect} fullRect={targetRect} limitHeight={state !== "present"} />
                 : null
         }
         <WindowEvent event="resize" listener={onWindowResize} />
     </div>)
 }
 
-function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOMRect, limitHeight: boolean })
+function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOMRect, fullRect: DOMRect, limitHeight: boolean })
 {
     const contentRef = useRef<HTMLDivElement>(null);
+    const [imageUrl, setImgUrl] = useState<string>();
+    const [imgSize, setImgSize] = useState<[number, number]>([0, 0]);
 
     const clickPanel = (e: React.MouseEvent<HTMLDivElement>) =>
     {
@@ -198,7 +204,15 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
 
     useEffect(() =>
     {
-
+        setImgUrl(undefined);
+        const img = new Image();
+        img.src = props.data.content.images[0];
+        img.onload = () =>
+        {
+            setImgUrl(img.src);
+            const aspect = img.height / img.width;
+            setImgSize([props.fullRect.width, props.fullRect.width * aspect]);
+        };
         marked.parse(props.data.content.content, (err, result) =>
         {
             if (err)
@@ -227,8 +241,8 @@ function RecipeDetailsPanel(props: { data: PubPostData<RecipeContent>, rect: DOM
                 <IconButton className="button-close" icon={<Icons.Close />} />
                 <div className="image-wrapper">
                     {
-                        data.content.images[0]
-                            ? <img src={API.Storage.processImg(data.content.images[0], "Width1000")} alt="cook image" />
+                        imageUrl
+                            ? <img src={API.Storage.processImg(data.content.images[0], "Width1000")} alt="cook image" width={imgSize[0]} height={imgSize[1]} />
                             : <div className="placeholder">
                                 <Icons.ForkKnife />
                             </div>
