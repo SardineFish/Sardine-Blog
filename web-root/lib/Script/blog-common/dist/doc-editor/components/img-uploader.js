@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { useRef, useState } from "react";
 import { DocumentEvent, FoldMenu, message } from "../../component";
 import { Icons } from "../../misc";
-import SardineFish, { API } from "sardinefish";
+import * as SardineFish from "sardinefish";
 export function ImageUploader(props) {
     const [imgUrl, setImgUrl] = useState("");
     const [progress, setProgress] = useState(0);
@@ -56,7 +56,7 @@ export function ImageUploader(props) {
         React.createElement(DocumentEvent, { event: "paste", listener: onPaste }),
         React.createElement("div", { className: "panel" },
             React.createElement("div", { className: "img-wrapper", onClick: clickUpload },
-                imgUrl ? React.createElement("img", { src: API.Storage.processImg(imgUrl, "Size600"), alt: "", className: "img" }) : null,
+                imgUrl ? React.createElement("img", { src: SardineFish.API.Storage.processImg(imgUrl, "Size600"), alt: "", className: "img" }) : null,
                 React.createElement("div", { className: "placeholder" },
                     React.createElement(Icons.Upload, null))),
             imgUrl

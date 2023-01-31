@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { ChangeEvent, useRef, useState } from "react";
 import { DocumentEvent, FoldMenu, message } from "../../component";
 import { Icons } from "../../misc";
-import SardineFish, { API } from "sardinefish";
+import * as SardineFish from "sardinefish";
 
 interface Props
 {
@@ -80,7 +80,7 @@ export function ImageUploader(props: Props)
         <DocumentEvent event="paste" listener={onPaste} />
         <div className="panel">
             <div className="img-wrapper" onClick={clickUpload}>
-                {imgUrl ? <img src={API.Storage.processImg(imgUrl, "Size600")} alt="" className="img"/> : null}
+                {imgUrl ? <img src={SardineFish.API.Storage.processImg(imgUrl, "Size600")} alt="" className="img"/> : null}
                 <div className="placeholder">
                     <Icons.Upload/>
                 </div>

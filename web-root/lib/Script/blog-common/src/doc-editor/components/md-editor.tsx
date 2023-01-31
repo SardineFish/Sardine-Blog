@@ -10,7 +10,7 @@ import katex from "katex";
 import MarkdownIt from "markdown-it";
 import { RenderRule } from "markdown-it/lib/renderer";
 import Token from "markdown-it/lib/token";
-import SardineFish from "sardinefish";
+import * as SardineFish from "sardinefish";
 
 const markdownitKatexWrap = (md: any, option: any) => markdownitKatex(md, option, katex);
 

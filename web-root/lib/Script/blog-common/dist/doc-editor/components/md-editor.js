@@ -7,7 +7,7 @@ import markdownitEmoji from "markdown-it-emoji";
 // @ts-ignore
 import markdownitKatex from "@iktakahiro/markdown-it-katex";
 import katex from "katex";
-import SardineFish from "sardinefish";
+import * as SardineFish from "sardinefish";
 const markdownitKatexWrap = (md, option) => markdownitKatex(md, option, katex);
 var EditMode;
 (function (EditMode) {
