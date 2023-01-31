@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { useRef, useState } from "react";
 import { DocumentEvent, FoldMenu, message } from "../../component";
 import { Icons } from "../../misc";
-import { API } from "sardinefish";
+import SardineFish, { API } from "sardinefish";
 export function ImageUploader(props) {
     const [imgUrl, setImgUrl] = useState("");
     const [progress, setProgress] = useState(0);

@@ -7,6 +7,7 @@ import markdownitEmoji from "markdown-it-emoji";
 // @ts-ignore
 import markdownitKatex from "@iktakahiro/markdown-it-katex";
 import katex from "katex";
+import SardineFish from "sardinefish";
 const markdownitKatexWrap = (md, option) => markdownitKatex(md, option, katex);
 var EditMode;
 (function (EditMode) {
@@ -34,24 +35,31 @@ export function MarkdownEditor(props) {
             md.use(markdownitEmoji);
             md.use(markdownitKatexWrap);
             md.use(mdImgPostprocess);
+            let previousDoc = "";
             let delayTimeout = -1;
             const editor = new SimpleMDE({
                 element: ref.current,
                 initialValue: "",
                 toolbar: false,
                 spellChecker: false,
-                previewRender: (text, preview) => {
-                    if (preview) {
-                        clearTimeout(delayTimeout);
-                        delayTimeout = setTimeout(() => {
-                            // previousRenderResult = md.render(text);
-                            preview.innerHTML = md.render(text);
-                        }, 100);
-                        return "rendering...";
-                    }
-                    else
-                        return md.render(text);
-                },
+                // previewRender: (text, preview) =>
+                // {
+                //     if (text == previousDoc)
+                //         return undefined;
+                //     previousDoc = text;
+                //     if (preview)
+                //     {
+                //         clearTimeout(delayTimeout);
+                //         delayTimeout = setTimeout(() =>
+                //         {
+                //             // previousRenderResult = md.render(text);
+                //             preview.innerHTML = md.render(text);
+                //         }, 100);
+                //         return "rendering...";
+                //     }
+                //     else 
+                //         return md.render(text);
+                // }
             });
             setTimeout(() => {
                 editor.toggleSideBySide();

@@ -10,6 +10,7 @@ import katex from "katex";
 import MarkdownIt from "markdown-it";
 import { RenderRule } from "markdown-it/lib/renderer";
 import Token from "markdown-it/lib/token";
+import SardineFish from "sardinefish";
 
 const markdownitKatexWrap = (md: any, option: any) => markdownitKatex(md, option, katex);
 
@@ -54,27 +55,32 @@ export function MarkdownEditor(props: {handle?: MutableRefObject<MarkdownEditorR
             md.use(markdownitKatexWrap);
             md.use(mdImgPostprocess);
 
+            let previousDoc = "";
+
             let delayTimeout = -1;
             const editor = new SimpleMDE({
                 element: ref.current,
                 initialValue: "",
                 toolbar: false,
                 spellChecker: false,
-                previewRender: (text, preview) =>
-                {
-                    if (preview)
-                    {
-                        clearTimeout(delayTimeout);
-                        delayTimeout = setTimeout(() =>
-                        {
-                            // previousRenderResult = md.render(text);
-                            preview.innerHTML = md.render(text);
-                        }, 100);
-                        return "rendering...";
-                    }
-                    else 
-                        return md.render(text);
-                },
+                // previewRender: (text, preview) =>
+                // {
+                //     if (text == previousDoc)
+                //         return undefined;
+                //     previousDoc = text;
+                //     if (preview)
+                //     {
+                //         clearTimeout(delayTimeout);
+                //         delayTimeout = setTimeout(() =>
+                //         {
+                //             // previousRenderResult = md.render(text);
+                //             preview.innerHTML = md.render(text);
+                //         }, 100);
+                //         return "rendering...";
+                //     }
+                //     else 
+                //         return md.render(text);
+                // }
 
             });
             setTimeout(() =>
