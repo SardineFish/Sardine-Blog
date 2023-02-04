@@ -1459,4 +1459,61 @@ del.black {
     }
 }
 
+.blog-stats {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10em;
+    user-select: none;
+    font-family: "Quicksand", Segoe UI, Roboto, Tahoma, Geneva, Verdana, sans-serif;
+    color: #aaa;
+    outline: none;
+
+    .stats-item {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stats-value {
+        margin-top: 0.5em;
+    }
+
+    .stats-like {
+        &.hit {
+            color: #ff5c83 !important;
+        }
+    }
+}
+
+.like-button {
+    width: 3em;
+    // border: solid 2px #eee;
+    border-radius: 100px;
+    // padding: 1em;
+    cursor: pointer;
+    overflow: visible;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    outline: none;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes hit-like {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.0);
+    }
+}
+
 @import "./markdown-body.scss";

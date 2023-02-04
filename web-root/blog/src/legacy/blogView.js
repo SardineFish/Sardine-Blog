@@ -1,4 +1,6 @@
 import "../style/view.scss";
+import BezierEasing from "bezier-easing";
+// import SardineFish from "sardinefish";
 
 const hljsLib = "https://cdn.staticfile.org/highlight.js/11.6.0";
 
@@ -272,6 +274,7 @@ function loadBlog(pid) {
     SardineFish.API.Blog.getByPid({ pid: pid }).then(data =>
     {
         loadBlogContent(data);
+        $(".stats-like .stats-value").innerText = data.stats.likes;
     }).catch(err =>
     {
         switch (err.code)
@@ -792,3 +795,275 @@ function markedImagePostProcess(marked)
     }
     return renderer;
 }
+
+function animate(callback, t, timingFunc = t => t)
+{ 
+    return new Promise((resolve, reject) =>
+    {
+        let offset = 0;
+        let elapsed = 0;
+        const update = (delay) =>
+        {
+            if (offset === 0)
+                offset = delay;
+                
+            elapsed = (delay - offset) / 1000;
+            if (elapsed >= t)
+                elapsed = t;
+
+            try
+            {
+
+                callback(timingFunc(elapsed / t));
+            }
+            catch (e)
+            { 
+                reject(e);
+                return;
+            }
+
+            if (elapsed === t)
+                resolve();
+            else
+                requestAnimationFrame(update);
+                
+        }
+
+        callback(0);
+
+        requestAnimationFrame(update); 
+    });
+}
+
+const SEQUENCE_ABORTED = Symbol("SEQUENCE_ABORTED");
+
+function sequence(process)
+{
+    const handle = {
+        abort: () =>
+        {
+            animProvider.abortSignal = true;
+        }
+    };
+
+    const animateRuntime = animate;
+    const animProvider = {
+        abortSignal: false,
+        animate(callback, duration, timingFunc = t => t)
+        {
+            return animateRuntime(t =>
+            {
+                if (this.abortSignal)
+                {
+                    throw SEQUENCE_ABORTED;
+                }
+                else
+                {
+                    callback(t);
+                }
+            }, duration, timingFunc);
+        }
+    }
+    process(animProvider).catch(e =>
+    {
+        if (e !== SEQUENCE_ABORTED)
+        {
+            throw e;
+        }
+    });
+
+    return handle;
+}
+function randRange(a, b)
+{
+    return Math.random() * (b - a) + a;
+}
+function lerp(a, b, t)
+{
+    return (b - a) * t + a;
+}
+function timeout(t)
+{
+    return new Promise(resolve =>
+    {
+        setTimeout(resolve, t * 1000);
+    });
+}
+
+function likeButton()
+{
+    $$(".stats-like").forEach(stats =>
+    {
+        const button = stats.querySelector(".like-button");
+
+        const VIEWPORT = 24;
+        let state = "idle";
+        let playingSequence = null;
+        const fill = button.querySelector(".heart-fill");
+        const value = stats.querySelector(".stats-value");
+        let strength = 1;
+
+        const handleMoseDown = e =>
+        {
+            if (state === "hit")
+                return;
+
+            state = "hold";
+            const rect = button.getBoundingClientRect();
+            const x = (e.clientX - rect.x) / rect.width;
+            const y = (e.clientY - rect.y) / rect.height;
+            console.log(fill, x, y);
+            fill.cx.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, x * VIEWPORT);
+            fill.cy.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, y * VIEWPORT);
+            animate(t =>
+            {
+                fill.r.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 36 * t);
+            }, 0.5, BezierEasing(0, 0, 0.55, 1));
+
+            playingSequence = sequence(async (provider) =>
+            {
+                for (let shakeDistance = 0; ; shakeDistance += 0.3)
+                {
+                    strength += 0.1;
+                    strength = Math.min(2, strength);
+
+                    shakeDistance = Math.min(shakeDistance, 10);
+                    const duration = randRange(0.05, 0.05);
+                    const targetX = randRange(-shakeDistance, shakeDistance);
+                    const targetY = randRange(-shakeDistance, shakeDistance);
+                    await provider.animate(t =>
+                    {
+                        const x = targetX * t;
+                        const y = targetY * t;
+                        button.style.translate = `${x}px ${y}px`;
+                    }, duration)
+                }
+            }
+            );
+        }
+
+        const handleCancel = () =>
+        {
+            if (state === "hold")
+            {
+                playingSequence.abort();
+                button.style.translate = "";
+                state = "idle";
+                fill.r.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0);
+            }
+        };
+
+        const handleRelease = (e) =>
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (state !== "idle")
+            {
+                playingSequence.abort();
+                button.style.translate = "";
+                state = "hit";
+                stats.classList.add("hit");
+
+                if (pid > 0)
+                {
+                    SardineFish.API.PostData.like({ pid: pid }).catch(err =>
+                    {
+                        console.error(err);
+                    }).then(data =>
+                    {
+                        value.innerText = data;
+                    });
+
+                }
+
+                const colors = [
+                    "#3ed6fa",
+                    "#fa603e",
+                    "#9de35d",
+                    "#8f3bdd",
+                    "#ffe376"
+                ]
+
+                const count = 16;
+                for (let i = 0; i < count; ++i)
+                {
+                    const theta = i / count * Math.PI * 2;
+                    const dx = Math.cos(theta);
+                    const dy = Math.sin(theta);
+                    const inner = [14, 16][i % 2] * strength;
+                    const outer = [28, 24][i % 2] * strength * strength;
+
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.x1.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dx * inner);
+                    line.y1.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dy * inner);
+
+                    line.x2.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dx * inner);
+                    line.y2.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dy * inner);
+
+                    line.style.strokeWidth = [1.4, 1][i % 2];
+                    line.style.stroke = colors[i % colors.length];
+                    line.style.opacity = 0;
+
+                    console.log(line);
+                    button.appendChild(line);
+
+                    sequence(async (provider) =>
+                    {
+                        await timeout(0.15);
+                        line.style.opacity = 1;
+                        provider.animate(t =>
+                        {
+                            const endpoint = lerp(inner, outer, t);
+                            line.x2.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dx * endpoint);
+                            line.y2.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dy * endpoint);
+                        }, 0.1, BezierEasing(0, 0, 0.4, 1));
+
+                        await timeout(0.05);
+
+                        await provider.animate(t =>
+                        {
+                            const endpoint = lerp(inner, outer, t);
+                            line.x1.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dx * endpoint);
+                            line.y1.baseVal.newValueSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_NUMBER, 0.5 * VIEWPORT + dy * endpoint);
+                        }, 0.3, BezierEasing(0, 0, 0.4, 1));
+
+                        await provider.animate(t =>
+                        {
+                            line.style.opacity = 1 - t;
+                        }, 0.05);
+
+                        button.removeChild(line);
+                    });
+                    sequence(async (provider) =>
+                    {
+                        await provider.animate(t =>
+                        {
+                            button.style.transform = `scale(${lerp(1, 1.2, t)})`;
+                        }, 0.1, BezierEasing(0.57, -0.77, 0.25, 1));
+
+                        await provider.animate(t =>
+                        {
+                            button.style.transform = `scale(${lerp(1.1, 1, t)})`;
+                        }, 0.2, BezierEasing(0, 0, 0.2, 1));
+                    })
+                }
+            }
+
+
+            strength = 1;
+        }
+
+        button.addEventListener("mousedown", handleMoseDown);
+        button.addEventListener("touchstart", e => handleMoseDown(e.touches[0]));
+        window.addEventListener("mouseup", handleCancel);
+        window.addEventListener("touchend", e =>
+        {
+            handleCancel();
+        });
+
+        button.addEventListener("mouseup", handleRelease);
+        button.addEventListener("touchend", handleRelease);
+    });
+}
+likeButton();

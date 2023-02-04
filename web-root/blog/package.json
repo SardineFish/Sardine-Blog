@@ -10,6 +10,7 @@
     "build:watch": "npx vite build --mode development --watch"
   },
   "dependencies": {
+    "bezier-easing": "^2.1.0",
     "blog-common": "file:../lib/Script/blog-common",
     "font": "file:../static/font",
     "katex": "^0.16.4",
