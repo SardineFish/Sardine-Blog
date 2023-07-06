@@ -602,7 +602,7 @@ function loadComment(cid)
             var commentName = element.dataset['name'];
             element.querySelector(".button-reply").addEventListener("click", function ()
             {
-                window.cid = parseInt(commentPid);
+                cid = parseInt(commentPid);
                 $("#input-comment").dataset['text'] = "Reply to " + commentName;
                 $("#input-comment").innerHTML = "";
             });
