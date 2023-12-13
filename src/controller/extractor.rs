@@ -1,11 +1,14 @@
-use std::{ops::{Deref, DerefMut}, any::type_name};
 use actix_http::HttpMessage;
-use futures_util::future::{ok, err};
+use futures_util::future::{err, ok};
+use std::{
+    any::type_name,
+    ops::{Deref, DerefMut},
+};
 
-use actix_web::{FromRequest, HttpRequest, dev::Payload, web};
+use actix_web::{dev::Payload, web, FromRequest, HttpRequest};
 use futures::future::Ready;
-use shared::ServiceOptions;
 use sar_blog::model::SessionAuthInfo;
+use shared::ServiceOptions;
 
 use crate::middleware;
 
@@ -39,13 +42,11 @@ impl<T: Sized + 'static> FromRequest for ExtensionMove<T> {
                 type_name::<T>(),
             );
             err(actix_web::error::ErrorInternalServerError(
-                "Missing extension."
+                "Missing extension.",
             ))
         }
     }
 }
-
-
 
 pub type Service = web::Data<sar_blog::Service>;
 pub type Session = ExtensionMove<middleware::Session>;

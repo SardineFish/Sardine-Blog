@@ -107,7 +107,7 @@ impl Service {
             );
             let mut secret: [u8; 16] = [0; 16];
             self.rng.borrow_mut().fill_bytes(&mut secret);
-            let hash = format!("{:x}", Sha256::digest(&secret));
+            let hash = format!("{:x}", Sha256::digest(secret));
 
             let user = User::root(AuthenticationInfo {
                 method: model::HashMethod::SHA256,

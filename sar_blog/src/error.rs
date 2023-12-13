@@ -74,7 +74,10 @@ pub trait MapServiceError<T> {
     fn map_service_err(self) -> std::result::Result<T, Error>;
 }
 
-impl<T, E> MapServiceError<T> for std::result::Result<T, E> where E : Into<Error> {
+impl<T, E> MapServiceError<T> for std::result::Result<T, E>
+where
+    E: Into<Error>,
+{
     fn map_service_err(self) -> std::result::Result<T, Error> {
         self.map_err(E::into)
     }

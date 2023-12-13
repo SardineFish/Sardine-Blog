@@ -1,10 +1,9 @@
-
 use chrono::{DateTime, Utc};
 use model::{Blog, BlogContent, PidType, PubUserInfo};
-use serde::{Serialize};
+use serde::Serialize;
 use shared::md2plain::{html2plain, md2plain, slice_utf8};
 
-use crate::{utils, post::PostService};
+use crate::{post::PostService, utils};
 use utils::json_datetime_format;
 
 const PREVIEW_WORDS: usize = 300;
@@ -13,11 +12,11 @@ const PREVIEW_WORDS: usize = 300;
 pub struct BlogPreview {
     pub pid: PidType,
     pub title: String,
-    #[serde(with="json_datetime_format")]
+    #[serde(with = "json_datetime_format")]
     pub time: DateTime<Utc>,
     pub tags: Vec<String>,
     pub author: PubUserInfo,
-    pub preview: String, 
+    pub preview: String,
 }
 
 impl From<Blog> for BlogPreview {

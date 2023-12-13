@@ -1,10 +1,15 @@
-use std::{sync::{Mutex, mpsc::{Receiver, SyncSender, sync_channel}}, thread::spawn};
+use std::{
+    sync::{
+        mpsc::{sync_channel, Receiver, SyncSender},
+        Mutex,
+    },
+    thread::spawn,
+};
 
-use chrono::{DateTime, Duration, NaiveDateTime, Utc};
+use chrono::{DateTime, Duration, NaiveDateTime, TimeZone, Utc};
 use log::{Level, Metadata, Record};
+use sar_blog::{ErrorRecord, Service};
 use shared::ServiceOptions;
-use sar_blog::{Service, ErrorRecord};
-
 
 struct ErrorReportBuffer {
     buffer_timeout: Duration,
@@ -37,27 +42,27 @@ impl ServiceMornitor {
         Self {
             error_buffer: Mutex::new(ErrorReportBuffer {
                 buffer_timeout: options.report_interval,
-                last_report_time: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
+                last_report_time: Utc
+                    .from_utc_datetime(&NaiveDateTime::from_timestamp_millis(0).unwrap()),
                 records: Default::default(),
             }),
             report_sender: sender,
-            logger: env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).build(),
+            logger: env_logger::Builder::from_env(
+                env_logger::Env::default().default_filter_or("info"),
+            )
+            .build(),
         }
     }
     pub fn init(options: &ServiceOptions, service: Service) {
         let (sender, receiver) = sync_channel::<Vec<ErrorRecord>>(16);
         let mornitor = Box::new(Self::new(options, sender));
 
-        let reporter = ReportSender {
-            receiver,
-            service,
-        };
+        let reporter = ReportSender { receiver, service };
 
         let max_level = mornitor.logger.filter();
         log::set_boxed_logger(mornitor).unwrap();
-        
+
         log::set_max_level(max_level);
-        
 
         spawn(move || reporter.run());
     }
@@ -70,9 +75,7 @@ impl log::Log for ServiceMornitor {
     fn log(&self, record: &Record) {
         self.logger.log(record);
 
-
         if record.level() == Level::Error {
-            
             let records = {
                 let mut buffer = self.error_buffer.lock().unwrap();
                 buffer.records.push(ErrorRecord {
@@ -103,13 +106,14 @@ struct ReportSender {
 
 impl ReportSender {
     fn run(self) {
-        actix_web::rt::System::new()
-            .block_on(async move {
-                log::info!("Error report sender is running.");
-                loop {
+        actix_web::rt::System::new().block_on(async move {
+            log::info!("Error report sender is running.");
+            loop {
                 if let Ok(records) = self.receiver.recv() {
                     log::info!("Sent {} reports", records.len());
-                    let result = self.service.push_service()
+                    let result = self
+                        .service
+                        .push_service()
                         .send_error_report(&self.service.option.report_address, records)
                         .await;
                     if let Err(err) = result {

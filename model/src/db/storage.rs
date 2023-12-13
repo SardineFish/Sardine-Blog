@@ -1,8 +1,10 @@
-
-
 use chrono::Utc;
-use mongodb::{Collection, Database, bson::{self, doc}, error::{ErrorKind}};
-use serde::{Serialize};
+use mongodb::{
+    bson::{self, doc},
+    error::ErrorKind,
+    Collection, Database,
+};
+use serde::Serialize;
 use shared::error::LogError;
 
 use crate::error::*;
@@ -14,28 +16,33 @@ struct ObjectInfo {
 }
 
 pub struct StorageModel {
-    collection: Collection<ObjectInfo>
+    collection: Collection<ObjectInfo>,
 }
 
 impl StorageModel {
-    pub fn new(db: &Database) -> Self{
+    pub fn new(db: &Database) -> Self {
         Self {
             collection: db.collection("storage"),
         }
     }
 
     pub async fn init_collection(db: &Database) {
-        db.run_command(doc! {
-            "createIndexes": "storage",
-            "indexes": [
-                {
-                    "key": {
-                        "name": 1,
+        db.run_command(
+            doc! {
+                "createIndexes": "storage",
+                "indexes": [
+                    {
+                        "key": {
+                            "name": 1,
+                        },
+                        "name": "idx_name",
                     },
-                    "name": "idx_name",
-                },
-            ],
-        }, None).await.log_warn_consume("init-db");
+                ],
+            },
+            None,
+        )
+        .await
+        .log_warn_consume("init-db");
     }
 
     pub async fn name_existed(&self, name: &str) -> Result<bool> {
@@ -45,17 +52,24 @@ impl StorageModel {
         let count = self.collection.count_documents(query, None).await?;
         Ok(count > 0)
     }
-    
+
     pub async fn add_new_key(&self, name: &str) -> Result<bool> {
-        match self.collection.insert_one(&ObjectInfo {
-            name: name.to_owned(),
-            time: Utc::now().into()
-        }, None).await {
+        match self
+            .collection
+            .insert_one(
+                &ObjectInfo {
+                    name: name.to_owned(),
+                    time: Utc::now().into(),
+                },
+                None,
+            )
+            .await
+        {
             Ok(_) => Ok(true),
             Err(err) => match err.kind.as_ref() {
                 ErrorKind::Command(cmd_err) if cmd_err.code == 11000 => Ok(false),
-                _ => Err(err)?
-            }
+                _ => Err(err)?,
+            },
         }
     }
 

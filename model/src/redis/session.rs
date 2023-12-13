@@ -1,9 +1,10 @@
-
 use chrono::{DateTime, TimeZone, Utc};
-use redis::{AsyncCommands, FromRedisValue, RedisError, ToRedisArgs, aio::MultiplexedConnection, pipe};
 use paste::paste;
+use redis::{
+    aio::MultiplexedConnection, pipe, AsyncCommands, FromRedisValue, RedisError, ToRedisArgs,
+};
 
-use crate::{PidType, error::*};
+use crate::{error::*, PidType};
 
 use super::redis::namespace_key;
 
@@ -29,10 +30,13 @@ const KEY_ACCESS_TOKEN: &str = "access_token";
 const KEY_UID: &str = "uid";
 const KEY_FAKE_SALT: &str = "fake_salt";
 
-
 macro_rules! ref_type {
-    (String) => {&str};
-    ($type: ident) => {&$type};
+    (String) => {
+        &str
+    };
+    ($type: ident) => {
+        &$type
+    };
 }
 
 macro_rules! session_field {
@@ -58,7 +62,7 @@ pub struct Session<'s> {
 
 impl<'s> Session<'s> {
     pub fn with_session_id(session_id: &'s str, redis: MultiplexedConnection) -> Self {
-        Self{
+        Self {
             redis,
             key_data: namespace_key(NAMESPACE_DATA, session_id),
             key_visit: namespace_key(NAMESPACE_VISITS, session_id),
@@ -70,22 +74,37 @@ impl<'s> Session<'s> {
     }
     pub async fn try_init(&mut self) -> Result<bool> {
         let keys = &[&self.key_data, &self.key_visit];
-        redis::cmd("WATCH").arg(keys).query_async(&mut self.redis).await.map_model_result()?;
+        redis::cmd("WATCH")
+            .arg(keys)
+            .query_async(&mut self.redis)
+            .await
+            .map_model_result()?;
         let mut p = redis::pipe();
 
         let existed: bool = self.redis.exists(&self.key_data).await.map_model_result()?;
         if existed {
-            redis::cmd("UNWATCH").query_async(&mut self.redis).await.map_model_result()?;
+            redis::cmd("UNWATCH")
+                .query_async(&mut self.redis)
+                .await
+                .map_model_result()?;
             Ok(false)
         } else {
-            let result: std::result::Result<(), RedisError> = p.atomic()
-                .hset(&self.key_data, KEY_LAST_ACTIVE, Utc::now().timestamp_millis())
+            let result: std::result::Result<(), RedisError> = p
+                .atomic()
+                .hset(
+                    &self.key_data,
+                    KEY_LAST_ACTIVE,
+                    Utc::now().timestamp_millis(),
+                )
                 .del(&self.key_visit)
                 .query_async(&mut self.redis)
                 .await;
 
             if let Err(err) = result {
-                redis::cmd("UNWATCH").query_async(&mut self.redis).await.map_model_result()?;
+                redis::cmd("UNWATCH")
+                    .query_async(&mut self.redis)
+                    .await
+                    .map_model_result()?;
                 Err(err).map_model_result()
             } else {
                 Ok(true)
@@ -95,7 +114,7 @@ impl<'s> Session<'s> {
     pub async fn last_active(&mut self) -> Result<Option<DateTime<Utc>>> {
         let timestamp: Option<i64> = self.get_field::<Option<i64>>(KEY_LAST_ACTIVE).await?;
 
-        Ok(timestamp.map(|timestamp| Utc.timestamp_millis(timestamp)))
+        Ok(timestamp.and_then(|timestamp| Utc.timestamp_millis_opt(timestamp).single()))
     }
     pub async fn set_last_active(&mut self, time: &DateTime<Utc>) -> Result<()> {
         let timestamp = time.timestamp_millis();
@@ -112,8 +131,10 @@ impl<'s> Session<'s> {
 
     pub async fn delete(&mut self) -> Result<()> {
         pipe()
-            .del(&self.key_data).ignore()
-            .del(&self.key_visit).ignore()
+            .del(&self.key_data)
+            .ignore()
+            .del(&self.key_visit)
+            .ignore()
             .query_async(&mut self.redis)
             .await
             .map_model_result()
@@ -121,9 +142,10 @@ impl<'s> Session<'s> {
 
     pub async fn use_challenge(&mut self) -> Result<Option<String>> {
         let key = namespace_key(NAMESPACE_CHALLENGE, self.session_id);
-        let (challenge, ): (Option<String>, ) = pipe()
+        let (challenge,): (Option<String>,) = pipe()
             .get(&key)
-            .del(&key).ignore()
+            .del(&key)
+            .ignore()
             .query_async(&mut self.redis)
             .await
             .map_model_result()?;
@@ -138,25 +160,28 @@ impl<'s> Session<'s> {
             .query_async(&mut self.redis)
             .await
             .map_model_result()
-
     }
     session_field!(String, uid, KEY_UID);
 
     session_field!(String, fake_salt, KEY_FAKE_SALT);
 
     pub async fn get(&mut self) -> Result<Option<SessionData>> {
-        let (timestamp, token, uid): (Option<i64>, Option<String>, Option<String>) = self.redis.hget(&self.key_data, 
-            &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID])
+        let (timestamp, token, uid): (Option<i64>, Option<String>, Option<String>) = self
+            .redis
+            .hget(
+                &self.key_data,
+                &[KEY_LAST_ACTIVE, KEY_ACCESS_TOKEN, KEY_UID],
+            )
             .await
             .map_model_result()?;
 
         if let (Some(timestamp), Some(token), Some(uid)) = (timestamp, token, uid) {
             Ok(Some(SessionData {
-                last_active: Utc.timestamp_millis(timestamp),
-                auth_info: SessionAuthInfo {
-                    uid,
-                    token,
-                }
+                last_active: Utc
+                    .timestamp_millis_opt(timestamp)
+                    .earliest()
+                    .unwrap_or(DateTime::<Utc>::MIN_UTC),
+                auth_info: SessionAuthInfo { uid, token },
             }))
         } else {
             Ok(None)
@@ -167,25 +192,34 @@ impl<'s> Session<'s> {
         let timestamp = data.last_active.timestamp_millis();
         redis::cmd("HSET")
             .arg(&self.key_data)
-            .arg(KEY_LAST_ACTIVE).arg(timestamp)
-            .arg(KEY_ACCESS_TOKEN).arg(&data.auth_info.token)
-            .arg(KEY_UID).arg(&data.auth_info.uid)
+            .arg(KEY_LAST_ACTIVE)
+            .arg(timestamp)
+            .arg(KEY_ACCESS_TOKEN)
+            .arg(&data.auth_info.token)
+            .arg(KEY_UID)
+            .arg(&data.auth_info.uid)
             .query_async(&mut self.redis)
             .await
             .map_model_result()
     }
 
     pub async fn add_visit(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
-        let not_visited: bool = self.redis.sadd(&self.key_visit, pid)
+        let not_visited: bool = self
+            .redis
+            .sadd(&self.key_visit, pid)
             .await
             .map_model_result()?;
-        
-        self.redis.expire(&self.key_visit, expire_seconds).await.map_model_result()?;
+
+        self.redis
+            .expire(&self.key_visit, expire_seconds)
+            .await
+            .map_model_result()?;
         Ok(not_visited)
     }
 
     pub async fn check_visit(&mut self, pid: PidType) -> Result<bool> {
-        self.redis.sismember(&self.key_visit, pid)
+        self.redis
+            .sismember(&self.key_visit, pid)
             .await
             .map_model_result()
     }
@@ -194,7 +228,8 @@ impl<'s> Session<'s> {
         let key = namespace_key(NAMESPACE_LIKED, self.session_id);
         let (result,): (bool,) = pipe()
             .sadd(&key, pid)
-            .expire(&key, expire_seconds).ignore()
+            .expire(&key, expire_seconds)
+            .ignore()
             .query_async(&mut self.redis)
             .await
             .map_model_result()?;
@@ -203,15 +238,15 @@ impl<'s> Session<'s> {
 
     pub async fn remove_like(&mut self, pid: PidType, expire_seconds: usize) -> Result<bool> {
         let key = namespace_key(NAMESPACE_LIKED, self.session_id);
-        let (result,): (bool, ) = pipe()
+        let (result,): (bool,) = pipe()
             .srem(&key, pid)
-            .expire(&key, expire_seconds).ignore()
+            .expire(&key, expire_seconds)
+            .ignore()
             .query_async(&mut self.redis)
             .await
             .map_model_result()?;
         Ok(result)
     }
-
 
     // pub async fn reset_visit(&mut self) -> Result<()> {
     //     self.redis.del(&self.key_visit)
@@ -220,13 +255,19 @@ impl<'s> Session<'s> {
     // }
 
     async fn get_field<T: FromRedisValue>(&mut self, field: &str) -> Result<T> {
-        self.redis.hget(&self.key_data, field)
+        self.redis
+            .hget(&self.key_data, field)
             .await
             .map_model_result()
     }
 
-    async fn set_field<T : ToRedisArgs + Send + Sync>(&mut self, field: &str, value: T) -> Result<()> {
-        self.redis.hset(&self.key_data, field, value)
+    async fn set_field<T: ToRedisArgs + Send + Sync>(
+        &mut self,
+        field: &str,
+        value: T,
+    ) -> Result<()> {
+        self.redis
+            .hset(&self.key_data, field, value)
             .await
             .map_model_result()?;
         Ok(())

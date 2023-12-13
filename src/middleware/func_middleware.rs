@@ -1,19 +1,18 @@
-use actix_http::body::{MessageBody, BoxBody};
-use actix_web::{
-    dev::{Service, Transform, ServiceRequest, ServiceResponse},
-};
-use futures_util::future::{ok, Ready, Future};
+use actix_http::body::{BoxBody, MessageBody};
+use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
+use futures_util::future::{ok, Future, Ready};
 
-use std::{marker::PhantomData, task::{
-    self,
-    Poll
-}};
 use std::pin::Pin;
+use std::{
+    marker::PhantomData,
+    task::{self, Poll},
+};
 
-
-pub trait ServiceT<B> = Service<ServiceRequest, Response = ServiceResponse<B>, Error = actix_web::Error>;
+pub trait ServiceT<B> =
+    Service<ServiceRequest, Response = ServiceResponse<B>, Error = actix_web::Error>;
 // pub trait MiddlewareClosure = FnMut<>
-pub type AsyncMiddlewareRtn<B> = Pin<Box<dyn Future<Output = Result<ServiceResponse<B>, actix_web::Error>>>>;
+pub type AsyncMiddlewareRtn<B> =
+    Pin<Box<dyn Future<Output = Result<ServiceResponse<B>, actix_web::Error>>>>;
 
 pub type SyncService<S> = &'static S;
 
@@ -30,9 +29,9 @@ where
     S::Future: 'static,
     B: MessageBody,
     Func: FnMut(ServiceRequest, SyncService<S>) -> F + 'static,
-    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>>
+    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>>,
 {
-    pub fn from_func(func: Func) -> Self{
+    pub fn from_func(func: Func) -> Self {
         Self {
             func,
             _s: Default::default(),
@@ -41,12 +40,13 @@ where
     }
 }
 
-impl<S, B, F, Func: FnMut(ServiceRequest, SyncService<S>) -> F + Copy + 'static> Transform<S, ServiceRequest> for FuncMiddleware<S, F, Func>
+impl<S, B, F, Func: FnMut(ServiceRequest, SyncService<S>) -> F + Copy + 'static>
+    Transform<S, ServiceRequest> for FuncMiddleware<S, F, Func>
 where
     S: ServiceT<B> + 'static,
     S::Future: 'static,
     B: MessageBody,
-    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>> + 'static
+    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>> + 'static,
 {
     type Response = ServiceResponse<B>;
     type Error = actix_web::Error;
@@ -61,17 +61,22 @@ where
     }
 }
 
-pub struct FuncMiddlewareFuture<S: 'static, F, Func: FnMut(ServiceRequest, SyncService<S>) -> F + 'static> {
+pub struct FuncMiddlewareFuture<
+    S: 'static,
+    F,
+    Func: FnMut(ServiceRequest, SyncService<S>) -> F + 'static,
+> {
     func: Func,
     service: S,
 }
 
-impl<S, B, F, Func: FnMut(ServiceRequest, SyncService<S>) -> F + Copy + 'static> Service<ServiceRequest> for FuncMiddlewareFuture<S, F, Func>
+impl<S, B, F, Func: FnMut(ServiceRequest, SyncService<S>) -> F + Copy + 'static>
+    Service<ServiceRequest> for FuncMiddlewareFuture<S, F, Func>
 where
     S: ServiceT<B> + 'static,
     S::Future: 'static,
-    B: MessageBody, 
-    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>> + 'static
+    B: MessageBody,
+    F: Future<Output = Result<ServiceResponse<B>, actix_web::Error>> + 'static,
 {
     type Response = ServiceResponse<B>;
     type Error = actix_web::Error;
@@ -80,9 +85,7 @@ where
         self.service.poll_ready(ctx)
     }
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        let service = unsafe {
-            &*((&self.service) as *const S)
-        };
+        let service = unsafe { &*((&self.service) as *const S) };
         let mut func = self.func;
         let fut = func(req, service);
         Box::pin(async move {
@@ -92,20 +95,24 @@ where
     }
 }
 
-pub fn _test_func<S>(num: i32) -> FuncMiddleware<S, AsyncMiddlewareRtn<BoxBody>, impl FnMut(ServiceRequest, SyncService<S>) -> AsyncMiddlewareRtn<BoxBody> + Copy>
-    where
-            S: ServiceT<BoxBody> + 'static,
-            S::Future: 'static 
+pub fn _test_func<S>(
+    num: i32,
+) -> FuncMiddleware<
+    S,
+    AsyncMiddlewareRtn<BoxBody>,
+    impl FnMut(ServiceRequest, SyncService<S>) -> AsyncMiddlewareRtn<BoxBody> + Copy,
+>
+where
+    S: ServiceT<BoxBody> + 'static,
+    S::Future: 'static,
 {
     FuncMiddleware::<S, AsyncMiddlewareRtn<BoxBody>, _>::from_func(move |req, srv| {
         Box::pin(async move {
             log::debug!("{}", num);
-            srv.call(req).await 
+            srv.call(req).await
         })
     })
 }
-
-
 
 macro_rules! async_middleware {
     (pub $name: ident, $async_func: ident) => {
@@ -138,4 +145,3 @@ macro_rules! async_middleware {
         async_middleware!(pub fn $name($param $colon $type,), $func($invoke_param,));
     };
 }
- 

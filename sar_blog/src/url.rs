@@ -1,8 +1,8 @@
 use model::{PidType, PostDoc, PostType, PostTypeName};
 use shared::ServiceOptions;
 
-use crate::Service;
 use crate::error::*;
+use crate::Service;
 
 pub struct UrlService<'s> {
     service: &'s Service,
@@ -49,19 +49,31 @@ impl<'s> UrlService<'s> {
             PostType::Recipe(_) => Ok(self.recipe(post.pid)),
             PostType::Miscellaneous(content) => Ok(content.url.to_owned()),
             PostType::Comment(content) => {
-                let post_type = self.service.model.post.get_type(content.comment_root).await?;
+                let post_type = self
+                    .service
+                    .model
+                    .post
+                    .get_type(content.comment_root)
+                    .await?;
                 match post_type {
                     PostTypeName::Blog => Ok(self.blog(content.comment_root)),
                     PostTypeName::Note => Ok(self.note(content.comment_root)),
                     PostTypeName::Miscellaneous => {
-                        let root_post = self.service.model.post.get_raw_by_pid(content.comment_root).await?;
+                        let root_post = self
+                            .service
+                            .model
+                            .post
+                            .get_raw_by_pid(content.comment_root)
+                            .await?;
                         if let PostType::Miscellaneous(content) = root_post.data {
                             Ok(content.url)
                         } else {
                             Err(Error::InternalServiceError("Invalid post type"))
                         }
-                    },
-                    PostTypeName::Comment => Err(Error::InternalServiceError("Invalid comment root"))
+                    }
+                    PostTypeName::Comment => {
+                        Err(Error::InternalServiceError("Invalid comment root"))
+                    }
                 }
             }
         }

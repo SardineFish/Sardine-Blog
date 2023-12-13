@@ -1,13 +1,19 @@
 use actix_http::StatusCode;
-use actix_web::{get, post, options, web::{Json, Path, Query, ServiceConfig, scope}};
-use sar_blog::{SimpleScore, SnakeRemakeScore, model::{RankedScore}};
+use actix_web::{
+    get, options, post,
+    web::{scope, Json, Path, Query, ServiceConfig},
+};
 use sar_blog::RankService;
-use serde::{Serialize, Deserialize};
+use sar_blog::{model::RankedScore, SimpleScore, SnakeRemakeScore};
+use serde::{Deserialize, Serialize};
 
-use crate::{middleware, misc::{response::{NoContent, Response}}};
 use crate::misc::error::*;
+use crate::{
+    middleware,
+    misc::response::{NoContent, Response},
+};
 
-use super::{extractor};
+use super::extractor;
 use middleware::AccessControl;
 
 use Response::Ok;
@@ -46,40 +52,64 @@ struct QueryParams {
 
 const THROTTLE: usize = 3;
 
-#[get("/{key}", wrap="middleware::access_control(AccessControl::AnyGet)")]
-async fn get_score(service: extractor::Service, key: Path<String>, query: Query<QueryParams>)
-    -> Response<Vec<Score>>
-{
+#[get("/{key}", wrap = "middleware::access_control(AccessControl::AnyGet)")]
+async fn get_score(
+    service: extractor::Service,
+    key: Path<String>,
+    query: Query<QueryParams>,
+) -> Response<Vec<Score>> {
     let scores = match key.as_str() {
-        "snakeWeb" => service.rank().snake_web().get_ranked_scores(query.skip, query.count).await?,
-        "snake-remake" => service.rank().snake_remake().get_ranked_scores(query.skip, query.count).await?,
+        "snakeWeb" => {
+            service
+                .rank()
+                .snake_web()
+                .get_ranked_scores(query.skip, query.count)
+                .await?
+        }
+        "snake-remake" => {
+            service
+                .rank()
+                .snake_remake()
+                .get_ranked_scores(query.skip, query.count)
+                .await?
+        }
         _ => Err(Error::Misc(StatusCode::NOT_FOUND, "Not supported"))?,
     };
     Ok(scores.into_iter().map(Score::from).collect())
 }
 
-#[post("/snakeWeb", wrap="middleware::access_control(AccessControl::AnyPostJson)")]
-async fn post_snake_web(service: extractor::Service, data: Json<SimpleScore>) 
-    -> Response<usize> 
-{
-    let rank = service.rank().snake_web().post_score(data.into_inner()).await?;
+#[post(
+    "/snakeWeb",
+    wrap = "middleware::access_control(AccessControl::AnyPostJson)"
+)]
+async fn post_snake_web(service: extractor::Service, data: Json<SimpleScore>) -> Response<usize> {
+    let rank = service
+        .rank()
+        .snake_web()
+        .post_score(data.into_inner())
+        .await?;
     Ok(rank)
 }
 
-
-#[post("/snake-remake", wrap="middleware::throttle(THROTTLE)", wrap="middleware::access_control(AccessControl::AnyPostJson)")]
-async fn post_snake_remake(service: extractor::Service, data: Json<SnakeRemakeScore>) 
-    -> Response<usize>
-{
+#[post(
+    "/snake-remake",
+    wrap = "middleware::throttle(THROTTLE)",
+    wrap = "middleware::access_control(AccessControl::AnyPostJson)"
+)]
+async fn post_snake_remake(
+    service: extractor::Service,
+    data: Json<SnakeRemakeScore>,
+) -> Response<usize> {
     let score = data.into_inner();
     let rank = service.rank().snake_remake().post_score(score).await?;
     Ok(rank)
 }
 
-#[options("/{key}", wrap="middleware::access_control(AccessControl::AnyPostJson)")]
-async fn cross_origin_request(path: Path<String>) 
-    -> Response<NoContent>
-{
+#[options(
+    "/{key}",
+    wrap = "middleware::access_control(AccessControl::AnyPostJson)"
+)]
+async fn cross_origin_request(path: Path<String>) -> Response<NoContent> {
     match path.as_str() {
         "snakeWeb" | "snake-remake" => (),
         _ => Err(Error::Misc(StatusCode::NOT_FOUND, "Not supported"))?,
@@ -87,12 +117,12 @@ async fn cross_origin_request(path: Path<String>)
     Ok(NoContent)
 }
 
-
-pub fn config(cfg: &mut ServiceConfig) { 
-    cfg.service(scope("/rank")
-        .service(get_score)
-        .service(post_snake_remake)
-        .service(post_snake_web)
-        .service(cross_origin_request)
+pub fn config(cfg: &mut ServiceConfig) {
+    cfg.service(
+        scope("/rank")
+            .service(get_score)
+            .service(post_snake_remake)
+            .service(post_snake_web)
+            .service(cross_origin_request),
     );
 }

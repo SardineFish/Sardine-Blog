@@ -1,5 +1,4 @@
-use std::fmt::{Display};
-
+use std::fmt::Display;
 
 macro_rules! impl_error_log {
     () => {
@@ -51,9 +50,14 @@ pub trait LogError {
     fn log_debug_consume(self, target: &str);
 }
 
-impl<T, E> LogError for Result<T, E> where E: Display {
+impl<T, E> LogError for Result<T, E>
+where
+    E: Display,
+{
     fn log(self, level: log::Level, target: &str) -> Self {
-        if let Err(err) = &self { log::log!(level, "[{}] {}", target, err) }
+        if let Err(err) = &self {
+            log::log!(level, "[{}] {}", target, err)
+        }
         self
     }
     impl_error_log!();

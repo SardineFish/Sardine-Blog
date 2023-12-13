@@ -2,10 +2,9 @@ use async_trait::async_trait;
 
 use std::collections::HashMap;
 
-use model::{RedisCache};
-use serde::{Deserialize};
 use super::{RankProvider, Score};
-
+use model::RedisCache;
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 struct GenFood {
@@ -74,12 +73,18 @@ impl Score for SnakeRemakeScore {
             GameEvent::Init(data) => total_score = data.length as i64,
             _ => Err("Invalid score")?,
         }
-        
+
         let mut cache = redis.cache("rank");
-        if (cache.get::<Option<i32>>(&self.data[0].hash).await.map_err(|_| "Internal error")?).is_some() {
+        if (cache
+            .get::<Option<i32>>(&self.data[0].hash)
+            .await
+            .map_err(|_| "Internal error")?)
+        .is_some()
+        {
             Err("Invalid score")?
         } else {
-            cache.set_expire(&self.data[0].hash, 1, 86400)
+            cache
+                .set_expire(&self.data[0].hash, 1, 86400)
                 .await
                 .map_err(|_| "Internal error")?;
         }

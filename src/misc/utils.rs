@@ -1,4 +1,3 @@
-
 pub trait EmptyAsNone<T> {
     fn empty_as_none(self) -> Option<T>;
 }
@@ -18,7 +17,7 @@ impl EmptyAsNone<String> for Option<String> {
         match self {
             Some(str) if str.is_empty() => None,
             Some(str) => Some(str),
-            None => None
+            None => None,
         }
     }
 }
@@ -28,7 +27,7 @@ impl<'s> EmptyAsNone<&'s String> for Option<&'s String> {
         match self {
             Some(str) if str.is_empty() => None,
             Some(str) => Some(str),
-            None => None
+            None => None,
         }
     }
 }

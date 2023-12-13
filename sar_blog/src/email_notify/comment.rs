@@ -10,7 +10,8 @@ pub struct CommentNotifyInfo {
 }
 
 pub fn format_comment_email(info: &CommentNotifyInfo) -> String {
-    return format!(r#"
+    format!(
+        r#"
 <!DOCTYPE html>
 <html lang="en">
 
@@ -172,12 +173,13 @@ pub fn format_comment_email(info: &CommentNotifyInfo) -> String {
 </body>
 
 </html>
-"#, 
-    author_name = info.author_name, 
-    author_url = info.author_url,
-    author_avatar = info.author_avatar,
-    url = info.url,
-    unsubscribe_url = info.unsubscribe_url,
-    time = info.time,
-    comment_text = info.comment_text)
+"#,
+        author_name = info.author_name,
+        author_url = info.author_url,
+        author_avatar = info.author_avatar,
+        url = info.url,
+        unsubscribe_url = info.unsubscribe_url,
+        time = info.time,
+        comment_text = info.comment_text
+    )
 }

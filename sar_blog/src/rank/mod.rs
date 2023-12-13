@@ -1,9 +1,9 @@
 use std::marker::PhantomData;
 
-use serde::{Serialize, Deserialize};
+use async_trait::async_trait;
 use chrono::Utc;
 use model::{Model, RankedScore, RedisCache};
-use async_trait::async_trait;
+use serde::{Deserialize, Serialize};
 
 #[allow(dead_code)]
 mod snake_remake;
@@ -11,7 +11,7 @@ mod snake_web;
 
 use crate::{Error, Service};
 
-use self::{snake_web::SnakeWebRank};
+use self::snake_web::SnakeWebRank;
 
 pub use self::snake_remake::{SnakeRemakeRank, SnakeRemakeScore};
 
@@ -29,10 +29,7 @@ pub struct SimpleScore {
 
 impl SimpleScore {
     pub fn new(name: String, score: i64) -> Self {
-        Self {
-            name,
-            score,
-        }
+        Self { name, score }
     }
 }
 
@@ -61,7 +58,8 @@ pub trait RankProvider<Score> {
 
 #[async_trait]
 pub trait RankService<Score> {
-    async fn get_ranked_scores(&self, skip: usize, count: usize) -> Result<Vec<RankedScore>, Error>;
+    async fn get_ranked_scores(&self, skip: usize, count: usize)
+        -> Result<Vec<RankedScore>, Error>;
     async fn post_score(&self, score: Score) -> Result<usize, Error>;
 }
 
@@ -76,30 +74,43 @@ impl<'s, T> RankServiceWrapper<'s, T> {
         Self {
             model: &service.model,
             redis: &service.redis,
-            _phantom: PhantomData::default(),
+            _phantom: PhantomData,
         }
     }
 }
 
 #[async_trait]
 impl<'s, Provider, ScoreT> RankService<ScoreT> for RankServiceWrapper<'s, Provider>
-    where Provider: RankProvider<ScoreT> + Send + Sync,
-        ScoreT: Score + Send + Sync + 'static,
+where
+    Provider: RankProvider<ScoreT> + Send + Sync,
+    ScoreT: Score + Send + Sync + 'static,
 {
-    async fn get_ranked_scores(&self, skip: usize, count: usize) -> Result<Vec<RankedScore>, Error> {
-        let scores = self.model.rank.get_ranked_score(Provider::rank_key(), skip, count).await?;
+    async fn get_ranked_scores(
+        &self,
+        skip: usize,
+        count: usize,
+    ) -> Result<Vec<RankedScore>, Error> {
+        let scores = self
+            .model
+            .rank
+            .get_ranked_score(Provider::rank_key(), skip, count)
+            .await?;
         Ok(scores)
     }
 
     async fn post_score(&self, score_data: ScoreT) -> Result<usize, Error> {
         let rank = match score_data.validate(self.redis).await {
-            Ok(score) => self.model.rank.add_ranked_score(Provider::rank_key(), score_data.name(), score, Utc::now()).await?,
-            Err(msg) => return Err(Error::InvalidScore(msg))
+            Ok(score) => {
+                self.model
+                    .rank
+                    .add_ranked_score(Provider::rank_key(), score_data.name(), score, Utc::now())
+                    .await?
+            }
+            Err(msg) => return Err(Error::InvalidScore(msg)),
         };
         Ok(rank)
     }
 }
-
 
 #[derive(Clone)]
 pub struct RankServiceSelector<'a> {
@@ -107,10 +118,8 @@ pub struct RankServiceSelector<'a> {
 }
 
 impl<'a> RankServiceSelector<'a> {
-    pub fn new (service: &'a Service) -> Self {
-        Self {
-            service,
-        }
+    pub fn new(service: &'a Service) -> Self {
+        Self { service }
     }
 
     pub fn snake_web(self) -> RankServiceWrapper<'a, SnakeWebRank> {

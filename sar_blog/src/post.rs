@@ -47,7 +47,7 @@ impl<'s, T: PostData> PostService<'s, T> {
     pub fn new(service: &'s Service) -> Self {
         Self {
             service,
-            _phantom: PhantomData::default(),
+            _phantom: PhantomData,
         }
     }
 

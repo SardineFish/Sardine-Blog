@@ -1,11 +1,22 @@
-use actix_web::{HttpRequest, delete, get, post, web::{scope, Json, Path, Query, ServiceConfig}};
+use actix_web::{
+    delete, get, post,
+    web::{scope, Json, Path, Query, ServiceConfig},
+    HttpRequest,
+};
 use chrono::DateTime;
-use sar_blog::{Author, NestedCommentRef, model::{AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo, Access}};
+use sar_blog::{
+    model::{Access, AnonymousUserInfo, Comment, CommentContent, PidType, PubUserInfo},
+    Author, NestedCommentRef,
+};
 use serde::{Deserialize, Serialize};
 
-use crate::{error::Error, middleware, misc::{error::MapControllerError, response::Response, utils::EmptyAsNone}};
+use crate::{
+    error::Error,
+    middleware,
+    misc::{error::MapControllerError, response::Response, utils::EmptyAsNone},
+};
 
-use super::{extractor};
+use super::extractor;
 use sar_blog::utils::json_datetime_format;
 
 use Response::Ok;
@@ -71,22 +82,25 @@ async fn post(
     data: Json<CommentUpload>,
     request: HttpRequest,
 ) -> Response<PidType> {
-    let auth = middleware::auth_from_request(&service, &request)
-        .await?;
+    let auth = middleware::auth_from_request(&service, &request).await?;
     let author = match auth {
         Some(auth) => Author::Authorized(auth),
         None => Author::Anonymous(AnonymousUserInfo {
-            name: data.name.as_ref()
+            name: data
+                .name
+                .as_ref()
                 .empty_as_none()
                 .ok_or_else(|| Error::invalid_params("Missing 'name'"))?
                 .clone(),
-            avatar: data.avatar.as_ref()
+            avatar: data
+                .avatar
+                .as_ref()
                 .empty_as_none()
                 .ok_or_else(|| Error::invalid_params("Missing 'avatar'"))?
                 .clone(),
             email: data.email.clone().empty_as_none(),
             url: data.url.clone().empty_as_none(),
-        })
+        }),
     };
 
     service
@@ -103,7 +117,11 @@ async fn delete(
     auth: extractor::Auth,
     pid: Path<PidType>,
 ) -> Response<Option<CommentContent>> {
-    let comment = service.comment().delete(&auth.uid, pid.into_inner()).await.map_contoller_result()?;
+    let comment = service
+        .comment()
+        .delete(&auth.uid, pid.into_inner())
+        .await
+        .map_contoller_result()?;
     Ok(comment)
 }
 

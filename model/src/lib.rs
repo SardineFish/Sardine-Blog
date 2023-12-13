@@ -1,19 +1,24 @@
 mod db;
 mod error;
-mod redis;
 mod misc;
+mod redis;
 
 use db::*;
 
-pub use model::{PidType, Model};
-pub use error::{Error, Result};
+pub use self::redis::{session::SessionAuthInfo, RedisCache, SessionID};
 pub use blog::{Blog, BlogContent, DocType};
-pub use user::{User, UserInfo, Access, AuthenticationInfo, HashMethod, AnonymousUserInfo, PubUserInfo};
 pub use comment::{Comment, CommentContent};
-pub use note::{Note, NoteContent};
-pub use post::{PostStats, PostType, PostDoc, PostData, MiscellaneousPostContent, Post, PostTypeName, GenericPost, PostMeta};
-pub use history::{History, HistoryData, Operation, PostActivity};
-pub use self::redis::{RedisCache, SessionID, session::SessionAuthInfo};
-pub use rank::{RankedScore};
-pub use search::{SearchResult};
 pub use db::recipe::*;
+pub use error::{Error, Result};
+pub use history::{History, HistoryData, Operation, PostActivity};
+pub use model::{Model, PidType};
+pub use note::{Note, NoteContent};
+pub use post::{
+    GenericPost, MiscellaneousPostContent, Post, PostData, PostDoc, PostMeta, PostStats, PostType,
+    PostTypeName,
+};
+pub use rank::RankedScore;
+pub use search::SearchResult;
+pub use user::{
+    Access, AnonymousUserInfo, AuthenticationInfo, HashMethod, PubUserInfo, User, UserInfo,
+};

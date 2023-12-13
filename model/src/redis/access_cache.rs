@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use redis::{AsyncCommands, aio::MultiplexedConnection, pipe};
+use redis::{aio::MultiplexedConnection, pipe, AsyncCommands};
 
 use crate::error::*;
 
@@ -16,12 +16,16 @@ pub struct AccessCache {
 
 impl AccessCache {
     pub fn new(redis: MultiplexedConnection) -> Self {
-        Self {
-            redis
-        }
+        Self { redis }
     }
 
-    pub async fn add_token(&mut self, uid: &str, session_id: &str, token: &str, expire: usize) -> Result<()> {
+    pub async fn add_token(
+        &mut self,
+        uid: &str,
+        session_id: &str,
+        token: &str,
+        expire: usize,
+    ) -> Result<()> {
         pipe()
             .set(namespace_key(NAMESPACE_TOKEN, token), uid)
             .expire(namespace_key(NAMESPACE_TOKEN, token), expire)
@@ -32,18 +36,25 @@ impl AccessCache {
     }
 
     pub async fn get_uid_of_token(&mut self, token: &str) -> Result<Option<String>> {
-        self.redis.get(namespace_key(NAMESPACE_TOKEN, token))
+        self.redis
+            .get(namespace_key(NAMESPACE_TOKEN, token))
             .await
             .map_model_result()
     }
 
     pub async fn get_sessions_by_uid(&mut self, uid: &str) -> Result<Option<HashSet<String>>> {
-        self.redis.smembers(namespace_key(NAMESPACE_USER_SESSION, uid))
+        self.redis
+            .smembers(namespace_key(NAMESPACE_USER_SESSION, uid))
             .await
             .map_model_result()
     }
 
-    pub async fn delete_session_token(&mut self, uid: &str, session_id: &str, token: &str) -> Result<()> {
+    pub async fn delete_session_token(
+        &mut self,
+        uid: &str,
+        session_id: &str,
+        token: &str,
+    ) -> Result<()> {
         pipe()
             .del(namespace_key(NAMESPACE_TOKEN, token))
             .srem(namespace_key(NAMESPACE_USER_SESSION, uid), session_id)
@@ -54,7 +65,8 @@ impl AccessCache {
     }
 
     pub async fn get_fake_salt(&mut self, uid: &str) -> Result<Option<String>> {
-        self.redis.get(namespace_key(NAMESPACE_FAKE_USER, uid))
+        self.redis
+            .get(namespace_key(NAMESPACE_FAKE_USER, uid))
             .await
             .map_model_result()
     }

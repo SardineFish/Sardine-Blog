@@ -1,11 +1,17 @@
-use std::{ops::Deref, fmt::Display};
+use std::{fmt::Display, ops::Deref};
 
-pub struct StringBuilder<T> where T : Deref<Target = str> {
+pub struct StringBuilder<T>
+where
+    T: Deref<Target = str>,
+{
     slices: Vec<T>,
     size: usize,
 }
 
-impl<T> StringBuilder<T> where T : Deref<Target = str> {
+impl<T> StringBuilder<T>
+where
+    T: Deref<Target = str>,
+{
     pub fn new() -> Self {
         Self {
             slices: Default::default(),
@@ -33,17 +39,19 @@ impl<T> StringBuilder<T> where T : Deref<Target = str> {
 }
 
 impl<T> Default for StringBuilder<T>
-where T : Deref<Target = str>
+where
+    T: Deref<Target = str>,
 {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> Display for StringBuilder<T> where T : Deref<Target = str>
+impl<T> Display for StringBuilder<T>
+where
+    T: Deref<Target = str>,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        
         let mut output = String::with_capacity(self.size);
         for slice in &self.slices {
             output.push_str(slice.as_ref());

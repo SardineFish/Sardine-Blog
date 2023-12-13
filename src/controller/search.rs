@@ -1,7 +1,7 @@
-use actix_web::web::{ServiceConfig, scope};
+use crate::middleware;
+use actix_web::web::{scope, ServiceConfig};
 use actix_web::{get, web::Query};
 use sar_blog::model::SearchResult;
-use crate::middleware;
 
 use crate::misc::response::Response;
 
@@ -20,12 +20,12 @@ const THROTTLE: usize = 1;
 
 #[get("", wrap = "middleware::throttle(THROTTLE)")]
 async fn search(service: extractor::Service, query: Query<SearchQuery>) -> Response<SearchResult> {
-    Ok(service.search().search(&query.q, query.skip, query.count)
+    Ok(service
+        .search()
+        .search(&query.q, query.skip, query.count)
         .await?)
 }
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(scope("/search")
-        .service(search)
-    );
+    cfg.service(scope("/search").service(search));
 }

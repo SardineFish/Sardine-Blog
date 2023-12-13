@@ -9,22 +9,30 @@ pub struct ErrorRecord {
 }
 
 pub fn format_error_report_email(records: Vec<ErrorRecord>) -> String {
-    let logs = records.iter()
-        .map(|record| format!(r#"
+    let logs = records
+        .iter()
+        .map(|record| {
+            format!(
+                r#"
             <p>
                 <span>[{time}]</span>
                 <span style="color: #ff200c">[Error]</span>
                 <span>[{module}]</span>
                 <span>{msg}</span>
             </p>
-            "#, 
-            time = record.time.to_rfc3339_opts(chrono::SecondsFormat::Secs, true),
-            module = record.module,
-            msg = record.msg
-        )).collect::<Vec<String>>()
+            "#,
+                time = record
+                    .time
+                    .to_rfc3339_opts(chrono::SecondsFormat::Secs, true),
+                module = record.module,
+                msg = record.msg
+            )
+        })
+        .collect::<Vec<String>>()
         .join("\r\n");
-    
-    return format!(r#"
+
+    format!(
+        r#"
 <!DOCTYPE html>
 <html lang="en">
 
@@ -131,8 +139,8 @@ pub fn format_error_report_email(records: Vec<ErrorRecord>) -> String {
 </body>
 
 </html>
-"#, 
+"#,
         logs = logs,
         error_num = records.len()
-    );
+    )
 }

@@ -1,16 +1,12 @@
 use std::{borrow::Cow, mem};
 
-use html2text::render::text_renderer::{TrivialDecorator};
+use html2text::render::text_renderer::TrivialDecorator;
 use pulldown_cmark::{CowStr, Event, Tag};
 
 use super::string_builder::StringBuilder;
 
 fn round_char_boundary(input: &str, len: usize) -> usize {
-    let min = if len >= 4 {
-        len - 4
-    } else {
-        0
-    };
+    let min = if len >= 4 { len - 4 } else { 0 };
 
     for i in (min..=len).rev() {
         if i == 0 {
@@ -35,7 +31,6 @@ struct MarkdownToPlaintext<'s> {
 }
 
 impl<'s> MarkdownToPlaintext<'s> {
-
     fn new(input: &'s str, limit: usize) -> Self {
         Self {
             input,
@@ -53,7 +48,7 @@ impl<'s> MarkdownToPlaintext<'s> {
             match &event {
                 Event::Html(html) => {
                     self.html_builder.push(html.to_owned());
-                },
+                }
                 non_html => {
                     self.build_html();
                     self.parse_non_html_event(non_html);
@@ -77,7 +72,11 @@ impl<'s> MarkdownToPlaintext<'s> {
     fn build_html(&mut self) {
         if !self.html_builder.is_empty() {
             let html = mem::replace(&mut self.html_builder, StringBuilder::new()).to_string();
-            let mut text = html2text::from_read_with_decorator(html.as_bytes(), usize::MAX, TrivialDecorator{});
+            let mut text = html2text::from_read_with_decorator(
+                html.as_bytes(),
+                usize::MAX,
+                TrivialDecorator {},
+            );
             if text.len() + self.text_builder.len() > self.len_limit {
                 text.truncate(round_char_boundary(&text, self.rest_len()));
                 self.text_builder.push(Cow::Owned(text));
@@ -98,9 +97,11 @@ impl<'s> MarkdownToPlaintext<'s> {
             Event::HardBreak => {
                 self.text_builder.push(Cow::Borrowed("\r\n"));
             }
-            Event::Start(Tag::List(_)) => if let Some(Event::Text(_)) = self.prev_event {
-                self.text_builder.push(Cow::Borrowed("\r\n"));
-            },
+            Event::Start(Tag::List(_)) => {
+                if let Some(Event::Text(_)) = self.prev_event {
+                    self.text_builder.push(Cow::Borrowed("\r\n"));
+                }
+            }
             Event::End(Tag::Item)
             | Event::End(Tag::Paragraph)
             | Event::End(Tag::BlockQuote)
@@ -119,8 +120,8 @@ impl<'s> MarkdownToPlaintext<'s> {
                         }
                     }
                 }
-            },
-            _ => ()
+            }
+            _ => (),
         }
     }
 
@@ -128,26 +129,29 @@ impl<'s> MarkdownToPlaintext<'s> {
         if text.len() + self.text_builder.len() >= self.len_limit {
             match text {
                 CowStr::Borrowed(text) => Cow::Borrowed(slice_utf8(text, self.rest_len())),
-                CowStr::Boxed(text) => Cow::Owned(slice_utf8(&text[..], self.rest_len()).to_owned()),
-                CowStr::Inlined(text) => Cow::Owned(slice_utf8(&text[..], self.rest_len()).to_owned()),
+                CowStr::Boxed(text) => {
+                    Cow::Owned(slice_utf8(&text[..], self.rest_len()).to_owned())
+                }
+                CowStr::Inlined(text) => {
+                    Cow::Owned(slice_utf8(&text[..], self.rest_len()).to_owned())
+                }
             }
         } else {
             match text {
                 CowStr::Borrowed(text) => Cow::Borrowed(text),
-                CowStr::Boxed(text) => Cow::Owned((&text[..]).to_owned()),
-                CowStr::Inlined(text) => Cow::Owned((&text[..]).to_owned()),
+                CowStr::Boxed(text) => Cow::Owned(text[..].to_owned()),
+                CowStr::Inlined(text) => Cow::Owned(text[..].to_owned()),
             }
         }
     }
 }
-
 
 pub fn md2plain(markdown: &str, limit: usize) -> String {
     MarkdownToPlaintext::new(markdown, limit).into_plaintext()
 }
 
 pub fn html2plain(html: &str) -> String {
-    html2text::from_read_with_decorator(html.as_bytes(), usize::MAX, TrivialDecorator{})
+    html2text::from_read_with_decorator(html.as_bytes(), usize::MAX, TrivialDecorator {})
 }
 
 #[cfg(test)]
@@ -221,12 +225,15 @@ if (isAwesome){
 ";
         let plaintext = md2plain(input, usize::MAX);
         println!("{}", plaintext);
-        
-        assert_eq!(plaintext.replace("\r\n", "\n"), expected.replace("\r\n", "\n"));
+
+        assert_eq!(
+            plaintext.replace("\r\n", "\n"),
+            expected.replace("\r\n", "\n")
+        );
     }
 
     #[test]
-    fn test_html2plain(){
+    fn test_html2plain() {
         let input = r#"
 <p>Hello</p><i>Here's some HTML!</i>
 <h2>This is an h2 tag</h2>

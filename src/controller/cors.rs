@@ -1,4 +1,8 @@
-use actix_http::{self, Method, header::{self, HeaderName}};
+use actix_http::{
+    self,
+    header::{self, HeaderName},
+    Method,
+};
 
 use crate::misc::response::CORSAccessControl;
 
@@ -29,7 +33,7 @@ impl CORSAccessControl for AnyPostJson {
         Some(vec![header::CONTENT_TYPE])
     }
 }
-impl Default for AnyPostJson{
+impl Default for AnyPostJson {
     fn default() -> Self {
         AnyPostJson
     }

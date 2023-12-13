@@ -1,12 +1,11 @@
-
 pub struct MessageMail {
     pub title: String,
     pub content: String,
 }
 
 pub fn format_message_mail(message: &MessageMail) -> String {
-    
-    return format!(r#"
+    format!(
+        r#"
 <!DOCTYPE html>
 <html lang="en">
 
@@ -112,8 +111,8 @@ pub fn format_message_mail(message: &MessageMail) -> String {
 </body>
 
 </html>
-"#, 
+"#,
         title = message.title,
         content = message.content,
-    );
+    )
 }

@@ -1,10 +1,8 @@
-use std::{ops::Deref};
-
+use crate::error::*;
 use email_address_parser::EmailAddress;
 use lazy_static::lazy_static;
 use model::{Access, NoteContent, UserInfo};
 use regex::Regex;
-use crate::error::*;
 
 pub trait Validate {
     fn validate(&self) -> Result<()> {
@@ -16,15 +14,16 @@ pub trait Validate {
     }
 }
 
-lazy_static!{
-}
+lazy_static! {}
 
 pub fn validate_uid(uid: &str) -> Result<()> {
     let reg = Regex::new(r"^[_A-Za-z0-9]{6,32}$").unwrap();
     if reg.is_match(uid) {
         Ok(())
     } else {
-        Err(Error::InvalidParams("'uid' dose not match /^[_A-Za-z0-9]{6,32}$/".to_owned()))
+        Err(Error::InvalidParams(
+            "'uid' dose not match /^[_A-Za-z0-9]{6,32}$/".to_owned(),
+        ))
     }
 }
 
@@ -49,10 +48,11 @@ pub fn validate_name(str: &str) -> Result<()> {
     if reg.is_match(str) {
         Ok(())
     } else {
-        Err(Error::InvalidParams(r"Invalid name, not match with /^([^\s][^\t\r\n\f]{0,30}[^\s])|([^\s])$/".to_owned()))
+        Err(Error::InvalidParams(
+            r"Invalid name, not match with /^([^\s][^\t\r\n\f]{0,30}[^\s])|([^\s])$/".to_owned(),
+        ))
     }
 }
-
 
 type ValidatorFn<T> = fn(&T) -> Result<()>;
 
@@ -64,14 +64,14 @@ trait ValidateOption<T> {
 impl<T> ValidateOption<T> for Option<T> {
     fn validate_allow_none(&self, validator: ValidatorFn<T>) -> Result<()> {
         if let Some(val) = self {
-            validator(val.deref())
+            validator(val)
         } else {
             Ok(())
         }
     }
     fn validate_not_none(&self, validator: ValidatorFn<T>) -> Result<()> {
         if let Some(val) = self {
-            validator(val.deref())
+            validator(val)
         } else {
             Err(Error::InvalidParams("Missing parm".to_owned()))
         }
@@ -82,8 +82,10 @@ impl Validate for UserInfo {
     fn validate(&self) -> Result<()> {
         validate_name(&self.name)?;
         validate_url(&self.avatar, "avatar")?;
-        self.email.validate_allow_none(|email| validate_email(email))?;
-        self.url.validate_allow_none(|url| validate_url(url, "url"))?;
+        self.email
+            .validate_allow_none(|email| validate_email(email))?;
+        self.url
+            .validate_allow_none(|url| validate_url(url, "url"))?;
 
         Ok(())
     }
@@ -99,7 +101,7 @@ impl Validate for NoteContent {
                     Ok(())
                 }
             }
-            model::DocType::PlainText => Ok(())
+            model::DocType::PlainText => Ok(()),
         }
     }
 }

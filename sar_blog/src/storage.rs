@@ -2,11 +2,11 @@ use std::cmp::max;
 
 use chrono::{Duration, Utc};
 use model::Model;
-use shared::ServiceOptions;
 use rand::Rng;
-use serde::{Serialize};
+use serde::Serialize;
+use shared::ServiceOptions;
 
-use crate::{Service, error::*};
+use crate::{error::*, Service};
 
 #[derive(Serialize)]
 struct QiniuUploadPolicy {
@@ -30,7 +30,7 @@ impl<'s> StorageService<'s> {
     }
     pub async fn new_random_name(&self) -> Result<String> {
         let count = self.model.storage().count().await?;
-        
+
         let bits = core::mem::size_of::<usize>() * 8 - count.leading_zeros() as usize + 1;
         let chars = bits / 6;
         let chars = max(chars, 4);
@@ -48,20 +48,21 @@ impl<'s> StorageService<'s> {
         Err(Error::InternalServiceError("Name conflict too many times."))
     }
     pub async fn qiniu_token(&self) -> Result<String> {
-
         let policy = QiniuUploadPolicy {
             scope: "sardineimg".to_owned(),
             deadline: (Utc::now() + Duration::minutes(5)).timestamp(),
         };
         let json = serde_json::to_string(&policy)
-            .map_err(|_|Error::InternalServiceError("Failed to serialize policy"))?;
-        let encoded_policy = base64::encode_config(&json, base64::URL_SAFE);
-        let sign = hmacsha1::hmac_sha1(self.options.qiniu_secretkey.as_bytes(), encoded_policy.as_bytes());
-        let sign = base64::encode_config(&sign, base64::URL_SAFE);
-        let token = format!("{}:{}:{}",
-            &self.options.qiniu_accesskey,
-            &sign,
-            &encoded_policy
+            .map_err(|_| Error::InternalServiceError("Failed to serialize policy"))?;
+        let encoded_policy = base64::encode_config(json, base64::URL_SAFE);
+        let sign = hmacsha1::hmac_sha1(
+            self.options.qiniu_secretkey.as_bytes(),
+            encoded_policy.as_bytes(),
+        );
+        let sign = base64::encode_config(sign, base64::URL_SAFE);
+        let token = format!(
+            "{}:{}:{}",
+            &self.options.qiniu_accesskey, &sign, &encoded_policy
         );
 
         Ok(token)

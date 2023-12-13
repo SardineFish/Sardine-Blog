@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
-use chrono::Duration;
 use crate::json_duration_format;
+use chrono::Duration;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceOptions {
@@ -13,11 +13,11 @@ pub struct ServiceOptions {
     pub db_init: bool,
     pub site_url: String,
     pub default_avatar: String,
-    #[serde(with="json_duration_format")]
+    #[serde(with = "json_duration_format")]
     pub visit_expire_time: Duration,
-    #[serde(with="json_duration_format")]
+    #[serde(with = "json_duration_format")]
     pub session_expire: Duration,
-    #[serde(with="json_duration_format")]
+    #[serde(with = "json_duration_format")]
     pub challenge_expire: Duration,
     pub web_root: String,
     pub qiniu_accesskey: String,
@@ -27,7 +27,7 @@ pub struct ServiceOptions {
     pub sar_push_secret: String,
     pub message_board_notify: String,
     pub report_address: String,
-    #[serde(with="json_duration_format")]
+    #[serde(with = "json_duration_format")]
     pub report_interval: Duration,
     pub enable_indexing: bool,
     pub elastic_url: String,
@@ -46,7 +46,7 @@ impl Default for ServiceOptions {
             site_url: "http://localhost:3000".to_owned(),
             default_avatar: "/img/decoration/unknown-user.png".to_string(),
             visit_expire_time: Duration::days(1),
-            session_expire: Duration::weeks(1), 
+            session_expire: Duration::weeks(1),
             challenge_expire: Duration::hours(1),
             web_root: "./web-root".to_owned(),
             qiniu_accesskey: "_Z9zEXWg4gXN4hsJeu77VQdFYrAKzCKCatZVIoq3".to_owned(),

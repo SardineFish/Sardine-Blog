@@ -1,6 +1,6 @@
 use shared::ServiceOptions;
 
-use super::{access_cache::AccessCache, generic_cache::GenericCache, session::{Session}};
+use super::{access_cache::AccessCache, generic_cache::GenericCache, session::Session};
 use crate::error::*;
 
 #[derive(Clone)]
@@ -11,16 +11,16 @@ pub struct RedisCache {
 
 impl RedisCache {
     pub async fn open(options: &ServiceOptions) -> Result<Self> {
-        let client = redis::Client::open(options.redis_addr.as_str())
-            .map_model_result()?;
+        let client = redis::Client::open(options.redis_addr.as_str()).map_model_result()?;
 
-        let connection = client.get_multiplexed_async_connection()
+        let connection = client
+            .get_multiplexed_async_connection()
             .await
             .map_model_result()?;
-        
-        Ok(Self{
+
+        Ok(Self {
             _client: client,
-            redis: connection
+            redis: connection,
         })
     }
     pub fn access(&self) -> AccessCache {

@@ -1,22 +1,22 @@
 mod comment;
-mod note;
 mod error_report;
 mod message;
+mod note;
 
+use comment::format_comment_email;
 use error_report::format_error_report_email;
-use message::{format_message_mail};
-use note::{format_note_email};
-use serde::{ Serialize, Deserialize };
-use comment::{ format_comment_email};
+use message::format_message_mail;
+use note::format_note_email;
+use serde::{Deserialize, Serialize};
 use shared::ServiceOptions;
 
 use crate::error::*;
 use crate::Service;
 
 pub use comment::CommentNotifyInfo;
-pub use note::NoteNotifyInfo;
 pub use error_report::ErrorRecord;
 pub use message::MessageMail;
+pub use note::NoteNotifyInfo;
 
 #[derive(Serialize)]
 struct EmailNotify<'s> {
@@ -49,7 +49,8 @@ impl<'s> EmailNotifyService<'s> {
             subject: &format!("[Reply] A New Reply from {}", &info.author_name),
             content_type: "text/html",
             body: &body,
-        }).await
+        })
+        .await
     }
 
     pub async fn send_note_notify(&self, to: &str, info: NoteNotifyInfo) -> Result<()> {
@@ -59,7 +60,8 @@ impl<'s> EmailNotifyService<'s> {
             subject: &format!("[Message] A New Message from {}", &info.author_name),
             content_type: "text/html",
             body: &body,
-        }).await
+        })
+        .await
     }
 
     pub async fn send_error_report(&self, to: &str, records: Vec<ErrorRecord>) -> Result<()> {
@@ -70,7 +72,8 @@ impl<'s> EmailNotifyService<'s> {
             subject: &format!("[Error] {} Error(s) Since Last Report", count),
             content_type: "text/html",
             body: &body,
-        }).await
+        })
+        .await
     }
 
     pub async fn send_message(&self, to: &str, message: MessageMail) -> Result<()> {
@@ -79,29 +82,38 @@ impl<'s> EmailNotifyService<'s> {
             to,
             subject: &message.title,
             content_type: "text/html",
-            body: &body
-        }).await
+            body: &body,
+        })
+        .await
     }
 
-    async fn send(&self, notify: EmailNotify<'_>) ->Result<()> {
-        let response = reqwest::Client::builder().build()
-            .map_err(|err| 
-                Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err)))?
+    async fn send(&self, notify: EmailNotify<'_>) -> Result<()> {
+        let response = reqwest::Client::builder()
+            .build()
+            .map_err(|err| {
+                Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err))
+            })?
             .post(&format!("{}/notify/queue", &self.options.sar_push_url))
             .json(&notify)
-            .basic_auth(&self.options.sar_push_uid, Some(&self.options.sar_push_secret))
+            .basic_auth(
+                &self.options.sar_push_uid,
+                Some(&self.options.sar_push_secret),
+            )
             .send()
             .await
-            .map_err(|err| 
-                Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err)))?;
-        
+            .map_err(|err| {
+                Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err))
+            })?;
+
         match response.status() {
             status if status.is_success() => Ok(()),
             _ => {
-                let msg: SarPushErrorResponse = response.json()
-                    .await
-                    .map_err(|err| 
-                        Error::InternalServiceErrorOwned(format!("Faied to parse error response from Sar Push Service: {:?}", err)))?;
+                let msg: SarPushErrorResponse = response.json().await.map_err(|err| {
+                    Error::InternalServiceErrorOwned(format!(
+                        "Faied to parse error response from Sar Push Service: {:?}",
+                        err
+                    ))
+                })?;
                 Err(Error::ExternalServiceError(msg.error))
             }
         }

@@ -1,13 +1,20 @@
+use std::{
+    collections::HashMap,
+    ops::{ControlFlow, FromResidual, Try},
+    str,
+};
 
-use std::{collections::HashMap, ops::{Try, ControlFlow, FromResidual}, str};
-
-use actix_http::{header::HeaderName, body::BoxBody};
-use futures::{Future};
-use serde::{Serialize};
-use actix_web::{ HttpRequest, HttpResponse, Responder, dev::{ServiceRequest, ServiceResponse}, cookie::Cookie, http::{Method, StatusCode, header}, HttpResponseBuilder};
+use actix_http::{body::BoxBody, header::HeaderName};
+use actix_web::{
+    cookie::Cookie,
+    dev::{ServiceRequest, ServiceResponse},
+    http::{header, Method, StatusCode},
+    HttpRequest, HttpResponse, HttpResponseBuilder, Responder,
+};
+use futures::Future;
+use serde::Serialize;
 
 use super::error::Error;
-
 
 #[derive(Serialize)]
 struct SuccessResponseData<T: Serialize> {
@@ -57,19 +64,23 @@ pub trait BuildResponse {
     fn build_response(self, builder: HttpResponseBuilder) -> Result<HttpResponse, Error>;
 }
 
-
-impl<T> BuildResponse for T where T : Serialize {
+impl<T> BuildResponse for T
+where
+    T: Serialize,
+{
     fn build_response(self, mut builder: HttpResponseBuilder) -> Result<HttpResponse, Error> {
         let response = SuccessResponseData::with_data(self);
-        let body = serde_json::to_string(&response)
-            .map_err(|_| Error::Serialize)?;
-        Ok(builder.content_type("application/json").body(body).map_into_boxed_body())
+        let body = serde_json::to_string(&response).map_err(|_| Error::Serialize)?;
+        Ok(builder
+            .content_type("application/json")
+            .body(body)
+            .map_into_boxed_body())
     }
 }
 
-pub struct WithCookie<'c, T : Serialize>(pub T, pub Vec<Cookie<'c>>);
+pub struct WithCookie<'c, T: Serialize>(pub T, pub Vec<Cookie<'c>>);
 
-impl<'c, T : Serialize> BuildResponse for WithCookie<'c, T> {
+impl<'c, T: Serialize> BuildResponse for WithCookie<'c, T> {
     fn build_response(self, mut builder: HttpResponseBuilder) -> Result<HttpResponse, Error> {
         let Self(data, cookies) = self;
         for cookie in cookies {
@@ -106,7 +117,7 @@ pub struct CORSPolicy {
 }
 
 pub trait CORSAccessControl {
-    fn allow_origin_default() -> Option<&'static str>{
+    fn allow_origin_default() -> Option<&'static str> {
         None
     }
     fn allow_methods_default() -> Option<Vec<Method>> {
@@ -114,8 +125,8 @@ pub trait CORSAccessControl {
     }
     fn allow_headers_default() -> Option<Vec<HeaderName>> {
         None
-    } 
-    fn allow_origin(&self) -> Option<&str>{
+    }
+    fn allow_origin(&self) -> Option<&str> {
         <Self as CORSAccessControl>::allow_origin_default()
     }
     fn allow_methods(&self) -> Option<Vec<Method>> {
@@ -147,8 +158,14 @@ impl<U: CORSAccessControl, T: BuildResponse> BuildResponse for WithCORS<U, T> {
             builder.insert_header((header::ACCESS_CONTROL_ALLOW_ORIGIN, origin));
         }
         if let Some(methods) = access_control.allow_methods() {
-            builder.insert_header((header::ACCESS_CONTROL_ALLOW_METHODS, 
-                methods.iter().map(|m|m.as_str()).collect::<Vec<&str>>().join(",")));
+            builder.insert_header((
+                header::ACCESS_CONTROL_ALLOW_METHODS,
+                methods
+                    .iter()
+                    .map(|m| m.as_str())
+                    .collect::<Vec<&str>>()
+                    .join(","),
+            ));
         }
         if let Some(headers) = access_control.allow_headers() {
             builder.insert_header((header::ACCESS_CONTROL_ALLOW_HEADERS, headers.join(",")));
@@ -176,8 +193,14 @@ impl<U: CORSAccessControl, E: BuildError> BuildError for WithCORS<U, E> {
             builder.insert_header((header::ACCESS_CONTROL_ALLOW_ORIGIN, origin));
         }
         if let Some(methods) = access_control.allow_methods() {
-            builder.insert_header((header::ACCESS_CONTROL_ALLOW_METHODS, 
-                methods.iter().map(|m|m.as_str()).collect::<Vec<&str>>().join(",")));
+            builder.insert_header((
+                header::ACCESS_CONTROL_ALLOW_METHODS,
+                methods
+                    .iter()
+                    .map(|m| m.as_str())
+                    .collect::<Vec<&str>>()
+                    .join(","),
+            ));
         }
         if let Some(headers) = access_control.allow_headers() {
             builder.insert_header((header::ACCESS_CONTROL_ALLOW_HEADERS, headers.join(",")));
@@ -187,8 +210,7 @@ impl<U: CORSAccessControl, E: BuildError> BuildError for WithCORS<U, E> {
 }
 
 #[allow(dead_code)]
-pub enum Redirect
-{
+pub enum Redirect {
     MovedPermanently(String),
     Permanent(String),
     SeeOther(String),
@@ -206,19 +228,17 @@ impl BuildResponse for Redirect {
     }
     fn build_response(self, mut builder: HttpResponseBuilder) -> Result<HttpResponse, Error> {
         match self {
-            Self::MovedPermanently(url) |
-            Self::Permanent(url) |
-            Self::SeeOther(url) |
-            Self::Temporary(url) 
-                => {
-                    let data = SuccessResponseData::with_data(&url);
-                    let body = serde_json::to_string(&data)
-                        .map_err(|_| Error::Serialize)?;
-                    Ok(builder
-                        .insert_header(("Location", url))
-                        .content_type("application/json")
-                        .body(body))
-                },
+            Self::MovedPermanently(url)
+            | Self::Permanent(url)
+            | Self::SeeOther(url)
+            | Self::Temporary(url) => {
+                let data = SuccessResponseData::with_data(&url);
+                let body = serde_json::to_string(&data).map_err(|_| Error::Serialize)?;
+                Ok(builder
+                    .insert_header(("Location", url))
+                    .content_type("application/json")
+                    .body(body))
+            }
         }
     }
 }
@@ -269,7 +289,6 @@ pub enum Response<T, E = Error> {
     ServerError(E),
 }
 
-
 impl<T: BuildResponse, E: BuildError> Responder for Response<T, E> {
     type Body = BoxBody;
     fn respond_to(self, req: &HttpRequest) -> HttpResponse<Self::Body> {
@@ -279,16 +298,17 @@ impl<T: BuildResponse, E: BuildError> Responder for Response<T, E> {
                 let result = data.build_response(HttpResponse::build(status_code));
                 match result {
                     Ok(http_response) => return http_response,
-                    Err(err) => Response::ServerError(err)
+                    Err(err) => Response::ServerError(err),
                 }
-            },
+            }
             Response::ClientError(err) => {
                 let status_code = err.status_code();
                 let result = err.build_response(HttpResponse::build(status_code));
                 return result;
-            },
+            }
             Response::ServerError(err) => {
-                let result = err.build_response(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR));
+                let result =
+                    err.build_response(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR));
                 return result;
             }
         };
@@ -297,7 +317,10 @@ impl<T: BuildResponse, E: BuildError> Responder for Response<T, E> {
     }
 }
 
-impl<T> Try for Response<T, Error> where T : BuildResponse {
+impl<T> Try for Response<T, Error>
+where
+    T: BuildResponse,
+{
     type Output = T;
 
     type Residual = Response<!, Error>;
@@ -325,17 +348,19 @@ impl<T: BuildResponse, E: Into<Error>> FromResidual<Response<!, E>> for Response
     }
 }
 
-impl<T: BuildResponse, E: Into<Error>> FromResidual<Result<std::convert::Infallible, E>> for Response<T, Error> {
+impl<T: BuildResponse, E: Into<Error>> FromResidual<Result<std::convert::Infallible, E>>
+    for Response<T, Error>
+{
     fn from_residual(residual: Result<std::convert::Infallible, E>) -> Self {
         match residual {
             Ok(_) => unreachable!(),
-            Err(err) =>{
+            Err(err) => {
                 let err = err.into();
                 match err.status_code() {
                     StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
-                    _ => Response::ClientError(err)
+                    _ => Response::ClientError(err),
                 }
-            } 
+            }
         }
     }
 }
@@ -346,8 +371,8 @@ impl<T: BuildResponse, E: BuildError> From<Result<T, E>> for Response<T, E> {
             Ok(output) => Self::Ok(output),
             Err(err) => match err.status_code() {
                 StatusCode::INTERNAL_SERVER_ERROR => Response::ServerError(err),
-                _ => Response::ClientError(err)
-            }
+                _ => Response::ClientError(err),
+            },
         }
     }
 }
@@ -380,7 +405,10 @@ impl<T: BuildResponse, E: BuildError> From<Result<T, E>> for Response<T, E> {
 // }
 
 impl<T: Serialize> Response<T, Error> {
-    pub async fn into_service_response(self, request: ServiceRequest) -> actix_web::Result<ServiceResponse> {
+    pub async fn into_service_response(
+        self,
+        request: ServiceRequest,
+    ) -> actix_web::Result<ServiceResponse> {
         let (http_request, payload) = request.into_parts();
         let response = self.respond_to(&http_request);
         Ok(ServiceRequest::from_parts(http_request, payload).into_response(response))
@@ -399,7 +427,9 @@ impl<T: Serialize> Response<T, Error> {
 //     }
 // }
 
-pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: F) -> Response<R, Error> {
+pub async fn run<R: BuildResponse, F: Future<Output = Result<R, Error>>>(
+    func: F,
+) -> Response<R, Error> {
     let result = func.await;
     Response::<R>::from(result)
 }
@@ -407,7 +437,8 @@ pub async fn run<R : BuildResponse, F: Future<Output = Result<R, Error>>>(func: 
 #[actix_web::get("/")]
 async fn get_foo() -> Response<Option<u32>> {
     run(async move {
-        let _t = Err(Error::Web(actix_web::error::ErrorInternalServerError("")))?;
+        Err(Error::Web(actix_web::error::ErrorInternalServerError("")))?;
         Ok(Some(1_u32))
-    }).await
+    })
+    .await
 }
