@@ -1,3 +1,9 @@
+let BaseUrl = "";
+
+export function setBaseUrl(baseUrl: string)
+{
+    BaseUrl = baseUrl;
+}
 
 type HTTPMethodsWithoutBody = "GET" | "HEAD" | "CONNECT" | "DELETE" | "OPTIONS";
 type HTTPMethodsWithBody = "POST" | "PUT" | "PATCH";
@@ -51,7 +57,11 @@ type ApiFunction<Path extends ParamsDeclare, Query extends ParamsDeclare, Data e
     = Data extends undefined
     ? (params: ValueType<Path> & ValueType<Query>) => Promise<Response>
     : Data extends ParamsDeclare ? (params: ValueType<Path> & ValueType<Query>, body: ValueType<Data & ParamsDeclare>) => Promise<Response>
-    : (params: ValueType<Path> & ValueType<Query>, body: Data) => Promise<Response>
+    : (params: ValueType<Path> & ValueType<Query>, body: Data) => Promise<Response>;
+
+type AuthInject<T> = T & {
+    auth(session_id: string, token: string): T
+}
 
 export function ParamDescriptor<P extends SimpleParamsDeclare>(p: P)
 {
@@ -123,7 +133,7 @@ function validateEmail(key: string, email: string): string
 
 function validateUid(key: string, uid: string): string
 {
-    if (/[_A-Za-z0-9]{6,32}/.test(uid))
+    if (/[_A-Za-z0-9]{4,32}/.test(uid))
         return uid;
     throw new APIError(ClientErrorCode.InvalidParameter, `Invalid username in field '${key}'`);
 }
@@ -194,6 +204,12 @@ export class APIError extends Error
     }
 }
 
+interface AuthInfo
+{
+    session: string,
+    token: string,
+}
+
 class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | any | undefined, Response>
 {
     private method: Method;
@@ -203,6 +219,7 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
     private dataInfo: Data;
     private redirectOption?: "follow" | "error" | "manual";
     private requestMode: RequestMode;
+    private authInfo?: AuthInfo;
 
     constructor(method: Method, mode: RequestMode, url: string, path: Path, query: Query, data: Data)
     {
@@ -250,14 +267,25 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
         this.redirectOption = redirect;
         return this;
     }
-    response<Response>(): ApiFunction<Path, Query, Data, Response>
+    response<Response>(): AuthInject<ApiFunction<Path, Query, Data, Response>>
     {
         const builder = new ApiBuilder<Method, Path, Query, Data, Response>(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
-        return builder.send.bind(builder) as ApiFunction<Path, Query, Data, Response>;
+        const fn = builder.send.bind(builder) as ApiFunction<Path, Query, Data, Response> as any as AuthInject<ApiFunction<Path, Query, Data, Response>>;
+        fn.auth = (id, token) => builder.auth(id, token).send.bind(builder) as ApiFunction<Path, Query, Data, Response>;
+        return fn;
+    }
+    auth(session: string, token: string): this
+    {
+        this.authInfo = {
+            session,
+            token
+        };
+
+        return this;
     }
     private async send(params: ValueType<Path> | ValueType<Query>, data: ValueType<Data & ParamsDeclare> | Data): Promise<Response>
     {
-        let url = this.url;
+        let url = BaseUrl + this.url;
         for (const key in this.pathInfo)
         {
             const value = (params as ValueType<Path> as any)[key];
@@ -303,7 +331,11 @@ class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare, Query e
             const headers: HeadersInit = {};
             if (this.method === "POST" || this.method === "PUT" || this.method === "OPTIONS")
                 headers["Content-Type"] = "application/json";
-                
+            if (this.authInfo)
+            {
+                headers["Authorization"] = `Basic ${btoa(`${this.authInfo.session}:${this.authInfo.token}`)}`;
+            }
+
             response = await fetch(url, {
                 method: this.method,
                 headers: headers,

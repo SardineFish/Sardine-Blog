@@ -1,5 +1,6 @@
 (() => {
   // api-builder.ts
+  var BaseUrl = "";
   function simpleParam(info) {
     const params = {};
     for (const key in info) {
@@ -41,7 +42,7 @@
     throw new APIError(ClientErrorCode.InvalidParameter, `Invalid email address in '${key}'`);
   }
   function validateUid(key, uid) {
-    if (/[_A-Za-z0-9]{6,32}/.test(uid))
+    if (/[_A-Za-z0-9]{4,32}/.test(uid))
       return uid;
     throw new APIError(ClientErrorCode.InvalidParameter, `Invalid username in field '${key}'`);
   }
@@ -99,6 +100,7 @@
     dataInfo;
     redirectOption;
     requestMode;
+    authInfo;
     constructor(method, mode, url, path, query, data) {
       this.method = method;
       this.url = url;
@@ -134,10 +136,19 @@
     }
     response() {
       const builder = new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
-      return builder.send.bind(builder);
+      const fn = builder.send.bind(builder);
+      fn.auth = (id, token) => builder.auth(id, token).send.bind(builder);
+      return fn;
+    }
+    auth(session, token) {
+      this.authInfo = {
+        session,
+        token
+      };
+      return this;
     }
     async send(params, data) {
-      let url = this.url;
+      let url = BaseUrl + this.url;
       for (const key in this.pathInfo) {
         const value = params[key];
         if (value === void 0) {
@@ -174,6 +185,9 @@
         const headers = {};
         if (this.method === "POST" || this.method === "PUT" || this.method === "OPTIONS")
           headers["Content-Type"] = "application/json";
+        if (this.authInfo) {
+          headers["Authorization"] = `Basic ${btoa(`${this.authInfo.session}:${this.authInfo.token}`)}`;
+        }
         response = await fetch(url, {
           method: this.method,
           headers,

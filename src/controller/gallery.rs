@@ -70,7 +70,7 @@ async fn delete_exhibit(
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(
-        scope("/cook")
+        scope("/gallery")
             .service(get_gallery_list)
             .service(get_exhibit)
             .service(post_exhibit)

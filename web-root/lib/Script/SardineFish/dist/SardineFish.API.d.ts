@@ -33,6 +33,7 @@ export interface AuthChallenge {
     salt: string;
     method: HashMethod;
     challenge: string;
+    session_id: string;
 }
 export interface SessionToken {
     session_id: string;
@@ -152,6 +153,12 @@ export interface RecipeContent {
     content: string;
 }
 export declare type RecipePreviewContent = Omit<RecipeContent, "content">;
+export interface GalleryExhibit {
+    title: string;
+    description: string;
+    url: string;
+    meta: Record<string, string>;
+}
 declare const ImagePreset: {
     Size600: string;
     Size800: string;
@@ -164,16 +171,32 @@ declare function processSarImgUrl(img: string, preset: keyof typeof ImagePreset)
 declare function removeSarImgSuffix(url: string): string;
 declare const SardineFishAPI: {
     User: {
-        checkAuth: (params: Required<{}> & Partial<{}>) => Promise<string>;
-        getChallenge: (params: Required<{
+        checkAuth: ((params: Required<{}> & Partial<{}>) => Promise<string>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>) => Promise<string>;
+        };
+        getChallenge: ((params: Required<{
             uid: string;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<AuthChallenge>;
-        login: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<AuthChallenge>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                uid: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<AuthChallenge>;
+        };
+        login: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             uid: string;
             pwd_hash: string;
-        }> & Partial<{}>) => Promise<SessionToken>;
-        signup: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{
+            session_id: string;
+        }>) => Promise<SessionToken>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                uid: string;
+                pwd_hash: string;
+            }> & Partial<{
+                session_id: string;
+            }>) => Promise<SessionToken>;
+        };
+        signup: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             uid: string;
             pwd_hash: string;
@@ -183,33 +206,74 @@ declare const SardineFishAPI: {
             email: string;
             url: string;
             avatar: string;
-        }> & Partial<{}>) => Promise<SessionToken>;
-        signout: (params: Required<{}> & Partial<{}>) => Promise<null>;
-        getAvatar: (params: Required<{
+        }> & Partial<{}>) => Promise<SessionToken>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                uid: string;
+                pwd_hash: string;
+                salt: string;
+                method: string;
+                name: string;
+                email: string;
+                url: string;
+                avatar: string;
+            }> & Partial<{}>) => Promise<SessionToken>;
+        };
+        signout: ((params: Required<{}> & Partial<{}>) => Promise<null>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>) => Promise<null>;
+        };
+        getAvatar: ((params: Required<{
             uid: string;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<string>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<string>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                uid: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<string>;
+        };
         avatarUrl: (uid: String) => string;
-        getInfo: (params: Required<{}> & Partial<{}>) => Promise<UserInfo>;
-        deleteEmail: (params: Required<{
+        getInfo: ((params: Required<{}> & Partial<{}>) => Promise<UserInfo>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>) => Promise<UserInfo>;
+        };
+        deleteEmail: ((params: Required<{
             uid: string;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<null>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                uid: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<null>;
+        };
     };
     Blog: {
-        getList: (params: Required<{}> & Partial<{}> & Required<{
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<BlogPreview[]>;
-        getByPid: (params: Required<{
+        }> & Partial<{}>) => Promise<BlogPreview[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<BlogPreview[]>;
+        };
+        getByPid: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<Blog>;
-        post: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<Blog>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<Blog>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             title: string;
             tags: string[];
             doc_type: string;
             doc: string;
-        }> & Partial<{}>) => Promise<number>;
-        update: (params: Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                title: string;
+                tags: string[];
+                doc_type: string;
+                doc: string;
+            }> & Partial<{}>) => Promise<number>;
+        };
+        update: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
@@ -217,17 +281,36 @@ declare const SardineFishAPI: {
             tags: string[];
             doc_type: string;
             doc: string;
-        }> & Partial<{}>) => Promise<number>;
-        delete: (params: Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                title: string;
+                tags: string[];
+                doc_type: string;
+                doc: string;
+            }> & Partial<{}>) => Promise<number>;
+        };
+        delete: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<BlogContent | null>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<BlogContent | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<BlogContent | null>;
+        };
     };
     Note: {
-        getList: (params: Required<{}> & Partial<{}> & Required<{
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<Note[]>;
-        post: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}>) => Promise<Note[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<Note[]>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             name: string;
             avatar: string;
@@ -236,15 +319,32 @@ declare const SardineFishAPI: {
         }> & Partial<{
             email: string;
             url: string;
-        }>) => Promise<number>;
+        }>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                name: string;
+                avatar: string;
+                doc_type: string;
+                doc: string;
+            }> & Partial<{
+                email: string;
+                url: string;
+            }>) => Promise<number>;
+        };
     };
     Comment: {
-        getByPid: (params: Required<{
+        getByPid: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{
             depth: number;
-        }>) => Promise<Comment[]>;
-        post: (params: Required<{
+        }>) => Promise<Comment[]>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{
+                depth: number;
+            }>) => Promise<Comment[]>;
+        };
+        post: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
@@ -254,81 +354,205 @@ declare const SardineFishAPI: {
         }> & Partial<{
             email: string;
             url: string;
-        }>) => Promise<number>;
-        delete: (params: Required<{
+        }>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                name: string;
+                avatar: string;
+                text: string;
+            }> & Partial<{
+                email: string;
+                url: string;
+            }>) => Promise<number>;
+        };
+        delete: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<{
             comment_to: number;
             comment_root: number;
             text: string;
-        } | null>;
+        } | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<{
+                comment_to: number;
+                comment_root: number;
+                text: string;
+            } | null>;
+        };
     };
     PostData: {
-        getStatsByPid: (params: Required<{
+        getStatsByPid: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PostStats>;
-        like: (params: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PostStats>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PostStats>;
+        };
+        like: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
-        }> & Partial<{}>) => Promise<number>;
-        dislike: (params: Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+            }> & Partial<{}>) => Promise<number>;
+        };
+        dislike: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<number>;
-        postMisc: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<number>;
+        };
+        postMisc: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             description: string;
             url: string;
-        }> & Partial<{}>) => Promise<number>;
-        recentActivities: (params: Required<{}> & Partial<{}> & Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                description: string;
+                url: string;
+            }> & Partial<{}>) => Promise<number>;
+        };
+        recentActivities: ((params: Required<{}> & Partial<{}> & Required<{
             skip: number;
             count: number;
-        }> & Partial<{}>) => Promise<RecentActivity[]>;
+        }> & Partial<{}>) => Promise<RecentActivity[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                skip: number;
+                count: number;
+            }> & Partial<{}>) => Promise<RecentActivity[]>;
+        };
     };
     Storage: {
-        getUploadInfo: (params: Required<{}> & Partial<{}>, body: Required<{
+        getUploadInfo: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
-        }> & Partial<{}>) => Promise<OSSUploadInfo>;
+        }> & Partial<{}>) => Promise<OSSUploadInfo>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+            }> & Partial<{}>) => Promise<OSSUploadInfo>;
+        };
         processImg: typeof processSarImgUrl;
         removeImgSuffix: typeof removeSarImgSuffix;
     };
     Rank: {
-        getRankedScores: (params: Required<{
+        getRankedScores: ((params: Required<{
             key: string;
         }> & Partial<{}> & Required<{}> & Partial<{
             skip: number;
             count: number;
-        }>) => Promise<RankedScore[]>;
-        postScore: (params: Required<{
+        }>) => Promise<RankedScore[]>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                key: string;
+            }> & Partial<{}> & Required<{}> & Partial<{
+                skip: number;
+                count: number;
+            }>) => Promise<RankedScore[]>;
+        };
+        postScore: ((params: Required<{
             key: string;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: {
             name: string;
             score: number;
             data?: any;
-        }) => Promise<number>;
+        }) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                key: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: {
+                name: string;
+                score: number;
+                data?: any;
+            }) => Promise<number>;
+        };
     };
     Search: {
-        search: (params: Required<{}> & Partial<{}> & Required<{
+        search: ((params: Required<{}> & Partial<{}> & Required<{
             q: string;
             skip: number;
             count: number;
-        }> & Partial<{}>) => Promise<SearchResult>;
+        }> & Partial<{}>) => Promise<SearchResult>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                q: string;
+                skip: number;
+                count: number;
+            }> & Partial<{}>) => Promise<SearchResult>;
+        };
     };
     Cook: {
-        getList: (params: Required<{}> & Partial<{}> & Required<{
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>;
-        get: (params: Required<{
+        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>;
+        };
+        get: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
-        post: (params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
-        update: (params: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        };
+        update: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
-        delete: (params: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        };
+        delete: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>;
+        };
+    };
+    Gallery: {
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
+            from: number;
+            count: number;
+        }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>;
+        };
+        get: ((params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+        };
+        update: ((params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+        };
+        delete: ((params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>;
+        };
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;
@@ -336,6 +560,7 @@ declare const SardineFishAPI: {
         formatDateTime: typeof formatDateTime;
         requestProgress: typeof requestWithProgress;
     };
+    setBaseUrl: (url: string) => void;
 };
 interface SardineFish {
     API: typeof SardineFishAPI;
@@ -343,21 +568,38 @@ interface SardineFish {
 declare const SardineFish: SardineFish;
 declare global {
     namespace SardineFish {
+        const API: typeof SardineFishAPI;
     }
 }
 export default SardineFish;
 export declare const API: {
     User: {
-        checkAuth: (params: Required<{}> & Partial<{}>) => Promise<string>;
-        getChallenge: (params: Required<{
+        checkAuth: ((params: Required<{}> & Partial<{}>) => Promise<string>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>) => Promise<string>;
+        };
+        getChallenge: ((params: Required<{
             uid: string;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<AuthChallenge>;
-        login: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<AuthChallenge>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                uid: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<AuthChallenge>;
+        };
+        login: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             uid: string;
             pwd_hash: string;
-        }> & Partial<{}>) => Promise<SessionToken>;
-        signup: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{
+            session_id: string;
+        }>) => Promise<SessionToken>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                uid: string;
+                pwd_hash: string;
+            }> & Partial<{
+                session_id: string;
+            }>) => Promise<SessionToken>;
+        };
+        signup: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             uid: string;
             pwd_hash: string;
@@ -367,33 +609,74 @@ export declare const API: {
             email: string;
             url: string;
             avatar: string;
-        }> & Partial<{}>) => Promise<SessionToken>;
-        signout: (params: Required<{}> & Partial<{}>) => Promise<null>;
-        getAvatar: (params: Required<{
+        }> & Partial<{}>) => Promise<SessionToken>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                uid: string;
+                pwd_hash: string;
+                salt: string;
+                method: string;
+                name: string;
+                email: string;
+                url: string;
+                avatar: string;
+            }> & Partial<{}>) => Promise<SessionToken>;
+        };
+        signout: ((params: Required<{}> & Partial<{}>) => Promise<null>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>) => Promise<null>;
+        };
+        getAvatar: ((params: Required<{
             uid: string;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<string>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<string>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                uid: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<string>;
+        };
         avatarUrl: (uid: String) => string;
-        getInfo: (params: Required<{}> & Partial<{}>) => Promise<UserInfo>;
-        deleteEmail: (params: Required<{
+        getInfo: ((params: Required<{}> & Partial<{}>) => Promise<UserInfo>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>) => Promise<UserInfo>;
+        };
+        deleteEmail: ((params: Required<{
             uid: string;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<null>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                uid: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<null>;
+        };
     };
     Blog: {
-        getList: (params: Required<{}> & Partial<{}> & Required<{
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<BlogPreview[]>;
-        getByPid: (params: Required<{
+        }> & Partial<{}>) => Promise<BlogPreview[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<BlogPreview[]>;
+        };
+        getByPid: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<Blog>;
-        post: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<Blog>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<Blog>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             title: string;
             tags: string[];
             doc_type: string;
             doc: string;
-        }> & Partial<{}>) => Promise<number>;
-        update: (params: Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                title: string;
+                tags: string[];
+                doc_type: string;
+                doc: string;
+            }> & Partial<{}>) => Promise<number>;
+        };
+        update: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
@@ -401,17 +684,36 @@ export declare const API: {
             tags: string[];
             doc_type: string;
             doc: string;
-        }> & Partial<{}>) => Promise<number>;
-        delete: (params: Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                title: string;
+                tags: string[];
+                doc_type: string;
+                doc: string;
+            }> & Partial<{}>) => Promise<number>;
+        };
+        delete: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<BlogContent | null>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<BlogContent | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<BlogContent | null>;
+        };
     };
     Note: {
-        getList: (params: Required<{}> & Partial<{}> & Required<{
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<Note[]>;
-        post: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}>) => Promise<Note[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<Note[]>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             name: string;
             avatar: string;
@@ -420,15 +722,32 @@ export declare const API: {
         }> & Partial<{
             email: string;
             url: string;
-        }>) => Promise<number>;
+        }>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                name: string;
+                avatar: string;
+                doc_type: string;
+                doc: string;
+            }> & Partial<{
+                email: string;
+                url: string;
+            }>) => Promise<number>;
+        };
     };
     Comment: {
-        getByPid: (params: Required<{
+        getByPid: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{
             depth: number;
-        }>) => Promise<Comment[]>;
-        post: (params: Required<{
+        }>) => Promise<Comment[]>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{
+                depth: number;
+            }>) => Promise<Comment[]>;
+        };
+        post: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
@@ -438,81 +757,205 @@ export declare const API: {
         }> & Partial<{
             email: string;
             url: string;
-        }>) => Promise<number>;
-        delete: (params: Required<{
+        }>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                name: string;
+                avatar: string;
+                text: string;
+            }> & Partial<{
+                email: string;
+                url: string;
+            }>) => Promise<number>;
+        };
+        delete: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<{
             comment_to: number;
             comment_root: number;
             text: string;
-        } | null>;
+        } | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<{
+                comment_to: number;
+                comment_root: number;
+                text: string;
+            } | null>;
+        };
     };
     PostData: {
-        getStatsByPid: (params: Required<{
+        getStatsByPid: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PostStats>;
-        like: (params: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PostStats>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PostStats>;
+        };
+        like: ((params: Required<{
             pid: number;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
-        }> & Partial<{}>) => Promise<number>;
-        dislike: (params: Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+            }> & Partial<{}>) => Promise<number>;
+        };
+        dislike: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<number>;
-        postMisc: (params: Required<{}> & Partial<{}>, body: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<number>;
+        };
+        postMisc: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
             description: string;
             url: string;
-        }> & Partial<{}>) => Promise<number>;
-        recentActivities: (params: Required<{}> & Partial<{}> & Required<{
+        }> & Partial<{}>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+                description: string;
+                url: string;
+            }> & Partial<{}>) => Promise<number>;
+        };
+        recentActivities: ((params: Required<{}> & Partial<{}> & Required<{
             skip: number;
             count: number;
-        }> & Partial<{}>) => Promise<RecentActivity[]>;
+        }> & Partial<{}>) => Promise<RecentActivity[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                skip: number;
+                count: number;
+            }> & Partial<{}>) => Promise<RecentActivity[]>;
+        };
     };
     Storage: {
-        getUploadInfo: (params: Required<{}> & Partial<{}>, body: Required<{
+        getUploadInfo: ((params: Required<{}> & Partial<{}>, body: Required<{
             [x: string]: string | number | boolean | string[];
-        }> & Partial<{}>) => Promise<OSSUploadInfo>;
+        }> & Partial<{}>) => Promise<OSSUploadInfo>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: Required<{
+                [x: string]: string | number | boolean | string[];
+            }> & Partial<{}>) => Promise<OSSUploadInfo>;
+        };
         processImg: typeof processSarImgUrl;
         removeImgSuffix: typeof removeSarImgSuffix;
     };
     Rank: {
-        getRankedScores: (params: Required<{
+        getRankedScores: ((params: Required<{
             key: string;
         }> & Partial<{}> & Required<{}> & Partial<{
             skip: number;
             count: number;
-        }>) => Promise<RankedScore[]>;
-        postScore: (params: Required<{
+        }>) => Promise<RankedScore[]>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                key: string;
+            }> & Partial<{}> & Required<{}> & Partial<{
+                skip: number;
+                count: number;
+            }>) => Promise<RankedScore[]>;
+        };
+        postScore: ((params: Required<{
             key: string;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: {
             name: string;
             score: number;
             data?: any;
-        }) => Promise<number>;
+        }) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                key: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: {
+                name: string;
+                score: number;
+                data?: any;
+            }) => Promise<number>;
+        };
     };
     Search: {
-        search: (params: Required<{}> & Partial<{}> & Required<{
+        search: ((params: Required<{}> & Partial<{}> & Required<{
             q: string;
             skip: number;
             count: number;
-        }> & Partial<{}>) => Promise<SearchResult>;
+        }> & Partial<{}>) => Promise<SearchResult>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                q: string;
+                skip: number;
+                count: number;
+            }> & Partial<{}>) => Promise<SearchResult>;
+        };
     };
     Cook: {
-        getList: (params: Required<{}> & Partial<{}> & Required<{
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>;
-        get: (params: Required<{
+        }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<PubPostData<Pick<RecipeContent, "optional" | "description" | "title" | "images" | "requirements">>[]>;
+        };
+        get: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
-        post: (params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
-        update: (params: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<RecipeContent>>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        };
+        update: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
-        delete: (params: Required<{
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: RecipeContent) => Promise<number>;
+        };
+        delete: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<RecipeContent | null>;
+        };
+    };
+    Gallery: {
+        getList: ((params: Required<{}> & Partial<{}> & Required<{
+            from: number;
+            count: number;
+        }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
+                from: number;
+                count: number;
+            }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>;
+        };
+        get: ((params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>;
+        };
+        post: ((params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+        };
+        update: ((params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+        };
+        delete: ((params: Required<{
+            pid: number;
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                pid: number;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>;
+        };
     };
     DocType: typeof DocType;
     HashMethod: typeof HashMethod;
@@ -520,4 +963,5 @@ export declare const API: {
         formatDateTime: typeof formatDateTime;
         requestProgress: typeof requestWithProgress;
     };
+    setBaseUrl: (url: string) => void;
 };

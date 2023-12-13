@@ -1,0 +1,20 @@
+{
+  "name": "api-test",
+  "version": "1.0.0",
+  "description": "Api Unit Test",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx mocha"
+  },
+  "type": "module",
+  "author": "SardineFish",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "sardinefish": "file:../web-root/lib/Script/SardineFish",
+    "uuid": "^9.0.1"
+  }
+}

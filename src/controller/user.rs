@@ -28,6 +28,7 @@ use Response::Ok;
 struct LoginData {
     uid: String,
     pwd_hash: String,
+    session_id: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -89,9 +90,14 @@ async fn login<'c>(
     session: extractor::Session,
     data: Json<LoginData>,
 ) -> Response<WithCookie<'c, AuthToken>> {
+    let session_id = match &data.session_id {
+        Some(id) => id.as_str(),
+        None => session.id(),
+    };
+
     let token = service
         .user()
-        .login(session.id(), &data.uid, &data.pwd_hash)
+        .login(session_id, &data.uid, &data.pwd_hash)
         .await
         .map_contoller_result()?;
 

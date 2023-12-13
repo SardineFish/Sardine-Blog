@@ -1,5 +1,9 @@
 (() => {
   // api-builder.ts
+  var BaseUrl = "";
+  function setBaseUrl(baseUrl) {
+    BaseUrl = baseUrl;
+  }
   function ParamDescriptor(p) {
     return p;
   }
@@ -44,7 +48,7 @@
     throw new APIError(ClientErrorCode.InvalidParameter, `Invalid email address in '${key}'`);
   }
   function validateUid(key, uid) {
-    if (/[_A-Za-z0-9]{6,32}/.test(uid))
+    if (/[_A-Za-z0-9]{4,32}/.test(uid))
       return uid;
     throw new APIError(ClientErrorCode.InvalidParameter, `Invalid username in field '${key}'`);
   }
@@ -102,6 +106,7 @@
     dataInfo;
     redirectOption;
     requestMode;
+    authInfo;
     constructor(method, mode, url, path, query, data) {
       this.method = method;
       this.url = url;
@@ -137,10 +142,19 @@
     }
     response() {
       const builder = new ApiBuilder(this.method, this.requestMode, this.url, this.pathInfo, this.queryInfo, this.dataInfo);
-      return builder.send.bind(builder);
+      const fn = builder.send.bind(builder);
+      fn.auth = (id, token) => builder.auth(id, token).send.bind(builder);
+      return fn;
+    }
+    auth(session, token) {
+      this.authInfo = {
+        session,
+        token
+      };
+      return this;
     }
     async send(params, data) {
-      let url = this.url;
+      let url = BaseUrl + this.url;
       for (const key in this.pathInfo) {
         const value = params[key];
         if (value === void 0) {
@@ -177,6 +191,9 @@
         const headers = {};
         if (this.method === "POST" || this.method === "PUT" || this.method === "OPTIONS")
           headers["Content-Type"] = "application/json";
+        if (this.authInfo) {
+          headers["Authorization"] = `Basic ${btoa(`${this.authInfo.session}:${this.authInfo.token}`)}`;
+        }
         response = await fetch(url, {
           method: this.method,
           headers,
@@ -314,7 +331,11 @@
     User: {
       checkAuth: api("GET", "/api/user").response(),
       getChallenge: api("GET", "/api/user/{uid}/challenge").path({ uid: Uid }).response(),
-      login: api("POST", "/api/user/login").body({ uid: Uid, pwd_hash: "string" }).response(),
+      login: api("POST", "/api/user/login").body({
+        uid: Uid,
+        pwd_hash: "string",
+        session_id: { optional: true, type: "string", validator: Validators.bypass }
+      }).response(),
       signup: api("POST", "/api/user/signup").body({
         uid: Uid,
         pwd_hash: "string",
@@ -466,15 +487,24 @@
       update: api("PUT", "/api/cook/{pid}").path({ pid: "number" }).body().response(),
       delete: api("DELETE", "/api/cook/{pid}").path({ pid: "number" }).response()
     },
+    Gallery: {
+      getList: api("GET", "/api/gallery").query(PageQueryParam).response(),
+      get: api("GET", "/api/gallery/{pid}").path({ pid: "number" }).response(),
+      post: api("POST", "/api/gallery").body().response(),
+      update: api("PUT", "/api/gallery/{pid}").path({ pid: "number" }).body().response(),
+      delete: api("DELETE", "/api/gallery/{pid}").path({ pid: "number" }).response()
+    },
     DocType,
     HashMethod,
     Utils: {
       formatDateTime,
       requestProgress: requestWithProgress
-    }
+    },
+    setBaseUrl: (url) => setBaseUrl(url)
   };
-  var SardineFish = window.SardineFish || {};
-  window.SardineFish = {
+  var __global = typeof window === "undefined" ? global : window;
+  var SardineFish = __global.SardineFish || {};
+  __global.SardineFish = {
     ...SardineFish,
     API: SardineFishAPI
   };

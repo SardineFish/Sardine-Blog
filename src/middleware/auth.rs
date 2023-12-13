@@ -3,8 +3,9 @@ use actix_http::{body::BoxBody, HttpMessage};
 use actix_web::{
     dev::{ServiceRequest, ServiceResponse},
     web::{self},
-    HttpRequest,
+    FromRequest, HttpRequest,
 };
+use actix_web_httpauth::extractors::basic::BasicAuth;
 use error::Error;
 use sar_blog::{
     model::{Access, SessionAuthInfo},
@@ -20,8 +21,24 @@ pub async fn auth_from_request(
     request: &HttpRequest,
 ) -> Result<Option<SessionAuthInfo>, Error> {
     let (session_id, token) = (request.cookie("session_id"), request.cookie("token"));
-    if let (Some(session_id), Some(token)) = (session_id, token) {
-        match service
+
+    let mut payload = actix_http::Payload::None;
+    let http_auth = BasicAuth::from_request(request, &mut payload).await;
+    match (http_auth, session_id, token) {
+        // First try HTTP busic auth
+        (Ok(auth), _, _) if auth.password().is_some() => {
+            match service
+                .user()
+                .auth_session(auth.user_id(), auth.password().unwrap())
+                .await
+            {
+                Ok(info) => Ok(Some(info)),
+                Err(ServiceError::Unauthorized) => Ok(None),
+                Err(err) => Err(Error::Service(err)),
+            }
+        }
+        // Then try cookie auth
+        (_, Some(session_id), Some(token)) => match service
             .user()
             .auth_session(session_id.value(), token.value())
             .await
@@ -29,9 +46,8 @@ pub async fn auth_from_request(
             Ok(info) => Ok(Some(info)),
             Err(ServiceError::Unauthorized) => Ok(None),
             Err(err) => Err(Error::Service(err)),
-        }
-    } else {
-        Ok(None)
+        },
+        _ => Ok(None),
     }
 }
 

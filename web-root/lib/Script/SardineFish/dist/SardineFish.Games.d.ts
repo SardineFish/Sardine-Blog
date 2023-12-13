@@ -5,19 +5,34 @@ export interface RankedScore {
 }
 declare const GameAPI: (baseUrl?: string) => {
     Rank: {
-        getRankedScores: (params: Required<{
+        getRankedScores: ((params: Required<{
             key: string;
         }> & Partial<{}> & Required<{}> & Partial<{
             skip: number;
             count: number;
-        }>) => Promise<RankedScore[]>;
-        postScore: (params: Required<{
+        }>) => Promise<RankedScore[]>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                key: string;
+            }> & Partial<{}> & Required<{}> & Partial<{
+                skip: number;
+                count: number;
+            }>) => Promise<RankedScore[]>;
+        };
+        postScore: ((params: Required<{
             key: string;
         }> & Partial<{}> & Required<{}> & Partial<{}>, body: {
             name: string;
             score: number;
             data?: any;
-        }) => Promise<number>;
+        }) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{
+                key: string;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: {
+                name: string;
+                score: number;
+                data?: any;
+            }) => Promise<number>;
+        };
     };
 };
 declare global {

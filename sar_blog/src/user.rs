@@ -19,6 +19,7 @@ pub struct AuthChallenge {
     pub method: HashMethod,
     pub salt: String,
     pub challenge: String,
+    pub session_id: String,
 }
 
 pub enum Author {
@@ -124,7 +125,7 @@ impl<'m> UserService<'m> {
 
     pub async fn login(
         &self,
-        session_id: &SessionID,
+        session_id: &str,
         uid: &str,
         user_pwd_hash: &str,
     ) -> Result<AuthToken> {
@@ -280,7 +281,7 @@ impl<'m> UserService<'m> {
         Ok(self.model.user.delete_email(uid).await?)
     }
 
-    async fn grant_token(&self, session_id: &SessionID, uid: &str) -> Result<AuthToken> {
+    async fn grant_token(&self, session_id: &str, uid: &str) -> Result<AuthToken> {
         let token = gen_token(self.service.rng.borrow_mut());
 
         self.redis
@@ -305,7 +306,7 @@ impl<'m> UserService<'m> {
             .map_service_err()?;
 
         Ok(AuthToken {
-            session_id: session_id.clone(),
+            session_id: session_id.to_string(),
             token,
             expire: (Utc::now() + self.service.option.session_expire).timestamp(),
         })
@@ -368,6 +369,7 @@ impl<'m> UserService<'m> {
             challenge,
             method,
             salt: salt.to_string(),
+            session_id: session_id.to_string(),
         })
     }
 }

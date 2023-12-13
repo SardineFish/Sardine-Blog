@@ -1,4 +1,4 @@
-import { api, HTTPMethods, ParamDescriptor, Validators } from "./api-builder";
+import { api, HTTPMethods, ParamDescriptor, setBaseUrl, Validators } from "./api-builder";
 export { APIError, ClientErrorCode } from "./api-builder";
 
 function formatDateTime(time: Date)
@@ -50,7 +50,7 @@ function requestWithProgress(url: string, options?: ProgressRequestOptions)
             {
                 if (xhr.readyState !== 4)
                     return;
-                
+
                 resolve({
                     status: xhr.status,
                     statusText: xhr.statusText,
@@ -107,6 +107,7 @@ export interface AuthChallenge
     salt: string,
     method: HashMethod,
     challenge: string,
+    session_id: string,
 }
 
 export interface SessionToken
@@ -264,6 +265,14 @@ export interface RecipeContent
 
 export type RecipePreviewContent = Omit<RecipeContent, "content">;
 
+export interface GalleryExhibit
+{
+    title: string,
+    description: string,
+    url: string,
+    meta: Record<string, string>,
+}
+
 const ImagePreset = {
     Size600: "s600",
     Size800: "s800",
@@ -304,7 +313,11 @@ const SardineFishAPI = {
             .path({ uid: Uid })
             .response<AuthChallenge>(),
         login: api("POST", "/api/user/login")
-            .body({ uid: Uid, pwd_hash: "string" })
+            .body({
+                uid: Uid,
+                pwd_hash: "string",
+                session_id: { optional: true, type: "string", validator: Validators.bypass }
+            })
             .response<SessionToken>(),
         signup: api("POST", "/api/user/signup")
             .body({
@@ -527,12 +540,31 @@ const SardineFishAPI = {
             .path({ pid: "number" })
             .response<RecipeContent | null>(),
     },
+    Gallery: {
+        getList: api("GET", "/api/gallery")
+            .query(PageQueryParam)
+            .response<PubPostData<GalleryExhibit>[]>(),
+        get: api("GET", "/api/gallery/{pid}")
+            .path({ pid: "number" })
+            .response<PubPostData<GalleryExhibit>>(),
+        post: api("POST", "/api/gallery")
+            .body<GalleryExhibit>()
+            .response<PidType>(),
+        update: api("PUT", "/api/gallery/{pid}")
+            .path({ pid: "number" })
+            .body<GalleryExhibit>()
+            .response<number>(),
+        delete: api("DELETE", "/api/gallery/{pid}")
+            .path({ pid: "number" })
+            .response<GalleryExhibit | null>(),
+    },
     DocType,
     HashMethod,
     Utils: {
         formatDateTime: formatDateTime,
         requestProgress: requestWithProgress,
-    }
+    },
+    setBaseUrl: (url: string) => setBaseUrl(url),
 }
 
 interface SardineFish
@@ -540,8 +572,10 @@ interface SardineFish
     API: typeof SardineFishAPI
 };
 
-const SardineFish: SardineFish = (window as any).SardineFish || {} ;
-(window as any).SardineFish = {
+let __global = typeof (window) === "undefined" ? global : window;
+
+const SardineFish: SardineFish = (__global as any).SardineFish || {};
+(__global as any).SardineFish = {
     ...SardineFish,
     API: SardineFishAPI
 };

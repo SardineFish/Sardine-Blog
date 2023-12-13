@@ -1,3 +1,4 @@
+export declare function setBaseUrl(baseUrl: string): void;
 declare type HTTPMethodsWithoutBody = "GET" | "HEAD" | "CONNECT" | "DELETE" | "OPTIONS";
 declare type HTTPMethodsWithBody = "POST" | "PUT" | "PATCH";
 export declare type HTTPMethods = HTTPMethodsWithBody | HTTPMethodsWithoutBody;
@@ -30,6 +31,9 @@ declare type FullParamsDeclare<T extends SimpleParamsDeclare> = {
     [key in keyof T]: ParamInfo<TypeNames> & (T[key] extends TypeNames ? ParamInfo<T[key]> : T[key]);
 };
 declare type ApiFunction<Path extends ParamsDeclare, Query extends ParamsDeclare, Data extends ParamsDeclare | any | undefined, Response> = Data extends undefined ? (params: ValueType<Path> & ValueType<Query>) => Promise<Response> : Data extends ParamsDeclare ? (params: ValueType<Path> & ValueType<Query>, body: ValueType<Data & ParamsDeclare>) => Promise<Response> : (params: ValueType<Path> & ValueType<Query>, body: Data) => Promise<Response>;
+declare type AuthInject<T> = T & {
+    auth(session_id: string, token: string): T;
+};
 export declare function ParamDescriptor<P extends SimpleParamsDeclare>(p: P): P;
 export declare function simpleParam<T extends SimpleParamsDeclare>(info: T): FullParamsDeclare<T>;
 declare function validateEmail(key: string, email: string): string;
@@ -66,6 +70,7 @@ declare class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare,
     private dataInfo;
     private redirectOption?;
     private requestMode;
+    private authInfo?;
     constructor(method: Method, mode: RequestMode, url: string, path: Path, query: Query, data: Data);
     base(baseUrl: string): ApiBuilder<Method, Path, Query, Data, unknown>;
     path<NewPath extends SimpleParamsDeclare>(path: NewPath): ApiBuilder<Method, FullParamsDeclare<NewPath>, Query, Data, Response>;
@@ -74,7 +79,8 @@ declare class ApiBuilder<Method extends HTTPMethods, Path extends ParamsDeclare,
     body<T>(): ApiBuilder<Method, Path, Query, T, Response>;
     body<NewData extends SimpleParamsDeclare>(data: NewData): ApiBuilder<Method, Path, Query, FullParamsDeclare<NewData>, Response>;
     redirect(redirect: "follow" | "error" | "manual"): this;
-    response<Response>(): ApiFunction<Path, Query, Data, Response>;
+    response<Response>(): AuthInject<ApiFunction<Path, Query, Data, Response>>;
+    auth(session: string, token: string): this;
     private send;
     private parseBody;
 }
