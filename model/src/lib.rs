@@ -10,6 +10,7 @@ pub use blog::{Blog, BlogContent, DocType};
 pub use comment::{Comment, CommentContent};
 pub use db::recipe::*;
 pub use error::{Error, Result};
+pub use gallery::ExhibitContent;
 pub use history::{History, HistoryData, Operation, PostActivity};
 pub use model::{Model, PidType};
 pub use note::{Note, NoteContent};

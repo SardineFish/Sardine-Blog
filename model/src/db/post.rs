@@ -21,7 +21,7 @@ use crate::{misc::usize_format, User};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use shared::error::LogError;
 
-use super::{recipe::RecipeContent, search::IndexDoc};
+use super::{gallery::ExhibitContent, recipe::RecipeContent, search::IndexDoc};
 
 const COLLECTION_POST: &str = "post";
 // const COLLECTION_META: &str = "meta";
@@ -90,6 +90,7 @@ pub enum PostTypeName {
     Blog,
     Comment,
     Miscellaneous,
+    Exhibit,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -100,16 +101,18 @@ pub enum PostType {
     Comment(CommentContent),
     Recipe(RecipeContent),
     Miscellaneous(MiscellaneousPostContent),
+    Exhibit(ExhibitContent),
 }
 
 impl PostType {
     pub fn type_name(&self) -> &'static str {
         match self {
-            PostType::Blog(_) => "Blog",
-            PostType::Note(_) => "Note",
-            PostType::Comment(_) => "Comment",
+            PostType::Blog(_) => BlogContent::post_type_name(),
+            PostType::Note(_) => NoteContent::post_type_name(),
+            PostType::Comment(_) => CommentContent::post_type_name(),
             PostType::Recipe(_) => RecipeContent::post_type_name(),
-            PostType::Miscellaneous(_) => "Miscellaneous",
+            PostType::Miscellaneous(_) => MiscellaneousPostContent::post_type_name(),
+            PostType::Exhibit(_) => ExhibitContent::post_type_name(),
         }
     }
 }

@@ -114,7 +114,8 @@ impl<'m> CommentService<'m> {
             PostType::Blog(_)
             | PostType::Note(_)
             | PostType::Miscellaneous(_)
-            | PostType::Recipe(_) => post.pid,
+            | PostType::Recipe(_)
+            | PostType::Exhibit(_) => post.pid,
             PostType::Comment(content) => content.comment_root,
         };
 

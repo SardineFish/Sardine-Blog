@@ -3,6 +3,7 @@ mod comment;
 mod cook;
 mod cors;
 mod extractor;
+mod gallery;
 mod note;
 mod post_data;
 mod rank;
@@ -26,6 +27,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .configure(comment::config)
                 .configure(note::config)
                 .configure(cook::config)
+                .configure(gallery::config)
                 .configure(user::config)
                 .configure(post_data::config)
                 .configure(storage::config)

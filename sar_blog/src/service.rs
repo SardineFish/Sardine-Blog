@@ -3,6 +3,7 @@ use rand::{prelude::StdRng, RngCore, SeedableRng};
 use sha2::{Digest, Sha256};
 use shared::{LogError, ServiceOptions};
 
+use crate::gallery::GalleryService;
 use crate::{
     blog::BlogService, comment::CommentService, cook::CookService,
     email_notify::EmailNotifyService, error::MapServiceError, note::NoteService,
@@ -92,6 +93,10 @@ impl Service {
 
     pub fn url(&self) -> UrlService {
         UrlService::new(self)
+    }
+
+    pub fn gallery(&self) -> GalleryService {
+        GalleryService::new(self)
     }
 
     pub async fn init_database(&self, index_only: bool) -> Result<()> {

@@ -1,5 +1,6 @@
 pub mod blog;
 pub mod comment;
+pub mod gallery;
 pub mod history;
 pub mod model;
 pub mod note;

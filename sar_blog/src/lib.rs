@@ -3,6 +3,7 @@ mod comment;
 mod cook;
 mod email_notify;
 mod error;
+mod gallery;
 mod note;
 mod post;
 mod post_data;
