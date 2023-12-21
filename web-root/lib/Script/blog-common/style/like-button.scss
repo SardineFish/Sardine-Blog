@@ -1,0 +1,40 @@
+.stats-like {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-top: 2em;
+    user-select: none;
+
+    &.hit {
+        color: #ff5c83 !important;
+    }
+
+
+    .like-button {
+        width: 3em;
+        // border: solid 2px #eee;
+        border-radius: 100px;
+        // padding: 1em;
+        cursor: pointer;
+        overflow: visible;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        outline: none;
+
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    @keyframes hit-like {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1.0);
+        }
+    }
+}

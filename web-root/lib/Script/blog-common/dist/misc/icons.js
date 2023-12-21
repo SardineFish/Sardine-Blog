@@ -47,6 +47,15 @@ const icons = {
         React.createElement("path", { fill: "currentColor", d: "M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" }))),
     FileEyeOutline: () => (React.createElement("svg", { viewBox: "0 0 24 24" },
         React.createElement("path", { fill: "currentColor", d: "M17,18C17.56,18 18,18.44 18,19C18,19.56 17.56,20 17,20C16.44,20 16,19.56 16,19C16,18.44 16.44,18 17,18M17,15C14.27,15 11.94,16.66 11,19C11.94,21.34 14.27,23 17,23C19.73,23 22.06,21.34 23,19C22.06,16.66 19.73,15 17,15M17,21.5A2.5,2.5 0 0,1 14.5,19A2.5,2.5 0 0,1 17,16.5A2.5,2.5 0 0,1 19.5,19A2.5,2.5 0 0,1 17,21.5M9.27,20H6V4H13V9H18V13.07C18.7,13.15 19.36,13.32 20,13.56V8L14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H10.5C10,21.41 9.59,20.73 9.27,20Z" }))),
+    ChevronLeft: () => (React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24" },
+        React.createElement("path", { d: "M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" }))),
+    ChevronRight: () => (React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24" },
+        React.createElement("path", { d: "M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" }))),
+    Loading: () => (React.createElement("svg", { viewBox: "0 0 24 24" },
+        React.createElement("path", { d: "M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z" }),
+        React.createElement("path", { d: "M12,20V22A10,10 0 0,0 22,12H20A8,8 0 0,1 12,20Z" }))),
+    Reply: () => (React.createElement("svg", { viewBox: "0 0 24 24" },
+        React.createElement("path", { d: "M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z" })))
 };
 export const Icons = Object.keys(icons).map((key) => [key, (propsOverride) => {
         const element = icons[key]();

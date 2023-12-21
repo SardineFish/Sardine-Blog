@@ -4,5 +4,5 @@ export declare function FoldMenu(props: {
     title?: string;
     children?: React.ReactNode;
     icon?: JSX.Element;
-}): JSX.Element;
+}): React.JSX.Element;
 //# sourceMappingURL=fold-menu.d.ts.map

@@ -3,12 +3,21 @@ use std::collections::HashMap;
 use crate::{PostData, PostType};
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ExhibitMeta {
+    Number(f64),
+    String(String),
+    Array(Vec<ExhibitMeta>),
+    Obj(HashMap<String, ExhibitMeta>),
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ExhibitContent {
     title: String,
     url: String,
     description: String,
-    meta: HashMap<String, String>,
+    meta: HashMap<String, ExhibitMeta>,
 }
 
 impl PostData for ExhibitContent {
@@ -28,6 +37,6 @@ impl PostData for ExhibitContent {
     }
 
     fn ignore_fields_on_preview() -> &'static [&'static str] {
-        &[]
+        &["meta.album"]
     }
 }

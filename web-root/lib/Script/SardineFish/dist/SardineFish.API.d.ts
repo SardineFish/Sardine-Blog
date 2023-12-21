@@ -1,7 +1,8 @@
 import { HTTPMethods } from "./api-builder";
 export { APIError, ClientErrorCode } from "./api-builder";
 declare function formatDateTime(time: Date): string;
-export interface ProgressRequestOptions {
+export interface ProgressRequestOptions
+{
     method?: HTTPMethods;
     headers?: {
         [key: string]: string;
@@ -9,7 +10,8 @@ export interface ProgressRequestOptions {
     onUploadProgress?: (sentBytes: number, totalBytes: number) => void;
     body?: Document | Blob | BufferSource | FormData | URLSearchParams | string | null | undefined;
 }
-interface RequestProgressResponse {
+interface RequestProgressResponse
+{
     status: number;
     statusText: string;
     json: () => Promise<any>;
@@ -18,42 +20,50 @@ interface RequestProgressResponse {
 declare function requestWithProgress(url: string, options?: ProgressRequestOptions): Promise<RequestProgressResponse>;
 export declare type PidType = number;
 export declare type ServerTime = string;
-export declare enum HashMethod {
+export declare enum HashMethod
+{
     SHA256 = "SHA256",
     SHA1 = "SHA1",
     MD5 = "MD5",
     NoLogin = "NoLogin"
 }
-export declare enum DocType {
+export declare enum DocType
+{
     PlainText = "PlainText",
     Markdown = "Markdown",
     HTML = "HTML"
 }
-export interface AuthChallenge {
+export interface AuthChallenge
+{
     salt: string;
     method: HashMethod;
     challenge: string;
     session_id: string;
 }
-export interface SessionToken {
+export interface SessionToken
+{
     session_id: string;
     token: string;
     expire: number;
 }
-export interface PubUserInfo {
+export interface PubUserInfo
+{
     name: string;
     avatar: string;
     url: string | null;
 }
-export interface UserInfo extends PubUserInfo {
+export interface UserInfo extends PubUserInfo
+{
     email: string | null;
 }
-export interface PostStats {
+export interface PostStats
+{
     views: number;
     likes: number;
     comments: number;
 }
-export interface BlogPreview {
+export interface BlogPreview
+{
     pid: number;
     title: string;
     time: number;
@@ -61,7 +71,8 @@ export interface BlogPreview {
     author: PubUserInfo;
     preview: string;
 }
-export interface Blog {
+export interface Blog
+{
     pid: number;
     title: string;
     author: PubUserInfo;
@@ -71,13 +82,15 @@ export interface Blog {
     doc: string;
     stats: PostStats;
 }
-export interface BlogContent {
+export interface BlogContent
+{
     title: string;
     tags: string[];
     doc_type: DocType;
     doc: string;
 }
-export interface Note {
+export interface Note
+{
     pid: number;
     author: PubUserInfo;
     time: number;
@@ -85,7 +98,8 @@ export interface Note {
     doc: string;
     stats: PostStats;
 }
-export interface Comment {
+export interface Comment
+{
     pid: number;
     comment_to: number;
     author: PubUserInfo;
@@ -94,34 +108,40 @@ export interface Comment {
     comments: Comment[];
     depth: number;
 }
-export interface MiscellaneousPostContent {
+export interface MiscellaneousPostContent
+{
     description: string;
     url: string;
 }
-export interface OSSUploadInfo {
+export interface OSSUploadInfo
+{
     key: string;
     token: string;
     upload: string;
 }
-export interface RankedScore {
+export interface RankedScore
+{
     name: String;
     score: number;
     time: number;
 }
-export interface RecentActivity {
+export interface RecentActivity
+{
     action: "PostNote" | "PostComment" | "PostBlog" | "UpdateBlog";
     name: string;
     url: string;
     time: number;
     title?: string;
 }
-export interface SearchResult {
+export interface SearchResult
+{
     time: number;
     timeout: boolean;
     total_hits: number;
     results: SearchHitInfo[];
 }
-export interface SearchHitInfo {
+export interface SearchHitInfo
+{
     pid: number;
     time: number;
     author: string;
@@ -131,20 +151,23 @@ export interface SearchHitInfo {
     tags: string[];
     highlight: SearchHighlight;
 }
-export interface SearchHighlight {
+export interface SearchHighlight
+{
     title?: string;
     tags?: string[];
     author?: string;
     content?: string[];
 }
-export interface PubPostData<T> {
+export interface PubPostData<T>
+{
     pid: PidType;
     time: ServerTime;
     author: PubUserInfo;
     stats: PostStats;
     content: T;
 }
-export interface RecipeContent {
+export interface RecipeContent
+{
     title: string;
     description: string;
     images: string[];
@@ -153,11 +176,13 @@ export interface RecipeContent {
     content: string;
 }
 export declare type RecipePreviewContent = Omit<RecipeContent, "content">;
-export interface GalleryExhibit {
+export declare type ExhibitMeta = string | number | Record<string, ExhibitMeta> | ExhibitMeta[];
+export interface GalleryExhibit<T extends Record<string, ExhibitMeta> = Record<string, ExhibitMeta>>
+{
     title: string;
     description: string;
     url: string;
-    meta: Record<string, string>;
+    meta: T;
 }
 declare const ImagePreset: {
     Size600: string;
@@ -523,35 +548,35 @@ declare const SardineFishAPI: {
         getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>) & {
+        }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>[]>) & {
             auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
                 from: number;
                 count: number;
-            }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>;
+            }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>[]>;
         };
         get: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>) & {
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>>) & {
             auth(session_id: string, token: string): (params: Required<{
                 pid: number;
-            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>>;
         };
-        post: ((params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
-            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+        post: ((params: Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>;
         };
         update: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>) & {
             auth(session_id: string, token: string): (params: Required<{
                 pid: number;
-            }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>;
         };
         delete: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>) & {
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit<Record<string, ExhibitMeta>> | null>) & {
             auth(session_id: string, token: string): (params: Required<{
                 pid: number;
-            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit<Record<string, ExhibitMeta>> | null>;
         };
     };
     DocType: typeof DocType;
@@ -562,12 +587,15 @@ declare const SardineFishAPI: {
     };
     setBaseUrl: (url: string) => void;
 };
-interface SardineFish {
+interface SardineFish
+{
     API: typeof SardineFishAPI;
 }
 declare const SardineFish: SardineFish;
-declare global {
-    namespace SardineFish {
+declare global
+{
+    namespace SardineFish
+    {
         const API: typeof SardineFishAPI;
     }
 }
@@ -926,35 +954,35 @@ export declare const API: {
         getList: ((params: Required<{}> & Partial<{}> & Required<{
             from: number;
             count: number;
-        }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>) & {
+        }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>[]>) & {
             auth(session_id: string, token: string): (params: Required<{}> & Partial<{}> & Required<{
                 from: number;
                 count: number;
-            }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>[]>;
+            }> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>[]>;
         };
         get: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>) & {
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>>) & {
             auth(session_id: string, token: string): (params: Required<{
                 pid: number;
-            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit>>;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<PubPostData<GalleryExhibit<Record<string, ExhibitMeta>>>>;
         };
-        post: ((params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
-            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+        post: ((params: Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>) & {
+            auth(session_id: string, token: string): (params: Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>;
         };
         update: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>) & {
+        }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>) & {
             auth(session_id: string, token: string): (params: Required<{
                 pid: number;
-            }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit) => Promise<number>;
+            }> & Partial<{}> & Required<{}> & Partial<{}>, body: GalleryExhibit<Record<string, ExhibitMeta>>) => Promise<number>;
         };
         delete: ((params: Required<{
             pid: number;
-        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>) & {
+        }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit<Record<string, ExhibitMeta>> | null>) & {
             auth(session_id: string, token: string): (params: Required<{
                 pid: number;
-            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit | null>;
+            }> & Partial<{}> & Required<{}> & Partial<{}>) => Promise<GalleryExhibit<Record<string, ExhibitMeta>> | null>;
         };
     };
     DocType: typeof DocType;

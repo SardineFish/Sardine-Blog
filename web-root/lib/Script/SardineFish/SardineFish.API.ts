@@ -265,12 +265,14 @@ export interface RecipeContent
 
 export type RecipePreviewContent = Omit<RecipeContent, "content">;
 
-export interface GalleryExhibit
+export type ExhibitMeta = any;
+
+export interface GalleryExhibit<T extends Record<string, ExhibitMeta> = Record<string, ExhibitMeta>>
 {
     title: string,
     description: string,
     url: string,
-    meta: Record<string, string>,
+    meta: T,
 }
 
 const ImagePreset = {

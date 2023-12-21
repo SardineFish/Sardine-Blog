@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react";
+import React, { MutableRefObject } from "react";
 export interface MarkdownEditorRef {
     getDoc(): string;
     setDoc(doc: string): void;
@@ -6,5 +6,5 @@ export interface MarkdownEditorRef {
 }
 export declare function MarkdownEditor(props: {
     handle?: MutableRefObject<MarkdownEditorRef | undefined>;
-}): JSX.Element;
+}): React.JSX.Element;
 //# sourceMappingURL=md-editor.d.ts.map

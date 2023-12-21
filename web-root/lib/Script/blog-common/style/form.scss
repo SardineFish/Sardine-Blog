@@ -1,0 +1,41 @@
+.form {
+    .form-field {
+        margin: 1.5em 0;
+    }
+
+    .field-name {
+        font-size: .8em;
+    }
+
+    input {
+        border: none 0;
+        border-bottom: solid 2px;
+
+        outline: none;
+        padding: .2em 0;
+
+        font-size: 1em;
+        width: 100%;
+    }
+
+    .field-editor-loc {
+        display: flex;
+        flex-flow: row;
+
+        .seperator {
+            margin: 0 .5em;
+        }
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+}

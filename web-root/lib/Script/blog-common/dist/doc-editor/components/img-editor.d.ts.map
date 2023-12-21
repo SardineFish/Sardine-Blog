@@ -1,1 +1,1 @@
-{"version":3,"file":"img-editor.d.ts","sourceRoot":"","sources":["../../../src/doc-editor/components/img-editor.tsx"],"names":[],"mappings":";AAGA,OAAO,EAAE,gBAAgB,EAAkB,MAAM,cAAc,CAAC;AAIhE,wBAAgB,WAAW,CAAC,KAAK,EAAE,gBAAgB,CAAC,KAAK,CAAC,eAmFzD"}
+{"version":3,"file":"img-editor.d.ts","sourceRoot":"","sources":["../../../src/doc-editor/components/img-editor.tsx"],"names":[],"mappings":"AACA,OAAO,KAA2D,MAAM,OAAO,CAAC;AAEhF,OAAO,EAAE,gBAAgB,EAAkB,MAAM,cAAc,CAAC;AAIhE,wBAAgB,WAAW,CAAC,KAAK,EAAE,gBAAgB,CAAC,KAAK,CAAC,qBAmFzD"}

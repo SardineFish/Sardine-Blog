@@ -1,1 +1,1 @@
-{"version":3,"file":"title-editor.d.ts","sourceRoot":"","sources":["../../../src/doc-editor/components/title-editor.tsx"],"names":[],"mappings":";AACA,OAAO,EAAE,gBAAgB,EAAsC,MAAM,cAAc,CAAC;AAEpF,wBAAgB,WAAW,CAAC,KAAK,EAAE,gBAAgB,CAAC,OAAO,CAAC,eAgB3D"}
+{"version":3,"file":"title-editor.d.ts","sourceRoot":"","sources":["../../../src/doc-editor/components/title-editor.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAqC,MAAM,OAAO,CAAC;AAC1D,OAAO,EAAE,gBAAgB,EAAsC,MAAM,cAAc,CAAC;AAEpF,wBAAgB,WAAW,CAAC,KAAK,EAAE,gBAAgB,CAAC,OAAO,CAAC,qBAgB3D"}

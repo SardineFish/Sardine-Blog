@@ -19,7 +19,7 @@ export function NavMenu(props: NavMenuProps)
     return (
         <FoldMenu className={clsx("nav-menu", props.className)} title={props.title}>
             {
-                props.children 
+                props.children
                     ? props.children
                     : <BlogNav />
             }
@@ -32,6 +32,7 @@ export function BlogNav()
     return (<SelectGroup className="nav-list">
         <SelectGroup.Item id="home"><a href="/">HOME</a></SelectGroup.Item>
         <SelectGroup.Item id="blog"><a href="/blog/">BLOG</a></SelectGroup.Item>
+        <SelectGroup.Item id="gallery"><a href="/gallery/">GALLERY</a></SelectGroup.Item>
         <SelectGroup.Item id="note"><a href="/note/">NOTES</a></SelectGroup.Item>
         <SelectGroup.Item id="lab"><a href="https://lab.sardinefish.com/">LAB</a></SelectGroup.Item>
         <SelectGroup.Item id="github"><a href="https://github.com/SardineFish">GITHUB</a></SelectGroup.Item>

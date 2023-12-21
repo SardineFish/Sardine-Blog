@@ -22,5 +22,9 @@ export declare const Icons: {
     Account: React.FC<React.SVGProps<React.ReactSVGElement>>;
     ChevronRightL: React.FC<React.SVGProps<React.ReactSVGElement>>;
     FileEyeOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ChevronLeft: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ChevronRight: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    Loading: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    Reply: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

@@ -6,16 +6,16 @@ interface EditorHeaderTypes {
     "tag": string[];
     "img": string;
 }
-declare type EditorHeaderFieldTypeDescriptor = keyof EditorHeaderTypes;
+type EditorHeaderFieldTypeDescriptor = keyof EditorHeaderTypes;
 interface EditorHeaderFieldDetailedDescriptor<T extends EditorHeaderFieldTypeDescriptor = EditorHeaderFieldTypeDescriptor> {
     type: T;
     placeholder?: string;
     style?: React.CSSProperties;
     className?: string;
 }
-declare type EditorHeaderFieldDescriptor = EditorHeaderFieldDetailedDescriptor | EditorHeaderFieldTypeDescriptor;
-declare type EditorHeaderFieldValueType<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? EditorHeaderTypes[T] : T extends EditorHeaderFieldDetailedDescriptor ? EditorHeaderFieldValueType<T["type"]> : never;
-declare type IntoDetailedDescriptor<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? {
+type EditorHeaderFieldDescriptor = EditorHeaderFieldDetailedDescriptor | EditorHeaderFieldTypeDescriptor;
+type EditorHeaderFieldValueType<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? EditorHeaderTypes[T] : T extends EditorHeaderFieldDetailedDescriptor ? EditorHeaderFieldValueType<T["type"]> : never;
+type IntoDetailedDescriptor<T extends EditorHeaderFieldDescriptor> = T extends EditorHeaderFieldTypeDescriptor ? {
     type: T;
 } : T extends EditorHeaderFieldDetailedDescriptor ? T : never;
 interface EditorHeaderDescriptor {
@@ -26,7 +26,7 @@ export declare function EditorHeaderDescriptor<T extends {
 }>(headers: T): {
     [key in keyof T]: IntoDetailedDescriptor<T[key]>;
 };
-declare type EditorHeaderType<T extends EditorHeaderDescriptor> = {
+type EditorHeaderType<T extends EditorHeaderDescriptor> = {
     [key in keyof T]: EditorHeaderFieldValueType<T[key]["type"]>;
 };
 export interface Doc<T extends EditorHeaderDescriptor> {
@@ -59,11 +59,11 @@ export interface DocEditorProps<T extends EditorHeaderDescriptor> {
 export interface DocEditorRef {
     save: () => void;
 }
-export declare function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEditorProps<Headers>): JSX.Element;
+export declare function DocEditor<Headers extends EditorHeaderDescriptor>(props: DocEditorProps<Headers>): React.JSX.Element;
 interface FieldEditorWrapperProps<T extends EditorHeaderFieldTypeDescriptor> extends React.HTMLProps<HTMLDivElement> {
     descriptor: EditorHeaderFieldDetailedDescriptor<T>;
     name: string;
 }
-export declare function FieldEditorWrapper<T extends EditorHeaderFieldTypeDescriptor>(props: FieldEditorWrapperProps<T>): JSX.Element;
+export declare function FieldEditorWrapper<T extends EditorHeaderFieldTypeDescriptor>(props: FieldEditorWrapperProps<T>): React.JSX.Element;
 export {};
 //# sourceMappingURL=doc-editor.d.ts.map

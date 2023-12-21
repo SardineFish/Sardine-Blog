@@ -15,6 +15,8 @@ export function BlogNav() {
             React.createElement("a", { href: "/" }, "HOME")),
         React.createElement(SelectGroup.Item, { id: "blog" },
             React.createElement("a", { href: "/blog/" }, "BLOG")),
+        React.createElement(SelectGroup.Item, { id: "gallery" },
+            React.createElement("a", { href: "/gallery/" }, "GALLERY")),
         React.createElement(SelectGroup.Item, { id: "note" },
             React.createElement("a", { href: "/note/" }, "NOTES")),
         React.createElement(SelectGroup.Item, { id: "lab" },

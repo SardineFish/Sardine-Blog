@@ -4,7 +4,7 @@ interface NavMenuProps {
     title?: string;
     children?: React.ReactNode;
 }
-export declare function NavMenu(props: NavMenuProps): JSX.Element;
-export declare function BlogNav(): JSX.Element;
+export declare function NavMenu(props: NavMenuProps): React.JSX.Element;
+export declare function BlogNav(): React.JSX.Element;
 export {};
 //# sourceMappingURL=nav-menu.d.ts.map

@@ -3,6 +3,8 @@ import React, { HTMLAttributes, ReactElement, ReactNode, useContext, useEffect, 
 
 const SelectContext = React.createContext({ selected: false, onClick: (_: string) => undefined as any });
 
+type SelectionKey = string | number;
+
 export interface SelectGroupProps<T> extends React.DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
 {
     selectedKey?: T,
@@ -10,9 +12,9 @@ export interface SelectGroupProps<T> extends React.DetailedHTMLProps<HTMLAttribu
     children: ReactElement<{ id: T }>[] | ReactElement<{ id: T }>,
 }
 
-export function SelectGroup<T extends string = string>(props: SelectGroupProps<T>)
+export function SelectGroup<T extends SelectionKey = string>(props: SelectGroupProps<T>)
 {
-    const [selected, setSelected] = useState<string | undefined>(props.selectedKey);
+    const [selected, setSelected] = useState<T | undefined>(props.selectedKey);
 
     const select = (key: T) =>
     {
@@ -38,7 +40,7 @@ export function SelectGroup<T extends string = string>(props: SelectGroupProps<T
 
 SelectGroup.Item = SelectItem;
 
-function SelectItem<T extends string>(props: { id: T, onSelected?: (key: T) => void, children: ReactNode })
+function SelectItem<T extends SelectionKey>(props: { id: T, onSelected?: (key: T) => void, children: ReactNode })
 {
     const context = useContext(SelectContext);
     useEffect(() =>
