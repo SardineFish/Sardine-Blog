@@ -1,8 +1,8 @@
 import "./base.html";
 import "../style/index.scss";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BlogNav, Footer, NavMenu, message } from "blog-common";
+import { BlogNav, Footer, NavMenu, message, useHistory } from "blog-common";
 import { AdminMenu } from "../component/admin-menu";
 import InfiniteScroller from "react-infinite-scroller";
 import { APIError, GalleryExhibit, PubPostData } from "sardinefish";
@@ -28,6 +28,7 @@ function App()
     const [hasMore, setHasMore] = useState(true);
     const [viewPid, setPid] = useState(parseUrl);
     const [canBack, setCanBack] = useState(false);
+    const [url, pushHistory, goBack] = useHistory();
 
     const loadMore = async () =>
     {
@@ -54,22 +55,31 @@ function App()
     if (!isLoading && data.length === 0 && hasMore)
         loadMore();
 
+    useEffect(() =>
+    {
+        if (parseUrl() !== viewPid)
+            setPid(parseUrl());
+    }, [url]);
+
     const openDetail = (pid: number) =>
     {
         setPid(pid);
         setCanBack(true);
-        history.pushState(null, "", `/gallery/${pid}`);
+        // history.pushState(null, "", `/gallery/${pid}`);
+        pushHistory(`/gallery/${pid}`);
     }
+
     const closeDetail = () =>
     {
         if (canBack)
         {
-            history.back();
+            goBack();
             setCanBack(false);
         }
         else
         {
-            history.pushState(null, "", "/gallery/");
+            pushHistory("/gallery/");
+            // history.pushState(null, "", "/gallery/");
         }
         setPid(0);
     };

@@ -7,7 +7,7 @@
     "start": "node ./build/serve.dev.mjs",
     "build": "node ./build/build.dev.mjs",
     "build:watch": "node ./build/build.dev.js -w",
-    "build:prod": "node ./build/build.prod.js",
+    "build:prod": "node ./build/build.prod.mjs",
     "build:dist": "npm run build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

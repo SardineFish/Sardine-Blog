@@ -15,6 +15,8 @@ interface State {
     offsetY: number;
     scale: number;
     drag: boolean;
+    transition?: number;
+    locked: boolean;
 }
 declare class Vector {
     x: number;
@@ -26,7 +28,7 @@ export default class FreeViewport extends React.Component<Props, State> {
     drag: boolean;
     viewportRef: React.RefObject<HTMLDivElement>;
     constructor(props: Props);
-    reset(): void;
+    reset(transitionSeconds?: number): void;
     mousePosition(clientPos: Vector): Vector;
     onMouseDown(e: MouseEvent<HTMLDivElement>): void;
     onMouseUp(e: MouseEvent<HTMLDivElement>): void;

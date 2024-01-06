@@ -25,6 +25,8 @@ interface State
     offsetY: number;
     scale: number;
     drag: boolean;
+    transition?: number,
+    locked: boolean,
 }
 class Vector
 {
@@ -45,18 +47,34 @@ export default class FreeViewport extends React.Component<Props, State>
             offsetX: 0,
             offsetY: 0,
             scale: 1,
-            drag: false
+            drag: false,
+            locked: false,
         };
         this.viewportRef = this.props.domRef ? this.props.domRef as RefObject<HTMLDivElement> : React.createRef<HTMLDivElement>();
     }
 
-    public reset()
+    public reset(transitionSeconds?: number)
     {
         this.setState({
             offsetX: 0,
             offsetY: 0,
             scale: 1
         });
+        if (transitionSeconds)
+        {
+            this.setState({
+                transition: transitionSeconds,
+                locked: true
+            });
+
+            setTimeout(() =>
+            {
+                this.setState({
+                    transition: undefined,
+                    locked: false
+                });
+            }, transitionSeconds * 1000);
+        }
     }
 
     mousePosition(clientPos: Vector): Vector
@@ -71,6 +89,8 @@ export default class FreeViewport extends React.Component<Props, State>
     }
     onMouseDown(e: MouseEvent<HTMLDivElement>)
     {
+        if (this.state.locked)
+            return;
         if (this.props.onMouseDown)
             this.props.onMouseDown(e);
         let button = this.props.button === undefined ? 0 : this.props.button;
@@ -95,6 +115,8 @@ export default class FreeViewport extends React.Component<Props, State>
     }
     onMouseMove(e: MouseEvent<HTMLDivElement>)
     {
+        if (this.state.locked)
+            return;
         if (this.props.onMouseMove)
             this.props.onMouseMove(e);
         if (!this.drag)
@@ -107,6 +129,13 @@ export default class FreeViewport extends React.Component<Props, State>
     }
     onWheel(e: WheelEvent<HTMLDivElement>)
     {
+        if (this.state.locked)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
         if (this.props.onWheel)
             this.props.onWheel(e);
         const scaleFactor = this.props.scaleRate || 1.2;
@@ -178,7 +207,8 @@ export default class FreeViewport extends React.Component<Props, State>
                             transformOrigin: "0 0",
                             /*translate: `${this.state.offsetX}px, ${this.state.offsetY}px`,
                             scale: `${this.state.scale}, ${this.state.scale}`*/
-                            transform: `translate(${this.state.offsetX}px, ${this.state.offsetY}px) scale(${this.state.scale}, ${this.state.scale})`
+                            transform: `translate(${this.state.offsetX}px, ${this.state.offsetY}px) scale(${this.state.scale}, ${this.state.scale})`,
+                            transition: this.state.transition ? `transform ${this.state.transition}s ease-in-out` : undefined
                         }}>
                     {
                         children

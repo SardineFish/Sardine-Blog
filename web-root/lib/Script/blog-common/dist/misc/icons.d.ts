@@ -26,5 +26,8 @@ export declare const Icons: {
     ChevronRight: React.FC<React.SVGProps<React.ReactSVGElement>>;
     Loading: React.FC<React.SVGProps<React.ReactSVGElement>>;
     Reply: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    LightBulbOnOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    LightBulbOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    MagnifyScan: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

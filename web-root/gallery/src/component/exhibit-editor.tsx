@@ -63,12 +63,13 @@ export function ExhibitEditor(props: { pid?: number })
             {
                 files.push(e.target.files[i]);
 
-                exifList[i] = await ExifReader.load(files[0], {
+                exifList[i] = await ExifReader.load(files[i], {
                     expanded: true,
                 });
                 console.log(exifList[i]);
             }
             const urlList = await uploader.current.upload(files);
+            console.log(exifList);
             setImgs([...imgs, ...files.map((file, idx) => ({
                 file,
                 url: urlList[idx],
@@ -98,6 +99,8 @@ export function ExhibitEditor(props: { pid?: number })
         height: editing?.meta.height || 0,
         camera: editing?.meta.camera || "",
     };
+
+    console.log(formData);
 
     const formDataChanged = (newData: DataValue<typeof ExhibitMetaPrototype>) =>
     {

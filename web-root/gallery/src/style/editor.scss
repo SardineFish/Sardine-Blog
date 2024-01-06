@@ -49,6 +49,14 @@
 
                 .select-item {
                     margin-left: 1em;
+                    display: flex;
+                    padding: .5em;
+                    border: solid 2px transparent;
+                    border-radius: .5em;
+
+                    &.selected {
+                        border-color: #aaa;
+                    }
                 }
 
                 .img-thumbail {
@@ -70,7 +78,7 @@
 
     .props-editor {
         width: 200px;
-
+        background-color: white;
         padding: 2em;
     }
 

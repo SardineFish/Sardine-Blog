@@ -8,7 +8,7 @@
     align-items: center;
     font-weight: bold;
     margin-top: 1em;
-    user-select: none; 
+    user-select: none;
 
     .button-menu {
         display: none;
@@ -28,6 +28,7 @@
         transition: all .2s;
         display: block;
     }
+
     li:hover {
         border-bottom-color: black;
     }
@@ -46,7 +47,17 @@
     }
 }
 
-@media all and (max-width: 700px) {
+@media (max-width: 1200px) {
+    .top-nav {
+        .menu-content {
+            justify-content: flex-start;
+        }
+    }
+}
+
+
+
+@media (max-width: 1000px) {
 
     .top-nav {
         position: sticky;
@@ -60,11 +71,11 @@
 
         width: 100%;
         height: 4em;
-    
+
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
-    
+
         .button-menu {
             font-size: 2em;
             width: 2em;
@@ -85,7 +96,7 @@
         }
 
         .menu-content {
-        
+
             position: fixed;
             top: 0;
             left: -19em;
@@ -97,12 +108,13 @@
             flex-flow: column nowrap;
             z-index: 100;
             transition: left .3s;
+
             &.expand {
                 left: 0;
             }
         }
 
-        
+
 
         a {
             text-align: left;
@@ -126,6 +138,101 @@
         &.expand {
             .button-menu {
                 color: #777;
+            }
+        }
+    }
+}
+
+@media (min-width: 1000px) {
+    .top-nav {
+        .menu-content {
+            width: 1600px;
+
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .menu-admin {
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-flow: row nowrap;
+
+        }
+
+        .icon-button {
+            .icon {
+                height: 1em;
+            }
+
+            .content {
+                display: none;
+            }
+        }
+
+        .title {
+            margin: 2em 0;
+        }
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1660px) {
+    .top-nav {
+        .menu-content {
+            width: 1360px;
+        }
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1400px) {
+    .top-nav {
+        .menu-content {
+            width: 100%;
+        }
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1200px) {
+    .top-nav {
+        .menu-content {
+            justify-content: flex-start !important;
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .top-nav {
+        .menu-content {
+            display: flex;
+            flex-flow: column nowrap;
+            box-sizing: border-box;
+        }
+
+        .menu-admin {
+            flex: 1 0;
+
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: flex-end;
+
+            a {
+                padding: 1.5em 2.5em;
+            }
+        }
+
+
+        .icon-button {
+            justify-content: flex-start;
+
+            .icon {
+                height: 1em;
+            }
+
+            .content {
+                margin-left: 1em;
             }
         }
     }

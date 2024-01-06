@@ -14,8 +14,10 @@ export function useHistory(callback) {
         ...window.location
     };
     return [location, (url, title) => {
-            window.history.pushState(url, title || document.title, url);
+            window.history.pushState(null, title || document.title, url);
             callback?.();
+        }, () => {
+            window.history.back();
         }];
 }
 //# sourceMappingURL=use-history.js.map

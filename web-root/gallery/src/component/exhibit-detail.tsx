@@ -1,4 +1,4 @@
-import { CommentSystem, DataValue, Form, IconButton, Icons, LargeLikeButton, message } from "blog-common";
+import { CommentSystem, DataValue, Form, IconButton, Icons, LargeLikeButton, message, useHistory } from "blog-common";
 import React, { useState, useEffect } from "react";
 import { API, GalleryExhibit, PubPostData } from "sardinefish";
 import { ExhibitMetaPrototype } from "./exhibit-editor";
@@ -12,9 +12,14 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
     const [data, setData] = useState<PubPostData<GalleryExhibit<PhotoMeta | AlbumMeta>>>();
     const [imgIdx, setImgIx] = useState(0);
     const [showProps, setShowProps] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const imgRef = React.useRef<HTMLImageElement>(null);
     const viewportRef = React.useRef<FreeViewport>(null);
+    const [dark, setDark] = useState(false);
 
     const isAlbum = (data?.content.meta.type) === "Album";
+
+    const [url, pushHistory, goBack] = useHistory();
 
     useEffect(() =>
     {
@@ -41,6 +46,19 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
         })();
     }, [props.pid]);
 
+    useEffect(() =>
+    {
+        if (imgRef.current?.complete)
+        {
+            setLoading(false);
+        }
+        else
+        {
+            setLoading(true);
+        }
+
+    }, [imgIdx]);
+
     let properties: DataValue<typeof ExhibitMetaPrototype> | undefined;
     let imgUrl: string | undefined;
     if (data && data.content.meta.type === "Photo")
@@ -52,6 +70,11 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
     {
         properties = parseMeta(data.content, data.content.meta.album[imgIdx].meta);
         imgUrl = data.content.meta.album[imgIdx].url;
+    }
+
+    const imgLoaded = () =>
+    {
+        setLoading(false);
     }
 
     const scroll = (e: React.UIEvent<HTMLDivElement>) =>
@@ -86,12 +109,28 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
         // }
     });
 
+    const nextPage = (offset: number) =>
+    {
+        if (isAlbum)
+        {
+            let album = data.content.meta.album as GalleryExhibit<PhotoMeta>[];
+            setImgIx((imgIdx + album.length + offset) % album.length);
+        }
+    };
+
+    const resetTransform = () =>
+    {
+        viewportRef.current?.reset(.3);
+    };
+
+    const { title: _1, description: _2, ...detailsPrototype } = ExhibitMetaPrototype;
+
     return (
-        <div className={clsx("exhibit-detail", { "visible": props.visible })} ref={rootRef}>
-            <main className="img-view">
+        <div className={clsx("exhibit-detail", { "visible": props.visible, "dark": dark })} ref={rootRef}>
+            <main className={clsx("img-view", { "loading": loading })}>
                 {
                     isAlbum
-                        ? <div className="page-left">
+                        ? <div className="page-left" onClick={() => nextPage(-1)}>
                             <IconButton icon={<Icons.ChevronLeft />} ></IconButton>
                         </div>
                         : null
@@ -99,18 +138,22 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
                 {
                     imgUrl
                         ? <FreeViewport className="img-viewport" ref={viewportRef} minScale={0.1} maxScale={20} scaleRate={1.1}>
-                            <img src={imgUrl} alt="" className="img" draggable={false} ></img>
+                            <img src={imgUrl} alt="" ref={imgRef} className="img" draggable={false} onLoad={imgLoaded}></img>
                         </FreeViewport>
                         : null
                 }
                 {
                     isAlbum
-                        ? <div className="page-right">
+                        ? <div className="page-right" onClick={() => nextPage(1)}>
                             <IconButton icon={<Icons.ChevronRight />}></IconButton>
                         </div>
                         : null
                 }
-                <IconButton className="button-close" icon={<Icons.Close />} onClick={props.onClose} />
+                <div className="buttons">
+                    <IconButton className="button-reset-transform" icon={<Icons.MagnifyScan />} onClick={resetTransform} />
+                    <IconButton className="button-dark" icon={dark ? <Icons.LightBulbOnOutline /> : <Icons.LightBulbOutline />} onClick={() => setDark(!dark)} />
+                    <IconButton className="button-close" icon={<Icons.Close />} onClick={props.onClose} />
+                </div>
             </main>
             <aside className={clsx("side-pane", { "visible": showProps })}>
                 <div className="button-hide-props-padding">
@@ -118,7 +161,12 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
                 </div>
                 <div className="exhibit-props">
                     <div className="exhibit-data">
-                        <Form prototype={ExhibitMetaPrototype} readOnly value={properties}></Form>
+                        <header className="title">
+                            <span className="title-text">{data?.content.title}</span>
+                            <span className={clsx("album-pics", { "visible": isAlbum })}>{data?.content.meta.album?.length}</span>
+                        </header>
+                        <div className="description">{data?.content.description}</div>
+                        <Form prototype={detailsPrototype} readOnly value={properties}></Form>
                         <LargeLikeButton pid={props.pid} />
                     </div>
                     <CommentSystem cid={props.pid} />

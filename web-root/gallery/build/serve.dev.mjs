@@ -104,4 +104,4 @@ http.createServer((req, res) =>
     {
         proxyToServer(req, res);
     }
-}).listen(8080);
+}).listen(8080, '0.0.0.0');

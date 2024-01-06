@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useHistory(callback?: () => void): [Location, (url: string, title?: string) => void ]
+export function useHistory(callback?: () => void): [Location, (url: string, title?: string) => void, () => void]
 {
     const [_, update] = useState({});
     const [_handler] = useState(() =>
@@ -21,7 +21,10 @@ export function useHistory(callback?: () => void): [Location, (url: string, titl
 
     return [location, (url, title?) =>
     {
-        window.history.pushState(url, title || document.title, url);
+        window.history.pushState(null, title || document.title, url);
         callback?.();
-    }];
+    }, () =>
+        {
+            window.history.back();
+        }];
 }

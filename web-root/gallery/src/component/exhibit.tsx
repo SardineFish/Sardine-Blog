@@ -26,7 +26,7 @@ export interface AlbumMeta extends Record<string, ExhibitMeta>
 }
 
 const TileHeight = 240;
-const AdjustRate = 0.2;
+const AdjustRate = 0.25;
 
 export function Exhibit(props: { exhibit: PubPostData<GalleryExhibit>, onClick: () => void })
 {

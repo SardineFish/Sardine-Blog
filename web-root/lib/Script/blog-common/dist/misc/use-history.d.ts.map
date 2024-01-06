@@ -1,1 +1,1 @@
-{"version":3,"file":"use-history.d.ts","sourceRoot":"","sources":["../../src/misc/use-history.ts"],"names":[],"mappings":"AAEA,wBAAgB,UAAU,CAAC,QAAQ,CAAC,EAAE,MAAM,IAAI,GAAG,CAAC,QAAQ,EAAE,CAAC,GAAG,EAAE,MAAM,EAAE,KAAK,CAAC,EAAE,MAAM,KAAK,IAAI,CAAE,CAwBpG"}
+{"version":3,"file":"use-history.d.ts","sourceRoot":"","sources":["../../src/misc/use-history.ts"],"names":[],"mappings":"AAEA,wBAAgB,UAAU,CAAC,QAAQ,CAAC,EAAE,MAAM,IAAI,GAAG,CAAC,QAAQ,EAAE,CAAC,GAAG,EAAE,MAAM,EAAE,KAAK,CAAC,EAAE,MAAM,KAAK,IAAI,EAAE,MAAM,IAAI,CAAC,CA2B/G"}
