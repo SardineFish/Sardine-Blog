@@ -582,13 +582,13 @@ const SardineFish: SardineFish = (__global as any).SardineFish || {};
     API: SardineFishAPI
 };
 
-declare global
-{
-    namespace SardineFish
-    {
-        const API: typeof SardineFishAPI;
-    }
-}
+// declare global
+// {
+//     namespace SardineFish
+//     {
+//         const API: typeof SardineFishAPI;
+//     }
+// }
 
 export default SardineFish;
 

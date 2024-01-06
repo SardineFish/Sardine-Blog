@@ -18,7 +18,8 @@ export default defineConfig({
     alias: {
       "font": resolve(__dirname, "node_modules/font"),
       "simplemde": resolve(__dirname, "node_modules/simplemde"),
-      "katex": resolve(__dirname, "node_modules/katex")
+      "katex": resolve(__dirname, "node_modules/katex"),
+      "react": resolve(__dirname, "node_modules/react"),
     }
   },
   build: {

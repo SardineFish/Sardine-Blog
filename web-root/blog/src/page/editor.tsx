@@ -1,6 +1,6 @@
 import { NavMenu, BlogNav, DocEditor, EditorHeaderDescriptor, BlogNavigation, Doc, parseQueryString, DocEditorRef, catch_and_log, message, dialog } from "blog-common";
 import React, { useEffect, useRef, useState } from "react";
-import {createRoot} from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { API, APIError, Blog } from "sardinefish";
 
 const headerDescriptor = EditorHeaderDescriptor({
@@ -40,7 +40,7 @@ function App()
                     tags: doc.headers.tags,
                     title: doc.headers.title
                 });
-            
+
 
             setTimeout(() =>
             {
@@ -49,14 +49,15 @@ function App()
             message.success(`Post as pid ${pid}, redirecting...`);
 
             return true;
-            
+
         }
         catch (e: any)
         {
             const err = e as APIError;
             message.error(`${err.code}: ${err.message}`);
             if (err.code === 0x0003_0400)
-                setTimeout(() => {
+                setTimeout(() =>
+                {
                     window.location.assign(BlogNavigation.login(window.location.toString()));
                 }, 1000);
             return false;
@@ -67,13 +68,14 @@ function App()
     {
         if (!editPid)
             return;
-        
+
         await catch_and_log(async () =>
         {
             await API.Blog.delete({ pid: editPid });
 
             message.success(`Blog with pid ${editPid} deleted.`);
-            setTimeout(() => {
+            setTimeout(() =>
+            {
                 window.location.assign("/blog/");
             }, 1000);
         });
@@ -103,7 +105,7 @@ function App()
     {
         if (!editPid)
             return;
-        
+
         catch_and_log(async () =>
         {
             const blog = await API.Blog.getByPid({ pid: editPid });
@@ -119,7 +121,7 @@ function App()
     }, [editPid]);
 
     return (<>
-        <NavMenu className="top-nav" >
+        <NavMenu className="top-nav" title="SardineFish Gallery">
             <BlogNav />
         </NavMenu>
         <main className="page-content">
@@ -138,7 +140,8 @@ function App()
     );
 }
 
-function parseEditPid() {
+function parseEditPid()
+{
     const queryPid = parseQueryString(window.location.search).pid as number | undefined;
     const pathPid = parseInt(window.location.pathname.split("/").pop() || "");
     return queryPid || pathPid || undefined;

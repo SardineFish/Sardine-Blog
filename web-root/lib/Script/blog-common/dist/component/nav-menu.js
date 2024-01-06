@@ -15,8 +15,6 @@ export function BlogNav() {
             React.createElement("a", { href: "/" }, "HOME")),
         React.createElement(SelectGroup.Item, { id: "blog" },
             React.createElement("a", { href: "/blog/" }, "BLOG")),
-        React.createElement(SelectGroup.Item, { id: "gallery" },
-            React.createElement("a", { href: "/gallery/" }, "GALLERY")),
         React.createElement(SelectGroup.Item, { id: "note" },
             React.createElement("a", { href: "/note/" }, "NOTES")),
         React.createElement(SelectGroup.Item, { id: "lab" },
@@ -25,6 +23,8 @@ export function BlogNav() {
             React.createElement("a", { href: "https://github.com/SardineFish" }, "GITHUB")),
         React.createElement(SelectGroup.Item, { id: "cook" },
             React.createElement("a", { href: "/cook/" }, "COOK")),
+        React.createElement(SelectGroup.Item, { id: "gallery" },
+            React.createElement("a", { href: "/gallery/" }, "GALLERY")),
         React.createElement(SelectGroup.Item, { id: "about" },
             React.createElement("a", { href: "/about/" }, "ABOUT"))));
 }

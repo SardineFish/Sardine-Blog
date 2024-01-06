@@ -101,6 +101,13 @@ fn serve_folder(opts: &ServiceOptions, mount_path: &str, serve_from: &str) -> fs
 static_file!(cook_with_pid, r"/cook/{pid:\d+}", "cook/dist/index.html");
 static_file!(cook_page, r"/cook/", "cook/dist/index.html");
 
+static_file!(
+    gallery_with_pid,
+    r"/gallery/{pid:\d+}",
+    "gallery/dist/index.html"
+);
+static_file!(gallery_page, r"/gallery/", "gallery/dist/index.html");
+
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
         cfg.service(
@@ -118,6 +125,9 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .service(search)
                 .service(cook_with_pid)
                 .service(cook_page)
+                .service(gallery_page)
+                .service(gallery_with_pid)
+                .service(serve_folder(&opts, "/gallery/", "gallery/dist/"))
                 .service(serve_folder(&opts, "/cook/", "cook/dist/"))
                 .service(serve_folder(&opts, "/search/", "search/dist/"))
                 .service(serve_folder(&opts, "/blog/edit/", "blog/dist/"))

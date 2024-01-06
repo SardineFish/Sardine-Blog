@@ -21,6 +21,7 @@ class App extends React.Component
                             <li><a href="https://lab.sardinefish.com/">Lab</a></li>
                             <li><a href="//github.com/SardineFish">GitHub</a></li>
                             <li><a href="/cook/">Cook</a></li>
+                            <li><a href="/gallery/">Gallery</a></li>
                             <li><a href="/about/">About</a></li>
                         </ul>
                     </nav>
@@ -29,7 +30,7 @@ class App extends React.Component
                 <DeferSection className="section text-light" id="summary" header="Summary">
                     <RoseChart className="chart" id="summary-chart" width={1200} height={800} data={summaryData} maxValue={1} style="ring"></RoseChart>
                     <DeferElement className="summary-text" visibleHeight={innerHeight / 5}>
-                        <p style={{fontSize:"1.6em"}}>SardineFish</p>
+                        <p style={{ fontSize: "1.6em" }}>SardineFish</p>
                     </DeferElement>
                     <DeferElement className="summary-text" visibleHeight={innerHeight / 5}>
                         <p>一个语言表达能力极差，不善于社交的人</p>
@@ -37,7 +38,7 @@ class App extends React.Component
                     </DeferElement>
                     <DeferElement className="summary-text" visibleHeight={innerHeight / 5}>
                         <p>17岁<sub>+{<LifeTimer />}s</sub>JK<del className="line"></del></p>
-                        <p className="weak"><Age/>岁，是社畜</p>
+                        <p className="weak"><Age />岁，是社畜</p>
                     </DeferElement>
                     <DeferElement className="summary-text" visibleHeight={innerHeight / 5}>
                         <p>不是女装dalao，没有女装，不会女装的</p>
@@ -173,7 +174,7 @@ class App extends React.Component
                     </div>
                     <header className="header">Comment</header>
                     <main className="content-wrapper">
-                        <CommentSystem pageID={1}/>
+                        <CommentSystem pageID={1} />
                     </main>
                 </section>
                 <footer id="footer">
@@ -181,7 +182,7 @@ class App extends React.Component
                     <p className="powered-by">Designed {'&'} Powered by SardineFish</p>
                 </footer>
                 <div className="to-top">
-                    <IconArrowUp/>
+                    <IconArrowUp />
                 </div>
             </div>
         )
@@ -190,7 +191,7 @@ class App extends React.Component
 window.addEventListener("load", () =>
 {
     const nav = /#?(.*)/.exec(window.location.hash)[1];
-    
+
     const element = (<App></App>);
     const root = document.querySelector("#root");
     root.innerHTML = "";
