@@ -86,10 +86,10 @@
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
+        justify-content: space-between;
         margin-top: 2em;
     }
 
-    .button-upload,
     .button-post {
         flex: 1 0;
         display: flex;
@@ -100,13 +100,21 @@
         padding: .5em 1em;
         background-color: $theme-bg;
         border-radius: 10px;
+        user-select: none;
     }
 
 
+    .button-move,
+    .button-upload,
     .button-delete {
         width: 24px;
         height: 24px;
-        margin-left: 1em;
+        color: #444;
+        fill: #444;
+    }
+
+    .button-img-move-left {
+        transform: matrix(-1, 0, 0, 1, 0, 0);
     }
 
     .button-post {

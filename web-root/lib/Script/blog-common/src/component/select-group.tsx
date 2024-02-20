@@ -25,6 +25,12 @@ export function SelectGroup<T extends SelectionKey = string>(props: SelectGroupP
 
     const { selectedKey, onSelectChange, children, ...ulProps } = props;
 
+    useEffect(() =>
+    {
+        if (props.selectedKey !== undefined)
+            select(props.selectedKey);
+    }, [props.selectedKey]);
+
     return (<ul className="select-group" {...ulProps}>
         {React.Children.map(props.children, (child, idx) => (<SelectContext.Provider
             key={idx}

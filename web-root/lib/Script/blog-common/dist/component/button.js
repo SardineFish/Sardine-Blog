@@ -27,10 +27,14 @@ export function Button(props) {
         window.addEventListener("mouseup", mouseUp);
         return () => window.removeEventListener("mouseup", mouseUp);
     });
+    if (props.type === "link") {
+        return (React.createElement("a", { className: clsx("button", state, props.className), href: props.href, onClick: onClick, onMouseEnter: mouseIn, onMouseLeave: mouseOut, onMouseDown: mouseDown }, props.children));
+    }
     return (React.createElement("span", { className: clsx("button", state, props.className), onClick: onClick, onMouseEnter: mouseIn, onMouseLeave: mouseOut, onMouseDown: mouseDown }, props.children));
 }
 export function IconButton(props) {
-    return (React.createElement(Button, { className: clsx("icon-button", props.className), onClick: props.onClick },
+    const { icon, className, ...buttonProps } = props;
+    return (React.createElement(Button, { className: clsx("icon-button", props.className), ...buttonProps },
         props.icon,
         props.children
             ? React.createElement("span", { className: "content" }, props.children)

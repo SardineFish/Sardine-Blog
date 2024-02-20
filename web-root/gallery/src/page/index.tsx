@@ -2,7 +2,7 @@ import "./base.html";
 import "../style/index.scss";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BlogNav, Footer, NavMenu, message, useHistory } from "blog-common";
+import { BlogNav, Footer, NavMenu, message, useHistory, UserProvider } from "blog-common";
 import { AdminMenu } from "../component/admin-menu";
 import InfiniteScroller from "react-infinite-scroller";
 import { APIError, GalleryExhibit, PubPostData } from "sardinefish";
@@ -85,7 +85,7 @@ function App()
     };
 
 
-    return (<>
+    return (<UserProvider>
         <NavMenu className="top-nav" title="SardineFish Gallery">
             <BlogNav />
             <AdminMenu />
@@ -101,7 +101,7 @@ function App()
         </main>
         <ExhibitDetail pid={viewPid} visible={viewPid !== 0} onClose={closeDetail} />
         <Footer />
-    </>);
+    </UserProvider>);
 }
 
 const root = createRoot(document.querySelector("#root") ?? document.body);

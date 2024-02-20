@@ -9,6 +9,10 @@ export function SelectGroup(props) {
             props.onSelectChange?.(key);
     };
     const { selectedKey, onSelectChange, children, ...ulProps } = props;
+    useEffect(() => {
+        if (props.selectedKey !== undefined)
+            select(props.selectedKey);
+    }, [props.selectedKey]);
     return (React.createElement("ul", { className: "select-group", ...ulProps }, React.Children.map(props.children, (child, idx) => (React.createElement(SelectContext.Provider, { key: idx, value: {
             selected: child.props.id === selected,
             onClick: () => select(child.props.id)

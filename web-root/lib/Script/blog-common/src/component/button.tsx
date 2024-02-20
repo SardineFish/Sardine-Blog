@@ -1,7 +1,16 @@
 import clsx from 'clsx';
 import React, { useState, useEffect, MouseEvent } from 'react';
 
-export function Button(props: { className?: string, onClick?: (e: MouseEvent<HTMLSpanElement>) => void, children?: React.ReactNode })
+interface ButtonProps
+{
+    className?: string,
+    type?: "normal" | "link",
+    href?: string,
+    onClick?: (e: MouseEvent<HTMLSpanElement>) => void,
+    children?: React.ReactNode,
+}
+
+export function Button(props: ButtonProps)
 {
     const [hover, setHover] = useState(false);
     const [hold, setHold] = useState(false);
@@ -34,7 +43,17 @@ export function Button(props: { className?: string, onClick?: (e: MouseEvent<HTM
     {
         window.addEventListener("mouseup", mouseUp);
         return () => window.removeEventListener("mouseup", mouseUp);
-    })
+    });
+
+    if (props.type === "link")
+    {
+        return (
+            <a className={clsx("button", state, props.className)} href={props.href} onClick={onClick} onMouseEnter={mouseIn} onMouseLeave={mouseOut} onMouseDown={mouseDown}>
+                {props.children}
+            </a>
+        );
+    }
+
     return (
         <span className={clsx("button", state, props.className)} onClick={onClick} onMouseEnter={mouseIn} onMouseLeave={mouseOut} onMouseDown={mouseDown}>
             {props.children}
@@ -42,9 +61,10 @@ export function Button(props: { className?: string, onClick?: (e: MouseEvent<HTM
     )
 }
 
-export function IconButton(props: { className?: string, onClick?: () => void, icon: React.ReactNode, children?: React.ReactChild })
+export function IconButton(props: { icon: React.ReactNode } & ButtonProps)
 {
-    return (<Button className={clsx("icon-button", props.className)} onClick={props.onClick}>
+    const { icon, className, ...buttonProps } = props;
+    return (<Button className={clsx("icon-button", props.className)} {...buttonProps}>
         {props.icon}
         {
             props.children

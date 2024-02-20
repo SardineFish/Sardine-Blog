@@ -1,5 +1,5 @@
-import { CommentSystem, DataValue, Form, IconButton, Icons, LargeLikeButton, message, useHistory } from "blog-common";
-import React, { useState, useEffect } from "react";
+import { CommentSystem, DataValue, Form, IconButton, Icons, LargeLikeButton, UserContext, message, useHistory } from "blog-common";
+import React, { useState, useEffect, useContext } from "react";
 import { API, GalleryExhibit, PubPostData } from "sardinefish";
 import { ExhibitMetaPrototype } from "./exhibit-editor";
 import { AlbumMeta, PhotoMeta } from "./exhibit";
@@ -20,6 +20,8 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
     const isAlbum = (data?.content.meta.type) === "Album";
 
     const [url, pushHistory, goBack] = useHistory();
+
+    const userCtx = useContext(UserContext);
 
     useEffect(() =>
     {
@@ -150,6 +152,7 @@ export function ExhibitDetail(props: { pid: number, visible: boolean, onClose: (
                         : null
                 }
                 <div className="buttons">
+                    {userCtx.login ? <IconButton className="button-edit" type="link" href={`./editor.html?pid=${props.pid}`} icon={<Icons.Pencil />} /> : null}
                     <IconButton className="button-reset-transform" icon={<Icons.MagnifyScan />} onClick={resetTransform} />
                     <IconButton className="button-dark" icon={dark ? <Icons.LightBulbOnOutline /> : <Icons.LightBulbOutline />} onClick={() => setDark(!dark)} />
                     <IconButton className="button-close" icon={<Icons.Close />} onClick={props.onClose} />

@@ -13,6 +13,7 @@ export * from "./progress";
 export * from "./comment";
 export * from "./free-viewport";
 export * from "./like-button";
+export * from "./user-provider";
 
 import React from "react";
 

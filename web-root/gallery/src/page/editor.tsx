@@ -2,12 +2,15 @@ import "./base.html";
 import "../style/editor.scss";
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BlogNav, Footer, NavMenu, TabPage, Tabs } from "blog-common";
+import { BlogNav, Footer, NavMenu, TabPage, Tabs, parseQueryString } from "blog-common";
 import { AdminMenu } from "../component/admin-menu";
 import { ExhibitEditor } from "../component/exhibit-editor";
 
 function App()
 {
+    const [editPid, setEditPid] = useState<number>(parseQueryString(window.location.search).pid as number);
+    console.log("editing", editPid);
+
     return (<>
         <NavMenu className="top-nav" title="SardineFish Gallery">
             <BlogNav />
@@ -16,7 +19,7 @@ function App()
         <main className="page-content">
             <Tabs>
                 <TabPage id="upload" title="Upload">
-                    <ExhibitEditor />
+                    <ExhibitEditor pid={editPid} />
                 </TabPage>
                 <TabPage id="preview" title="Preview">
                 </TabPage>

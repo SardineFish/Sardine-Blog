@@ -29,5 +29,7 @@ export declare const Icons: {
     LightBulbOnOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
     LightBulbOutline: React.FC<React.SVGProps<React.ReactSVGElement>>;
     MagnifyScan: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ImageRemove: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    ImageMoveRight: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

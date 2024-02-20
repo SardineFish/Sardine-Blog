@@ -2,7 +2,7 @@ import { Button, DataPrototype, DataValue, Form, IconButton, Icons, Progress, Se
 import React, { useState, useRef, useEffect } from "react";
 import EXIF from "exif-js";
 import ExifReader from 'exifreader';
-import { API, GalleryExhibit } from "sardinefish";
+import { API, APIError, GalleryExhibit } from "sardinefish";
 import { AlbumMeta, PhotoMeta } from "./exhibit";
 import { decodeShutterSpeed, encodeShutterSpeed, parseExifRational } from "../utils";
 
@@ -22,9 +22,9 @@ export const ExhibitMetaPrototype = DataPrototype({
 
 interface EditingImage
 {
-    file: File,
+    // file: File,
     url: string,
-    exif: ExifReader.ExifTags,
+    // exif: ExifReader.ExifTags,
     meta: PhotoMeta,
 
 }
@@ -42,6 +42,39 @@ export function ExhibitEditor(props: { pid?: number })
 
     const fileInput = useRef<HTMLInputElement>(null);
     const uploader = useRef<Uploader>(null);
+
+    useEffect(() =>
+    {
+        const loadEditingExhibition = async () =>
+        {
+            if (!props.pid)
+                return;
+
+            try
+            {
+                const exhibit = await API.Gallery.get({ pid: props.pid });
+                setExhibit(exhibit.content);
+                const meta = exhibit.content.meta as PhotoMeta | AlbumMeta;
+                switch (meta.type)
+                {
+                    case "Photo":
+                        setImgs([{ url: exhibit.content.url, meta: meta }]);
+                        setEditing(0);
+                        break;
+                    case "Album":
+                        setImgs(meta.album.map(item => ({ url: item.url, meta: item.meta })));
+                        setEditing(0);
+                        break;
+                }
+            }
+            catch (err)
+            {
+                message.error((err as APIError).message);
+            }
+        };
+
+        loadEditingExhibition();
+    }, [props.pid]);
 
 
     const upload = () =>
@@ -71,9 +104,9 @@ export function ExhibitEditor(props: { pid?: number })
             const urlList = await uploader.current.upload(files);
             console.log(exifList);
             setImgs([...imgs, ...files.map((file, idx) => ({
-                file,
+                // file,
                 url: urlList[idx],
-                exif: exifList[idx],
+                // exif: exifList[idx],
                 meta: metaFromExif(exifList[idx]),
             }))]);
         }
@@ -118,6 +151,28 @@ export function ExhibitEditor(props: { pid?: number })
             editing.meta.time = newData.time;
         }
     }
+
+    const removeImage = () =>
+    {
+        if (imgs.length > editingIdx && editingIdx >= 0)
+        {
+            imgs.splice(editingIdx, 1);
+            setImgs([...imgs]);
+            setEditing(editingIdx);
+        }
+    };
+
+    const moveImage = (offset: number) =>
+    {
+        if (imgs.length > editingIdx && editingIdx >= 0)
+        {
+            const img = imgs[editingIdx];
+            imgs.splice(editingIdx, 1);
+            const targetIdx = Math.max(0, Math.min(editingIdx + offset, imgs.length));
+            setImgs([...imgs.slice(0, targetIdx), img, ...imgs.slice(targetIdx)]);
+            setEditing(targetIdx);
+        }
+    };
 
     const post = async () =>
     {
@@ -165,6 +220,10 @@ export function ExhibitEditor(props: { pid?: number })
                         }))
                     }
                 };
+
+                const cover = exhibit.meta.album[editingIdx];
+                exhibit.meta.album.splice(0, 1);
+                exhibit.meta.album = [cover, ...exhibit.meta.album];
             }
 
 
@@ -190,6 +249,8 @@ export function ExhibitEditor(props: { pid?: number })
             message.error((err as Error).message)
         }
     };
+
+    console.log("select", editingIdx);
 
     return (
         <div className="exhibit-editor">
@@ -218,8 +279,10 @@ export function ExhibitEditor(props: { pid?: number })
                 <Form prototype={ExhibitMetaPrototype} value={formData} onChanged={formDataChanged} />
 
                 <div className="img-op">
-                    <Button className="button-upload" onClick={upload}>Upload</Button>
-                    <IconButton className="button-delete" icon={<Icons.DeleteForever />} />
+                    <IconButton className="button-upload" icon={<Icons.Upload />} onClick={upload} />
+                    <IconButton className="button-move button-img-move-left" icon={<Icons.ImageMoveRight />} onClick={() => moveImage(-1)} />
+                    <IconButton className="button-move button-img-move-right" icon={<Icons.ImageMoveRight />} onClick={() => moveImage(1)} />
+                    <IconButton className="button-delete" icon={<Icons.ImageRemove />} onClick={removeImage} />
                     <input hidden type="file" multiple ref={fileInput} onChange={onChanged}></input>
                 </div>
 

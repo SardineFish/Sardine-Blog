@@ -1,13 +1,14 @@
 import React, { MouseEvent } from 'react';
-export declare function Button(props: {
+interface ButtonProps {
     className?: string;
+    type?: "normal" | "link";
+    href?: string;
     onClick?: (e: MouseEvent<HTMLSpanElement>) => void;
     children?: React.ReactNode;
-}): React.JSX.Element;
+}
+export declare function Button(props: ButtonProps): React.JSX.Element;
 export declare function IconButton(props: {
-    className?: string;
-    onClick?: () => void;
     icon: React.ReactNode;
-    children?: React.ReactChild;
-}): React.JSX.Element;
+} & ButtonProps): React.JSX.Element;
+export {};
 //# sourceMappingURL=button.d.ts.map
