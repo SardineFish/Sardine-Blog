@@ -226,6 +226,9 @@ impl ElasticSerachModel {
             .json(&data)
             .send()
             .await
+            .inspect_err(|err| {
+                log::error!("Search query error on {query}: {err}");
+            })
             .map_search_err("Failed to send search request")?;
 
         match response.status() {
