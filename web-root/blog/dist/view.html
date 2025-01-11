@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="theme-color" content="#4DD0E1">
     <title>Blog</title>
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/blog/feed" />
     <link id="iconLink" rel="shortcut icon" type="image/x-icon" href="//cdn-static.sardinefish.com/icon/LOGO.ico"
         media="screen">
     <link href="/static/font/Open_Sans/OpenSans.css" rel="stylesheet" type="text/css">
@@ -20,8 +21,7 @@
     <script src="/lib/Script/HTMLTemplate/v0.3.2/ObserveList.js"></script>
     <script src="/lib/Script/SardineFish/SardineFish.API.js"></script>
     <link href="/lib/css/github-markdown-css/github-markdown.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.staticfile.org/highlight.js/11.6.0/styles/github.min.css" rel="stylesheet"
-        type="text/css">
+    <link href="https://cdn.staticfile.org/highlight.js/11.6.0/styles/github.min.css" rel="stylesheet" type="text/css">
 
     <script src="https://cdn.staticfile.org/marked/4.1.1/marked.min.js"></script>
 
@@ -35,7 +35,7 @@
     <script src="/lib/Script/require.js"></script>
   <script type="module" crossorigin src="assets/view.389e631c.js"></script>
   <link rel="modulepreload" crossorigin href="assets/modulepreload-polyfill.c7c6310f.js">
-  <link rel="stylesheet" href="assets/view.c427ffc4.css">
+  <link rel="stylesheet" href="assets/view.5a38c4be.css">
 </head>
 
 <body>
@@ -51,11 +51,20 @@
                         <a class="item" href="/note/">NOTES</a>
                         <a class="item" href="https://lab.sardinefish.com">LAB</a>
                         <a class="item" href="https://github.com/SardineFish">GITHUB</a>
+                        <a class="item" href="/cook/">COOK</a>
+                        <a class="item" href="/gallery/">GALLERY</a>
                         <a class="item" href="/about/">ABOUT</a>
 
                     </nav>
                 </div>
                 <div class="top-right">
+                    <a href="/blog/feed" id="icon-rss-feed" class="icon-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <title>rss</title>
+                            <path
+                                d="M6.18,15.64A2.18,2.18 0 0,1 8.36,17.82C8.36,19 7.38,20 6.18,20C5,20 4,19 4,17.82A2.18,2.18 0 0,1 6.18,15.64M4,4.44A15.56,15.56 0 0,1 19.56,20H16.73A12.73,12.73 0 0,0 4,7.27V4.44M4,10.1A9.9,9.9 0 0,1 13.9,20H11.07A7.07,7.07 0 0,0 4,12.93V10.1Z" />
+                        </svg>
+                    </a>
                     <form id="search" class="top-icon" action="/search">
                         <svg class="icon-search" viewBox="0 0 24 24">
                             <path fill="currentColor"
@@ -213,18 +222,21 @@
                         <div class="ver-wrapper">
                             <main class="hor-wrapper">
                                 <div id="avatar-wrapper">
-                                    <img id="sender-avatar" class="avatar" src="https://cdn-static.sardinefish.com/img/decoration/unknown-user.png">
+                                    <img id="sender-avatar" class="avatar"
+                                        src="https://cdn-static.sardinefish.com/img/decoration/unknown-user.png">
                                     <div class="line"></div>
                                 </div>
                                 <div class="comment-wrapper">
                                     <header class="sender-info">
                                         <div class="input-wrapper">
                                             <input type="text" id="input-name" class="textbox" placeholder="Your Name">
-                                            <input type="email" id="input-email" class="textbox" placeholder="Your Email">
+                                            <input type="email" id="input-email" class="textbox"
+                                                placeholder="Your Email">
                                         </div>
                                         <div id="button-comment-send" class="icon-button">send</div>
                                     </header>
-                                    <div id="input-comment" data-text="Tell me what you think" contenteditable="true"></div>
+                                    <div id="input-comment" data-text="Tell me what you think" contenteditable="true">
+                                    </div>
                                 </div>
                             </main>
                             <ul class="sub-comment">
@@ -234,7 +246,8 @@
                     </div>
                     <ul class="comment-render">
                         <template id="comment-template">
-                            <li class="comment" data-pid="{{pid}}" data-name="{{author.name}}" data-uid="{{author.name}}">
+                            <li class="comment" data-pid="{{pid}}" data-name="{{author.name}}"
+                                data-uid="{{author.name}}">
                                 <div class="decoration">
                                     <div class="circle-wrapper">
                                         <div class="circle button-reply">
@@ -248,7 +261,9 @@
                                 <div class="ver-wrapper">
                                     <main class="hor-wrapper">
                                         <div class="avatar-wrapper">
-                                            <img class="avatar" data-src='{{"bind":"author.avatar", "default":"https://cdn-static.sardinefish.com/img/decoration/unknown-user.png"}}' onerror="this.src='https://cdn-static.sardinefish.com/img/decoration/unknown-user.png'">
+                                            <img class="avatar"
+                                                data-src='{{"bind":"author.avatar", "default":"https://cdn-static.sardinefish.com/img/decoration/unknown-user.png"}}'
+                                                onerror="this.src='https://cdn-static.sardinefish.com/img/decoration/unknown-user.png'">
                                             <div class="line"></div>
                                         </div>
                                         <div class="comment-wrapper">
@@ -291,7 +306,7 @@
                 </svg>
             </div>
         </div>
-        <img src="" alt="" class="img"/>
+        <img src="" alt="" class="img" />
     </div>
     
 </body>

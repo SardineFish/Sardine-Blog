@@ -1,15 +1,15 @@
-
-#rootDiv
-{
-    width:100%;
+#rootDiv {
+    width: 100%;
 }
-#topArea{
+
+#topArea {
     position: relative;
     height: 75px;
     display: flex;
     justify-content: center;
-    
+
 }
+
 #topBar {
     position: fixed;
     height: 75px;
@@ -18,14 +18,15 @@
     z-index: 1000;
     display: flex;
     justify-content: center;
-    align-items:flex-end;
+    align-items: flex-end;
     color: #80DEEA;
-    box-shadow: 0 0 20px rgba(0,0,0,.025);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .025);
     background-color: white;
     transition: all .3s;
     padding: 0 calc((100% - 1440px) / 2);
     box-sizing: border-box;
 }
+
 #topMenu {
     height: 100%;
     width: 100%;
@@ -35,14 +36,17 @@
     align-items: flex-end;
     z-index: 1000;
 }
-#topBar.extend{
+
+#topBar.extend {
     height: 75px;
-    border-bottom: solid 0px rgba(0,0,0,0);
+    border-bottom: solid 0px rgba(0, 0, 0, 0);
 }
-#topBar.fold{
+
+#topBar.fold {
     height: 50px;
     border-bottom: solid 0.5px rgba(0, 0, 0, 0.1);
 }
+
 #topMenuButtons {
     bottom: 0px;
     height: 50px;
@@ -51,21 +55,23 @@
     white-space: nowrap;
     overflow: hidden;
 }
-#menuFocus
-{
+
+#menuFocus {
     width: 100px;
     height: 5px;
     background-color: #4DD0E1;
     position: absolute;
     bottom: 0px;
 }
+
 #userArea {
     display: flex;
-    
+
     vertical-align: middle;
     top: 10px;
     right: 40px;
 }
+
 #buttonSignUp {
     display: none;
     background-color: transparent;
@@ -73,10 +79,11 @@
     color: rgb(63, 150, 207);
     border: 1px solid rgb(63, 150, 207);
 }
+
 #userFace {
     height: 50px;
     width: 50px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     display: inline-block;
     background-size: cover;
     background-position: center;
@@ -88,8 +95,9 @@
     transform-style: preserve-3d;
     transform: rotateY(0deg);
     -webkit-perspective: 100px;
-    
+
 }
+
 #center {
     margin: auto;
     margin-top: 150px;
@@ -101,11 +109,13 @@
     justify-content: center;
     align-items: stretch;
 }
+
 #content {
     flex: 1 1;
     position: relative;
 }
-#rightArea{
+
+#rightArea {
     flex: auto 0;
     margin-left: 0;
     min-width: 0;
@@ -114,9 +124,16 @@
     top: 0px;
     right: 20px;*/
 }
+
+#icon-rss-feed {
+    height: 24px;
+    width: 24px;
+}
+
 #search {
     position: relative;
 }
+
 #searchText {
     width: calc(100% - 32px);
     border: none;
@@ -124,19 +141,22 @@
     border-bottom: solid 2px rgba(0, 0, 0, 0.2);
     height: 100%;
 }
+
 #buttonSearch {
     color: rgba(0, 0, 0, 0.6);
     font-size: 20px;
     margin-left: 5px;
 }
+
 #comment {
     height: 1000px;
     background-color: white;
     margin-top: 20px;
 }
+
 #pageBottom {
     padding: 30px;
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
     height: 300px;
     display: block;
     position: relative;
@@ -144,8 +164,8 @@
     background-color: rgba(63, 150, 207, 1.00);
     vertical-align: middle;
 }
-#pageCodeContainer
-{
+
+#pageCodeContainer {
     float: right;
     margin-right: 50px;
     right: 0px;
@@ -156,69 +176,69 @@
     border-width: 0px;
     overflow: hidden;
 }
-#pageCodeIcon
-{
+
+#pageCodeIcon {
     padding: 5px;
     top: 0px;
-    left:0px;
+    left: 0px;
     height: 32px;
     width: 32px;
     background-color: #66CCFF;
     cursor: pointer;
     display: inline-block;
 }
-#pageCodeIconText
-{
-    color: white; 
-    font-weight: 500; 
-    width: 100%; 
-    text-align: center; 
-    padding-top: 5px; 
+
+#pageCodeIconText {
+    color: white;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    padding-top: 5px;
     cursor: pointer;
     display: inline-block;
 }
-#pageCodeTitleDiv
-{
+
+#pageCodeTitleDiv {
     height: 42px;
     width: 100%;
     white-space: nowrap;
 
 }
-#pageCodeInputArea
-{
+
+#pageCodeInputArea {
     width: 480px;
     height: 280px;
     padding: 10px;
 }
-#pageCodeInputBorder
-{
+
+#pageCodeInputBorder {
     width: 478px;
     height: 278px;
     padding: 0px;
 }
-#pageCodeInput
-{
+
+#pageCodeInput {
     width: 100%;
     height: 100%;
 }
-#pageCodeBottom
-{
+
+#pageCodeBottom {
     height: 32px;
     width: 480px;
     padding-left: 10px;
     padding-bottom: 10px;
     padding-right: 10px;
 }
-#pageCodeButton
-{
+
+#pageCodeButton {
     float: right;
     position: relative;
     height: 100%;
     width: 100%;
     text-align: right;
 }
-#pageCodeButtonRun
-{
+
+#pageCodeButtonRun {
     background-color: rgba(114, 197, 124, 1);
     color: white;
     display: inline-block;
@@ -235,6 +255,7 @@
     height: 100%;
     z-index: 1000;
 }
+
 #dialog {
     position: relative;
     top: 30%;
@@ -243,24 +264,29 @@
     padding: 20px;
     background: white;
 }
+
 #dialogTitle {
     text-align: center;
     font-size: 20px;
     color: rgba(0, 0, 0, 0.3);
 }
+
 #dialogContent {
     margin-top: 10px;
     min-height: 50px;
     color: rgba(0, 0, 0, 0.8);
 }
+
 #dialogButtons {
     margin-top: 20px;
 }
+
 #buttonOk {
     font-size: 16px;
     width: 200px;
     margin: auto;
 }
+
 #noticeBox {
     padding: 20px;
     position: relative;
@@ -305,18 +331,17 @@
     position: relative;
 }
 
-#account-area.login > #login {
+#account-area.login>#login {
     display: none;
 }
 
-#account-area.login > #user-login-wrapper {
+#account-area.login>#user-login-wrapper {
     display: flex;
 }
 
 
 
-#user-action {
-}
+#user-action {}
 
 .flex-center {
     display: flex;
@@ -348,72 +373,79 @@
 
 
 /* Width < 800 */
-@media (max-width: 800px)
-{
+@media (max-width: 800px) {
     #topMenuButtons {
         left: 0px;
     }
 }
 
 /* Width > 1440 */
-@media (min-width: 1440px) and (min-aspect-ratio: 1/1)
-{
-    #center{
+@media (min-width: 1440px) and (min-aspect-ratio: 1/1) {
+    #center {
         width: 1000px;
     }
 }
+
 /* Width < 1440 */
-@media (max-width: 1440px)
- {
-    #center{
+@media (max-width: 1440px) {
+    #center {
         width: 800px;
     }
-    #rightArea{
+
+    #rightArea {
         display: none;
     }
 }
-@media screen and (max-width:1440px){
-    #topBar{
+
+@media screen and (max-width:1440px) {
+    #topBar {
         width: 100%;
         padding: 0 30px;
         box-sizing: border-box;
     }
 }
-@media screen and (max-width:800px){
-    #pageCodeContainer{
+
+@media screen and (max-width:800px) {
+    #pageCodeContainer {
         display: none;
     }
-    #topBar{
+
+    #topBar {
         width: 100%;
         background-color: #4DD0E1;
         color: white;
-        box-shadow: 0 0 30px rgba(0,0,0,0.2);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
         padding-left: 0;
         padding-right: 10px;
     }
-    #topMenu{
+
+    #topMenu {
         position: fixed;
         left: 0;
         top: 0;
         height: 100%;
         width: 100%;
-        background-color: rgba(0,0,0,0.2);
+        background-color: rgba(0, 0, 0, 0.2);
         opacity: 0;
         display: none;
         transition: all .3s;
     }
-    #topMenu.extend{
+
+    #topMenu.extend {
         display: block;
         opacity: 1;
-        
+
     }
-    #button-menu{
+
+    #button-menu {
         z-index: 10000;
     }
-    #button-menu.extend{
+
+    #button-menu.extend {
         color: #666;
     }
-    #topMenuButtons{
+
+    #topMenuButtons {
         display: flex;
         flex-flow: column nowrap;
         align-items: flex-start;
@@ -428,42 +460,51 @@
         left: -50%;
         transition: all .3s;
     }
-    #topMenu.extend #topMenuButtons{
+
+    #topMenu.extend #topMenuButtons {
         left: 0;
     }
-    #button-menu{
+
+    #button-menu {
         display: block;
     }
-    #page-title{
+
+    #page-title {
         display: block;
     }
-    .top-icon{
+
+    .top-icon {
         color: white;
         margin-right: 10px;
     }
-    .menuButton{
+
+    .menuButton {
         width: 100%;
         box-sizing: border-box;
         text-align: left;
         padding-left: 50px;
     }
-    #center{
+
+    #center {
         width: 100%;
         margin-top: 30px;
         padding: 0 10px;
         box-sizing: border-box;
     }
-    #content{
+
+    #content {
         width: 100%;
     }
-    .articleItem{
+
+    .articleItem {
         padding: 20px;
         box-sizing: border-box;
         width: 100%;
         margin-bottom: 20px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
     }
-    .articleTitle{
+
+    .articleTitle {
         font-size: 1.4em;
         white-space: nowrap;
         overflow: hidden;
@@ -471,19 +512,21 @@
         width: 100%;
         padding: 0;
     }
-    .articleTags{
+
+    .articleTags {
         display: none;
     }
-    .articleText{
+
+    .articleText {
         margin-top: .3em;
         padding-top: .3em;
         padding-bottom: 0;
     }
-    
+
 }
 
 #page-footer {
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
     padding: 10px;
     box-sizing: border-box;
     color: #888;
@@ -509,12 +552,12 @@
     padding: 0;
     margin: 0;
     font-family: "Open sans",
-    "Roboto",
-    "Microsoft YaHei",
-    Tahoma,
-    Geneva,
-    Verdana,
-    sans-serif;
+        "Roboto",
+        "Microsoft YaHei",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
     font-size: 16px;
     border-bottom: solid 2px #80DEEA;
     background-color: transparent;
@@ -525,6 +568,7 @@
     user-select: initial;
     transition: all .3s;
 }
+
 #search-input::placeholder {
     color: #95e1eb;
 }
@@ -545,7 +589,7 @@
 
     #search-input {
         border: none 0 transparent;
-        background-color: rgba(255,255,255,.2);
+        background-color: rgba(255, 255, 255, .2);
         color: white;
         transition: all .1s;
     }

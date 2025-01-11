@@ -17,6 +17,21 @@
     float: left;
 }
 
+#top-nav .icon-button {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+
+    height: 100%;
+    padding: 0 1em;
+    color: white;
+}
+
 .button {
     display: inline-block;
     cursor: pointer;
@@ -165,7 +180,8 @@
     text-align: center;
     transition: color .1s;
 }
-.latestTitle:hover{
+
+.latestTitle:hover {
     color: #6ED8D8;
 }
 
@@ -177,7 +193,7 @@
     text-align: center;
     margin-top: 1.2em;
     color: #555;
-    
+
     font-size: 14px;
 }
 
@@ -198,7 +214,8 @@
     text-overflow: ellipsis;
     line-height: 1.8em;
 }
-.latestText::after{
+
+.latestText::after {
     content: " ...";
 }
 
@@ -445,6 +462,7 @@
     font-family: fontIcon;
     content: "\e032";
 }
+
 .tag-decoration {
     display: block;
     position: absolute;
@@ -463,7 +481,7 @@
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-    
+
 }
 
 .tag-hole {
@@ -487,11 +505,11 @@
     padding: 30px;
 }
 
-#rightArea > .block {
+#rightArea>.block {
     margin-top: 40px;
 }
 
-#rightArea > .block > .title {
+#rightArea>.block>.title {
     background-color: #6ED8D8;
     padding: 8px 20px;
     color: white;
@@ -515,7 +533,7 @@
     flex: auto 0;
     height: 64px;
     border-radius: 100%;
-    
+
 }
 
 .friend-link .info {
@@ -525,7 +543,7 @@
     flex-flow: column nowrap;
     justify-content: center;
     align-items: flex-start;
-    
+
 }
 
 .friend-link .link {
@@ -533,9 +551,10 @@
     transition: color .2s;
     color: #555;
 }
-.friend-link .link:hover{
+
+.friend-link .link:hover {
     color: #FFD582;
-    
+
 }
 
 .friend-link .intro {
@@ -543,13 +562,14 @@
     height: 0;
     transition: height .3s, color .5s;
 }
+
 .friend-link:hover .intro {
     color: #AAA;
     height: 24px;
 }
 
 .font-UI {
-    font-family: "Titillium Web",Segoe UI,Microsoft YaHei,sans-serif;
+    font-family: "Titillium Web", Segoe UI, Microsoft YaHei, sans-serif;
 }
 
 .icon-button {

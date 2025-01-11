@@ -3,7 +3,7 @@ import "../style/editor.scss";
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BlogNav, Footer, NavMenu, TabPage, Tabs, parseQueryString } from "blog-common";
-import { AdminMenu } from "../component/admin-menu";
+import { TopIconMenu } from "../component/admin-menu";
 import { ExhibitEditor } from "../component/exhibit-editor";
 
 function App()
@@ -14,7 +14,7 @@ function App()
     return (<>
         <NavMenu className="top-nav" title="SardineFish Gallery">
             <BlogNav />
-            <AdminMenu />
+            <TopIconMenu />
         </NavMenu>
         <main className="page-content">
             <Tabs>

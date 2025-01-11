@@ -1,5 +1,4 @@
-.menuButton 
-{
+.menuButton {
     background-color: transparent;
     display: block;
     height: 50px;
@@ -15,6 +14,7 @@
     position: relative;
     float: left;
 }
+
 .button {
     display: block;
     cursor: pointer;
@@ -28,41 +28,40 @@
     color: white;
     border: none 0px;
     background-color: #2196f3;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
-.shadow-block
-{
-    box-shadow: 0px 0px 40px rgba(0,0,0,0.001);
+
+.shadow-block {
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.001);
     border-radius: 5px;
 }
 
 
-.textbox
-{
-
-}
+.textbox {}
 
 .dialog {
-    box-shadow: 0px 6px 16px rgba(0,0,0,0.2);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
     border-radius: 2px;
     background-color: white;
 }
-.borderObject
-{
+
+.borderObject {
     border-width: 1px;
     border-style: solid;
-    border-color: rgba(200,200,200,1.00);
+    border-color: rgba(200, 200, 200, 1.00);
 }
-.divFloat
-{
+
+.divFloat {
     position: fixed;
     padding: 0px;
     margin: 0px;
     z-index: 10000;
 }
+
 .transparentBackgroundOjbect {
     background-color: transparent;
 }
+
 .iconButton {
     font-family: fontIcon;
     vertical-align: middle;
@@ -72,26 +71,30 @@
     padding: 40px 60px;
     background-color: white;
     margin-bottom: 30px;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     word-break: break-all;
     word-break: break-word;
 }
+
 .articleTitle {
     font-size: 1.5em;
     padding-bottom: 1em;
     display: inline-block;
-    color: rgba(0,0,0,0.75);
+    color: rgba(0, 0, 0, 0.75);
 }
+
 .articleTime {
     font-size: 0.75em;
     font-weight: bold;
     color: rgba(0, 0, 0, 0.2);
     display: inline-block;
 }
+
 .articleTags {
     display: inline-block;
     margin-left: 1em;
 }
+
 .articleTags .tag {
     display: inline-block;
     padding-left: 1em;
@@ -105,22 +108,29 @@
     min-width: 3em;
     text-align: center;
 }
+
 .articleText {
     margin-top: 1em;
     color: rgba(0, 0, 0, 0.7);
-    border-top: solid 1px rgba(0,0,0,0.05);
+    border-top: solid 1px rgba(0, 0, 0, 0.05);
     /*border-bottom: solid 1px rgba(0,0,0,0.05);*/
     padding: 1.5em 0;
     line-height: 1.6;
 }
-.articleText::after{
+
+.articleText::after {
     content: "...";
-    color: rgba(0,0,0,0.3);
+    color: rgba(0, 0, 0, 0.3);
     margin-left: 0.3em;
 }
+
 .icon-button {
     font-family: 'Material Icons';
     line-height: 1;
     color: white;
-    
+
+}
+
+.icon-button svg {
+    fill: currentColor;
 }

@@ -31,5 +31,6 @@ export declare const Icons: {
     MagnifyScan: React.FC<React.SVGProps<React.ReactSVGElement>>;
     ImageRemove: React.FC<React.SVGProps<React.ReactSVGElement>>;
     ImageMoveRight: React.FC<React.SVGProps<React.ReactSVGElement>>;
+    RssFeed: React.FC<React.SVGProps<React.ReactSVGElement>>;
 };
 //# sourceMappingURL=icons.d.ts.map

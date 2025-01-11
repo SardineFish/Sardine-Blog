@@ -2,8 +2,8 @@ import "./base.html";
 import "../style/index.scss";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BlogNav, Footer, NavMenu, message, useHistory, UserProvider } from "blog-common";
-import { AdminMenu } from "../component/admin-menu";
+import { BlogNav, Footer, NavMenu, message, useHistory, UserProvider, IconButton, Icons } from "blog-common";
+import { TopIconMenu } from "../component/admin-menu";
 import InfiniteScroller from "react-infinite-scroller";
 import { APIError, GalleryExhibit, PubPostData } from "sardinefish";
 import { Exhibit } from "../component/exhibit";
@@ -88,7 +88,7 @@ function App()
     return (<UserProvider>
         <NavMenu className="top-nav" title="SardineFish Gallery">
             <BlogNav />
-            <AdminMenu />
+            <TopIconMenu />
         </NavMenu>
         <main className="page-content">
             <InfiniteScroller className="cook-book" loadMore={loadMore} hasMore={!isLoading && hasMore} initialLoad>

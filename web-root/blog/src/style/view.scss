@@ -689,6 +689,12 @@ textarea {
     align-items: flex-start;
 }
 
+#icon-rss-feed {
+    width: 24px;
+    height: 24px;
+    margin-right: 1.5em;
+}
+
 #search {
     display: flex;
     flex-flow: row nowrap;
@@ -791,6 +797,10 @@ textarea {
     font-family: "Material Icons";
     line-height: 1;
 
+}
+
+.icon-button svg {
+    fill: currentColor;
 }
 
 .comment-publish .sender-info {

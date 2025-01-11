@@ -236,6 +236,7 @@
     opacity: 0;
     transition: all 1s ease-in;
 }
+
 #raindrop.active {
     opacity: 1;
 }
@@ -480,11 +481,39 @@
     color: #BBB;
     transition: color .2s;
 }
+
 #pgp-key .icon {
     margin-right: .5em;
 }
+
 #pgp-key:hover {
     color: #FFD582;
+}
+
+#icon-rss-feed {
+    position: absolute;
+    right: 0;
+}
+
+#rss-feed {
+    margin-top: 1em;
+    font-size: .8em;
+    color: #BBB;
+    text-align: center;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#rss-feed:hover {
+    color: #FFD582;
+}
+
+#rss-feed svg {
+    height: 1.5em;
+    color: #FFA500;
+    margin-right: 0.2em;
 }
 
 #my-name {
@@ -749,6 +778,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(-360deg);
     }
@@ -758,6 +788,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -794,13 +825,15 @@ h3.pIntroduction {
     justify-content: center;
     margin-bottom: 2em;
 }
-#more-blogs > * {
+
+#more-blogs>* {
     width: 5em;
     background: #6ED8D8;
     color: white;
     padding: .3em 1em;
     text-align: center;
 }
+
 #more-blogs.hide {
     visibility: collapse;
 }
@@ -810,11 +843,13 @@ h3.pIntroduction {
     color: #666;
     font-size: 15px;
 }
+
 #recently .item {
     flex: 1 0;
     display: flex;
     flex-flow: row nowrap;
 }
+
 #recently .content {
     flex: 1 0;
     margin: .5em 0;
@@ -822,17 +857,21 @@ h3.pIntroduction {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
 #recently .time {
     font-size: 14px;
     color: #aaa;
 }
+
 #recently .name {
     color: black;
     font-weight: normal;
 }
+
 #recently .ref {
     color: #6ED8D8;
 }
+
 #recently .decoration {
     margin-right: .5em;
     display: flex;
@@ -873,6 +912,7 @@ h3.pIntroduction {
     #rightArea {
         display: none;
     }
+
     #textWelcome {
         font-size: 12px;
     }
@@ -882,15 +922,18 @@ h3.pIntroduction {
     #pageCodeContainer {
         display: none;
     }
+
     #topImgArea {
         display: none;
     }
+
     #topBar {
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
 
     }
+
     #topMenu {
         display: none;
         background-color: transparent;
@@ -904,10 +947,12 @@ h3.pIntroduction {
         z-index: 100000;
         transition: all .3s;
     }
+
     #topMenu.extend {
         display: block;
         background-color: rgba(0, 0, 0, 0.2);
     }
+
     #top-nav {
         display: flex;
         flex-flow: column nowrap;
@@ -923,12 +968,15 @@ h3.pIntroduction {
     #page-title {
         display: block;
     }
+
     #topMenu.extend #top-nav {
         left: 0;
     }
+
     #menuFocus {
         display: none;
     }
+
     .menuButton {
         display: block;
         position: relative;
@@ -937,26 +985,32 @@ h3.pIntroduction {
         text-align: left;
         padding: 0 40px;
     }
+
     .menuButton:hover {
         background-color: rgba(0, 0, 0, 0.1);
     }
+
     #buttonHome {
         color: #333;
     }
+
     #button-menu {
         display: block;
     }
+
     #centerDiv {
         padding: 0 10px;
         width: 100%;
 
     }
+
     .latestItem {
         padding: 20px;
         box-sizing: border-box;
         width: 100%;
         margin-bottom: 20px;
     }
+
     .latestTitle {
         font-size: 24px;
         white-space: nowrap;
@@ -965,11 +1019,13 @@ h3.pIntroduction {
         text-align: left;
         margin: 0;
     }
+
     .latestTime {
         text-align: left;
         margin-top: 0;
         color: #AAA;
     }
+
     .latestText {
         margin: 0;
         margin-top: 1em;
