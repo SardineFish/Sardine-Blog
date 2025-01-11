@@ -12,7 +12,6 @@ use sar_blog::model::PidType;
 use serde::Deserialize;
 use shared::ServiceOptions;
 
-
 use super::extractor;
 
 pub fn concat_path(paths: &[&str]) -> PathBuf {

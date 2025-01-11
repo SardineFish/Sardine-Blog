@@ -10,11 +10,7 @@ use sar_blog::{
 use serde::{Deserialize, Serialize};
 use web::{scope, Query, ServiceConfig};
 
-use crate::{
-    error::*,
-    middleware,
-    misc::response::Response,
-};
+use crate::{error::*, middleware, misc::response::Response};
 use sar_blog::utils::json_datetime_format;
 
 use super::extractor;

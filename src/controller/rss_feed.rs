@@ -3,12 +3,10 @@ use actix_web::{
     web::{self},
 };
 use rss::{
-    extension::atom::{self, AtomExtensionBuilder}, CategoryBuilder, GuidBuilder,
+    extension::atom::{self, AtomExtensionBuilder},
+    CategoryBuilder, GuidBuilder,
 };
-use sar_blog::{
-    model::ExhibitContent,
-    BlogPreview, PubPostData,
-};
+use sar_blog::{model::ExhibitContent, BlogPreview, PubPostData};
 use web::{Query, ServiceConfig};
 
 use crate::{

@@ -80,7 +80,7 @@ impl From<Comment> for NestedComment {
 
 pub type CommentService<'s> = PostServiceExtend<'s, CommentContent>;
 
-impl<'m> CommentService<'m> {
+impl CommentService<'_> {
     pub async fn get_comments_of_pid(
         &self,
         pid: PidType,

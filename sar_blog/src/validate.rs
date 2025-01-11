@@ -58,6 +58,7 @@ type ValidatorFn<T> = fn(&T) -> Result<()>;
 
 trait ValidateOption<T> {
     fn validate_allow_none(&self, validator: ValidatorFn<T>) -> Result<()>;
+    #[allow(unused)]
     fn validate_not_none(&self, validator: ValidatorFn<T>) -> Result<()>;
 }
 

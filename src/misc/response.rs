@@ -80,7 +80,7 @@ where
 
 pub struct WithCookie<'c, T: Serialize>(pub T, pub Vec<Cookie<'c>>);
 
-impl<'c, T: Serialize> BuildResponse for WithCookie<'c, T> {
+impl<T: Serialize> BuildResponse for WithCookie<'_, T> {
     fn build_response(self, mut builder: HttpResponseBuilder) -> Result<HttpResponse, Error> {
         let Self(data, cookies) = self;
         for cookie in cookies {

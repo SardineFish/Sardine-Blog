@@ -80,7 +80,7 @@ impl<'s, T> RankServiceWrapper<'s, T> {
 }
 
 #[async_trait]
-impl<'s, Provider, ScoreT> RankService<ScoreT> for RankServiceWrapper<'s, Provider>
+impl<Provider, ScoreT> RankService<ScoreT> for RankServiceWrapper<'_, Provider>
 where
     Provider: RankProvider<ScoreT> + Send + Sync,
     ScoreT: Score + Send + Sync + 'static,

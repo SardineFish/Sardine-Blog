@@ -5,7 +5,7 @@ use crate::{email_notify::NoteNotifyInfo, error::*, user::Author, validate::Vali
 
 pub type NoteService<'s> = PostServiceExtend<'s, NoteContent>;
 
-impl<'m> NoteService<'m> {
+impl NoteService<'_> {
     pub async fn get_list(&self, skip: usize, limit: usize) -> Result<Vec<Note>> {
         self.inner().get_preview_list(skip, limit).await
     }

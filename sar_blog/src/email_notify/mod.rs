@@ -93,7 +93,7 @@ impl<'s> EmailNotifyService<'s> {
             .map_err(|err| {
                 Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err))
             })?
-            .post(&format!("{}/notify/queue", &self.options.sar_push_url))
+            .post(format!("{}/notify/queue", &self.options.sar_push_url))
             .json(&notify)
             .basic_auth(
                 &self.options.sar_push_uid,
