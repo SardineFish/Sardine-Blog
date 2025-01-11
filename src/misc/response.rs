@@ -283,6 +283,16 @@ impl BuildError for Error {
 //     }
 // }
 
+pub struct RssFeed(pub rss::Channel);
+
+impl BuildResponse for RssFeed {
+    fn build_response(self, mut builder: HttpResponseBuilder) -> Result<HttpResponse, Error> {
+        Ok(builder
+            .content_type("application/rss+xml; charset=utf-8")
+            .body(self.0.to_string()))
+    }
+}
+
 pub enum Response<T, E = Error> {
     Ok(T),
     ClientError(E),

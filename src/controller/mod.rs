@@ -7,6 +7,7 @@ mod gallery;
 mod note;
 mod post_data;
 mod rank;
+mod rss_feed;
 mod search;
 mod storage;
 mod test;
@@ -37,6 +38,10 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
                 .wrap(middleware::session())
                 .wrap(middleware::error_formatter()),
         )
-        .service(scope("").configure(web_static::config(opts)));
+        .service(
+            scope("")
+                // .configure(rss_feed::config)
+                .configure(web_static::config(opts)),
+        );
     }
 }

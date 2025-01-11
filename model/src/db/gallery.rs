@@ -14,10 +14,10 @@ pub enum ExhibitMeta {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ExhibitContent {
-    title: String,
-    url: String,
-    description: String,
-    meta: HashMap<String, ExhibitMeta>,
+    pub title: String,
+    pub url: String,
+    pub description: String,
+    pub meta: HashMap<String, ExhibitMeta>,
 }
 
 impl PostData for ExhibitContent {

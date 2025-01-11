@@ -3,6 +3,7 @@ use actix_web::{
     web::{self, Path},
 };
 use chrono::DateTime;
+use rss::{Category, CategoryBuilder};
 use sar_blog::{
     model::{Access, Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo},
     BlogPreview,
@@ -10,7 +11,12 @@ use sar_blog::{
 use serde::{Deserialize, Serialize};
 use web::{scope, Query, ServiceConfig};
 
-use crate::{error::*, middleware, misc::response::Response};
+use crate::{
+    controller::utils::add_read_more_link,
+    error::*,
+    middleware,
+    misc::response::{Response, RssFeed, WithHeaders},
+};
 use sar_blog::utils::json_datetime_format;
 
 use super::extractor;
@@ -18,11 +24,11 @@ use super::extractor;
 use Response::Ok;
 
 #[derive(Deserialize)]
-struct QueryParams {
+pub(crate) struct QueryParams {
     #[serde(default = "default_from")]
-    from: usize,
+    pub from: usize,
     #[serde(default = "default_count")]
-    count: usize,
+    pub count: usize,
 }
 
 fn default_from() -> usize {

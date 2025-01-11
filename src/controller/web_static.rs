@@ -12,6 +12,8 @@ use sar_blog::model::PidType;
 use serde::Deserialize;
 use shared::ServiceOptions;
 
+use crate::misc::response::{Response, RssFeed};
+
 use super::extractor;
 
 pub fn concat_path(paths: &[&str]) -> PathBuf {
@@ -112,6 +114,7 @@ pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
         cfg.service(
             scope("")
+                .configure(super::rss_feed::config)
                 .service(login_index)
                 .service(register)
                 .service(signup)

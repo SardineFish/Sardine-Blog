@@ -23,6 +23,7 @@ sar_blog = { path = "./sar_blog" }
 shared = { path = "./shared" }
 clap = "3.0.0-beta.2"
 actix-web-httpauth = "0.8.1"
+rss = { version = "2.0.11", features = ["atom"] }
 
 [workspace]
 members = [
