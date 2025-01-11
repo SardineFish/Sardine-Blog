@@ -144,7 +144,7 @@ resource.img.works.default.min.PNG = resource.img.works.url + "Works_Default.min
 
 resource.sardineImg = function () { };
 resource.sardineImg.domain = isHttps ? "//cdn-img.sardinefish.com/" : "//img.sardinefish.com/";
-resource.sardineImg.get=function(id)
+resource.sardineImg.get = function (id)
 {
     return resource.sardineImg.domain + id.toString();
 }
@@ -243,10 +243,13 @@ spectrum.js = spectrum.domain + "spectrum.min.js";
 //-------------------------------------------------------------------------------------------------------------------------
 
 
-lib.jQueryMinJs = "//cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
-lib.jQueryColorMinJs = "//cdn.bootcss.com/jquery-color/2.1.2/jquery.color.min.js";
+// lib.jQueryMinJs = "//cdn.bootcss.com/jquery/3.3.1/jquery.min.js";
+// lib.jQueryColorMinJs = "//cdn.bootcss.com/jquery-color/2.1.2/jquery.color.min.js";
+lib.jQueryMinJs = "/lib/Script/jQuery/jquery-3.2.1.min.js";
+lib.jQueryColorMinJs = "/lib/Script/jQuery/jquery.color.min.js";
 lib.jQueryShadowAnimation = "/lib/Script/jQuery/jquery.shadow-animation.min.js";
-lib.jQueryCookieMinJs = "//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js";
+// lib.jQueryCookieMinJs = "//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js";
+lib.jQueryCookieMinJs = "/lib/Script/jQuery/jquery.cookie.min.js"
 lib.pluploadMinJs = '//cdn.bootcss.com/jquery/3.1.0/jquery-3.1.0.min.js';
 lib.pluploadMoxieSwf = '//cdn.staticfile.org/Plupload/2.1.1/Moxie.swf';
 lib.qiniuMinJs = '/lib/Script/qiniu.min.js';
