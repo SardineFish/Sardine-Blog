@@ -3,7 +3,6 @@ use actix_web::{
     web::{self, Path},
 };
 use chrono::DateTime;
-use rss::{Category, CategoryBuilder};
 use sar_blog::{
     model::{Access, Blog, BlogContent, DocType, PidType, PostStats, PubUserInfo},
     BlogPreview,
@@ -12,10 +11,9 @@ use serde::{Deserialize, Serialize};
 use web::{scope, Query, ServiceConfig};
 
 use crate::{
-    controller::utils::add_read_more_link,
     error::*,
     middleware,
-    misc::response::{Response, RssFeed, WithHeaders},
+    misc::response::Response,
 };
 use sar_blog::utils::json_datetime_format;
 

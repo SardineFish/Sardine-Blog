@@ -1,32 +1,28 @@
 use actix_web::{
-    delete, get, post, put,
-    web::{self, Path},
+    get,
+    web::{self},
 };
-use chrono::DateTime;
 use rss::{
-    extension::atom::{self, AtomExtensionBuilder},
-    Category, CategoryBuilder, Enclosure, EnclosureBuilder, Guid, GuidBuilder,
+    extension::atom::{self, AtomExtensionBuilder}, CategoryBuilder, GuidBuilder,
 };
 use sar_blog::{
-    model::{Access, Blog, BlogContent, DocType, ExhibitContent, PidType, PostStats, PubUserInfo},
+    model::ExhibitContent,
     BlogPreview, PubPostData,
 };
-use serde::{Deserialize, Serialize};
-use web::{scope, Query, ServiceConfig};
+use web::{Query, ServiceConfig};
 
 use crate::{
-    controller::utils::{add_read_more_link, PageQueryParams},
+    controller::utils::{add_read_more_link, get_copyright, PageQueryParams},
     error::*,
-    middleware,
-    misc::response::{Response, RssFeed, WithHeaders},
+    misc::response::{Response, RssFeed},
 };
-use sar_blog::utils::json_datetime_format;
 
 use super::extractor;
 
 use Response::Ok;
 
 const RFC_822_FORMAT: &str = "%a, %d %b %Y %H:%M:%S %z";
+const LOGO_URL: &str = "/api/user/SardineFish/avatar";
 
 #[get("/blog/feed")]
 pub async fn get_blog_rss_feed(
@@ -67,17 +63,23 @@ pub async fn get_blog_rss_feed(
         })
         .collect::<Vec<_>>();
 
-    let next_page = format!(
-        "{}/blog/feed?{}",
-        service.option.site_url,
+    let next_page = service.url().site_url(format!(
+        "/blog/feed?{}",
         params.next_page().to_query_string()
-    );
+    ));
 
     let feed = rss::ChannelBuilder::default()
         .title("SardineFish Blog")
         .link(service.url().homepage())
         .description("SardineFish's personal blog")
         .language("zh-cn".to_owned())
+        .image(
+            rss::ImageBuilder::default()
+                .url(service.url().site_url(LOGO_URL))
+                .link(service.url().homepage())
+                .build(),
+        )
+        .copyright(get_copyright())
         .items(feed_items)
         .atom_ext(
             AtomExtensionBuilder::default()
@@ -154,6 +156,13 @@ pub async fn get_gallery_feed(
         .link(service.url().homepage())
         .description("SardineFish's photography gallery")
         .language("zh-cn".to_owned())
+        .image(
+            rss::ImageBuilder::default()
+                .url(service.url().site_url(LOGO_URL))
+                .link(service.url().homepage())
+                .build(),
+        )
+        .copyright(get_copyright())
         .items(feed_items)
         .atom_ext(
             AtomExtensionBuilder::default()

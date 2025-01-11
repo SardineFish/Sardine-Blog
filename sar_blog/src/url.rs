@@ -84,4 +84,12 @@ impl<'s> UrlService<'s> {
             }
         }
     }
+
+    pub fn site_url(&self, url: impl AsRef<str>) -> String {
+        if url.as_ref().starts_with("/") {
+            format!("{}{}", self.options.site_url, url.as_ref())
+        } else {
+            format!("{}/{}", self.options.site_url, url.as_ref())
+        }
+    }
 }
