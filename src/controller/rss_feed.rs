@@ -15,6 +15,7 @@ use web::{Query, ServiceConfig};
 
 use crate::{
     controller::utils::{add_read_more_link, make_copyright, PageQueryParams},
+    middleware::{cache_request, CacheExpire},
     misc::response::{Response, RssFeed},
 };
 
@@ -159,7 +160,12 @@ trait RssFeedSource<T: PostData>: 'static {
     }
 
     fn web_service() -> impl HttpServiceFactory + 'static {
-        web::resource(Self::url()).route(web::get().method(Method::GET).to(Self::build_feed))
+        web::resource(Self::url()).route(
+            web::get()
+                .method(Method::GET)
+                .to(Self::build_feed)
+                .wrap(cache_request("feed", Self::url(), CacheExpire::Never)),
+        )
     }
 }
 

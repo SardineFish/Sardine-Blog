@@ -3,6 +3,7 @@ use rand::{prelude::StdRng, RngCore, SeedableRng};
 use sha2::{Digest, Sha256};
 use shared::{LogError, ServiceOptions};
 
+use crate::cache::CacheService;
 use crate::gallery::GalleryService;
 use crate::post::PostService;
 use crate::{
@@ -102,6 +103,10 @@ impl Service {
 
     pub fn post_service<T: PostData>(&self) -> PostService<T> {
         PostService::<T>::new(self)
+    }
+
+    pub fn cache(&self) -> CacheService {
+        CacheService::new(self)
     }
 
     pub async fn init_database(&self, index_only: bool) -> Result<()> {

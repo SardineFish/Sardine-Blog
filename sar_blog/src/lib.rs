@@ -1,4 +1,5 @@
 mod blog;
+mod cache;
 mod comment;
 mod cook;
 mod email_notify;

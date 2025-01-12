@@ -9,7 +9,9 @@ use model::PostStats;
 use model::PubUserInfo;
 use model::SessionID;
 use serde::Serialize;
+use shared::LogError;
 
+use crate::cache::cache_namespaces;
 use crate::utils::json_datetime_format;
 
 use crate::error::*;
@@ -88,13 +90,35 @@ impl<'s, T: PostData> PostService<'s, T> {
         self.service.model.post.insert(&post.clone().into()).await?;
         let pid = post.pid;
 
-        self.service.search().index(&post).await?;
+        self.service
+            .search()
+            .index(&post)
+            .await
+            .log_error("post")
+            .ok();
 
         self.service
             .model
             .history
             .record(uid, model::Operation::Create, post)
             .await?;
+
+        {
+            log::info!("Flushing cache...");
+            let count = self
+                .service
+                .cache()
+                .flush_namespace(cache_namespaces::FEED)
+                .await;
+            log::info!("Flushed {count} feed cache");
+
+            let count = self
+                .service
+                .cache()
+                .flush_namespace(cache_namespaces::SEAERCH)
+                .await;
+            log::info!("Flushed {count} search cache");
+        }
 
         Ok(pid)
     }

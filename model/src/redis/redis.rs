@@ -1,7 +1,9 @@
 use shared::ServiceOptions;
 
-use super::{access_cache::AccessCache, generic_cache::GenericCache, session::Session};
+use super::{access_cache::AccessCache, session::Session};
 use crate::error::*;
+
+pub use super::generic_cache::GenericCache;
 
 #[derive(Clone)]
 pub struct RedisCache {

@@ -1,6 +1,7 @@
 use model::{RedisCache, SessionID};
 use rand::RngCore;
 
+use crate::cache::cache_namespaces;
 use crate::error::*;
 use crate::Service;
 
@@ -46,7 +47,7 @@ impl<'s> SessionService<'s> {
         Err(Error::InternalServiceError("Failed to generate Session ID"))
     }
     pub async fn throttle(&self, remote_id: &str, interval_seconds: usize) -> Result<()> {
-        let mut cache = self.redis.cache("throttle");
+        let mut cache = self.redis.cache(cache_namespaces::THROTTLE);
         if (cache.get::<Option<i32>>(remote_id).await?).is_some() {
             Err(Error::RateLimit)?
         }

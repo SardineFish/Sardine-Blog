@@ -5,7 +5,7 @@ mod redis;
 
 use db::*;
 
-pub use self::redis::{session::SessionAuthInfo, RedisCache, SessionID};
+pub use self::redis::{session::SessionAuthInfo, GenericCache, RedisCache, SessionID};
 pub use blog::{Blog, BlogContent, DocType};
 pub use comment::{Comment, CommentContent};
 pub use db::recipe::*;
