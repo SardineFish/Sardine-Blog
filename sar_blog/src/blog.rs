@@ -19,6 +19,12 @@ pub struct BlogPreview<const MAX_WORDS: usize = PREVIEW_WORDS> {
     pub preview: String,
 }
 
+impl<const W: usize> BlogPreview<W> {
+    pub fn get_content_preview(doc_type: DocType, content: &str) -> String {
+        get_preview_slice(doc_type, content, W)
+    }
+}
+
 impl<const W: usize> From<Blog> for BlogPreview<W> {
     fn from(blog: Blog) -> Self {
         let preview = get_preview_slice(blog.doc_type, &blog.doc, W);

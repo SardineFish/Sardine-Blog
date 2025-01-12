@@ -1,9 +1,10 @@
-use model::{AuthenticationInfo, Model, RedisCache, User};
+use model::{AuthenticationInfo, Model, PostData, RedisCache, User};
 use rand::{prelude::StdRng, RngCore, SeedableRng};
 use sha2::{Digest, Sha256};
 use shared::{LogError, ServiceOptions};
 
 use crate::gallery::GalleryService;
+use crate::post::PostService;
 use crate::{
     blog::BlogService, comment::CommentService, cook::CookService,
     email_notify::EmailNotifyService, error::MapServiceError, note::NoteService,
@@ -97,6 +98,10 @@ impl Service {
 
     pub fn gallery(&self) -> GalleryService {
         GalleryService::new(self)
+    }
+
+    pub fn post_service<T: PostData>(&self) -> PostService<T> {
+        PostService::<T>::new(self)
     }
 
     pub async fn init_database(&self, index_only: bool) -> Result<()> {

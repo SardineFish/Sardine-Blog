@@ -19,7 +19,11 @@ fn round_char_boundary(input: &str, len: usize) -> usize {
 }
 
 pub fn slice_utf8(input: &str, len: usize) -> &str {
-    &input[..round_char_boundary(input, len)]
+    if input.len() < len {
+        input
+    } else {
+        &input[..round_char_boundary(input, len)]
+    }
 }
 
 struct MarkdownToPlaintext<'s> {

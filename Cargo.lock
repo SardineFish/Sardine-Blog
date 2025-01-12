@@ -2459,6 +2459,7 @@ dependencies = [
  "rand 0.8.5",
  "regex",
  "reqwest",
+ "rss",
  "serde",
  "serde_json",
  "sha1 0.10.6",

@@ -45,7 +45,7 @@ pub fn add_read_more_link(content: &str, url: &str) -> String {
     format!(r#"{content}... <br><a href="{url}">Read more...</a>"#)
 }
 
-pub fn get_copyright() -> String {
+pub fn make_copyright() -> String {
     let year = chrono::Local::now().year();
     format!("Copyright 2015-{year} SardineFish. All rights reserved.")
 }
