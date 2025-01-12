@@ -85,40 +85,31 @@ impl<'s, T: PostData> PostService<'s, T> {
 
     pub async fn post(&self, uid: &str, content: T) -> Result<PidType> {
         let user = self.service.model.user.get_by_uid(uid).await?;
+        log::info!("Aquiring new pid...");
         let post = self.service.model.post.new_post(content, &user).await?;
 
+        log::info!("Saving post {}", post.pid);
         self.service.model.post.insert(&post.clone().into()).await?;
         let pid = post.pid;
 
-        self.service
-            .search()
-            .index(&post)
-            .await
-            .log_error("post")
-            .ok();
+        if T::ALLOW_SEARCH && self.service.option.enable_indexing {
+            log::info!("Indexing new post...");
+            self.service
+                .search()
+                .index(&post)
+                .await
+                .log_error("post")
+                .ok();
+        }
 
+        log::info!("Updating activity history...");
         self.service
             .model
             .history
             .record(uid, model::Operation::Create, post)
             .await?;
 
-        {
-            log::info!("Flushing cache...");
-            let count = self
-                .service
-                .cache()
-                .flush_namespace(cache_namespaces::FEED)
-                .await;
-            log::info!("Flushed {count} feed cache");
-
-            let count = self
-                .service
-                .cache()
-                .flush_namespace(cache_namespaces::SEAERCH)
-                .await;
-            log::info!("Flushed {count} search cache");
-        }
+        self.flush_post_caches().await;
 
         Ok(pid)
     }
@@ -147,6 +138,8 @@ impl<'s, T: PostData> PostService<'s, T> {
             .record(uid, model::Operation::Update, (pid, content.wrap()))
             .await?;
 
+        self.flush_post_caches().await;
+
         Ok(())
     }
 
@@ -159,6 +152,7 @@ impl<'s, T: PostData> PostService<'s, T> {
             .await
             .map_service_err()?;
         if let Some(content) = post {
+            self.flush_post_caches().await;
             self.service
                 .model
                 .history
@@ -167,6 +161,25 @@ impl<'s, T: PostData> PostService<'s, T> {
             Ok(Some(content))
         } else {
             Ok(None)
+        }
+    }
+
+    async fn flush_post_caches(&self) {
+        {
+            log::info!("Flushing cache...");
+            let count = self
+                .service
+                .cache()
+                .flush_namespace(cache_namespaces::FEED)
+                .await;
+            log::info!("Flushed {count} feed cache");
+
+            let count = self
+                .service
+                .cache()
+                .flush_namespace(cache_namespaces::SEAERCH)
+                .await;
+            log::info!("Flushed {count} search cache");
         }
     }
 }

@@ -1,7 +1,6 @@
 use crate::error::Result;
-use futures::StreamExt;
-use redis::{aio::MultiplexedConnection, FromRedisValue, ToRedisArgs};
 use redis::AsyncCommands;
+use redis::{aio::MultiplexedConnection, FromRedisValue, ToRedisArgs};
 
 pub struct GenericCache {
     namespace: &'static str,
@@ -43,14 +42,10 @@ impl GenericCache {
         let pattern = self.key("*");
 
         let mut total_count = 0usize;
-        let keys = self
-            .redis
-            .scan_match(&pattern)
-            .await?
-            .collect::<Vec<String>>()
-            .await;
 
-        for key in keys {
+        let mut scan_conn = self.redis.clone();
+        let mut iter = scan_conn.scan_match::<_, String>(&pattern).await?;
+        while let Some(key) = iter.next_item().await {
             let count: usize = self
                 .redis
                 .del(&key)

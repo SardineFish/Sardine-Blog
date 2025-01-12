@@ -265,7 +265,7 @@ impl ElasticSerachModel {
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct SearchResult {
     time: i64,
     timeout: bool,
@@ -273,7 +273,7 @@ pub struct SearchResult {
     results: Vec<HitInfo>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct HitInfo {
     pid: PidType,
     time: i64,
@@ -285,7 +285,7 @@ pub struct HitInfo {
     highlight: SearchHighlight,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct SearchHighlight {
     title: Option<String>,
     tags: Option<Vec<String>>,

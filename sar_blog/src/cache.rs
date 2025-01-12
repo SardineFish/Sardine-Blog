@@ -1,6 +1,5 @@
 use std::{future::Future, marker::PhantomData};
 
-use model::RedisCache;
 use serde::{de::DeserializeOwned, Serialize};
 use shared::LogError;
 
@@ -120,7 +119,7 @@ pub struct JsonCacheHandler<'s, T> {
     phantom: PhantomData<T>,
 }
 
-impl<'s, T: Serialize + DeserializeOwned> JsonCacheHandler<'s, T> {
+impl<T: Serialize + DeserializeOwned> JsonCacheHandler<'_, T> {
     pub async fn get(&mut self) -> Option<T> {
         if let Ok(Some(json)) = self.cache.get::<Option<String>>(self.key).await {
             if let Ok(value) = serde_json::from_str::<T>(&json) {
@@ -130,7 +129,7 @@ impl<'s, T: Serialize + DeserializeOwned> JsonCacheHandler<'s, T> {
         None
     }
 
-    pub async fn set(&mut self, data: T) {
+    pub async fn set(&mut self, data: &T) {
         if let Ok(json) = serde_json::to_string(&data).log_error("cache") {
             self.cache
                 .set(self.key, json)

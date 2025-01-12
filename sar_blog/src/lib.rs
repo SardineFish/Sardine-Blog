@@ -21,6 +21,7 @@ mod validate;
 pub mod utils;
 
 pub use blog::BlogPreview;
+pub use cache::cache_namespaces;
 pub use comment::NestedCommentRef;
 pub use email_notify::{ErrorRecord, MessageMail};
 pub use error::Error;

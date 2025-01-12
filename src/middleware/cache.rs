@@ -9,7 +9,6 @@ use actix_web::{
     body::MessageBody,
     dev::{ServiceRequest, ServiceResponse},
     web::{self},
-    HttpRequest, HttpResponse,
 };
 use serde::{Deserialize, Serialize};
 use shared::LogError;
@@ -113,7 +112,7 @@ where
             let (saved, response) = SavedResponse::from_response(response);
 
             match expire {
-                CacheExpire::Never => cache.set(saved).await,
+                CacheExpire::Never => cache.set(&saved).await,
 
                 CacheExpire::Seconds(seconds) => cache.set_expire(saved, seconds).await,
             }
