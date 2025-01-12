@@ -1,0 +1,14 @@
+# !!! NO Baidu !!!
+User-agent: Baiduspider
+Disallow: /
+
+# General rules for all other crawlers
+User-agent: *
+Disallow: /
+Allow: /index.html
+Allow: /about/
+Allow: /blog/
+Allow: /cook/
+Allow: /gallery/
+Allow: /games/
+Allow: /note/
