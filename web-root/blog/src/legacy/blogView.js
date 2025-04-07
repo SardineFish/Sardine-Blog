@@ -60,7 +60,7 @@ window.onload = function ()
     {
         cid = pid = parseInt(caps[0]);
     }
-    
+
 
     loadBlog(pid);
     loadComment(pid);
@@ -145,7 +145,7 @@ function initTopBar()
     {
         if (!extend)
         {
-           
+
             $("#top").classList.add("extend-side");
         }
         else
@@ -252,7 +252,8 @@ function loadBlogContent(data)
     });
 }
 
-function loadBlog(pid) {
+function loadBlog(pid)
+{
     /*var data = {
         title: "The Title of This Article",
         time: "2017-12-27",
@@ -360,7 +361,7 @@ function loadApp(element)
             app.appendChild(iframe);
 
 
-            
+
         }
         wrapper.appendChild(app);
 
@@ -383,7 +384,7 @@ function loadApp(element)
                 app.style.height = "";
                 Promise.resolve().then(() => resize());
             }
-            panel.querySelector(".button-full-screen").onclick = () => app.requestFullscreen({ navigationUI: "hide" }); 
+            panel.querySelector(".button-full-screen").onclick = () => app.requestFullscreen({ navigationUI: "hide" });
         }
         wrapper.appendChild(panel);
 
@@ -414,11 +415,14 @@ function loadImageNote()
     {
         if (groupImgs.includes(img))
             continue;
-        
-        const element = document.createElement("aside");
-        element.innerText = img.alt;
-        element.classList.add("img-note");
-        img.insertAdjacentElement("afterend", element);
+
+        if (img.alt)
+        {
+            const element = document.createElement("aside");
+            element.innerText = img.alt;
+            element.classList.add("img-note");
+            img.insertAdjacentElement("afterend", element);
+        }
     }
 
     for (const group of imgGroups)
@@ -458,7 +462,8 @@ function appendImgSizeOption(url, size)
 function removeImgSizeSufix(url)
 {
     const sufx = SizeSufix.filter(sufix => url.endsWith("-" + sufix))[0];
-    if (sufx) {
+    if (sufx)
+    {
         url = url.substring(0, url.length - sufx.length - 1);
     }
     return url;
@@ -489,7 +494,7 @@ function initImagePreview()
     imageViewImg.onclick = (e) =>
     {
         e.preventDefault();
-        e.stopPropagation(); 
+        e.stopPropagation();
     }
 
     window.addEventListener("wheel", e =>
@@ -511,7 +516,7 @@ function initImagePreview()
         {
             if (shown)
                 return;
-            
+
             imageViewImg.src = removeImgSizeSufix(img.src);
             shown = true;
             setTimeout(() =>
@@ -543,7 +548,7 @@ function loadContentNav()
                 headers[i].id = headers[i].innerText;
                 if (currentLevel >= level)
                 {
-                    if (header.header!="" && currentLevel <= level)
+                    if (header.header != "" && currentLevel <= level)
                     {
                         i--;
                         return header;
@@ -578,7 +583,7 @@ function loadContentNav()
             children: h2
         };
         template.forEach(t => t.dataSource = h1);
-        
+
     });
 }
 
@@ -649,19 +654,21 @@ function loadPuzzle()
         var ans = "U2FsdGVkX1/A4SaZPLVgnDY3SJxhtkwV8EgRK3WYb+spfsIOaicFaHfBBJ7ZE9lechvHNqLNQaQhAjVJxKji+w==";
         var ansHash = "ec1599cd561886e2e75238c6e826f48135dc0f7cf1d14f61cf36d1b5e5c20ae5";
         var hints = [
-            "你一定是夜空中最亮的那颗⭐", 
+            "你一定是夜空中最亮的那颗⭐",
             "神说，要有光。",
             "这里什么也没有，关灯睡吧。"
         ]
         window.CryptoJS = CryptoJS;
-        function AES_CBC_Encrypt(data, key) {
+        function AES_CBC_Encrypt(data, key)
+        {
             return CryptoJS.AES.encrypt(data, key, {
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.ZeroPadding
             }).toString();
         }
 
-        function AES_CBC_Decrypt(data, key) {
+        function AES_CBC_Decrypt(data, key)
+        {
             return CryptoJS.AES.decrypt(data, key, {
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.ZeroPadding
@@ -716,13 +723,13 @@ function imagePostProcess(imgUrl)
         imgUrl = httpsImageHost + img;
 
         imgUrl = appendImgSizeOption(imgUrl, "s800");
-        
+
     }
 
     // imgUrl = defaultImageHost.replace(webArchivePrefixReplacer, imgUrl);
 
     console.log(`${src} -> ${imgUrl}`);
-    
+
     return imgUrl;
 }
 
@@ -768,7 +775,7 @@ function markdownItImagePostProcess(md)
     {
         var token = tokens[idx];
         handleHTML(token);
-        return htmlInlineProcess    (tokens, idx, options, env, slf);
+        return htmlInlineProcess(tokens, idx, options, env, slf);
     }
 }
 
@@ -797,7 +804,7 @@ function markedImagePostProcess(marked)
 }
 
 function animate(callback, t, timingFunc = t => t)
-{ 
+{
     return new Promise((resolve, reject) =>
     {
         let offset = 0;
@@ -806,7 +813,7 @@ function animate(callback, t, timingFunc = t => t)
         {
             if (offset === 0)
                 offset = delay;
-                
+
             elapsed = (delay - offset) / 1000;
             if (elapsed >= t)
                 elapsed = t;
@@ -817,7 +824,7 @@ function animate(callback, t, timingFunc = t => t)
                 callback(timingFunc(elapsed / t));
             }
             catch (e)
-            { 
+            {
                 reject(e);
                 return;
             }
@@ -826,12 +833,12 @@ function animate(callback, t, timingFunc = t => t)
                 resolve();
             else
                 requestAnimationFrame(update);
-                
+
         }
 
         callback(0);
 
-        requestAnimationFrame(update); 
+        requestAnimationFrame(update);
     });
 }
 
