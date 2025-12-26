@@ -236,7 +236,7 @@ syntaxHighlighter.styles.shThemeRDark = syntaxHighlighter.domain + "styles/shThe
 //-----------------------------------------Spectrum-----------------------------------------
 function spectrum() { }
 spectrum.scripts = function () { }
-spectrum.domain = "//cdn.bootcss.com/spectrum/1.7.1/"
+spectrum.domain = "https://cdn.staticfile.net/spectrum/1.7.1/"
 spectrum.css = spectrum.domain + "spectrum.min.css";
 spectrum.js = spectrum.domain + "spectrum.min.js";
 
@@ -250,7 +250,7 @@ lib.jQueryColorMinJs = "/lib/Script/jQuery/jquery.color.min.js";
 lib.jQueryShadowAnimation = "/lib/Script/jQuery/jquery.shadow-animation.min.js";
 // lib.jQueryCookieMinJs = "//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js";
 lib.jQueryCookieMinJs = "/lib/Script/jQuery/jquery.cookie.min.js"
-lib.pluploadMinJs = '//cdn.bootcss.com/jquery/3.1.0/jquery-3.1.0.min.js';
+lib.pluploadMinJs = '/lib/Script/jQuery/jquery-3.2.1.min.js';
 lib.pluploadMoxieSwf = '//cdn.staticfile.org/Plupload/2.1.1/Moxie.swf';
 lib.qiniuMinJs = '/lib/Script/qiniu.min.js';
 lib.codeMirror = codeMirror;
