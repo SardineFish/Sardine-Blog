@@ -76,7 +76,7 @@ impl<'s> Session<'s> {
         let keys = &[&self.key_data, &self.key_visit];
         redis::cmd("WATCH")
             .arg(keys)
-            .query_async(&mut self.redis)
+            .query_async::<_, ()>(&mut self.redis)
             .await
             .map_model_result()?;
         let mut p = redis::pipe();
@@ -84,7 +84,7 @@ impl<'s> Session<'s> {
         let existed: bool = self.redis.exists(&self.key_data).await.map_model_result()?;
         if existed {
             redis::cmd("UNWATCH")
-                .query_async(&mut self.redis)
+                .query_async::<_, ()>(&mut self.redis)
                 .await
                 .map_model_result()?;
             Ok(false)
@@ -102,7 +102,7 @@ impl<'s> Session<'s> {
 
             if let Err(err) = result {
                 redis::cmd("UNWATCH")
-                    .query_async(&mut self.redis)
+                    .query_async::<_, ()>(&mut self.redis)
                     .await
                     .map_model_result()?;
                 Err(err).map_model_result()
@@ -135,7 +135,7 @@ impl<'s> Session<'s> {
             .ignore()
             .del(&self.key_visit)
             .ignore()
-            .query_async(&mut self.redis)
+            .query_async::<_, ()>(&mut self.redis)
             .await
             .map_model_result()
     }
@@ -157,7 +157,7 @@ impl<'s> Session<'s> {
         pipe()
             .set(&key, value)
             .expire(&key, expire)
-            .query_async(&mut self.redis)
+            .query_async::<_, ()>(&mut self.redis)
             .await
             .map_model_result()
     }
@@ -211,7 +211,7 @@ impl<'s> Session<'s> {
             .map_model_result()?;
 
         self.redis
-            .expire(&self.key_visit, expire_seconds)
+            .expire::<_, ()>(&self.key_visit, expire_seconds)
             .await
             .map_model_result()?;
         Ok(not_visited)
@@ -267,7 +267,7 @@ impl<'s> Session<'s> {
         value: T,
     ) -> Result<()> {
         self.redis
-            .hset(&self.key_data, field, value)
+            .hset::<_, _, _, ()>(&self.key_data, field, value)
             .await
             .map_model_result()?;
         Ok(())

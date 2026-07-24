@@ -1,4 +1,3 @@
-
 pub trait EmptyAsNone<T> {
     fn empty_as_none(self) -> Option<T>;
 }

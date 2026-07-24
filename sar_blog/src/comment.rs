@@ -34,11 +34,11 @@ impl NestedCommentRef {
         Self(Rc::new(RefCell::new(comment.into())))
     }
 
-    pub fn borrow(&self) -> Ref<NestedComment> {
+    pub fn borrow(&self) -> Ref<'_, NestedComment> {
         RefCell::borrow(&self.0)
     }
 
-    pub fn borrow_mut(&self) -> RefMut<NestedComment> {
+    pub fn borrow_mut(&self) -> RefMut<'_, NestedComment> {
         RefCell::borrow_mut(&self.0)
     }
 

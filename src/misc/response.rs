@@ -1,6 +1,6 @@
 use std::{
     collections::HashMap,
-    ops::{ControlFlow, FromResidual, Try},
+    ops::{ControlFlow, FromResidual, Residual, Try},
     str,
 };
 
@@ -346,6 +346,10 @@ where
             Self::ServerError(err) => ControlFlow::Break(Response::ServerError(err)),
         }
     }
+}
+
+impl<T: BuildResponse> Residual<T> for Response<!, Error> {
+    type TryType = Response<T, Error>;
 }
 
 impl<T: BuildResponse, E: Into<Error>> FromResidual<Response<!, E>> for Response<T, Error> {

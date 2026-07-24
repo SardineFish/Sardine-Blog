@@ -1,4 +1,4 @@
-use std::{borrow::Cow, mem};
+use std::borrow::Cow;
 
 use html2text::render::text_renderer::TrivialDecorator;
 use pulldown_cmark::{CowStr, Event, Tag};
@@ -6,7 +6,7 @@ use pulldown_cmark::{CowStr, Event, Tag};
 use super::string_builder::StringBuilder;
 
 fn round_char_boundary(input: &str, len: usize) -> usize {
-    let min = if len >= 4 { len - 4 } else { 0 };
+    let min = len.saturating_sub(4);
 
     for i in (min..=len).rev() {
         if i == 0 {
@@ -75,7 +75,7 @@ impl<'s> MarkdownToPlaintext<'s> {
 
     fn build_html(&mut self) {
         if !self.html_builder.is_empty() {
-            let html = mem::replace(&mut self.html_builder, StringBuilder::new()).to_string();
+            let html = std::mem::take(&mut self.html_builder).to_string();
             let mut text = html2text::from_read_with_decorator(
                 html.as_bytes(),
                 usize::MAX,

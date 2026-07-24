@@ -62,7 +62,7 @@ impl<'s> StorageService<'s> {
         let sign = base64::encode_config(sign, base64::URL_SAFE);
         let token = format!(
             "{}:{}:{}",
-            &self.options.qiniu_accesskey, &sign, &encoded_policy
+            self.options.qiniu_accesskey, sign, encoded_policy
         );
 
         Ok(token)

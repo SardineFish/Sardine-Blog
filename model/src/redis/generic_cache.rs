@@ -17,7 +17,7 @@ impl GenericCache {
     }
 
     pub async fn set<T: ToRedisArgs + Send + Sync>(&mut self, key: &str, value: T) -> Result<()> {
-        self.redis.set(self.key(key), value).await?;
+        self.redis.set::<_, _, ()>(self.key(key), value).await?;
         Ok(())
     }
 
@@ -27,8 +27,8 @@ impl GenericCache {
         value: T,
         seconds: usize,
     ) -> Result<()> {
-        self.redis.set(self.key(key), value).await?;
-        self.redis.expire(self.key(key), seconds).await?;
+        self.redis.set::<_, _, ()>(self.key(key), value).await?;
+        self.redis.expire::<_, ()>(self.key(key), seconds).await?;
         Ok(())
     }
 

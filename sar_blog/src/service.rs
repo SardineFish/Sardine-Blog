@@ -49,63 +49,63 @@ impl Service {
         ok
     }
 
-    pub fn blog(&self) -> BlogService {
+    pub fn blog(&self) -> BlogService<'_> {
         BlogService::new(self)
     }
 
-    pub fn comment(&self) -> CommentService {
+    pub fn comment(&self) -> CommentService<'_> {
         CommentService::new(self)
     }
 
-    pub fn note(&self) -> NoteService {
+    pub fn note(&self) -> NoteService<'_> {
         NoteService::new(self)
     }
 
-    pub fn user(&self) -> UserService {
+    pub fn user(&self) -> UserService<'_> {
         UserService::new(self)
     }
 
-    pub fn post_data(&self) -> PostDataService {
+    pub fn post_data(&self) -> PostDataService<'_> {
         PostDataService::new(self)
     }
 
-    pub fn session(&self) -> SessionService {
+    pub fn session(&self) -> SessionService<'_> {
         SessionService::new(self)
     }
 
-    pub fn storage(&self) -> StorageService {
+    pub fn storage(&self) -> StorageService<'_> {
         StorageService::new(self)
     }
 
-    pub fn rank(&self) -> RankServiceSelector {
+    pub fn rank(&self) -> RankServiceSelector<'_> {
         RankServiceSelector::new(self)
     }
 
-    pub fn search(&self) -> SearchService {
+    pub fn search(&self) -> SearchService<'_> {
         SearchService::new(self)
     }
 
-    pub fn cook(&self) -> CookService {
+    pub fn cook(&self) -> CookService<'_> {
         CookService::new(self)
     }
 
-    pub fn push_service(&self) -> EmailNotifyService {
+    pub fn push_service(&self) -> EmailNotifyService<'_> {
         EmailNotifyService::new(self)
     }
 
-    pub fn url(&self) -> UrlService {
+    pub fn url(&self) -> UrlService<'_> {
         UrlService::new(self)
     }
 
-    pub fn gallery(&self) -> GalleryService {
+    pub fn gallery(&self) -> GalleryService<'_> {
         GalleryService::new(self)
     }
 
-    pub fn post_service<T: PostData>(&self) -> PostService<T> {
+    pub fn post_service<T: PostData>(&self) -> PostService<'_, T> {
         PostService::<T>::new(self)
     }
 
-    pub fn cache(&self) -> CacheService {
+    pub fn cache(&self) -> CacheService<'_> {
         CacheService::new(self)
     }
 

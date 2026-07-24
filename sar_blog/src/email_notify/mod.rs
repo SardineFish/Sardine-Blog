@@ -46,7 +46,7 @@ impl<'s> EmailNotifyService<'s> {
         let body = format_comment_email(&info);
         self.send(EmailNotify {
             to,
-            subject: &format!("[Reply] A New Reply from {}", &info.author_name),
+            subject: &format!("[Reply] A New Reply from {}", info.author_name),
             content_type: "text/html",
             body: &body,
         })
@@ -57,7 +57,7 @@ impl<'s> EmailNotifyService<'s> {
         let body = format_note_email(&info);
         self.send(EmailNotify {
             to,
-            subject: &format!("[Message] A New Message from {}", &info.author_name),
+            subject: &format!("[Message] A New Message from {}", info.author_name),
             content_type: "text/html",
             body: &body,
         })
@@ -93,7 +93,7 @@ impl<'s> EmailNotifyService<'s> {
             .map_err(|err| {
                 Error::InternalServiceErrorOwned(format!("Failed to send email notify: {:?}", err))
             })?
-            .post(format!("{}/notify/queue", &self.options.sar_push_url))
+            .post(format!("{}/notify/queue", self.options.sar_push_url))
             .json(&notify)
             .basic_auth(
                 &self.options.sar_push_uid,

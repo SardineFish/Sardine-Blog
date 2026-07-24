@@ -30,7 +30,7 @@ impl AccessCache {
             .set(namespace_key(NAMESPACE_TOKEN, token), uid)
             .expire(namespace_key(NAMESPACE_TOKEN, token), expire)
             .sadd(namespace_key(NAMESPACE_USER_SESSION, uid), session_id)
-            .query_async(&mut self.redis)
+            .query_async::<_, ()>(&mut self.redis)
             .await
             .map_model_result()
     }
@@ -58,7 +58,7 @@ impl AccessCache {
         pipe()
             .del(namespace_key(NAMESPACE_TOKEN, token))
             .srem(namespace_key(NAMESPACE_USER_SESSION, uid), session_id)
-            .query_async(&mut self.redis)
+            .query_async::<_, ()>(&mut self.redis)
             .await
             .map_model_result()?;
         Ok(())
@@ -75,7 +75,7 @@ impl AccessCache {
         redis::pipe()
             .set(&key, salt)
             .expire(&key, expire)
-            .query_async(&mut self.redis)
+            .query_async::<_, ()>(&mut self.redis)
             .await
             .map_model_result()
     }

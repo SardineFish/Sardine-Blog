@@ -1,8 +1,8 @@
 use model::{PidType, PostDoc, PostType, PostTypeName};
 use shared::ServiceOptions;
 
-use crate::Service;
 use crate::error::*;
+use crate::Service;
 
 pub struct UrlService<'s> {
     service: &'s Service,

@@ -1,5 +1,6 @@
 #![feature(trait_alias)]
 #![feature(try_trait_v2)]
+#![feature(try_trait_v2_residual)]
 #![feature(never_type)]
 
 use actix_web::{
