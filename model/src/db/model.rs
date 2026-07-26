@@ -3,7 +3,7 @@ use std::time::Duration;
 use crate::{
     comment::CommentModel, error::*, history::HistoryModel, post::PostModel, user::UserModel,
 };
-use mongodb::{self, options::ClientOptions, Database};
+use mongodb::{self, bson::doc, options::ClientOptions, Database};
 use shared::ServiceOptions;
 
 use super::{rank::RankModel, search::ElasticSerachModel, storage::StorageModel};
@@ -57,5 +57,9 @@ impl Model {
     }
     pub fn storage(&self) -> StorageModel {
         StorageModel::new(&self.db)
+    }
+
+    pub async fn health(&self) -> bool {
+        self.db.run_command(doc! { "ping": 1 }, None).await.is_ok()
     }
 }

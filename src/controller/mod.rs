@@ -4,6 +4,7 @@ mod cook;
 mod cors;
 mod extractor;
 mod gallery;
+mod health;
 mod note;
 mod post_data;
 mod rank;
@@ -22,6 +23,7 @@ use crate::middleware;
 
 pub fn config(opts: ServiceOptions) -> impl FnOnce(&mut ServiceConfig) {
     move |cfg: &mut ServiceConfig| {
+        cfg.configure(health::config);
         cfg.service(
             scope("/api")
                 .configure(blog::config)

@@ -48,6 +48,26 @@ impl ElasticSerachModel {
         })
     }
 
+    pub async fn health(&self) -> bool {
+        let Ok(url) = self.base_url.join("/_cluster/health") else {
+            return false;
+        };
+        let Ok(response) = self.client.get(url).send().await else {
+            return false;
+        };
+        if !response.status().is_success() {
+            return false;
+        }
+        let Ok(body) = response.json::<serde_json::Value>().await else {
+            return false;
+        };
+        !body
+            .get("timed_out")
+            .and_then(|value| value.as_bool())
+            .unwrap_or(true)
+            && body.get("status").and_then(|value| value.as_str()) != Some("red")
+    }
+
     pub async fn init_index(&self) -> Result<()> {
         // Create index
         self.client

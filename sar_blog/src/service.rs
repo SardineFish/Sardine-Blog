@@ -109,6 +109,17 @@ impl Service {
         CacheService::new(self)
     }
 
+    pub async fn database_health(&self) -> bool {
+        if !self.model.health().await {
+            return false;
+        }
+        self.redis.health().await
+    }
+
+    pub async fn search_health(&self) -> bool {
+        self.model.search.health().await
+    }
+
     pub async fn init_database(&self, index_only: bool) -> Result<()> {
         if index_only {
             self.model.init(false).await?;

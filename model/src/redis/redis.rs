@@ -34,6 +34,14 @@ impl RedisCache {
     pub fn cache(&self, namespace: &'static str) -> GenericCache {
         GenericCache::new(self.redis.clone(), namespace)
     }
+
+    pub async fn health(&self) -> bool {
+        let mut redis = self.redis.clone();
+        redis::cmd("PING")
+            .query_async::<_, String>(&mut redis)
+            .await
+            .is_ok()
+    }
 }
 
 pub fn namespace_key(namespace: &str, key: &str) -> String {
